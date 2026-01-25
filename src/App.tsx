@@ -4,6 +4,7 @@ import { buildStats } from './lib/stats'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
 import { useAuth } from './hooks/useAuth'
+import { LogOut } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
 import './App.css'
 
@@ -252,8 +253,14 @@ function App() {
           </div>
         </div>
         {session ? (
-          <button className="ghost" onClick={handleSignOut} type="button">
-            Sign out
+          <button
+            className="ghost icon-button"
+            onClick={handleSignOut}
+            type="button"
+            aria-label="Sign out"
+            title="Sign out"
+          >
+            <LogOut className="icon" aria-hidden="true" />
           </button>
         ) : null}
       </header>

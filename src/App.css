@@ -145,6 +145,19 @@
   color: var(--text);
 }
 
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  line-height: 1;
+}
+
+.icon-button .icon {
+  width: 18px;
+  height: 18px;
+}
+
 .save-button {
   display: inline-flex;
   align-items: center;
