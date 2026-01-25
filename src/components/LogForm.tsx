@@ -1,7 +1,8 @@
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 
-type LogFormProps = {
+export type LogFormProps = {
   selectedDate: Date
   todayDate: Date
   highlightedDates: Date[]
@@ -9,6 +10,7 @@ type LogFormProps = {
   mood: number | null
   note: string
   saving: boolean
+  saved?: boolean
   entriesError: string | null
   moodColors: string[]
   formatLocalDate: (date: Date) => string
@@ -16,7 +18,7 @@ type LogFormProps = {
   onSleepHoursChange: (value: string) => void
   onMoodChange: (value: number) => void
   onNoteChange: (value: string) => void
-  onSave: (event: React.FormEvent<HTMLFormElement>) => void
+  onSave: (event: FormEvent<HTMLFormElement>) => void
 }
 
 export const LogForm = ({
@@ -36,6 +38,33 @@ export const LogForm = ({
   onNoteChange,
   onSave,
 }: LogFormProps) => {
+  const [saved, setSaved] = useState(false)
+  const wasSavingRef = useRef(false)
+  const timerRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (entriesError) {
+      setSaved(false)
+    }
+
+    if (wasSavingRef.current && !saving && !entriesError) {
+      setSaved(true)
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current)
+      }
+      timerRef.current = window.setTimeout(() => setSaved(false), 2000)
+    }
+
+    wasSavingRef.current = saving
+
+    return () => {
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current)
+        timerRef.current = null
+      }
+    }
+  }, [saving, entriesError])
+
   return (
     <section className="card">
       <h2>Log today</h2>
@@ -96,8 +125,8 @@ export const LogForm = ({
           />
         </label>
         {entriesError ? <p className="error">{entriesError}</p> : null}
-        <button type="submit" disabled={saving}>
-          {saving ? 'Saving...' : 'Save entry'}
+        <button type="submit" disabled={saving} className="save-button">
+          {saving ? <span className="spinner" aria-label="Saving" /> : saved ? 'Saved!' : 'Save entry'}
         </button>
       </form>
     </section>

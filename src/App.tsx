@@ -344,6 +344,7 @@ function App() {
               mood={mood}
               note={note}
               saving={saving}
+              saved={false}
               entriesError={entriesError}
               moodColors={moodColors}
               formatLocalDate={formatLocalDate}
