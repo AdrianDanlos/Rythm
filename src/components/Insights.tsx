@@ -187,7 +187,7 @@ export const Insights = ({
 
       <section className="card chart-card">
         <div className="chart-header">
-          <h2>Sleep vs Mood</h2>
+          <h2>Rythm insights</h2>
           <p className="muted">
             {entriesLoading ? 'Loading entries...' : `${entries.length} entries`}
           </p>

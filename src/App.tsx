@@ -4,6 +4,7 @@ import { buildStats } from './lib/stats'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
 import { useAuth } from './hooks/useAuth'
+import logo from './assets/rythm-logo.png'
 import './App.css'
 
 function App() {
@@ -233,7 +234,7 @@ function App() {
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = 'sleep-mood-entries.csv'
+    link.download = 'rythm-entries.csv'
     document.body.appendChild(link)
     link.click()
     link.remove()
@@ -243,9 +244,12 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <div>
-          <p className="eyebrow">Sleep vs Mood</p>
-          <h1>Daily tracker</h1>
+        <div className="app-brand">
+          <img className="app-logo" src={logo} alt="Rythm logo" />
+          <div>
+            <p className="eyebrow">Sleep &amp; Mood</p>
+            <h1>Rythm</h1>
+          </div>
         </div>
         {session ? (
           <button className="ghost" onClick={handleSignOut} type="button">
