@@ -38,6 +38,7 @@ function App() {
   const [mood, setMood] = useState<number | null>(null)
   const [note, setNote] = useState('')
   const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<'log' | 'insights'>('insights')
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
@@ -180,16 +181,19 @@ function App() {
 
     if (entryDate > today) {
       setEntriesError('You cannot log entries in the future.')
+      setSaved(false)
       return
     }
 
     const parsedSleep = Number(sleepHours)
     if (!Number.isFinite(parsedSleep) || parsedSleep < 0 || parsedSleep > 12) {
       setEntriesError('Sleep hours must be between 0 and 12.')
+      setSaved(false)
       return
     }
     if (!mood) {
       setEntriesError('Select a mood rating.')
+      setSaved(false)
       return
     }
 
@@ -210,8 +214,11 @@ function App() {
           a.entry_date.localeCompare(b.entry_date),
         )
       })
+      setSaved(true)
+      window.setTimeout(() => setSaved(false), 2000)
     } catch {
       setEntriesError('Unable to save entry.')
+      setSaved(false)
     } finally {
       setSaving(false)
     }
@@ -344,7 +351,7 @@ function App() {
               mood={mood}
               note={note}
               saving={saving}
-              saved={false}
+              saved={saved}
               entriesError={entriesError}
               moodColors={moodColors}
               formatLocalDate={formatLocalDate}

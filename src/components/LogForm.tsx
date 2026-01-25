@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import type { FormEvent } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 
@@ -10,7 +10,7 @@ export type LogFormProps = {
   mood: number | null
   note: string
   saving: boolean
-  saved?: boolean
+  saved: boolean
   entriesError: string | null
   moodColors: string[]
   formatLocalDate: (date: Date) => string
@@ -29,6 +29,7 @@ export const LogForm = ({
   mood,
   note,
   saving,
+  saved,
   entriesError,
   moodColors,
   formatLocalDate,
@@ -38,33 +39,6 @@ export const LogForm = ({
   onNoteChange,
   onSave,
 }: LogFormProps) => {
-  const [saved, setSaved] = useState(false)
-  const wasSavingRef = useRef(false)
-  const timerRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    if (entriesError) {
-      setSaved(false)
-    }
-
-    if (wasSavingRef.current && !saving && !entriesError) {
-      setSaved(true)
-      if (timerRef.current) {
-        window.clearTimeout(timerRef.current)
-      }
-      timerRef.current = window.setTimeout(() => setSaved(false), 2000)
-    }
-
-    wasSavingRef.current = saving
-
-    return () => {
-      if (timerRef.current) {
-        window.clearTimeout(timerRef.current)
-        timerRef.current = null
-      }
-    }
-  }, [saving, entriesError])
-
   return (
     <section className="card">
       <h2>Log today</h2>
