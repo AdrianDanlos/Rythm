@@ -1,20 +1,25 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import type { Session } from '@supabase/supabase-js'
 import { fetchEntries, type Entry, upsertEntry } from './lib/entries'
-import { supabase } from './lib/supabaseClient'
 import { buildStats } from './lib/stats'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
+import { useAuth } from './hooks/useAuth'
 import './App.css'
 
 function App() {
-  const [session, setSession] = useState<Session | null>(null)
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
   const [authEmail, setAuthEmail] = useState('')
   const [authPassword, setAuthPassword] = useState('')
-  const [authLoading, setAuthLoading] = useState(false)
   const [authMessage, setAuthMessage] = useState<string | null>(null)
-  const [authError, setAuthError] = useState<string | null>(null)
+  const {
+    session,
+    authLoading,
+    authError,
+    signIn,
+    signUp,
+    signOut,
+    setAuthError,
+  } = useAuth()
 
   const [entries, setEntries] = useState<Entry[]>([])
   const [entriesLoading, setEntriesLoading] = useState(false)
@@ -43,22 +48,6 @@ function App() {
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session ?? null)
-    })
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession)
-    })
-
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
 
   useEffect(() => {
     const userId = session?.user?.id
@@ -149,29 +138,20 @@ function App() {
 
   const handleAuth = async (event: FormEvent) => {
     event.preventDefault()
-    setAuthLoading(true)
     setAuthError(null)
     setAuthMessage(null)
 
     try {
       if (authMode === 'signup') {
-        const { error } = await supabase.auth.signUp({
-          email: authEmail,
-          password: authPassword,
-        })
+        const { error } = await signUp(authEmail, authPassword)
         if (error) throw error
         setAuthMessage('Check your email to confirm your account.')
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: authEmail,
-          password: authPassword,
-        })
+        const { error } = await signIn(authEmail, authPassword)
         if (error) throw error
       }
     } catch {
       setAuthError('Unable to authenticate. Check your details.')
-    } finally {
-      setAuthLoading(false)
     }
   }
 
@@ -225,7 +205,7 @@ function App() {
   }
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    await signOut()
   }
 
   const handleExportCsv = () => {
