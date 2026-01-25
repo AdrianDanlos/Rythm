@@ -71,6 +71,40 @@
   background: #fff;
 }
 
+.date-picker .rdp {
+  --rdp-accent-color: #0f172a;
+  --rdp-background-color: #0f172a;
+  margin: 0;
+}
+
+.date-picker .rdp-months {
+  justify-content: center;
+}
+
+.date-picker .rdp-caption {
+  color: var(--text);
+}
+
+.date-picker .rdp-chevron {
+  color: #0f172a;
+  fill: #0f172a;
+}
+
+.date-picker .rdp-day-logged:not(.rdp-day_selected) {
+  background: #dcfce7;
+  color: #0f172a;
+  border-radius: 999px;
+}
+
+.date-picker .rdp-day_selected {
+  background: #0f172a;
+  color: #fff;
+}
+
+.date-picker .rdp-selected .rdp-day_button {
+  border: 2px solid #0f172a;
+}
+
 .mood-row {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -103,15 +137,33 @@
   gap: 12px;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+.stats-stack {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
-.stat .value {
-  margin-top: 4px;
+.insights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stat-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-block .value {
+  margin-top: 2px;
   font-size: 1.1rem;
+}
+
+.stat-divider {
+  height: 1px;
+  background: var(--border);
 }
 
 .helper {
@@ -153,6 +205,36 @@
   outline: none;
 }
 
+.chart-empty {
+  height: 260px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.skeleton-line {
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e2e8f0, #f1f5f9, #e2e8f0);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+
+.skeleton-block {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #e2e8f0, #f1f5f9, #e2e8f0);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
 .tooltip {
   background: #fff;
   border: 1px solid var(--border);
@@ -188,8 +270,13 @@
   .stats {
     grid-template-columns: 1fr;
   }
+}
 
-  .stats-grid {
-    grid-template-columns: 1fr;
+@keyframes shimmer {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: -200% 0%;
   }
 }

@@ -1,16 +1,10 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import {
-  Cell,
-  ResponsiveContainer,
-  Scatter,
-  ScatterChart,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
 import type { Session } from '@supabase/supabase-js'
 import { fetchEntries, type Entry, upsertEntry } from './lib/entries'
 import { supabase } from './lib/supabaseClient'
+import { buildStats } from './lib/stats'
+import { LogForm } from './components/LogForm'
+import { Insights } from './components/Insights'
 import './App.css'
 
 function App() {
@@ -26,13 +20,25 @@ function App() {
   const [entriesLoading, setEntriesLoading] = useState(false)
   const [entriesError, setEntriesError] = useState<string | null>(null)
 
-  const today = useMemo(() => new Date().toISOString().slice(0, 10), [])
+  const formatLocalDate = (date: Date) => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+  }
+
+  const todayDate = useMemo(() => {
+    const date = new Date()
+    date.setHours(0, 0, 0, 0)
+    return date
+  }, [])
+  const today = useMemo(() => formatLocalDate(todayDate), [todayDate])
   const [entryDate, setEntryDate] = useState(today)
   const [sleepHours, setSleepHours] = useState('')
   const [mood, setMood] = useState<number | null>(null)
   const [note, setNote] = useState('')
   const [saving, setSaving] = useState(false)
-  const [activeTab, setActiveTab] = useState<'log' | 'insights'>('log')
+  const [activeTab, setActiveTab] = useState<'log' | 'insights'>('insights')
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
@@ -120,160 +126,25 @@ function App() {
     }
   }, [entries])
 
-  const entriesWithDate = useMemo(
-    () =>
-      entries.map((entry) => {
-        const date = new Date(`${entry.entry_date}T00:00:00`)
-        date.setHours(0, 0, 0, 0)
-        return { ...entry, date }
-      }),
-    [entries],
+  const highlightedDates = useMemo(() => {
+    const uniqueDates = new Map<string, Date>()
+    entries.forEach((entry) => {
+      const date = new Date(`${entry.entry_date}T00:00:00`)
+      date.setHours(0, 0, 0, 0)
+      uniqueDates.set(entry.entry_date, date)
+    })
+    return Array.from(uniqueDates.values())
+  }, [entries])
+
+  const selectedDate = useMemo(
+    () => new Date(`${entryDate}T00:00:00`),
+    [entryDate],
   )
 
-  const windowAverages = useMemo(() => {
-    const buildWindow = (days: number) => {
-      const end = new Date()
-      end.setHours(0, 0, 0, 0)
-      const start = new Date(end)
-      start.setDate(end.getDate() - (days - 1))
-
-      const windowEntries = entriesWithDate.filter(
-        (entry) => entry.date >= start && entry.date <= end,
-      )
-
-      if (!windowEntries.length) {
-        return { sleep: null, mood: null, count: 0 }
-      }
-
-      const totals = windowEntries.reduce(
-        (acc, entry) => {
-          acc.sleep += Number(entry.sleep_hours)
-          acc.mood += Number(entry.mood)
-          return acc
-        },
-        { sleep: 0, mood: 0 },
-      )
-
-      return {
-        sleep: totals.sleep / windowEntries.length,
-        mood: totals.mood / windowEntries.length,
-        count: windowEntries.length,
-      }
-    }
-
-    return {
-      last7: buildWindow(7),
-      last30: buildWindow(30),
-    }
-  }, [entriesWithDate])
-
-  const streak = useMemo(() => {
-    if (!entriesWithDate.length) return 0
-    const dateSet = new Set(entriesWithDate.map((entry) => entry.entry_date))
-    const latestDate = entriesWithDate.reduce(
-      (max, entry) => (entry.entry_date > max ? entry.entry_date : max),
-      entriesWithDate[0].entry_date,
-    )
-
-    const current = new Date(`${latestDate}T00:00:00`)
-    let count = 0
-    while (true) {
-      const key = current.toISOString().slice(0, 10)
-      if (!dateSet.has(key)) break
-      count += 1
-      current.setDate(current.getDate() - 1)
-    }
-    return count
-  }, [entriesWithDate])
-
-  const sleepConsistency = useMemo(() => {
-    if (!entries.length) return null
-    const mean =
-      entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0) /
-      entries.length
-    const variance =
-      entries.reduce((sum, entry) => {
-        const diff = Number(entry.sleep_hours) - mean
-        return sum + diff * diff
-      }, 0) / entries.length
-    return Math.sqrt(variance)
-  }, [entries])
-
-  const sleepConsistencyLabel = useMemo(() => {
-    if (sleepConsistency === null) return null
-    if (sleepConsistency <= 0.9) return 'Very consistent'
-    if (sleepConsistency <= 2.0) return 'Consistent'
-    if (sleepConsistency <= 3.5) return 'Mixed'
-    return 'Unstable'
-  }, [sleepConsistency])
-
-  const sleepMoodCorrelation = useMemo(() => {
-    if (entries.length < 2) return null
-    const meanSleep =
-      entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0) /
-      entries.length
-    const meanMood =
-      entries.reduce((sum, entry) => sum + Number(entry.mood), 0) / entries.length
-
-    let numerator = 0
-    let sumSleep = 0
-    let sumMood = 0
-
-    entries.forEach((entry) => {
-      const sleepDelta = Number(entry.sleep_hours) - meanSleep
-      const moodDelta = Number(entry.mood) - meanMood
-      numerator += sleepDelta * moodDelta
-      sumSleep += sleepDelta * sleepDelta
-      sumMood += moodDelta * moodDelta
-    })
-
-    const denominator = Math.sqrt(sumSleep * sumMood)
-    if (denominator === 0) return null
-    return numerator / denominator
-  }, [entries])
-
-  const correlationLabel = useMemo(() => {
-    if (sleepMoodCorrelation === null) return null
-    const magnitude = Math.abs(sleepMoodCorrelation)
-    const strength =
-      magnitude < 0.2
-        ? 'No clear'
-        : magnitude < 0.4
-          ? 'Weak'
-          : magnitude < 0.7
-            ? 'Moderate'
-            : 'Strong'
-    return strength
-  }, [sleepMoodCorrelation])
-
-  const correlationDirection = useMemo(() => {
-    if (sleepMoodCorrelation === null) return null
-    if (sleepMoodCorrelation > 0.05) return 'Higher sleep, better mood'
-    if (sleepMoodCorrelation < -0.05) return 'Higher sleep, lower mood'
-    return 'No clear direction'
-  }, [sleepMoodCorrelation])
-
-
-  const moodBySleepThreshold = useMemo(() => {
-    if (!entries.length) return { high: null, low: null }
-    const buckets = entries.reduce(
-      (acc, entry) => {
-        const target = Number(entry.sleep_hours) >= sleepThreshold ? 'high' : 'low'
-        acc[target].sum += Number(entry.mood)
-        acc[target].count += 1
-        return acc
-      },
-      {
-        high: { sum: 0, count: 0 },
-        low: { sum: 0, count: 0 },
-      },
-    )
-
-    return {
-      high: buckets.high.count ? buckets.high.sum / buckets.high.count : null,
-      low: buckets.low.count ? buckets.low.sum / buckets.low.count : null,
-    }
-  }, [entries, sleepThreshold])
+  const stats = useMemo(
+    () => buildStats(entries, sleepThreshold, formatLocalDate),
+    [entries, sleepThreshold],
+  )
 
   const handleAuth = async (event: FormEvent) => {
     event.preventDefault()
@@ -306,6 +177,11 @@ function App() {
   const handleSave = async (event: FormEvent) => {
     event.preventDefault()
     if (!session?.user?.id) return
+
+    if (entryDate > today) {
+      setEntriesError('You cannot log entries in the future.')
+      return
+    }
 
     const parsedSleep = Number(sleepHours)
     if (!Number.isFinite(parsedSleep) || parsedSleep < 0 || parsedSleep > 12) {
@@ -345,24 +221,36 @@ function App() {
     await supabase.auth.signOut()
   }
 
-  const renderTooltip = ({
-    active,
-    payload,
-  }: {
-    active?: boolean
-    payload?: ReadonlyArray<{ payload: Entry }>
-  }) => {
-    if (!active || !payload?.length) return null
-    const entry = payload[0]?.payload as Entry | undefined
-    if (!entry) return null
-    return (
-      <div className="tooltip">
-        <p>{entry.entry_date}</p>
-        <p>Sleep: {entry.sleep_hours} hrs</p>
-        <p>Mood: {entry.mood}</p>
-        {entry.note ? <p className="tooltip-note">{entry.note}</p> : null}
-      </div>
-    )
+  const handleExportCsv = () => {
+    if (!entries.length) return
+    const escapeCsv = (value: string | number | null) => {
+      const stringValue = value === null ? '' : String(value)
+      if (/[",\n]/.test(stringValue)) {
+        return `"${stringValue.replace(/"/g, '""')}"`
+      }
+      return stringValue
+    }
+
+    const rows = [
+      ['date', 'sleep_hours', 'mood', 'note'],
+      ...entries.map((entry) => [
+        entry.entry_date,
+        entry.sleep_hours,
+        entry.mood,
+        entry.note ?? '',
+      ]),
+    ]
+
+    const csv = rows.map((row) => row.map(escapeCsv).join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'sleep-mood-entries.csv'
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(url)
   }
 
   return (
@@ -433,218 +321,54 @@ function App() {
           <div className="tabs">
             <button
               type="button"
-              className={`tab-button ${activeTab === 'log' ? 'active' : ''}`}
-              onClick={() => setActiveTab('log')}
-            >
-              Log
-            </button>
-            <button
-              type="button"
               className={`tab-button ${activeTab === 'insights' ? 'active' : ''}`}
               onClick={() => setActiveTab('insights')}
             >
               Insights
             </button>
+            <button
+              type="button"
+              className={`tab-button ${activeTab === 'log' ? 'active' : ''}`}
+              onClick={() => setActiveTab('log')}
+            >
+              Log
+            </button>
           </div>
 
           {activeTab === 'log' ? (
-            <section className="card">
-              <h2>Log today</h2>
-              <form onSubmit={handleSave} className="stack">
-                <label className="field">
-                  Date
-                  <input
-                    type="date"
-                    value={entryDate}
-                    onChange={(event) => setEntryDate(event.target.value)}
-                  />
-                </label>
-                <label className="field">
-                  Sleep hours
-                  <input
-                    type="number"
-                    min={0}
-                    max={12}
-                    step={0.1}
-                    value={sleepHours}
-                    onChange={(event) => setSleepHours(event.target.value)}
-                    placeholder="0-12"
-                    required
-                  />
-                </label>
-                <div className="field">
-                  Mood
-                  <div className="mood-row">
-                    {[1, 2, 3, 4, 5].map((value) => (
-                      <button
-                        key={value}
-                        type="button"
-                        className={`mood-button ${mood === value ? 'active' : ''}`}
-                        onClick={() => setMood(value)}
-                        style={{ borderColor: moodColors[value - 1] }}
-                      >
-                        {value}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <label className="field">
-                  Note (optional)
-                  <input
-                    type="text"
-                    value={note}
-                    onChange={(event) => setNote(event.target.value)}
-                    placeholder="Short reflection..."
-                    maxLength={140}
-                  />
-                </label>
-                {entriesError ? <p className="error">{entriesError}</p> : null}
-                <button type="submit" disabled={saving}>
-                  {saving ? 'Saving...' : 'Save entry'}
-                </button>
-              </form>
-            </section>
+            <LogForm
+              selectedDate={selectedDate}
+              todayDate={todayDate}
+              highlightedDates={highlightedDates}
+              sleepHours={sleepHours}
+              mood={mood}
+              note={note}
+              saving={saving}
+              entriesError={entriesError}
+              moodColors={moodColors}
+              formatLocalDate={formatLocalDate}
+              onEntryDateChange={setEntryDate}
+              onSleepHoursChange={setSleepHours}
+              onMoodChange={setMood}
+              onNoteChange={setNote}
+              onSave={handleSave}
+            />
           ) : (
-            <>
-              <section className="card stats">
-                <div>
-                  <p className="label">Average sleep</p>
-                  <p className="value">
-                    {averages.sleep !== null
-                      ? `${averages.sleep.toFixed(1)} hrs`
-                      : '—'}
-                  </p>
-                </div>
-                <div>
-                  <p className="label">Average mood</p>
-                  <p className="value">
-                    {averages.mood !== null ? averages.mood.toFixed(1) : '—'}
-                    {' '}/ 5
-                  </p>
-                </div>
-              </section>
-
-              <section className="card stats-grid">
-                <div className="stat">
-                  <p className="label">Last 7 days</p>
-                  <p className="value">
-                    {windowAverages.last7.sleep !== null &&
-                    windowAverages.last7.mood !== null
-                      ? `${windowAverages.last7.sleep.toFixed(1)}h / ${windowAverages.last7.mood.toFixed(1)}`
-                      : '—'}
-                  </p>
-                  <p className="helper">
-                    Sleep avg / Mood avg · {windowAverages.last7.count} entries
-                  </p>
-                </div>
-                <div className="stat">
-                  <p className="label">Last 30 days</p>
-                  <p className="value">
-                    {windowAverages.last30.sleep !== null &&
-                    windowAverages.last30.mood !== null
-                      ? `${windowAverages.last30.sleep.toFixed(1)}h / ${windowAverages.last30.mood.toFixed(1)}`
-                      : '—'}
-                  </p>
-                  <p className="helper">
-                    Sleep avg / Mood avg · {windowAverages.last30.count} entries
-                  </p>
-                </div>
-                <div className="stat">
-                  <p className="label">Streak</p>
-                  <p className="value">{streak} days</p>
-                  <p className="helper">Consecutive days logged</p>
-                </div>
-                <div className="stat">
-                  <p className="label">Sleep consistency</p>
-                  <p className="value">
-                    {sleepConsistencyLabel ?? '—'}
-                  </p>
-                  <p className="helper">
-                    How steady your sleep hours are
-                  </p>
-                </div>
-                <div className="stat">
-                  <p className="label">Sleep–mood link</p>
-                  <p className="value">
-                    {correlationLabel ?? '—'}
-                  </p>
-                  {correlationDirection ? (
-                    <p className="helper">{correlationDirection}</p>
-                  ) : null}
-                </div>
-                <div className="stat">
-                  <p className="label">Mood by sleep</p>
-                  <p className="value">
-                    {moodBySleepThreshold.high !== null ||
-                    moodBySleepThreshold.low !== null
-                      ? `≥${sleepThreshold}h ${moodBySleepThreshold.high?.toFixed(1) ?? '—'} / <${sleepThreshold}h ${moodBySleepThreshold.low?.toFixed(1) ?? '—'}`
-                      : '—'}
-                  </p>
-                  <p className="helper">
-                    Avg mood split at {sleepThreshold} hours
-                  </p>
-                </div>
-              </section>
-
-              <section className="card chart-card">
-                <div className="chart-header">
-                  <h2>Sleep vs Mood</h2>
-                  <p className="muted">
-                    {entriesLoading
-                      ? 'Loading entries...'
-                      : `${entries.length} entries`}
-                  </p>
-                </div>
-                <div className="chart-wrapper">
-                  <ResponsiveContainer width="100%" height={260}>
-                    <ScatterChart margin={{ top: 12, right: 12, bottom: 12, left: 5 }}>
-                      <XAxis
-                        type="number"
-                        dataKey="sleep_hours"
-                        domain={[4, 10]}
-                        ticks={[4, 5, 6, 7, 8, 9, 10]}
-                        tickFormatter={(value) => {
-                          if (value === 4) return '≤4'
-                          if (value === 10) return '≥10'
-                          return String(value)
-                        }}
-                        label={{
-                          value: 'Sleep hours',
-                          position: 'insideBottom',
-                          offset: -5,
-                        }}
-                        height={35}
-                        tickMargin={2}
-                      />
-                      <YAxis
-                        type="number"
-                        dataKey="mood"
-                        domain={[1, 5]}
-                        ticks={[1, 2, 3, 4, 5]}
-                        label={{
-                          value: 'Mood',
-                          angle: -90,
-                          position: 'insideLeft',
-                          offset: 0,
-                        }}
-                        width={35}
-                        tickMargin={2}
-                      />
-                      <Tooltip content={renderTooltip} />
-                      <Scatter data={chartData}>
-                        {chartData.map((entry) => (
-                          <Cell
-                            key={entry.id}
-                            fill={moodColors[entry.mood - 1]}
-                            fillOpacity={0.85}
-                          />
-                        ))}
-                      </Scatter>
-                    </ScatterChart>
-                  </ResponsiveContainer>
-                </div>
-              </section>
-            </>
+            <Insights
+              entries={entries}
+              entriesLoading={entriesLoading}
+              chartData={chartData}
+              averages={averages}
+              windowAverages={stats.windowAverages}
+              streak={stats.streak}
+              sleepConsistencyLabel={stats.sleepConsistencyLabel}
+              correlationLabel={stats.correlationLabel}
+              correlationDirection={stats.correlationDirection}
+              moodBySleepThreshold={stats.moodBySleepThreshold}
+              sleepThreshold={sleepThreshold}
+              moodColors={moodColors}
+              onExportCsv={handleExportCsv}
+            />
           )}
         </>
       )}
