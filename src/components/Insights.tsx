@@ -48,6 +48,10 @@ export const Insights = ({
 }: InsightsProps) => {
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
+  const plottedData = chartData.map((entry) => ({
+    ...entry,
+    sleep_hours_clamped: Math.min(10, Math.max(4, Number(entry.sleep_hours))),
+  }))
 
   const renderTooltip = ({
     active,
@@ -206,7 +210,7 @@ export const Insights = ({
               <ScatterChart margin={{ top: 12, right: 12, bottom: 12, left: 5 }}>
                 <XAxis
                   type="number"
-                  dataKey="sleep_hours"
+                  dataKey="sleep_hours_clamped"
                   domain={[4, 10]}
                   ticks={[4, 5, 6, 7, 8, 9, 10]}
                   tickFormatter={(value) => {
@@ -237,8 +241,8 @@ export const Insights = ({
                   tickMargin={2}
                 />
                 <Tooltip content={renderTooltip} />
-                <Scatter data={chartData}>
-                  {chartData.map((entry) => (
+                <Scatter data={plottedData}>
+                  {plottedData.map((entry) => (
                     <Cell
                       key={entry.id}
                       fill={moodColors[entry.mood - 1]}
