@@ -5,6 +5,7 @@ import { exportMonthlyReport } from './lib/reports'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
 import { PaywallModal } from './components/PaywallModal'
+import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
 import { LogOut, Mail } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
@@ -286,6 +287,30 @@ function App() {
     setIsPaywallOpen(false)
   }
 
+  const handleStartCheckout = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        'create-checkout-session',
+        { body: {} },
+      )
+      if (error) {
+        throw error
+      }
+      const checkoutUrl = data?.url as string | undefined
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl
+        return
+      }
+    }
+    catch {
+      // Fall back to static upgrade URL if configured.
+    }
+
+    if (trimmedUpgradeUrl) {
+      window.open(trimmedUpgradeUrl, '_blank', 'noreferrer')
+    }
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -344,6 +369,7 @@ function App() {
         isOpen={isPaywallOpen}
         onClose={handleClosePaywall}
         upgradeUrl={trimmedUpgradeUrl}
+        onUpgrade={handleStartCheckout}
       />
 
       {!session

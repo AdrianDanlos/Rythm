@@ -6,6 +6,25 @@ This template provides a minimal setup to get React working in Vite with HMR and
 
 - `VITE_UPGRADE_URL`: Link to your checkout/paywall page used by the Pro upgrade CTA.
 
+## Stripe + Supabase (Edge Functions)
+
+Required environment variables for the Stripe flow:
+
+- `STRIPE_SECRET_KEY`
+- `STRIPE_PRICE_ID`
+- `STRIPE_WEBHOOK_SECRET`
+- `STRIPE_SUCCESS_URL`
+- `STRIPE_CANCEL_URL`
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+For local web testing, you can set:
+- `STRIPE_SUCCESS_URL=http://localhost:5173/success`
+- `STRIPE_CANCEL_URL=http://localhost:5173/cancel`
+
+If you add mobile later, replace these with your app’s deep links.
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh

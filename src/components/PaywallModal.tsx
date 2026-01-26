@@ -1,7 +1,10 @@
+import { useState } from 'react'
+
 type PaywallModalProps = {
   isOpen: boolean
   onClose: () => void
   upgradeUrl?: string
+  onUpgrade?: () => Promise<void> | void
 }
 
 const premiumFeatures = [
@@ -16,10 +19,27 @@ export const PaywallModal = ({
   isOpen,
   onClose,
   upgradeUrl,
+  onUpgrade,
 }: PaywallModalProps) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const canUpgrade = Boolean(onUpgrade || (upgradeUrl && upgradeUrl.trim()))
+
   if (!isOpen) return null
 
-  const canUpgrade = Boolean(upgradeUrl && upgradeUrl.trim())
+  const handleUpgrade = async () => {
+    if (!canUpgrade || isLoading) return
+    if (!onUpgrade) {
+      window.open(upgradeUrl, '_blank', 'noreferrer')
+      return
+    }
+    setIsLoading(true)
+    try {
+      await onUpgrade()
+    }
+    finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
@@ -53,22 +73,14 @@ export const PaywallModal = ({
           ))}
         </ul>
         <div className="modal-actions">
-          {canUpgrade
-            ? (
-                <a
-                  className="primary-button"
-                  href={upgradeUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Upgrade now
-                </a>
-              )
-            : (
-                <button type="button" className="primary-button" disabled>
-                  Upgrade now
-                </button>
-              )}
+          <button
+            type="button"
+            className="primary-button"
+            disabled={!canUpgrade || isLoading}
+            onClick={handleUpgrade}
+          >
+            {isLoading ? 'Opening checkout...' : 'Upgrade now'}
+          </button>
           <button type="button" className="ghost" onClick={onClose}>
             Not now
           </button>
