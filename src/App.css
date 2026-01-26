@@ -162,6 +162,7 @@
   gap: 8px;
   padding: 8px;
   line-height: 1;
+  border-radius: 10px;
 }
 
 .icon-button .icon {
@@ -419,6 +420,7 @@
   cursor: help;
   outline: none;
 }
+
 
 .delta-tooltip-icon {
   width: 16px;

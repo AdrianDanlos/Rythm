@@ -5,7 +5,7 @@ import { exportMonthlyReport } from './lib/reports'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
 import { useAuth } from './hooks/useAuth'
-import { LogOut } from 'lucide-react'
+import { LogOut, Mail } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
 import './App.css'
 
@@ -278,28 +278,42 @@ function App() {
             <h1>Rythm</h1>
           </div>
         </div>
-        {session ? (
-          <div className="header-actions">
-            {import.meta.env.DEV ? (
+        <div className="header-actions">
+         
+            <a
+              href={`mailto:danlosadrian@gmail.com?subject=${encodeURIComponent(
+                'Rythm feedback',
+              )}&body=${encodeURIComponent(
+                'Hi! I would like to share the following feedback:\n\n',
+              )}`}
+              aria-label="Send feedback via email"
+            > <button className="ghost icon-button">  
+              <Mail className="icon" aria-hidden="true" /></button>
+            </a>
+          
+          {session ? (
+            <>
+              {import.meta.env.DEV ? (
+                <button
+                  className="ghost"
+                  type="button"
+                  onClick={() => setProPreview((value) => !value)}
+                >
+                  {isPro ? 'Pro preview on' : 'Pro preview off'}
+                </button>
+              ) : null}
               <button
-                className="ghost"
+                className="ghost icon-button"
+                onClick={handleSignOut}
                 type="button"
-                onClick={() => setProPreview((value) => !value)}
+                aria-label="Sign out"
+                title="Sign out"
               >
-                {isPro ? 'Pro preview on' : 'Pro preview off'}
+                <LogOut className="icon" aria-hidden="true" />
               </button>
-            ) : null}
-            <button
-              className="ghost icon-button"
-              onClick={handleSignOut}
-              type="button"
-              aria-label="Sign out"
-              title="Sign out"
-            >
-              <LogOut className="icon" aria-hidden="true" />
-            </button>
-          </div>
-        ) : null}
+            </>
+          ) : null}
+        </div>
       </header>
 
       {!session ? (
