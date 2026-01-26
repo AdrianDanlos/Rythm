@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { fetchEntries, type Entry, upsertEntry } from './lib/entries'
 import { buildStats } from './lib/stats'
+import { exportMonthlyReport } from './lib/reports'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
 import { useAuth } from './hooks/useAuth'
@@ -44,12 +45,22 @@ function App() {
   const [sleepHours, setSleepHours] = useState('')
   const [mood, setMood] = useState<number | null>(null)
   const [note, setNote] = useState('')
+  const [tags, setTags] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<'log' | 'insights'>('insights')
+  const [proPreview, setProPreview] = useState(() => {
+    return window.localStorage.getItem('rythm-pro-preview') === 'true'
+  })
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
+  const isPro =
+    Boolean(session?.user?.app_metadata?.is_pro) || Boolean(proPreview)
+
+  useEffect(() => {
+    window.localStorage.setItem('rythm-pro-preview', String(proPreview))
+  }, [proPreview])
 
   useEffect(() => {
     const userId = session?.user?.id
@@ -80,12 +91,14 @@ function App() {
       setSleepHours(String(existing.sleep_hours))
       setMood(existing.mood)
       setNote(existing.note ?? '')
+      setTags(existing.tags?.join(', ') ?? '')
       return
     }
 
     setSleepHours('')
     setMood(null)
     setNote('')
+    setTags('')
   }, [entryDate, entries])
 
   const chartData = useMemo(
@@ -138,6 +151,12 @@ function App() {
     [entries, sleepThreshold],
   )
 
+  const parseTags = (value: string) =>
+    value
+      .split(',')
+      .map((tag) => tag.trim().toLowerCase())
+      .filter((tag) => tag.length)
+
   const handleAuth = async (event: FormEvent) => {
     event.preventDefault()
     setAuthError(null)
@@ -182,12 +201,14 @@ function App() {
     setSaving(true)
     setEntriesError(null)
     try {
+      const tagList = isPro ? parseTags(tags) : []
       const saved = await upsertEntry({
         user_id: session.user.id,
         entry_date: entryDate,
         sleep_hours: parsedSleep,
         mood,
         note: note.trim() ? note.trim() : null,
+        ...(isPro ? { tags: tagList.length ? tagList : null } : {}),
       })
 
       setEntries((prev) => {
@@ -242,6 +263,11 @@ function App() {
     URL.revokeObjectURL(url)
   }
 
+  const handleExportMonthlyReport = () => {
+    if (!entries.length || !isPro) return
+    exportMonthlyReport(entries, stats, { title: 'Rythm Report' })
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -253,15 +279,26 @@ function App() {
           </div>
         </div>
         {session ? (
-          <button
-            className="ghost icon-button"
-            onClick={handleSignOut}
-            type="button"
-            aria-label="Sign out"
-            title="Sign out"
-          >
-            <LogOut className="icon" aria-hidden="true" />
-          </button>
+          <div className="header-actions">
+            {import.meta.env.DEV ? (
+              <button
+                className="ghost"
+                type="button"
+                onClick={() => setProPreview((value) => !value)}
+              >
+                {isPro ? 'Pro preview on' : 'Pro preview off'}
+              </button>
+            ) : null}
+            <button
+              className="ghost icon-button"
+              onClick={handleSignOut}
+              type="button"
+              aria-label="Sign out"
+              title="Sign out"
+            >
+              <LogOut className="icon" aria-hidden="true" />
+            </button>
+          </div>
         ) : null}
       </header>
 
@@ -341,15 +378,18 @@ function App() {
               sleepHours={sleepHours}
               mood={mood}
               note={note}
+              tags={tags}
               saving={saving}
               saved={saved}
               entriesError={entriesError}
               moodColors={moodColors}
+              isPro={isPro}
               formatLocalDate={formatLocalDate}
               onEntryDateChange={setEntryDate}
               onSleepHoursChange={setSleepHours}
               onMoodChange={setMood}
               onNoteChange={setNote}
+              onTagsChange={setTags}
               onSave={handleSave}
             />
           ) : (
@@ -366,7 +406,15 @@ function App() {
               moodBySleepThreshold={stats.moodBySleepThreshold}
               sleepThreshold={sleepThreshold}
               moodColors={moodColors}
+              trendSeries={stats.trendSeries}
+              rollingSeries={stats.rollingSeries}
+              rollingSummaries={stats.rollingSummaries}
+              personalSleepThreshold={stats.personalSleepThreshold}
+              moodByPersonalThreshold={stats.moodByPersonalThreshold}
+              tagInsights={stats.tagInsights}
+              isPro={isPro}
               onExportCsv={handleExportCsv}
+              onExportMonthlyReport={handleExportMonthlyReport}
             />
           )}
         </>

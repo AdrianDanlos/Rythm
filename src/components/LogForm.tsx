@@ -9,15 +9,18 @@ export type LogFormProps = {
   sleepHours: string
   mood: number | null
   note: string
+  tags: string
   saving: boolean
   saved: boolean
   entriesError: string | null
   moodColors: string[]
+  isPro: boolean
   formatLocalDate: (date: Date) => string
   onEntryDateChange: (value: string) => void
   onSleepHoursChange: (value: string) => void
   onMoodChange: (value: number) => void
   onNoteChange: (value: string) => void
+  onTagsChange: (value: string) => void
   onSave: (event: FormEvent<HTMLFormElement>) => void
 }
 
@@ -28,15 +31,18 @@ export const LogForm = ({
   sleepHours,
   mood,
   note,
+  tags,
   saving,
   saved,
   entriesError,
   moodColors,
+  isPro,
   formatLocalDate,
   onEntryDateChange,
   onSleepHoursChange,
   onMoodChange,
   onNoteChange,
+  onTagsChange,
   onSave,
 }: LogFormProps) => {
   return (
@@ -97,6 +103,21 @@ export const LogForm = ({
             placeholder="Short reflection..."
             maxLength={140}
           />
+        </label>
+        <label className="field">
+          Tags (Pro)
+          <input
+            type="text"
+            value={tags}
+            onChange={(event) => onTagsChange(event.target.value)}
+            placeholder="e.g., exercise, late screens"
+            disabled={!isPro}
+          />
+          <p className="helper">
+            {isPro
+              ? 'Separate tags with commas.'
+              : 'Upgrade to Pro to add tags.'}
+          </p>
         </label>
         {entriesError ? <p className="error">{entriesError}</p> : null}
         <button type="submit" disabled={saving} className="save-button">

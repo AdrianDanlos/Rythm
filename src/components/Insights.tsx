@@ -1,5 +1,10 @@
+import { useState } from 'react'
 import {
+  CartesianGrid,
   Cell,
+  Legend,
+  Line,
+  LineChart,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -15,12 +20,48 @@ type WindowStats = {
   count: number
 }
 
+type TrendPoint = {
+  date: string
+  sleep: number | null
+  mood: number | null
+}
+
+type RollingPoint = {
+  date: string
+  sleep7: number | null
+  sleep30: number | null
+  sleep90: number | null
+  mood7: number | null
+  mood30: number | null
+  mood90: number | null
+}
+
+type RollingSummary = {
+  days: number
+  sleep: number | null
+  mood: number | null
+  sleepDelta: number | null
+  moodDelta: number | null
+}
+
+type TagInsight = {
+  tag: string
+  sleep: number | null
+  mood: number | null
+  count: number
+}
+
 type InsightsProps = {
   entries: Entry[]
   entriesLoading: boolean
   chartData: Entry[]
   averages: { sleep: number | null; mood: number | null }
-  windowAverages: { last7: WindowStats; last30: WindowStats }
+  windowAverages: {
+    last7: WindowStats
+    last30: WindowStats
+    last90: WindowStats
+    last365: WindowStats
+  }
   streak: number
   sleepConsistencyLabel: string | null
   correlationLabel: string | null
@@ -28,7 +69,15 @@ type InsightsProps = {
   moodBySleepThreshold: { high: number | null; low: number | null }
   sleepThreshold: number
   moodColors: string[]
+  trendSeries: { last90: TrendPoint[]; last365: TrendPoint[] }
+  rollingSeries: RollingPoint[]
+  rollingSummaries: RollingSummary[]
+  personalSleepThreshold: number | null
+  moodByPersonalThreshold: { high: number | null; low: number | null }
+  tagInsights: TagInsight[]
+  isPro: boolean
   onExportCsv: () => void
+  onExportMonthlyReport: () => void
 }
 
 export const Insights = ({
@@ -44,7 +93,15 @@ export const Insights = ({
   moodBySleepThreshold,
   sleepThreshold,
   moodColors,
+  trendSeries,
+  rollingSeries,
+  rollingSummaries,
+  personalSleepThreshold,
+  moodByPersonalThreshold,
+  tagInsights,
+  isPro,
   onExportCsv,
+  onExportMonthlyReport,
 }: InsightsProps) => {
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
@@ -52,6 +109,21 @@ export const Insights = ({
     ...entry,
     sleep_hours_clamped: Math.min(10, Math.max(4, Number(entry.sleep_hours))),
   }))
+  const [trendRange, setTrendRange] = useState<'last90' | 'last365'>('last90')
+  const [rollingMetric, setRollingMetric] = useState<'sleep' | 'mood'>('sleep')
+  const trendPoints = trendSeries[trendRange]
+
+  const formatShortDate = (value: string) => {
+    const date = new Date(`${value}T00:00:00`)
+    if (Number.isNaN(date.getTime())) return value
+    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+  }
+
+  const formatLineValue = (value: number | string) => {
+    if (value === null || value === undefined) return '—'
+    const numeric = typeof value === 'number' ? value : Number(value)
+    return Number.isFinite(numeric) ? numeric.toFixed(1) : '—'
+  }
 
   const renderTooltip = ({
     active,
@@ -77,14 +149,25 @@ export const Insights = ({
     <>
       <div className="insights-header">
         <h2>Insights</h2>
-        <button
-          type="button"
-          className="ghost"
-          onClick={onExportCsv}
-          disabled={!entries.length}
-        >
-          Export CSV
-        </button>
+        <div className="insights-actions">
+          <button
+            type="button"
+            className="ghost"
+            onClick={onExportCsv}
+            disabled={!entries.length}
+          >
+            Export CSV
+          </button>
+          <button
+            type="button"
+            className={`ghost ${!isPro ? 'pro-locked-button' : ''}`}
+            onClick={onExportMonthlyReport}
+            disabled={!entries.length || !isPro}
+          >
+            Export Report
+            {!isPro ? <span className="pro-pill">Pro</span> : null}
+          </button>
+        </div>
       </div>
 
       <section className="card stats">
@@ -186,6 +269,238 @@ export const Insights = ({
               <p className="helper">Avg mood split at {sleepThreshold} hours</p>
             </div>
           </>
+        )}
+      </section>
+
+      <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
+        <div className="card-header">
+          <div>
+            <h2>Trend line</h2>
+            <p className="muted">Shows how your average is changing.</p>
+          </div>
+          <div className="toggle-group">
+            <button
+              type="button"
+              className={`ghost ${rollingMetric === 'sleep' ? 'active' : ''}`}
+              onClick={() => setRollingMetric('sleep')}
+            >
+              Sleep
+            </button>
+            <button
+              type="button"
+              className={`ghost ${rollingMetric === 'mood' ? 'active' : ''}`}
+              onClick={() => setRollingMetric('mood')}
+            >
+              Mood
+            </button>
+          </div>
+        </div>
+        {!isPro ? (
+          <p className="muted">Upgrade to Pro to view rolling trend lines.</p>
+        ) : (
+          <>
+            <div className="chart-wrapper">
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={rollingSeries}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={formatShortDate}
+                    interval="preserveStartEnd"
+                  />
+                  <YAxis tickFormatter={formatLineValue} />
+                  <Tooltip formatter={formatLineValue} />
+                  <Legend />
+                  {rollingMetric === 'sleep' ? (
+                    <>
+                      <Line
+                        type="monotone"
+                        dataKey="sleep7"
+                        name="Last 7 days"
+                        stroke="#0f172a"
+                        dot={false}
+                        strokeWidth={2}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="sleep30"
+                        name="Last 30 days"
+                        stroke="#64748b"
+                        dot={false}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="sleep90"
+                        name="Last 90 days"
+                        stroke="#94a3b8"
+                        dot={false}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Line
+                        type="monotone"
+                        dataKey="mood7"
+                        name="Last 7 days"
+                        stroke="#0f172a"
+                        dot={false}
+                        strokeWidth={2}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="mood30"
+                        name="Last 30 days"
+                        stroke="#64748b"
+                        dot={false}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="mood90"
+                        name="Last 90 days"
+                        stroke="#94a3b8"
+                        dot={false}
+                      />
+                    </>
+                  )}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="rolling-grid">
+              {rollingSummaries.map((summary) => (
+                <div className="stat-block" key={summary.days}>
+                  <p className="label">
+                    {summary.days === 7
+                      ? 'Last 7 days'
+                      : summary.days === 30
+                        ? 'Last 30 days'
+                        : 'Last 90 days'}
+                  </p>
+                  <p className="value">
+                    {summary.sleep !== null
+                      ? `${summary.sleep.toFixed(1)}h`
+                      : '—'}{' '}
+                    / {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
+                  </p>
+                  <p className="helper">
+                    Δ {summary.sleepDelta?.toFixed(1) ?? '—'}h · Δ{' '}
+                    {summary.moodDelta?.toFixed(1) ?? '—'}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </section>
+
+      <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
+        <div className="card-header">
+          <div>
+            <h2>90/365-day trends</h2>
+            <p className="muted">Longer history trend lines</p>
+          </div>
+          <div className="toggle-group">
+            <button
+              type="button"
+              className={`ghost ${trendRange === 'last90' ? 'active' : ''}`}
+              onClick={() => setTrendRange('last90')}
+            >
+              90 days
+            </button>
+            <button
+              type="button"
+              className={`ghost ${trendRange === 'last365' ? 'active' : ''}`}
+              onClick={() => setTrendRange('last365')}
+            >
+              365 days
+            </button>
+          </div>
+        </div>
+        {!isPro ? (
+          <p className="muted">Upgrade to Pro for long-range trends.</p>
+        ) : (
+          <div className="chart-wrapper">
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={trendPoints}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={formatShortDate}
+                  interval="preserveStartEnd"
+                />
+                <YAxis yAxisId="left" />
+                <YAxis yAxisId="right" orientation="right" />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="sleep"
+                  name="Sleep"
+                  stroke="#0f172a"
+                  dot={false}
+                  yAxisId="left"
+                />
+                <Line
+                  type="monotone"
+                  dataKey="mood"
+                  name="Mood"
+                  stroke="#22c55e"
+                  dot={false}
+                  yAxisId="right"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </section>
+
+      <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
+        <div className="card-header">
+          <div>
+            <h2>Your sleep threshold</h2>
+            <p className="muted">Personalized sleep target</p>
+          </div>
+        </div>
+        {!isPro ? (
+          <p className="muted">Upgrade to Pro to see your personal threshold.</p>
+        ) : (
+          <div className="stat-block">
+            <p className="label">Estimated threshold</p>
+            <p className="value">
+              {personalSleepThreshold ? `${personalSleepThreshold}h` : '—'}
+            </p>
+            <p className="helper">
+              Avg mood at ≥{personalSleepThreshold ?? '—'}h:{' '}
+              {moodByPersonalThreshold.high?.toFixed(1) ?? '—'} · &lt;
+              {personalSleepThreshold ?? '—'}h:{' '}
+              {moodByPersonalThreshold.low?.toFixed(1) ?? '—'}
+            </p>
+          </div>
+        )}
+      </section>
+
+      <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
+        <div className="card-header">
+          <div>
+            <h2>Tag insights</h2>
+            <p className="muted">Mood and sleep by tag</p>
+          </div>
+        </div>
+        {!isPro ? (
+          <p className="muted">Upgrade to Pro to see tag insights.</p>
+        ) : tagInsights.length ? (
+          <div className="tag-grid">
+            {tagInsights.slice(0, 8).map((tag) => (
+              <div className="tag-card" key={tag.tag}>
+                <p className="tag-title">{tag.tag}</p>
+                <p className="helper">
+                  {tag.count} entries · {tag.sleep?.toFixed(1) ?? '—'}h /{' '}
+                  {tag.mood?.toFixed(1) ?? '—'}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="muted">Add tags to see insights.</p>
         )}
       </section>
 

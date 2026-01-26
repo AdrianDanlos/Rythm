@@ -14,6 +14,12 @@
   gap: 16px;
 }
 
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .app-brand {
   display: flex;
   align-items: center;
@@ -197,6 +203,12 @@
   gap: 12px;
 }
 
+.insights-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .stat-block {
   display: flex;
   flex-direction: column;
@@ -206,6 +218,67 @@
 .stat-block .value {
   margin-top: 2px;
   font-size: 1.1rem;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.toggle-group {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.toggle-group .ghost.active {
+  background: #0f172a;
+  color: #fff;
+  border-color: #0f172a;
+}
+
+.rolling-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.tag-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tag-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #fff;
+}
+
+.tag-title {
+  font-weight: 600;
+}
+
+.pro-pill {
+  margin-left: 6px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #fff;
+  font-size: 0.7rem;
+}
+
+.pro-locked {
+  position: relative;
+  border-style: dashed;
+}
+
+.pro-locked-button {
+  opacity: 0.7;
 }
 
 .stat-divider {
@@ -315,6 +388,14 @@
 
 @media (max-width: 540px) {
   .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .rolling-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tag-grid {
     grid-template-columns: 1fr;
   }
 }
