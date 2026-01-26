@@ -55,8 +55,8 @@ function App() {
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
-  const isPro =
-    Boolean(session?.user?.app_metadata?.is_pro) || Boolean(proPreview)
+  const isPro
+    = Boolean(session?.user?.app_metadata?.is_pro) || Boolean(proPreview)
 
   useEffect(() => {
     window.localStorage.setItem('rythm-pro-preview', String(proPreview))
@@ -75,9 +75,11 @@ function App() {
       try {
         const data = await fetchEntries(userId)
         setEntries(data)
-    } catch {
+      }
+      catch {
         setEntriesError('Unable to load entries.')
-      } finally {
+      }
+      finally {
         setEntriesLoading(false)
       }
     }
@@ -86,7 +88,7 @@ function App() {
   }, [session?.user?.id])
 
   useEffect(() => {
-    const existing = entries.find((item) => item.entry_date === entryDate)
+    const existing = entries.find(item => item.entry_date === entryDate)
     if (existing) {
       setSleepHours(String(existing.sleep_hours))
       setMood(existing.mood)
@@ -103,7 +105,7 @@ function App() {
 
   const chartData = useMemo(
     () =>
-      entries.map((entry) => ({
+      entries.map(entry => ({
         ...entry,
         sleep_hours: Number(entry.sleep_hours),
         mood: Number(entry.mood),
@@ -154,8 +156,8 @@ function App() {
   const parseTags = (value: string) =>
     value
       .split(',')
-      .map((tag) => tag.trim().toLowerCase())
-      .filter((tag) => tag.length)
+      .map(tag => tag.trim().toLowerCase())
+      .filter(tag => tag.length)
 
   const handleAuth = async (event: FormEvent) => {
     event.preventDefault()
@@ -167,11 +169,13 @@ function App() {
         const { error } = await signUp(authEmail, authPassword)
         if (error) throw error
         setAuthMessage('Check your email to confirm your account.')
-      } else {
+      }
+      else {
         const { error } = await signIn(authEmail, authPassword)
         if (error) throw error
       }
-    } catch {
+    }
+    catch {
       setAuthError('Unable to authenticate. Check your details.')
     }
   }
@@ -212,17 +216,19 @@ function App() {
       })
 
       setEntries((prev) => {
-        const filtered = prev.filter((item) => item.entry_date !== entryDate)
+        const filtered = prev.filter(item => item.entry_date !== entryDate)
         return [...filtered, saved].sort((a, b) =>
           a.entry_date.localeCompare(b.entry_date),
         )
       })
       setSaved(true)
       window.setTimeout(() => setSaved(false), 2000)
-    } catch {
+    }
+    catch {
       setEntriesError('Unable to save entry.')
       setSaved(false)
-    } finally {
+    }
+    finally {
       setSaving(false)
     }
   }
@@ -243,7 +249,7 @@ function App() {
 
     const rows = [
       ['date', 'sleep_hours', 'mood', 'note'],
-      ...entries.map((entry) => [
+      ...entries.map(entry => [
         entry.entry_date,
         entry.sleep_hours,
         entry.mood,
@@ -251,7 +257,7 @@ function App() {
       ]),
     ]
 
-    const csv = rows.map((row) => row.map(escapeCsv).join(',')).join('\n')
+    const csv = rows.map(row => row.map(escapeCsv).join(',')).join('\n')
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -279,160 +285,169 @@ function App() {
           </div>
         </div>
         <div className="header-actions">
-         
-            <a
-              href={`mailto:danlosadrian@gmail.com?subject=${encodeURIComponent(
-                'Rythm feedback',
-              )}&body=${encodeURIComponent(
-                'Hi! I would like to share the following feedback:\n\n',
-              )}`}
-              aria-label="Send feedback via email"
-            > <button className="ghost icon-button">  
-              <Mail className="icon" aria-hidden="true" /></button>
-            </a>
-          
-          {session ? (
-            <>
-              {import.meta.env.DEV ? (
-                <button
-                  className="ghost"
-                  type="button"
-                  onClick={() => setProPreview((value) => !value)}
-                >
-                  {isPro ? 'Pro preview on' : 'Pro preview off'}
-                </button>
-              ) : null}
-              <button
-                className="ghost icon-button"
-                onClick={handleSignOut}
-                type="button"
-                aria-label="Sign out"
-                title="Sign out"
-              >
-                <LogOut className="icon" aria-hidden="true" />
-              </button>
-            </>
-          ) : null}
+
+          <a
+            href={`mailto:danlosadrian@gmail.com?subject=${encodeURIComponent(
+              'Rythm feedback',
+            )}&body=${encodeURIComponent(
+              'Hi! I would like to share the following feedback:\n\n',
+            )}`}
+            aria-label="Send feedback via email"
+          >
+            <button className="ghost icon-button">
+              <Mail className="icon" aria-hidden="true" />
+            </button>
+          </a>
+
+          {session
+            ? (
+                <>
+                  {import.meta.env.DEV
+                    ? (
+                        <button
+                          className="ghost"
+                          type="button"
+                          onClick={() => setProPreview(value => !value)}
+                        >
+                          {isPro ? 'Pro preview on' : 'Pro preview off'}
+                        </button>
+                      )
+                    : null}
+                  <button
+                    className="ghost icon-button"
+                    onClick={handleSignOut}
+                    type="button"
+                    aria-label="Sign out"
+                    title="Sign out"
+                  >
+                    <LogOut className="icon" aria-hidden="true" />
+                  </button>
+                </>
+              )
+            : null}
         </div>
       </header>
 
-      {!session ? (
-        <section className="card auth-card">
-          <h2>{authMode === 'signin' ? 'Sign in' : 'Create account'}</h2>
-          <p className="muted">
-            Use email + password to keep your entries private.
-          </p>
-          <form onSubmit={handleAuth} className="stack">
-            <label className="field">
-              Email
-              <input
-                type="email"
-                value={authEmail}
-                onChange={(event) => setAuthEmail(event.target.value)}
-                placeholder="you@email.com"
-                required
-              />
-            </label>
-            <label className="field">
-              Password
-              <input
-                type="password"
-                value={authPassword}
-                onChange={(event) => setAuthPassword(event.target.value)}
-                placeholder="••••••••"
-                required
-              />
-            </label>
-            {authError ? <p className="error">{authError}</p> : null}
-            {authMessage ? <p className="success">{authMessage}</p> : null}
-            <button type="submit" disabled={authLoading}>
-              {authLoading
-                ? 'Working...'
-                : authMode === 'signin'
-                  ? 'Sign in'
-                  : 'Sign up'}
-            </button>
-          </form>
-          <button
-            className="ghost"
-            type="button"
-            onClick={() =>
-              setAuthMode((mode) => (mode === 'signin' ? 'signup' : 'signin'))
-            }
-          >
-            {authMode === 'signin'
-              ? 'Need an account? Sign up'
-              : 'Already have an account? Sign in'}
-          </button>
-        </section>
-      ) : (
-        <>
-          <div className="tabs">
-            <button
-              type="button"
-              className={`tab-button ${activeTab === 'insights' ? 'active' : ''}`}
-              onClick={() => setActiveTab('insights')}
-            >
-              Insights
-            </button>
-            <button
-              type="button"
-              className={`tab-button ${activeTab === 'log' ? 'active' : ''}`}
-              onClick={() => setActiveTab('log')}
-            >
-              Log
-            </button>
-          </div>
+      {!session
+        ? (
+            <section className="card auth-card">
+              <h2>{authMode === 'signin' ? 'Sign in' : 'Create account'}</h2>
+              <p className="muted">
+                Use email + password to keep your entries private.
+              </p>
+              <form onSubmit={handleAuth} className="stack">
+                <label className="field">
+                  Email
+                  <input
+                    type="email"
+                    value={authEmail}
+                    onChange={event => setAuthEmail(event.target.value)}
+                    placeholder="you@email.com"
+                    required
+                  />
+                </label>
+                <label className="field">
+                  Password
+                  <input
+                    type="password"
+                    value={authPassword}
+                    onChange={event => setAuthPassword(event.target.value)}
+                    placeholder="••••••••"
+                    required
+                  />
+                </label>
+                {authError ? <p className="error">{authError}</p> : null}
+                {authMessage ? <p className="success">{authMessage}</p> : null}
+                <button type="submit" disabled={authLoading}>
+                  {authLoading
+                    ? 'Working...'
+                    : authMode === 'signin'
+                      ? 'Sign in'
+                      : 'Sign up'}
+                </button>
+              </form>
+              <button
+                className="ghost"
+                type="button"
+                onClick={() =>
+                  setAuthMode(mode => (mode === 'signin' ? 'signup' : 'signin'))}
+              >
+                {authMode === 'signin'
+                  ? 'Need an account? Sign up'
+                  : 'Already have an account? Sign in'}
+              </button>
+            </section>
+          )
+        : (
+            <>
+              <div className="tabs">
+                <button
+                  type="button"
+                  className={`tab-button ${activeTab === 'insights' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('insights')}
+                >
+                  Insights
+                </button>
+                <button
+                  type="button"
+                  className={`tab-button ${activeTab === 'log' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('log')}
+                >
+                  Log
+                </button>
+              </div>
 
-          {activeTab === 'log' ? (
-            <LogForm
-              selectedDate={selectedDate}
-              todayDate={todayDate}
-              highlightedDates={highlightedDates}
-              sleepHours={sleepHours}
-              mood={mood}
-              note={note}
-              tags={tags}
-              saving={saving}
-              saved={saved}
-              entriesError={entriesError}
-              moodColors={moodColors}
-              isPro={isPro}
-              formatLocalDate={formatLocalDate}
-              onEntryDateChange={setEntryDate}
-              onSleepHoursChange={setSleepHours}
-              onMoodChange={setMood}
-              onNoteChange={setNote}
-              onTagsChange={setTags}
-              onSave={handleSave}
-            />
-          ) : (
-            <Insights
-              entries={entries}
-              entriesLoading={entriesLoading}
-              chartData={chartData}
-              averages={averages}
-              windowAverages={stats.windowAverages}
-              streak={stats.streak}
-              sleepConsistencyLabel={stats.sleepConsistencyLabel}
-              correlationLabel={stats.correlationLabel}
-              correlationDirection={stats.correlationDirection}
-              moodBySleepThreshold={stats.moodBySleepThreshold}
-              sleepThreshold={sleepThreshold}
-              moodColors={moodColors}
-              trendSeries={stats.trendSeries}
-              rollingSeries={stats.rollingSeries}
-              rollingSummaries={stats.rollingSummaries}
-              personalSleepThreshold={stats.personalSleepThreshold}
-              moodByPersonalThreshold={stats.moodByPersonalThreshold}
-              tagInsights={stats.tagInsights}
-              isPro={isPro}
-              onExportCsv={handleExportCsv}
-              onExportMonthlyReport={handleExportMonthlyReport}
-            />
+              {activeTab === 'log'
+                ? (
+                    <LogForm
+                      selectedDate={selectedDate}
+                      todayDate={todayDate}
+                      highlightedDates={highlightedDates}
+                      sleepHours={sleepHours}
+                      mood={mood}
+                      note={note}
+                      tags={tags}
+                      saving={saving}
+                      saved={saved}
+                      entriesError={entriesError}
+                      moodColors={moodColors}
+                      isPro={isPro}
+                      formatLocalDate={formatLocalDate}
+                      onEntryDateChange={setEntryDate}
+                      onSleepHoursChange={setSleepHours}
+                      onMoodChange={setMood}
+                      onNoteChange={setNote}
+                      onTagsChange={setTags}
+                      onSave={handleSave}
+                    />
+                  )
+                : (
+                    <Insights
+                      entries={entries}
+                      entriesLoading={entriesLoading}
+                      chartData={chartData}
+                      averages={averages}
+                      windowAverages={stats.windowAverages}
+                      streak={stats.streak}
+                      sleepConsistencyLabel={stats.sleepConsistencyLabel}
+                      correlationLabel={stats.correlationLabel}
+                      correlationDirection={stats.correlationDirection}
+                      moodBySleepThreshold={stats.moodBySleepThreshold}
+                      sleepThreshold={sleepThreshold}
+                      moodColors={moodColors}
+                      trendSeries={stats.trendSeries}
+                      rollingSeries={stats.rollingSeries}
+                      rollingSummaries={stats.rollingSummaries}
+                      personalSleepThreshold={stats.personalSleepThreshold}
+                      moodByPersonalThreshold={stats.moodByPersonalThreshold}
+                      tagInsights={stats.tagInsights}
+                      isPro={isPro}
+                      onExportCsv={handleExportCsv}
+                      onExportMonthlyReport={handleExportMonthlyReport}
+                    />
+                  )}
+            </>
           )}
-        </>
-      )}
     </div>
   )
 }
