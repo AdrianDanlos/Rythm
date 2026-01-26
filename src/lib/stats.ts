@@ -48,8 +48,8 @@ export type StatsResult = {
   sleepConsistencyLabel: string | null
   correlationLabel: string | null
   correlationDirection: string | null
-  moodBySleepThreshold: { high: number | null; low: number | null }
-  moodByPersonalThreshold: { high: number | null; low: number | null }
+  moodBySleepThreshold: { high: number | null, low: number | null }
+  moodByPersonalThreshold: { high: number | null, low: number | null }
   personalSleepThreshold: number | null
   trendSeries: {
     last30: TrendPoint[]
@@ -80,7 +80,7 @@ export const buildStats = (
     start.setDate(end.getDate() - (days - 1))
 
     const windowEntries = entriesWithDate.filter(
-      (entry) => entry.date >= start && entry.date <= end,
+      entry => entry.date >= start && entry.date <= end,
     )
 
     if (!windowEntries.length) {
@@ -112,7 +112,7 @@ export const buildStats = (
 
   let streak = 0
   if (entriesWithDate.length) {
-    const dateSet = new Set(entriesWithDate.map((entry) => entry.entry_date))
+    const dateSet = new Set(entriesWithDate.map(entry => entry.entry_date))
     const latestDate = entriesWithDate.reduce(
       (max, entry) => (entry.entry_date > max ? entry.entry_date : max),
       entriesWithDate[0].entry_date,
@@ -129,11 +129,11 @@ export const buildStats = (
 
   let sleepConsistencyLabel: string | null = null
   if (entries.length) {
-    const mean =
-      entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0) /
-      entries.length
-    const variance =
-      entries.reduce((sum, entry) => {
+    const mean
+      = entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
+        / entries.length
+    const variance
+      = entries.reduce((sum, entry) => {
         const diff = Number(entry.sleep_hours) - mean
         return sum + diff * diff
       }, 0) / entries.length
@@ -148,11 +148,11 @@ export const buildStats = (
   let correlationLabel: string | null = null
   let correlationDirection: string | null = null
   if (entries.length >= 2) {
-    const meanSleep =
-      entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0) /
-      entries.length
-    const meanMood =
-      entries.reduce((sum, entry) => sum + Number(entry.mood), 0) / entries.length
+    const meanSleep
+      = entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
+        / entries.length
+    const meanMood
+      = entries.reduce((sum, entry) => sum + Number(entry.mood), 0) / entries.length
 
     let numerator = 0
     let sumSleep = 0
@@ -170,8 +170,8 @@ export const buildStats = (
     if (denominator !== 0) {
       const correlation = numerator / denominator
       const magnitude = Math.abs(correlation)
-      correlationLabel =
-        magnitude < 0.2
+      correlationLabel
+        = magnitude < 0.2
           ? 'No clear'
           : magnitude < 0.4
             ? 'Weak'
@@ -216,7 +216,7 @@ export const buildStats = (
     const start = new Date(end)
     start.setDate(end.getDate() - (days - 1))
     const map = new Map(
-      entriesWithDate.map((entry) => [entry.entry_date, entry]),
+      entriesWithDate.map(entry => [entry.entry_date, entry]),
     )
     const points: TrendPoint[] = []
     const cursor = new Date(start)
@@ -242,13 +242,13 @@ export const buildStats = (
   const getWindowAverage = (
     endDate: Date,
     days: number,
-  ): { sleep: number | null; mood: number | null } => {
+  ): { sleep: number | null, mood: number | null } => {
     const end = new Date(endDate)
     end.setHours(0, 0, 0, 0)
     const start = new Date(end)
     start.setDate(end.getDate() - (days - 1))
     const windowEntries = entriesWithDate.filter(
-      (entry) => entry.date >= start && entry.date <= end,
+      entry => entry.date >= start && entry.date <= end,
     )
     if (!windowEntries.length) {
       return { sleep: null, mood: null }
@@ -315,9 +315,9 @@ export const buildStats = (
     const sorted = [...entries].sort((a, b) => b.mood - a.mood)
     const topCount = Math.max(3, Math.ceil(entries.length * 0.3))
     const topEntries = sorted.slice(0, topCount)
-    const avgSleep =
-      topEntries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0) /
-      topEntries.length
+    const avgSleep
+      = topEntries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
+        / topEntries.length
     const rounded = Math.round(avgSleep * 2) / 2
     return Math.min(10, Math.max(4, rounded))
   })()
@@ -328,8 +328,8 @@ export const buildStats = (
     }
     const buckets = entries.reduce(
       (acc, entry) => {
-        const target =
-          Number(entry.sleep_hours) >= personalSleepThreshold ? 'high' : 'low'
+        const target
+          = Number(entry.sleep_hours) >= personalSleepThreshold ? 'high' : 'low'
         acc[target].sum += Number(entry.mood)
         acc[target].count += 1
         return acc
@@ -348,7 +348,7 @@ export const buildStats = (
   const tagInsights = (() => {
     const aggregates = new Map<
       string,
-      { sleepSum: number; moodSum: number; count: number }
+      { sleepSum: number, moodSum: number, count: number }
     >()
     entries.forEach((entry) => {
       const tags = entry.tags ?? []

@@ -4,6 +4,7 @@ import { buildStats } from './lib/stats'
 import { exportMonthlyReport } from './lib/reports'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
+import { PaywallModal } from './components/PaywallModal'
 import { useAuth } from './hooks/useAuth'
 import { LogOut, Mail } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
@@ -49,6 +50,7 @@ function App() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<'log' | 'insights'>('insights')
+  const [isPaywallOpen, setIsPaywallOpen] = useState(false)
   const [proPreview, setProPreview] = useState(() => {
     return window.localStorage.getItem('rythm-pro-preview') === 'true'
   })
@@ -57,6 +59,8 @@ function App() {
   const sleepThreshold = 8
   const isPro
     = Boolean(session?.user?.app_metadata?.is_pro) || Boolean(proPreview)
+  const upgradeUrl = import.meta.env.VITE_UPGRADE_URL as string | undefined
+  const trimmedUpgradeUrl = upgradeUrl?.trim()
 
   useEffect(() => {
     window.localStorage.setItem('rythm-pro-preview', String(proPreview))
@@ -274,6 +278,14 @@ function App() {
     exportMonthlyReport(entries, stats, { title: 'Rythm Report' })
   }
 
+  const handleOpenPaywall = () => {
+    setIsPaywallOpen(true)
+  }
+
+  const handleClosePaywall = () => {
+    setIsPaywallOpen(false)
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -327,6 +339,12 @@ function App() {
             : null}
         </div>
       </header>
+
+      <PaywallModal
+        isOpen={isPaywallOpen}
+        onClose={handleClosePaywall}
+        upgradeUrl={trimmedUpgradeUrl}
+      />
 
       {!session
         ? (
@@ -444,6 +462,7 @@ function App() {
                       isPro={isPro}
                       onExportCsv={handleExportCsv}
                       onExportMonthlyReport={handleExportMonthlyReport}
+                      onOpenPaywall={handleOpenPaywall}
                     />
                   )}
             </>

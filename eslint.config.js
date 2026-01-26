@@ -6,6 +6,8 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
+const STYLISTIC_CONFIG_NAME = 'recommended'
+
 export default defineConfig([
   globalIgnores(['dist']),
   {
@@ -20,7 +22,7 @@ export default defineConfig([
       '@stylistic': stylistic,
     },
     rules: {
-      ...stylistic.configs['recommended-flat'].rules,
+      ...stylistic.configs[STYLISTIC_CONFIG_NAME].rules,
     },
     languageOptions: {
       ecmaVersion: 2020,

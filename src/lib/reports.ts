@@ -43,11 +43,11 @@ export const exportMonthlyReport = (
 
   const getSleepConsistencyLabel = (items: Entry[]) => {
     if (!items.length) return null
-    const mean =
-      items.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0) /
-      items.length
-    const variance =
-      items.reduce((sum, entry) => {
+    const mean
+      = items.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
+        / items.length
+    const variance
+      = items.reduce((sum, entry) => {
         const diff = Number(entry.sleep_hours) - mean
         return sum + diff * diff
       }, 0) / items.length
@@ -60,11 +60,11 @@ export const exportMonthlyReport = (
 
   const getCorrelationLabel = (items: Entry[]) => {
     if (items.length < 2) return null
-    const meanSleep =
-      items.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0) /
-      items.length
-    const meanMood =
-      items.reduce((sum, entry) => sum + Number(entry.mood), 0) / items.length
+    const meanSleep
+      = items.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
+        / items.length
+    const meanMood
+      = items.reduce((sum, entry) => sum + Number(entry.mood), 0) / items.length
 
     let numerator = 0
     let sumSleep = 0
@@ -95,7 +95,7 @@ export const exportMonthlyReport = (
   const buildTagInsights = (items: Entry[]) => {
     const aggregates = new Map<
       string,
-      { sleepSum: number; moodSum: number; count: number }
+      { sleepSum: number, moodSum: number, count: number }
     >()
     items.forEach((entry) => {
       const tags = entry.tags ?? []
@@ -129,22 +129,22 @@ export const exportMonthlyReport = (
 
   const avgSleep = recentEntries.length
     ? recentEntries.reduce(
-        (sum, entry) => sum + Number(entry.sleep_hours),
-        0,
-      ) / recentEntries.length
+      (sum, entry) => sum + Number(entry.sleep_hours),
+      0,
+    ) / recentEntries.length
     : null
   const avgMood = recentEntries.length
-    ? recentEntries.reduce((sum, entry) => sum + Number(entry.mood), 0) /
-      recentEntries.length
+    ? recentEntries.reduce((sum, entry) => sum + Number(entry.mood), 0)
+    / recentEntries.length
     : null
 
   const priorAvgSleep = priorEntries.length
-    ? priorEntries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0) /
-      priorEntries.length
+    ? priorEntries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
+    / priorEntries.length
     : null
   const priorAvgMood = priorEntries.length
-    ? priorEntries.reduce((sum, entry) => sum + Number(entry.mood), 0) /
-      priorEntries.length
+    ? priorEntries.reduce((sum, entry) => sum + Number(entry.mood), 0)
+    / priorEntries.length
     : null
 
   const bestDay = recentEntries.reduce<Entry | null>((best, entry) => {
@@ -152,10 +152,10 @@ export const exportMonthlyReport = (
     return best
   }, null)
 
-  const sleepDelta =
-    avgSleep !== null && priorAvgSleep !== null ? avgSleep - priorAvgSleep : null
-  const moodDelta =
-    avgMood !== null && priorAvgMood !== null ? avgMood - priorAvgMood : null
+  const sleepDelta
+    = avgSleep !== null && priorAvgSleep !== null ? avgSleep - priorAvgSleep : null
+  const moodDelta
+    = avgMood !== null && priorAvgMood !== null ? avgMood - priorAvgMood : null
 
   const doc = new jsPDF()
   let y = 18
@@ -215,7 +215,7 @@ export const exportMonthlyReport = (
     y += 6
     drawBullets(
       monthlyTags.map(
-        (tag) =>
+        tag =>
           `${tag.tag} · ${tag.count} entries · ${tag.mood?.toFixed(1) ?? '—'} mood`,
       ),
       18,
@@ -250,8 +250,8 @@ export const exportMonthlyReport = (
   doc.setFontSize(12)
 
   const allTimeAvgSleep = entries.length
-    ? entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0) /
-      entries.length
+    ? entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
+    / entries.length
     : null
   const allTimeAvgMood = entries.length
     ? entries.reduce((sum, entry) => sum + Number(entry.mood), 0) / entries.length
@@ -280,7 +280,7 @@ export const exportMonthlyReport = (
     y += 6
     drawBullets(
       allTimeTags.map(
-        (tag) =>
+        tag =>
           `${tag.tag} · ${tag.count} entries · ${tag.mood?.toFixed(1) ?? '—'} mood`,
       ),
       18,

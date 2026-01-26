@@ -71,7 +71,7 @@ export const LogForm = ({
             max={12}
             step={0.1}
             value={sleepHours}
-            onChange={(event) => onSleepHoursChange(event.target.value)}
+            onChange={event => onSleepHoursChange(event.target.value)}
             placeholder="0-12"
             required
           />
@@ -79,7 +79,7 @@ export const LogForm = ({
         <div className="field">
           Mood
           <div className="mood-row">
-            {[1, 2, 3, 4, 5].map((value) => (
+            {[1, 2, 3, 4, 5].map(value => (
               <button
                 key={value}
                 type="button"
@@ -97,7 +97,7 @@ export const LogForm = ({
           <input
             type="text"
             value={note}
-            onChange={(event) => onNoteChange(event.target.value)}
+            onChange={event => onNoteChange(event.target.value)}
             placeholder="Short reflection..."
             maxLength={140}
           />
@@ -107,7 +107,7 @@ export const LogForm = ({
           <input
             type="text"
             value={tags}
-            onChange={(event) => onTagsChange(event.target.value)}
+            onChange={event => onTagsChange(event.target.value)}
             placeholder="e.g., exercise, late screens"
             disabled={!isPro}
           />
