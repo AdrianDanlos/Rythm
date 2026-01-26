@@ -370,15 +370,17 @@ export const Insights = ({
                         type="monotone"
                         dataKey="sleep30"
                         name="Last 30 days"
-                        stroke="#64748b"
+                        stroke="#2563eb"
                         dot={false}
+                        strokeWidth={2}
                       />
                       <Line
                         type="monotone"
                         dataKey="sleep90"
                         name="Last 90 days"
-                        stroke="#94a3b8"
+                        stroke="#f97316"
                         dot={false}
+                        strokeWidth={2}
                       />
                     </>
                   ) : (
@@ -395,15 +397,17 @@ export const Insights = ({
                         type="monotone"
                         dataKey="mood30"
                         name="Last 30 days"
-                        stroke="#64748b"
+                        stroke="#2563eb"
                         dot={false}
+                        strokeWidth={2}
                       />
                       <Line
                         type="monotone"
                         dataKey="mood90"
                         name="Last 90 days"
-                        stroke="#94a3b8"
+                        stroke="#f97316"
                         dot={false}
+                        strokeWidth={2}
                       />
                     </>
                   )}
