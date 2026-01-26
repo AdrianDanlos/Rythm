@@ -105,10 +105,29 @@ export const Insights = ({
 }: InsightsProps) => {
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
-  const plottedData = chartData.map((entry) => ({
-    ...entry,
-    sleep_hours_clamped: Math.min(10, Math.max(4, Number(entry.sleep_hours))),
-  }))
+  const jitterFromId = (id: string, scale = 0.18) => {
+    let hash = 0
+    for (let i = 0; i < id.length; i += 1) {
+      hash = (hash << 5) - hash + id.charCodeAt(i)
+      hash |= 0
+    }
+    const normalized = (hash % 1000) / 1000
+    return (normalized - 0.5) * scale
+  }
+
+  const plottedData = chartData.map((entry) => {
+    const sleep = Number(entry.sleep_hours)
+    const mood = Number(entry.mood)
+    const sleepClamped = Math.min(10, Math.max(4, sleep))
+    const moodClamped = Math.min(5, Math.max(1, mood))
+    const jitter = jitterFromId(entry.id)
+    return {
+      ...entry,
+      sleep_hours_clamped: sleepClamped,
+      sleep_hours_jittered: Math.min(10, Math.max(4, sleepClamped + jitter)),
+      mood_jittered: Math.min(5, Math.max(1, moodClamped + jitter / 2)),
+    }
+  })
   const [trendRange, setTrendRange] = useState<'last90' | 'last365'>('last90')
   const [rollingMetric, setRollingMetric] = useState<'sleep' | 'mood'>('sleep')
   const trendPoints = trendSeries[trendRange]
@@ -309,7 +328,16 @@ export const Insights = ({
                     interval="preserveStartEnd"
                   />
                   <YAxis tickFormatter={formatLineValue} />
-                  <Tooltip formatter={formatLineValue} />
+                  <Tooltip
+                    formatter={formatLineValue}
+                    itemSorter={(item) => {
+                      const name = String(item.name ?? '')
+                      if (name.includes('7')) return 1
+                      if (name.includes('30')) return 2
+                      if (name.includes('90')) return 3
+                      return 99
+                    }}
+                  />
                   <Legend />
                   {rollingMetric === 'sleep' ? (
                     <>
@@ -482,7 +510,7 @@ export const Insights = ({
         <div className="card-header">
           <div>
             <h2>Tag insights</h2>
-            <p className="muted">Mood and sleep by tag</p>
+            <p className="muted">Sleep and Mood by tag</p>
           </div>
         </div>
         {!isPro ? (
@@ -525,7 +553,7 @@ export const Insights = ({
               <ScatterChart margin={{ top: 12, right: 12, bottom: 12, left: 5 }}>
                 <XAxis
                   type="number"
-                  dataKey="sleep_hours_clamped"
+                  dataKey="sleep_hours_jittered"
                   domain={[4, 10]}
                   ticks={[4, 5, 6, 7, 8, 9, 10]}
                   tickFormatter={(value) => {
@@ -543,7 +571,7 @@ export const Insights = ({
                 />
                 <YAxis
                   type="number"
-                  dataKey="mood"
+                  dataKey="mood_jittered"
                   domain={[1, 5]}
                   ticks={[1, 2, 3, 4, 5]}
                   label={{
@@ -561,7 +589,7 @@ export const Insights = ({
                     <Cell
                       key={entry.id}
                       fill={moodColors[entry.mood - 1]}
-                      fillOpacity={0.85}
+                      fillOpacity={0.7}
                     />
                   ))}
                 </Scatter>
