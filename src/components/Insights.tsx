@@ -146,6 +146,14 @@ export const Insights = ({
     return Number.isFinite(numeric) ? numeric.toFixed(1) : '—'
   }
 
+  const getDateTickInterval = (pointCount: number, targetTicks = 6) => {
+    if (!pointCount || pointCount <= targetTicks) return 0
+    return Math.max(0, Math.ceil(pointCount / targetTicks) - 1)
+  }
+
+  const rollingTickInterval = getDateTickInterval(rollingSeries.length)
+  const trendTickInterval = getDateTickInterval(trendPoints.length)
+
   const renderTooltip = ({
     active,
     payload,
@@ -332,7 +340,7 @@ export const Insights = ({
                   <XAxis
                     dataKey="date"
                     tickFormatter={formatShortDate}
-                    interval={6}
+                    interval={rollingTickInterval}
                   />
                   <YAxis
                     tickFormatter={formatLineValue}
@@ -420,7 +428,7 @@ export const Insights = ({
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            <div className="rolling-grid">
+            <div className="trend-summary">
               {rollingSummaries.map((summary) => (
                 <div className="stat-block" key={summary.days}>
                   <p className="label">
@@ -437,7 +445,16 @@ export const Insights = ({
                     / {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
                   </p>
                   <p className="helper">
-                    Δ {summary.sleepDelta?.toFixed(1) ?? '—'}h · Δ{' '}
+                    <span className="delta-tooltip" tabIndex={0}>
+                      <span className="delta-tooltip-icon" aria-hidden="true">
+                        i
+                      </span>
+                      Delta
+                      <span className="delta-tooltip-bubble" role="tooltip">
+                        Change versus the prior {summary.days} days.
+                      </span>
+                    </span>
+                    : {summary.sleepDelta?.toFixed(1) ?? '—'}h ·{' '}
                     {summary.moodDelta?.toFixed(1) ?? '—'}
                   </p>
                 </div>
@@ -487,7 +504,7 @@ export const Insights = ({
                 <XAxis
                   dataKey="date"
                   tickFormatter={formatShortDate}
-                  interval={6}
+                  interval={trendTickInterval}
                 />
                 <YAxis yAxisId="left" />
                 <YAxis yAxisId="right" orientation="right" />

@@ -185,9 +185,21 @@
 }
 
 .stats {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  gap: 32px;
+}
+
+.stats::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 50%;
+  width: 1px;
+  background: var(--border);
+  transform: translateX(-0.5px);
 }
 
 .stats-stack {
@@ -220,6 +232,10 @@
   font-size: 1.1rem;
 }
 
+.stats .value{
+  text-align: center;
+}
+
 .card-header {
   display: flex;
   align-items: center;
@@ -239,11 +255,10 @@
   border-color: #0f172a;
 }
 
-.rolling-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 12px;
+.trend-summary {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 24px;
 }
 
 .tag-grid {
@@ -287,6 +302,7 @@
 }
 
 .helper {
+  display: flex;
   margin-top: 4px;
   font-size: 0.8rem;
   color: var(--muted);
@@ -318,7 +334,6 @@
 
 .chart-wrapper {
   width: 100%;
-  height: 260px;
 }
 
 .chart-wrapper.full-bleed {
@@ -391,15 +406,56 @@
   color: var(--muted);
 }
 
+.delta-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: help;
+  outline: none;
+}
+
+.delta-tooltip-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--muted);
+  background: #fff;
+}
+
+.delta-tooltip-bubble {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  color: var(--text);
+  white-space: nowrap;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 2;
+}
+
+.delta-tooltip:hover .delta-tooltip-bubble,
+.delta-tooltip:focus .delta-tooltip-bubble,
+.delta-tooltip:focus-within .delta-tooltip-bubble {
+  opacity: 1;
+  visibility: visible;
+}
+
 @media (max-width: 540px) {
-  .stats {
-    grid-template-columns: 1fr;
-  }
-
-  .rolling-grid {
-    grid-template-columns: 1fr;
-  }
-
   .tag-grid {
     grid-template-columns: 1fr;
   }
