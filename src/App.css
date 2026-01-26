@@ -321,6 +321,11 @@
   height: 260px;
 }
 
+.chart-wrapper.full-bleed {
+  width: calc(100% + 32px);
+  margin: 0 -16px;
+}
+
 .chart-wrapper :focus {
   outline: none;
 }

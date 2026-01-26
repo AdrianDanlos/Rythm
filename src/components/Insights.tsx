@@ -322,14 +322,17 @@ export const Insights = ({
           <p className="muted">Upgrade to Pro to view rolling trend lines.</p>
         ) : (
           <>
-            <div className="chart-wrapper">
+            <div className="chart-wrapper full-bleed">
               <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={rollingSeries}>
+                <LineChart
+                  data={rollingSeries}
+                  margin={{ top: 12, right: 28, bottom: 12, left: -12 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis
                     dataKey="date"
                     tickFormatter={formatShortDate}
-                    interval="preserveStartEnd"
+                    interval={6}
                   />
                   <YAxis
                     tickFormatter={formatLineValue}
@@ -342,7 +345,10 @@ export const Insights = ({
                   />
                   <Tooltip
                     formatter={(value) => {
-                      const formatted = formatLineValue(value ?? '')
+                      const normalized = Array.isArray(value) ? value[0] : value
+                      const formatted = formatLineValue(
+                        normalized ?? '',
+                      )
                       return rollingMetric === 'sleep' && formatted !== '—'
                         ? `${formatted}h`
                         : formatted
@@ -481,7 +487,7 @@ export const Insights = ({
                 <XAxis
                   dataKey="date"
                   tickFormatter={formatShortDate}
-                  interval="preserveStartEnd"
+                  interval={6}
                 />
                 <YAxis yAxisId="left" />
                 <YAxis yAxisId="right" orientation="right" />
