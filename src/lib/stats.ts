@@ -52,6 +52,7 @@ export type StatsResult = {
   moodByPersonalThreshold: { high: number | null; low: number | null }
   personalSleepThreshold: number | null
   trendSeries: {
+    last30: TrendPoint[]
     last90: TrendPoint[]
     last365: TrendPoint[]
   }
@@ -233,6 +234,7 @@ export const buildStats = (
   }
 
   const trendSeries = {
+    last30: buildTrendSeries(30),
     last90: buildTrendSeries(90),
     last365: buildTrendSeries(365),
   }

@@ -69,7 +69,7 @@ type InsightsProps = {
   moodBySleepThreshold: { high: number | null; low: number | null }
   sleepThreshold: number
   moodColors: string[]
-  trendSeries: { last90: TrendPoint[]; last365: TrendPoint[] }
+  trendSeries: { last30: TrendPoint[]; last90: TrendPoint[]; last365: TrendPoint[] }
   rollingSeries: RollingPoint[]
   rollingSummaries: RollingSummary[]
   personalSleepThreshold: number | null
@@ -128,7 +128,9 @@ export const Insights = ({
       mood_jittered: Math.min(5, Math.max(1, moodClamped + jitter / 2)),
     }
   })
-  const [trendRange, setTrendRange] = useState<'last90' | 'last365'>('last90')
+  const [trendRange, setTrendRange] = useState<'last30' | 'last90' | 'last365'>(
+    'last90',
+  )
   const [rollingMetric, setRollingMetric] = useState<'sleep' | 'mood'>('sleep')
   const trendPoints = trendSeries[trendRange]
 
@@ -294,8 +296,10 @@ export const Insights = ({
       <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
         <div className="card-header">
           <div>
-            <h2>Trend line</h2>
-            <p className="muted">Shows how your average is changing.</p>
+            <h2>Smoothed trends</h2>
+            <p className="muted">
+              Rolling averages over 7/30/90 days to show direction.
+            </p>
           </div>
           <div className="toggle-group">
             <button
@@ -327,9 +331,22 @@ export const Insights = ({
                     tickFormatter={formatShortDate}
                     interval="preserveStartEnd"
                   />
-                  <YAxis tickFormatter={formatLineValue} />
+                  <YAxis
+                    tickFormatter={formatLineValue}
+                    domain={
+                      rollingMetric === 'sleep' ? [4, 10] : [1, 5]
+                    }
+                    ticks={
+                      rollingMetric === 'sleep' ? [4, 6, 8, 10] : [1, 2, 3, 4, 5]
+                    }
+                  />
                   <Tooltip
-                    formatter={formatLineValue}
+                    formatter={(value) => {
+                      const formatted = formatLineValue(value ?? '')
+                      return rollingMetric === 'sleep' && formatted !== '—'
+                        ? `${formatted}h`
+                        : formatted
+                    }}
                     itemSorter={(item) => {
                       const name = String(item.name ?? '')
                       if (name.includes('7')) return 1
@@ -423,10 +440,17 @@ export const Insights = ({
       <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
         <div className="card-header">
           <div>
-            <h2>90/365-day trends</h2>
-            <p className="muted">Longer history trend lines</p>
+            <h2>Daily history</h2>
+            <p className="muted">Raw day-by-day values across 30/90/365 days.</p>
           </div>
           <div className="toggle-group">
+            <button
+              type="button"
+              className={`ghost ${trendRange === 'last30' ? 'active' : ''}`}
+              onClick={() => setTrendRange('last30')}
+            >
+              30 days
+            </button>
             <button
               type="button"
               className={`ghost ${trendRange === 'last90' ? 'active' : ''}`}
