@@ -334,7 +334,7 @@ export const Insights = ({
               <ResponsiveContainer width="100%" height={220}>
                 <LineChart
                   data={rollingSeries}
-                  margin={{ top: 12, right: 28, bottom: 12, left: -12 }}
+                  margin={{ top: 12, right: 28, bottom: 0, left: -12 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis
@@ -499,7 +499,7 @@ export const Insights = ({
         ) : (
           <div className="chart-wrapper">
             <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={trendPoints}>
+              <LineChart data={trendPoints} margin={{ top: 12, right: -35, bottom: 0, left: -28 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis
                   dataKey="date"
