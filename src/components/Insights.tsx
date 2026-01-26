@@ -177,7 +177,6 @@ export const Insights = ({
   return (
     <>
       <div className="insights-header">
-        <h2>Insights</h2>
         <div className="insights-actions">
           <button
             type="button"

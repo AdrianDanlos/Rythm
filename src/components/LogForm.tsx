@@ -47,10 +47,8 @@ export const LogForm = ({
 }: LogFormProps) => {
   return (
     <section className="card">
-      <h2>Log today</h2>
       <form onSubmit={onSave} className="stack">
         <div className="field">
-          Date
           <div className="date-picker">
             <DayPicker
               mode="single"

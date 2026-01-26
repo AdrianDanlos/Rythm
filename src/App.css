@@ -91,6 +91,11 @@
   background: #fff;
 }
 
+.date-picker{
+  display: flex;
+  justify-content: center;
+}
+
 .date-picker .rdp {
   --rdp-accent-color: #0f172a;
   --rdp-background-color: #0f172a;
