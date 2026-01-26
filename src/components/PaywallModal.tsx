@@ -5,11 +5,11 @@ type PaywallModalProps = {
 }
 
 const premiumFeatures = [
-  'Export Monthly / Historical Report',
-  'Rolling trends',
-  '90/365-day trends',
-  'Your sleep threshold',
-  'Unlock tag insights',
+  'Export Full Report',
+  'Weekly and Monthly rolling trends',
+  '30/90/365 day history',
+  'Your Personal Sleep Threshold',
+  'Tag insights',
 ]
 
 export const PaywallModal = ({

@@ -437,6 +437,7 @@ function App() {
                       onNoteChange={setNote}
                       onTagsChange={setTags}
                       onSave={handleSave}
+                      onOpenPaywall={handleOpenPaywall}
                     />
                   )
                 : (

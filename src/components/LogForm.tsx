@@ -22,6 +22,7 @@ export type LogFormProps = {
   onNoteChange: (value: string) => void
   onTagsChange: (value: string) => void
   onSave: (event: FormEvent<HTMLFormElement>) => void
+  onOpenPaywall: () => void
 }
 
 export const LogForm = ({
@@ -44,6 +45,7 @@ export const LogForm = ({
   onNoteChange,
   onTagsChange,
   onSave,
+  onOpenPaywall,
 }: LogFormProps) => {
   return (
     <section className="card">
@@ -102,7 +104,14 @@ export const LogForm = ({
             maxLength={140}
           />
         </label>
-        <label className="field">
+        <label
+          className="field"
+          onClick={() => {
+            if (!isPro) {
+              onOpenPaywall()
+            }
+          }}
+        >
           Tags (Pro)
           <input
             type="text"
