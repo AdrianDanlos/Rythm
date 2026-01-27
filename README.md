@@ -4,9 +4,8 @@ This template provides a minimal setup to get React working in Vite with HMR and
 
 ## Environment variables
 
-- `VITE_SUPABASE_URL`: Your Supabase project URL (production)
-- `VITE_SUPABASE_ANON_KEY`: Your Supabase anon key (production)
-- `VITE_SUPABASE_LOCAL_ANON_KEY`: (Optional) Local Supabase anon key for local testing. When running `supabase start`, copy the anon key from the output and set this variable.
+- `VITE_SUPABASE_URL`: Your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase anon key
 - `VITE_UPGRADE_URL`: Link to your checkout/paywall page used by the Pro upgrade CTA (fallback if Edge Function fails).
 
 ## Stripe + Supabase (Edge Functions)
@@ -28,6 +27,17 @@ For local web testing, you can set:
 
 If you add mobile later, replace these with your app’s deep links.
 
+### Supabase projects: dev vs prod
+
+In development, the app also talks to a **remote Supabase project**, not a local Docker instance.
+
+You should normally create **two** Supabase projects:
+
+- `Rythm Dev` Supabase project: used by your local `npm run dev` and test Stripe keys.
+- `Rythm Prod` Supabase project: used by your deployed app and live Stripe keys.
+
+You point the app at the correct project just by changing `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (and the Supabase secrets used by Edge Functions).
+
 ## How payments and Pro work
 
 The Pro upgrade uses two Supabase Edge Functions plus Stripe:
@@ -47,7 +57,7 @@ The Pro upgrade uses two Supabase Edge Functions plus Stripe:
    - Reads `session.metadata.supabase_user_id`.
    - Uses the Supabase **service role** key to set `app_metadata.is_pro = true` for that user.
 
-In development, the app and Edge Functions talk to **local Supabase** (`http://127.0.0.1:54321`) using the publishable/secret keys printed by `supabase start`. In production, they talk to the remote Supabase project using production keys, and Stripe webhooks point at `https://<project-ref>.functions.supabase.co/stripe-webhook`.
+The app and Edge Functions talk to the remote Supabase project. Stripe webhooks point at `https://<project-ref>.functions.supabase.co/stripe-webhook`.
 
 ## Useful CLI commands
 
@@ -60,8 +70,6 @@ In development, the app and Edge Functions talk to **local Supabase** (`http://1
 - **Deploy Edge Functions to the remote project**:
   - `npx supabase functions deploy create-checkout-session`
   - `npx supabase functions deploy stripe-webhook`
-- **(Optional) Serve functions locally**:
-  - `npx supabase functions serve`
 
 ### Supabase secrets (remote project)
 
@@ -73,12 +81,12 @@ In development, the app and Edge Functions talk to **local Supabase** (`http://1
 - **Inspect all secrets**:
   - `npx supabase secrets list`
 
-### Stripe CLI (local webhooks)
+### Stripe webhooks (production)
 
-- **Authenticate Stripe CLI**:
-  - `stripe login`
-- **Forward Stripe webhooks to local Supabase Edge Functions**:
-  - `stripe listen --forward-to http://localhost:54321/functions/v1/stripe-webhook`
+- **Configure webhook in Stripe Dashboard**:
+  - Endpoint URL: `https://<project-ref>.functions.supabase.co/stripe-webhook`
+  - Events: `checkout.session.completed`
+  - Copy the webhook signing secret and set it as `STRIPE_WEBHOOK_SECRET` via `npx supabase secrets set`
 
 ### App development
 
