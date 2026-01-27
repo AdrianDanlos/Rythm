@@ -23,6 +23,7 @@ function App() {
     signIn,
     signUp,
     signOut,
+    refreshSession,
     setAuthError,
   } = useAuth()
 
@@ -52,20 +53,23 @@ function App() {
   const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<'log' | 'insights'>('insights')
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
-  const [proPreview, setProPreview] = useState(() => {
-    return window.localStorage.getItem('rythm-pro-preview') === 'true'
-  })
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
-  const isPro
-    = Boolean(session?.user?.app_metadata?.is_pro) || Boolean(proPreview)
+  const isPro = Boolean(session?.user?.app_metadata?.is_pro)
   const upgradeUrl = import.meta.env.VITE_UPGRADE_URL as string | undefined
   const trimmedUpgradeUrl = upgradeUrl?.trim()
 
   useEffect(() => {
-    window.localStorage.setItem('rythm-pro-preview', String(proPreview))
-  }, [proPreview])
+    const path = window.location.pathname
+    if (path !== '/success' && path !== '/cancel') return
+
+    if (path === '/success') {
+      void refreshSession()
+    }
+
+    window.history.replaceState({}, '', '/')
+  }, [refreshSession])
 
   useEffect(() => {
     const userId = session?.user?.id
@@ -339,17 +343,6 @@ function App() {
           {session
             ? (
                 <>
-                  {import.meta.env.DEV
-                    ? (
-                        <button
-                          className="ghost"
-                          type="button"
-                          onClick={() => setProPreview(value => !value)}
-                        >
-                          {isPro ? 'Pro preview on' : 'Pro preview off'}
-                        </button>
-                      )
-                    : null}
                   <button
                     className="ghost icon-button"
                     onClick={handleSignOut}

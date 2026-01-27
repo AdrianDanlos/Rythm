@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabaseClient'
 
@@ -55,6 +55,15 @@ export const useAuth = () => {
     await supabase.auth.signOut()
   }
 
+  // Updates the session to get Pro Features after payment is successful
+  const refreshSession = useCallback(async () => {
+    const { data, error } = await supabase.auth.refreshSession()
+    if (!error) {
+      setSession(data.session ?? null)
+    }
+    return { session: data.session ?? null, error }
+  }, [])
+
   return {
     session,
     authLoading,
@@ -62,6 +71,7 @@ export const useAuth = () => {
     signIn,
     signUp,
     signOut,
+    refreshSession,
     setAuthError,
   }
 }
