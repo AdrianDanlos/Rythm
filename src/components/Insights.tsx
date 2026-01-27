@@ -170,16 +170,8 @@ export const Insights = ({
     return (
       <div className="tooltip">
         <p>{entry.entry_date}</p>
-        <p>
-          Sleep:
-          {entry.sleep_hours}
-          {' '}
-          hrs
-        </p>
-        <p>
-          Mood:
-          {entry.mood}
-        </p>
+        <p>Sleep: {entry.sleep_hours} hrs</p>
+        <p>Mood: {entry.mood} / 5</p>
         {entry.note ? <p className="tooltip-note">{entry.note}</p> : null}
       </div>
     )
@@ -242,9 +234,7 @@ export const Insights = ({
                 <div>
                   <p className="label">Average mood</p>
                   <p className="value">
-                    {averages.mood !== null ? averages.mood.toFixed(1) : '—'}
-                    {' '}
-                    / 5
+                    {averages.mood !== null ? averages.mood.toFixed(1) : '—'} / 5
                   </p>
                 </div>
               </>
@@ -274,11 +264,7 @@ export const Insights = ({
                       : '—'}
                   </p>
                   <p className="helper">
-                    Sleep avg / Mood avg ·
-                    {' '}
-                    {windowAverages.last7.count}
-                    {' '}
-                    entries
+                    Sleep avg / Mood avg · {windowAverages.last7.count} entries
                   </p>
                 </div>
                 <div className="stat-divider" aria-hidden />
@@ -291,20 +277,14 @@ export const Insights = ({
                       : '—'}
                   </p>
                   <p className="helper">
-                    Sleep avg / Mood avg ·
-                    {' '}
-                    {windowAverages.last30.count}
-                    {' '}
-                    entries
+                    Sleep avg / Mood avg · {windowAverages.last30.count} entries
                   </p>
                 </div>
                 <div className="stat-divider" aria-hidden />
                 <div className="stat-block">
                   <p className="label">Streak</p>
                   <p className="value">
-                    {streak}
-                    {' '}
-                    days
+                    {streak} days
                   </p>
                   <p className="helper">Consecutive days logged</p>
                 </div>
@@ -334,10 +314,7 @@ export const Insights = ({
                       : '—'}
                   </p>
                   <p className="helper">
-                    Avg mood split at
-                    {sleepThreshold}
-                    {' '}
-                    hours
+                    Avg mood split at {sleepThreshold} hours
                   </p>
                 </div>
               </>
@@ -493,11 +470,8 @@ export const Insights = ({
                       <p className="value">
                         {summary.sleep !== null
                           ? `${summary.sleep.toFixed(1)}h`
-                          : '—'}
-                        {' '}
-                        /
-                        {' '}
-                        {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
+                          : '—'}{' '}
+                        / {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
                       </p>
                       <p className="helper">
                         <span className="delta-tooltip" tabIndex={0}>
@@ -506,18 +480,10 @@ export const Insights = ({
                           </span>
                           Delta
                           <span className="delta-tooltip-bubble" role="tooltip">
-                            Change versus the prior
-                            {' '}
-                            {summary.days}
-                            {' '}
-                            days.
+                            Change versus the prior {summary.days} days.
                           </span>
                         </span>
-                        :
-                        {' '}
-                        {summary.sleepDelta?.toFixed(1) ?? '—'}
-                        h ·
-                        {' '}
+                        : {summary.sleepDelta?.toFixed(1) ?? '—'}h ·{' '}
                         {summary.moodDelta?.toFixed(1) ?? '—'}
                       </p>
                     </div>
@@ -627,16 +593,9 @@ export const Insights = ({
                   {personalSleepThreshold ? `${personalSleepThreshold}h` : '—'}
                 </p>
                 <p className="helper">
-                  Avg mood at ≥
-                  {personalSleepThreshold ?? '—'}
-                  h:
-                  {' '}
-                  {moodByPersonalThreshold.high?.toFixed(1) ?? '—'}
-                  {' '}
-                  · &lt;
-                  {personalSleepThreshold ?? '—'}
-                  h:
-                  {' '}
+                  Avg mood at ≥{personalSleepThreshold ?? '—'}h:{' '}
+                  {moodByPersonalThreshold.high?.toFixed(1) ?? '—'} · &lt;
+                  {personalSleepThreshold ?? '—'}h:{' '}
                   {moodByPersonalThreshold.low?.toFixed(1) ?? '—'}
                 </p>
               </div>
@@ -666,12 +625,7 @@ export const Insights = ({
                     <div className="tag-card" key={tag.tag}>
                       <p className="tag-title">{tag.tag}</p>
                       <p className="helper">
-                        {tag.count}
-                        {' '}
-                        entries ·
-                        {tag.sleep?.toFixed(1) ?? '—'}
-                        h /
-                        {' '}
+                        {tag.count} entries · {tag.sleep?.toFixed(1) ?? '—'}h /{' '}
                         {tag.mood?.toFixed(1) ?? '—'}
                       </p>
                     </div>

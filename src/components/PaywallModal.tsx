@@ -88,11 +88,7 @@ export const PaywallModal = ({
         {!canUpgrade
           ? (
               <p className="helper">
-                Set
-                {' '}
-                <code>VITE_UPGRADE_URL</code>
-                {' '}
-                to enable the upgrade link.
+                Set <code>VITE_UPGRADE_URL</code> to enable the upgrade link.
               </p>
             )
           : null}

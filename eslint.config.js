@@ -23,6 +23,7 @@ export default defineConfig([
     },
     rules: {
       ...stylistic.configs[STYLISTIC_CONFIG_NAME].rules,
+      '@stylistic/jsx-one-expression-per-line': 'off',
     },
     languageOptions: {
       ecmaVersion: 2020,
