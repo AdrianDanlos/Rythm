@@ -1,4 +1,7 @@
+import '../types.ts'
+// @ts-expect-error Deno/Edge runtime URL import
 import { serve } from 'https://deno.land/std@0.203.0/http/server.ts'
+// @ts-expect-error Deno/Edge runtime URL import
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2?target=deno'
 
 const corsHeaders = {
@@ -11,9 +14,9 @@ const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 const stripeWebhookSecret = Deno.env.get('STRIPE_WEBHOOK_SECRET')
 
 if (
-  !supabaseUrl ||
-  !supabaseServiceRoleKey ||
-  !stripeWebhookSecret
+  !supabaseUrl
+  || !supabaseServiceRoleKey
+  || !stripeWebhookSecret
 ) {
   throw new Error('Missing required environment variables.')
 }
@@ -33,7 +36,7 @@ serve(async (req) => {
   }
 
   const body = await req.text()
-  let event: { type: string; data: { object: Record<string, unknown> } }
+  let event: { type: string, data: { object: Record<string, unknown> } }
 
   try {
     const signatureParts = signature.split(',').map(part => part.trim())
@@ -44,7 +47,8 @@ serve(async (req) => {
       const [key, value] = part.split('=')
       if (key === 't') {
         timestamp = value ?? null
-      } else if (key === 'v1' && value) {
+      }
+      else if (key === 'v1' && value) {
         signatures.push(value)
       }
     }
@@ -102,7 +106,8 @@ serve(async (req) => {
       type: string
       data: { object: Record<string, unknown> }
     }
-  } catch (error) {
+  }
+  catch (error) {
     return new Response(
       `Webhook signature verification failed. ${
         error instanceof Error ? error.message : ''
@@ -126,8 +131,8 @@ serve(async (req) => {
     }
 
     const currentMetadata = data.user.app_metadata ?? {}
-    const { error: updateError } =
-      await supabaseAdmin.auth.admin.updateUserById(userId, {
+    const { error: updateError }
+      = await supabaseAdmin.auth.admin.updateUserById(userId, {
         app_metadata: { ...currentMetadata, is_pro: true },
       })
 

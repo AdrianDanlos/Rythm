@@ -1,10 +1,4 @@
-// Declare Deno for TypeScript tooling; Supabase Edge runtime provides it at runtime.
-declare const Deno: {
-  env: {
-    get(name: string): string | undefined
-  }
-}
-
+import '../types.ts'
 // @ts-expect-error Deno/Edge runtime URL import
 import { serve } from 'https://deno.land/std@0.203.0/http/server.ts'
 // @ts-expect-error Deno/Edge runtime URL import
