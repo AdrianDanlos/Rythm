@@ -49,6 +49,42 @@ The Pro upgrade uses two Supabase Edge Functions plus Stripe:
 
 In development, the app and Edge Functions talk to **local Supabase** (`http://127.0.0.1:54321`) using the publishable/secret keys printed by `supabase start`. In production, they talk to the remote Supabase project using production keys, and Stripe webhooks point at `https://<project-ref>.functions.supabase.co/stripe-webhook`.
 
+## Useful CLI commands
+
+### Supabase project and functions
+
+- **Authenticate CLI with Supabase**:
+  - `npx supabase login`
+- **Link local folder to your Supabase project**:
+  - `npx supabase link`
+- **Deploy Edge Functions to the remote project**:
+  - `npx supabase functions deploy create-checkout-session`
+  - `npx supabase functions deploy stripe-webhook`
+- **(Optional) Serve functions locally**:
+  - `npx supabase functions serve`
+
+### Supabase secrets (remote project)
+
+- **Set Stripe secrets for Edge Functions**:
+  - `npx supabase secrets set STRIPE_SECRET_KEY=sk_test_...`
+  - `npx supabase secrets set STRIPE_PRICE_ID=price_...`
+  - `npx supabase secrets set STRIPE_SUCCESS_URL=http://localhost:5173/success`
+  - `npx supabase secrets set STRIPE_CANCEL_URL=http://localhost:5173/cancel`
+- **Inspect all secrets**:
+  - `npx supabase secrets list`
+
+### Stripe CLI (local webhooks)
+
+- **Authenticate Stripe CLI**:
+  - `stripe login`
+- **Forward Stripe webhooks to local Supabase Edge Functions**:
+  - `stripe listen --forward-to http://localhost:54321/functions/v1/stripe-webhook`
+
+### App development
+
+- **Run the React app (Vite dev server)**:
+  - `npm run dev`
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
