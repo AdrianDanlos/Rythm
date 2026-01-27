@@ -145,6 +145,14 @@
   gap: 12px;
 }
 
+.oauth-button {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
 .field {
   display: flex;
   flex-direction: column;

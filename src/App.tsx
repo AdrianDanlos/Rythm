@@ -191,6 +191,20 @@ function App() {
     }
   }
 
+  const handleGoogleSignIn = async () => {
+    setAuthError(null)
+    setAuthMessage(null)
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
+      },
+    })
+    if (error) {
+      setAuthError('Unable to start Google sign-in.')
+    }
+  }
+
   const handleSave = async (event: FormEvent) => {
     event.preventDefault()
     if (!session?.user?.id) return
@@ -406,6 +420,13 @@ function App() {
                       : 'Sign up'}
                 </button>
               </form>
+              <button
+                className="ghost oauth-button"
+                type="button"
+                onClick={handleGoogleSignIn}
+              >
+                Continue with Google
+              </button>
               <button
                 className="ghost"
                 type="button"
