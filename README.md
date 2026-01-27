@@ -69,7 +69,7 @@ The app and Edge Functions talk to the remote Supabase project. Stripe webhooks 
   - `npx supabase link`
 - **Deploy Edge Functions to the remote project**:
   - `npx supabase functions deploy create-checkout-session`
-  - `npx supabase functions deploy stripe-webhook`
+  - `npx supabase functions deploy stripe-webhook --no-verify-jwt`
 
 ### Supabase secrets (remote project)
 

@@ -5,6 +5,7 @@ type PaywallModalProps = {
   onClose: () => void
   upgradeUrl?: string
   onUpgrade?: () => Promise<void> | void
+  priceLabel?: string
 }
 
 const premiumFeatures = [
@@ -20,6 +21,7 @@ export const PaywallModal = ({
   onClose,
   upgradeUrl,
   onUpgrade,
+  priceLabel,
 }: PaywallModalProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const canUpgrade = Boolean(onUpgrade || (upgradeUrl && upgradeUrl.trim()))
@@ -64,6 +66,9 @@ export const PaywallModal = ({
             ×
           </button>
         </div>
+        {priceLabel
+          ? <p className="paywall-price">{priceLabel}</p>
+          : null}
         <p className="muted">
           Upgrade to access deeper insights.
         </p>

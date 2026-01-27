@@ -59,6 +59,8 @@ function App() {
   const isPro = Boolean(session?.user?.app_metadata?.is_pro)
   const upgradeUrl = import.meta.env.VITE_UPGRADE_URL as string | undefined
   const trimmedUpgradeUrl = upgradeUrl?.trim()
+  const priceLabel = import.meta.env.VITE_PRO_PRICE_LABEL as string | undefined
+  const trimmedPriceLabel = priceLabel?.trim()
 
   useEffect(() => {
     const path = window.location.pathname
@@ -363,6 +365,7 @@ function App() {
         onClose={handleClosePaywall}
         upgradeUrl={trimmedUpgradeUrl}
         onUpgrade={handleStartCheckout}
+        priceLabel={trimmedPriceLabel}
       />
 
       {!session

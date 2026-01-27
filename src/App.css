@@ -95,6 +95,12 @@
   gap: 12px;
 }
 
+.paywall-price {
+  margin: 8px 0 0;
+  font-weight: 600;
+  color: var(--text);
+}
+
 .modal-actions {
   display: flex;
   flex-wrap: wrap;
