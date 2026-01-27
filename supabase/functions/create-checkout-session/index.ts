@@ -1,5 +1,15 @@
+// Declare Deno for TypeScript tooling; Supabase Edge runtime provides it at runtime.
+declare const Deno: {
+  env: {
+    get(name: string): string | undefined
+  }
+}
+
+// @ts-expect-error Deno/Edge runtime URL import
 import { serve } from 'https://deno.land/std@0.203.0/http/server.ts'
+// @ts-expect-error Deno/Edge runtime URL import
 import Stripe from 'https://esm.sh/stripe@14.21.0?target=deno'
+// @ts-expect-error Deno/Edge runtime URL import
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2?target=deno'
 
 const corsHeaders = {
@@ -15,12 +25,12 @@ const successUrl = Deno.env.get('STRIPE_SUCCESS_URL')
 const cancelUrl = Deno.env.get('STRIPE_CANCEL_URL')
 
 if (
-  !supabaseUrl ||
-  !supabaseAnonKey ||
-  !stripeSecretKey ||
-  !stripePriceId ||
-  !successUrl ||
-  !cancelUrl
+  !supabaseUrl
+  || !supabaseAnonKey
+  || !stripeSecretKey
+  || !stripePriceId
+  || !successUrl
+  || !cancelUrl
 ) {
   throw new Error('Missing required environment variables.')
 }
@@ -56,7 +66,7 @@ serve(async (req) => {
   }
 
   const session = await stripe.checkout.sessions.create({
-    mode: 'payment',
+    mode: 'subscription',
     line_items: [{ price: stripePriceId, quantity: 1 }],
     success_url: successUrl,
     cancel_url: cancelUrl,
