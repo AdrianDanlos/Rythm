@@ -142,6 +142,10 @@ export const Insights = ({
     ? { top: 12, right: 0, bottom: 0, left: -36 }
     : { top: 12, right: 28, bottom: 0, left: -12 }
 
+  const trendChartMargin = isMobile
+    ? { top: 12, right: -42, bottom: 0, left: -36 }
+    : { top: 12, right: -32, bottom: 0, left: -24 }
+
   const rollingLegendSorter = (item: LegendPayload) => {
     const label = String(item.dataKey ?? item.value ?? '')
     if (label.includes('7')) return 1
@@ -519,7 +523,7 @@ export const Insights = ({
           : (
               <div className="chart-wrapper">
                 <ResponsiveContainer width="100%" height={220}>
-                  <LineChart data={trendPoints} margin={{ top: 12, right: -35, bottom: 0, left: -28 }}>
+                  <LineChart data={trendPoints} margin={trendChartMargin}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis
                       dataKey="date"
