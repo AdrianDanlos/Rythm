@@ -35,6 +35,33 @@ export type StatsResult = {
   tagInsights: TagInsight[]
 }
 
+export const buildWeeklyTrendSeries = (points: TrendPoint[]): TrendPoint[] => {
+  if (!points.length) return []
+  const bucketSize = 7
+  const weekly: TrendPoint[] = []
+  for (let i = 0; i < points.length; i += bucketSize) {
+    const slice = points.slice(i, i + bucketSize)
+    const sleepValues = slice
+      .map(point => point.sleep)
+      .filter((value): value is number => typeof value === 'number')
+    const moodValues = slice
+      .map(point => point.mood)
+      .filter((value): value is number => typeof value === 'number')
+    const sleepAvg = sleepValues.length
+      ? sleepValues.reduce((sum, value) => sum + value, 0) / sleepValues.length
+      : null
+    const moodAvg = moodValues.length
+      ? moodValues.reduce((sum, value) => sum + value, 0) / moodValues.length
+      : null
+    weekly.push({
+      date: slice[0]?.date ?? '',
+      sleep: sleepAvg,
+      mood: moodAvg,
+    })
+  }
+  return weekly
+}
+
 export const buildStats = (
   entries: Entry[],
   sleepThreshold: number,

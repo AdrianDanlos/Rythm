@@ -22,6 +22,7 @@ import type {
   TrendPoint,
   WindowStats,
 } from '../lib/types/stats'
+import { buildWeeklyTrendSeries } from '../lib/stats'
 import { formatShortDate } from '../lib/utils/dateFormatters'
 import { Tooltip } from './Tooltip'
 
@@ -108,6 +109,7 @@ export const Insights = ({
   const [trendRange, setTrendRange] = useState<'last30' | 'last90' | 'last365'>(
     'last90',
   )
+  const [trendGranularity, setTrendGranularity] = useState<'daily' | 'weekly'>('daily')
   const [rollingMetric, setRollingMetric] = useState<'sleep' | 'mood'>('sleep')
   const [isMobile, setIsMobile] = useState(false)
 
@@ -126,6 +128,12 @@ export const Insights = ({
     return () => media.removeListener(handleChange)
   }, [])
   const trendPoints = trendSeries[trendRange]
+  const weeklyTrendPoints = trendRange === 'last365'
+    ? buildWeeklyTrendSeries(trendSeries.last365)
+    : []
+  const trendDisplayPoints = isMobile && trendRange === 'last365' && trendGranularity === 'weekly'
+    ? weeklyTrendPoints
+    : trendPoints
 
   const formatLineValue = (value: number | string) => {
     if (value === null || value === undefined) return '—'
@@ -166,7 +174,13 @@ export const Insights = ({
   }
 
   const rollingTickInterval = getDateTickInterval(rollingSeries.length)
-  const trendTickInterval = getDateTickInterval(trendPoints.length)
+  const trendTickInterval = getDateTickInterval(trendDisplayPoints.length)
+
+  const mobileTickProps = isMobile
+    ? { angle: -35, textAnchor: 'end' as const, dy: 6, fontSize: 11 }
+    : undefined
+
+  const legendWrapperStyle = isMobile ? { paddingTop: 12 } : undefined
 
   const renderTooltip = ({
     active,
@@ -356,7 +370,9 @@ export const Insights = ({
                       <XAxis
                         dataKey="date"
                         tickFormatter={formatShortDate}
-                        interval={rollingTickInterval}
+                        interval={isMobile ? Math.max(rollingTickInterval, 1) : rollingTickInterval}
+                        tick={mobileTickProps}
+                        height={isMobile ? 36 : 30}
                       />
                       <YAxis
                         tickFormatter={formatAxisValue}
@@ -385,7 +401,7 @@ export const Insights = ({
                           return 99
                         }}
                       />
-                      <Legend itemSorter={rollingLegendSorter} />
+                      <Legend itemSorter={rollingLegendSorter} wrapperStyle={legendWrapperStyle} />
                       {rollingMetric === 'sleep'
                         ? (
                             <>
@@ -491,25 +507,54 @@ export const Insights = ({
             <button
               type="button"
               className={`ghost ${trendRange === 'last30' ? 'active' : ''}`}
-              onClick={() => handleProAction(() => setTrendRange('last30'))}
+              onClick={() => handleProAction(() => {
+                setTrendRange('last30')
+                setTrendGranularity('daily')
+              })}
             >
               30 days
             </button>
             <button
               type="button"
               className={`ghost ${trendRange === 'last90' ? 'active' : ''}`}
-              onClick={() => handleProAction(() => setTrendRange('last90'))}
+              onClick={() => handleProAction(() => {
+                setTrendRange('last90')
+                setTrendGranularity('daily')
+              })}
             >
               90 days
             </button>
             <button
               type="button"
               className={`ghost ${trendRange === 'last365' ? 'active' : ''}`}
-              onClick={() => handleProAction(() => setTrendRange('last365'))}
+              onClick={() => handleProAction(() => {
+                setTrendRange('last365')
+                setTrendGranularity(isMobile ? 'weekly' : 'daily')
+              })}
             >
               365 days
             </button>
           </div>
+          {isMobile && trendRange === 'last365'
+            ? (
+                <div className="toggle-group">
+                  <button
+                    type="button"
+                    className={`ghost ${trendGranularity === 'weekly' ? 'active' : ''}`}
+                    onClick={() => handleProAction(() => setTrendGranularity('weekly'))}
+                  >
+                    Weekly
+                  </button>
+                  <button
+                    type="button"
+                    className={`ghost ${trendGranularity === 'daily' ? 'active' : ''}`}
+                    onClick={() => handleProAction(() => setTrendGranularity('daily'))}
+                  >
+                    Daily
+                  </button>
+                </div>
+              )
+            : null}
         </div>
         {!isPro
           ? (
@@ -523,17 +568,30 @@ export const Insights = ({
           : (
               <div className="chart-wrapper">
                 <ResponsiveContainer width="100%" height={220}>
-                  <LineChart data={trendPoints} margin={trendChartMargin}>
+                  <LineChart data={trendDisplayPoints} margin={trendChartMargin}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis
                       dataKey="date"
                       tickFormatter={formatShortDate}
-                      interval={trendTickInterval}
+                      interval={isMobile ? Math.max(trendTickInterval, 1) : trendTickInterval}
+                      tick={mobileTickProps}
+                      height={isMobile ? 36 : 30}
                     />
-                    <YAxis yAxisId="left" />
-                    <YAxis yAxisId="right" orientation="right" />
+                    <YAxis
+                      yAxisId="left"
+                      domain={[4, 10]}
+                      ticks={[2, 4, 6, 8, 10]}
+                      tickFormatter={formatAxisValue}
+                    />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      domain={[1, 5]}
+                      ticks={[1, 2, 3, 4, 5]}
+                      tickFormatter={formatAxisValue}
+                    />
                     <RechartsTooltip />
-                    <Legend />
+                    <Legend wrapperStyle={legendWrapperStyle} />
                     <Line
                       type="monotone"
                       dataKey="sleep"
