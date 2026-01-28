@@ -5,7 +5,6 @@ type FeedbackModalProps = {
   isOpen: boolean
   onClose: () => void
   userEmail: string | null
-  userId: string | null
 }
 
 type FeedbackStatus = {
@@ -17,7 +16,6 @@ export const FeedbackModal = ({
   isOpen,
   onClose,
   userEmail,
-  userId,
 }: FeedbackModalProps) => {
   const [message, setMessage] = useState('')
   const [status, setStatus] = useState<FeedbackStatus | null>(null)
@@ -57,9 +55,7 @@ export const FeedbackModal = ({
     setStatus(null)
     try {
       await createFeedback({
-        email: userEmail,
         message: trimmedMessage,
-        userId,
       })
       setStatus({
         type: 'success',

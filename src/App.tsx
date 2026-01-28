@@ -348,7 +348,6 @@ function App() {
         isOpen={isFeedbackOpen}
         onClose={handleCloseFeedback}
         userEmail={session?.user?.email ?? null}
-        userId={session?.user?.id ?? null}
       />
 
       {!session

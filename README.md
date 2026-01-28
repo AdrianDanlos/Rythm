@@ -8,7 +8,7 @@
 
 ## Feedback collection
 
-The feedback modal inserts rows into a Supabase `feedback` table. Suggested schema:
+The feedback modal calls a Supabase Edge Function that inserts rows into a `feedback` table and emails the feedback. Suggested schema:
 
 ```sql
 create table if not exists feedback (
@@ -47,7 +47,17 @@ Required environment variables for the Stripe flow:
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 
+Required environment variables for feedback email:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `RESEND_API_KEY`
+- `FEEDBACK_FROM_EMAIL`
+- `FEEDBACK_TO_EMAIL` (defaults to `danlosadrian@gmail.com`)
+
 For local web testing, you can set:
+
 - `STRIPE_SUCCESS_URL=http://localhost:5173/success`
 - `STRIPE_CANCEL_URL=http://localhost:5173/cancel`
 
@@ -95,6 +105,7 @@ The app and Edge Functions talk to the remote Supabase project. Stripe webhooks 
   - `npx supabase link`
 - **Deploy Edge Functions to the remote project**:
   - `npx supabase functions deploy create-checkout-session`
+  - `npx supabase functions deploy submit-feedback --no-verify-jwt`
   - `npx supabase functions deploy stripe-webhook --no-verify-jwt`
 
 ### Supabase secrets (remote project)
