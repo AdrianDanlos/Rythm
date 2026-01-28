@@ -5,6 +5,7 @@ import {
   Legend,
   Line,
   LineChart,
+  type LegendPayload,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -140,6 +141,14 @@ export const Insights = ({
   const smoothedChartMargin = isMobile
     ? { top: 12, right: 0, bottom: 0, left: -36 }
     : { top: 12, right: 28, bottom: 0, left: -12 }
+
+  const rollingLegendSorter = (item: LegendPayload) => {
+    const label = String(item.dataKey ?? item.value ?? '')
+    if (label.includes('7')) return 1
+    if (label.includes('30')) return 2
+    if (label.includes('90')) return 3
+    return 99
+  }
 
   const formatDeltaValue = (value: number | null) => {
     if (value === null || !Number.isFinite(value)) return '—'
@@ -372,7 +381,7 @@ export const Insights = ({
                           return 99
                         }}
                       />
-                      <Legend />
+                      <Legend itemSorter={rollingLegendSorter} />
                       {rollingMetric === 'sleep'
                         ? (
                             <>
