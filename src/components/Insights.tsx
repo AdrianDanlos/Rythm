@@ -160,28 +160,6 @@ export const Insights = ({
 
   return (
     <>
-      <div className="insights-header">
-        <div className="insights-actions">
-          <button
-            type="button"
-            className="ghost"
-            onClick={onExportCsv}
-            disabled={!entries.length}
-          >
-            Export CSV
-          </button>
-          <button
-            type="button"
-            className={`ghost ${!isPro ? 'pro-locked-button' : ''}`}
-            onClick={() => handleProAction(onExportMonthlyReport)}
-            disabled={exportReportDisabled}
-          >
-            Export Report
-            {!isPro ? <span className="pro-pill">Pro</span> : null}
-          </button>
-        </div>
-      </div>
-
       <section className="card stats">
         {isLoading
           ? (
@@ -299,7 +277,7 @@ export const Insights = ({
           <div>
             <h2>Smoothed trends</h2>
             <p className="muted">
-              Rolling averages over 7/30/90 days to show direction.
+              Rolling averages over 7/30/90 days to show direction
             </p>
           </div>
           <div className="toggle-group">
@@ -469,7 +447,7 @@ export const Insights = ({
         <div className="card-header">
           <div>
             <h2>Daily history</h2>
-            <p className="muted">Raw day-by-day values across 30/90/365 days.</p>
+            <p className="muted">Raw day-by-day values across 30/90/365 days</p>
           </div>
           <div className="toggle-group">
             <button
@@ -678,6 +656,36 @@ export const Insights = ({
                   </ResponsiveContainer>
                 </div>
               )}
+      </section>
+
+      <section className="card insights-export">
+        <div className="insights-header">
+          <div className="insights-title">
+            <p className="eyebrow">Export data</p>
+            <p className="muted">Export insights to share or analyze</p>
+          </div>
+          <div className="insights-actions" aria-label="Export data">
+            <div className="insights-actions-buttons">
+              <button
+                type="button"
+                className="ghost"
+                onClick={onExportCsv}
+                disabled={!entries.length}
+              >
+                Export CSV
+              </button>
+              <button
+                type="button"
+                className={`ghost ${!isPro ? 'pro-locked-button' : ''}`}
+                onClick={() => handleProAction(onExportMonthlyReport)}
+                disabled={exportReportDisabled}
+              >
+                Export Report
+                {!isPro ? <span className="pro-pill">Pro</span> : null}
+              </button>
+            </div>
+          </div>
+        </div>
       </section>
     </>
   )
