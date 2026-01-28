@@ -2,6 +2,11 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { fetchEntries, type Entry, upsertEntry } from './lib/entries'
 import { buildStats } from './lib/stats'
 import { exportMonthlyReport } from './lib/reports'
+import { exportEntriesCsv } from './lib/utils/csvExport'
+import { formatLocalDate } from './lib/utils/dateFormatters'
+import { calculateAverages } from './lib/utils/averages'
+import { parseTags } from './lib/utils/stringUtils'
+import { AuthForm } from './components/AuthForm'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
 import { PaywallModal } from './components/PaywallModal'
@@ -9,7 +14,6 @@ import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
 import { LogOut, Mail } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
-import googleLogo from './assets/google-logo.png'
 import './App.css'
 
 function App() {
@@ -31,13 +35,6 @@ function App() {
   const [entries, setEntries] = useState<Entry[]>([])
   const [entriesLoading, setEntriesLoading] = useState(false)
   const [entriesError, setEntriesError] = useState<string | null>(null)
-
-  const formatLocalDate = (date: Date) => {
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    return `${year}-${month}-${day}`
-  }
 
   const todayDate = useMemo(() => {
     const date = new Date()
@@ -125,25 +122,7 @@ function App() {
     [entries],
   )
 
-  const averages = useMemo(() => {
-    if (!entries.length) {
-      return { sleep: null, mood: null }
-    }
-
-    const totals = entries.reduce(
-      (acc, entry) => {
-        acc.sleep += Number(entry.sleep_hours)
-        acc.mood += Number(entry.mood)
-        return acc
-      },
-      { sleep: 0, mood: 0 },
-    )
-
-    return {
-      sleep: totals.sleep / entries.length,
-      mood: totals.mood / entries.length,
-    }
-  }, [entries])
+  const averages = useMemo(() => calculateAverages(entries), [entries])
 
   const highlightedDates = useMemo(() => {
     const uniqueDates = new Map<string, Date>()
@@ -164,12 +143,6 @@ function App() {
     () => buildStats(entries, sleepThreshold, formatLocalDate),
     [entries, sleepThreshold],
   )
-
-  const parseTags = (value: string) =>
-    value
-      .split(',')
-      .map(tag => tag.trim().toLowerCase())
-      .filter(tag => tag.length)
 
   const handleAuth = async (event: FormEvent) => {
     event.preventDefault()
@@ -264,35 +237,7 @@ function App() {
   }
 
   const handleExportCsv = () => {
-    if (!entries.length) return
-    const escapeCsv = (value: string | number | null) => {
-      const stringValue = value === null ? '' : String(value)
-      if (/[",\n]/.test(stringValue)) {
-        return `"${stringValue.replace(/"/g, '""')}"`
-      }
-      return stringValue
-    }
-
-    const rows = [
-      ['date', 'sleep_hours', 'mood', 'note'],
-      ...entries.map(entry => [
-        entry.entry_date,
-        entry.sleep_hours,
-        entry.mood,
-        entry.note ?? '',
-      ]),
-    ]
-
-    const csv = rows.map(row => row.map(escapeCsv).join(',')).join('\n')
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'rythm-entries.csv'
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-    URL.revokeObjectURL(url)
+    exportEntriesCsv(entries)
   }
 
   const handleExportMonthlyReport = () => {
@@ -385,60 +330,20 @@ function App() {
 
       {!session
         ? (
-            <section className="card auth-card">
-              <h2 className="auth-title">
-                {authMode === 'signin' ? 'Sign in' : 'Create account'}
-              </h2>
-              <form onSubmit={handleAuth} className="stack">
-                <label className="field">
-                  Email
-                  <input
-                    type="email"
-                    value={authEmail}
-                    onChange={event => setAuthEmail(event.target.value)}
-                    placeholder="you@email.com"
-                    required
-                  />
-                </label>
-                <label className="field">
-                  Password
-                  <input
-                    type="password"
-                    value={authPassword}
-                    onChange={event => setAuthPassword(event.target.value)}
-                    placeholder="••••••••"
-                    required
-                  />
-                </label>
-                {authError ? <p className="error">{authError}</p> : null}
-                {authMessage ? <p className="success">{authMessage}</p> : null}
-                <button type="submit" disabled={authLoading}>
-                  {authLoading
-                    ? 'Working...'
-                    : authMode === 'signin'
-                      ? 'Sign in'
-                      : 'Sign up'}
-                </button>
-              </form>
-              <button
-                className="ghost oauth-button"
-                type="button"
-                onClick={handleGoogleSignIn}
-              >
-                <img className="oauth-logo" src={googleLogo} alt="Google logo" />
-                Continue with Google
-              </button>
-              <button
-                className="ghost auth-toggle"
-                type="button"
-                onClick={() =>
-                  setAuthMode(mode => (mode === 'signin' ? 'signup' : 'signin'))}
-              >
-                {authMode === 'signin'
-                  ? 'Need an account? Sign up'
-                  : 'Already have an account? Sign in'}
-              </button>
-            </section>
+            <AuthForm
+              authMode={authMode}
+              authEmail={authEmail}
+              authPassword={authPassword}
+              authLoading={authLoading}
+              authError={authError}
+              authMessage={authMessage}
+              onEmailChange={setAuthEmail}
+              onPasswordChange={setAuthPassword}
+              onSubmit={handleAuth}
+              onGoogleSignIn={handleGoogleSignIn}
+              onToggleMode={() =>
+                setAuthMode(mode => (mode === 'signin' ? 'signup' : 'signin'))}
+            />
           )
         : (
             <>

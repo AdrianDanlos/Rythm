@@ -1,41 +1,15 @@
 import type { Entry } from './entries'
-
-type WindowStats = {
-  sleep: number | null
-  mood: number | null
-  count: number
-}
-
-type TrendPoint = {
-  date: string
-  sleep: number | null
-  mood: number | null
-}
-
-type RollingPoint = {
-  date: string
-  sleep7: number | null
-  sleep30: number | null
-  sleep90: number | null
-  mood7: number | null
-  mood30: number | null
-  mood90: number | null
-}
-
-type RollingSummary = {
-  days: number
-  sleep: number | null
-  mood: number | null
-  sleepDelta: number | null
-  moodDelta: number | null
-}
-
-type TagInsight = {
-  tag: string
-  sleep: number | null
-  mood: number | null
-  count: number
-}
+import type {
+  RollingPoint,
+  RollingSummary,
+  TagInsight,
+  TrendPoint,
+  WindowStats,
+} from './types/stats'
+import { calculateAverages } from './utils/averages'
+import { getCorrelationInsight } from './utils/correlation'
+import { getSleepConsistencyLabel } from './utils/sleepConsistency'
+import { buildTagInsights } from './utils/tagInsights'
 
 export type StatsResult = {
   windowAverages: {
@@ -83,24 +57,7 @@ export const buildStats = (
       entry => entry.date >= start && entry.date <= end,
     )
 
-    if (!windowEntries.length) {
-      return { sleep: null, mood: null, count: 0 }
-    }
-
-    const totals = windowEntries.reduce(
-      (acc, entry) => {
-        acc.sleep += Number(entry.sleep_hours)
-        acc.mood += Number(entry.mood)
-        return acc
-      },
-      { sleep: 0, mood: 0 },
-    )
-
-    return {
-      sleep: totals.sleep / windowEntries.length,
-      mood: totals.mood / windowEntries.length,
-      count: windowEntries.length,
-    }
+    return calculateAverages(windowEntries)
   }
 
   const windowAverages = {
@@ -127,64 +84,11 @@ export const buildStats = (
     }
   }
 
-  let sleepConsistencyLabel: string | null = null
-  if (entries.length) {
-    const mean
-      = entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
-        / entries.length
-    const variance
-      = entries.reduce((sum, entry) => {
-        const diff = Number(entry.sleep_hours) - mean
-        return sum + diff * diff
-      }, 0) / entries.length
-    const sleepConsistency = Math.sqrt(variance)
-
-    if (sleepConsistency <= 0.9) sleepConsistencyLabel = 'Very consistent'
-    else if (sleepConsistency <= 2.0) sleepConsistencyLabel = 'Consistent'
-    else if (sleepConsistency <= 3.5) sleepConsistencyLabel = 'Mixed'
-    else sleepConsistencyLabel = 'Unstable'
-  }
-
-  let correlationLabel: string | null = null
-  let correlationDirection: string | null = null
-  if (entries.length >= 2) {
-    const meanSleep
-      = entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
-        / entries.length
-    const meanMood
-      = entries.reduce((sum, entry) => sum + Number(entry.mood), 0) / entries.length
-
-    let numerator = 0
-    let sumSleep = 0
-    let sumMood = 0
-
-    entries.forEach((entry) => {
-      const sleepDelta = Number(entry.sleep_hours) - meanSleep
-      const moodDelta = Number(entry.mood) - meanMood
-      numerator += sleepDelta * moodDelta
-      sumSleep += sleepDelta * sleepDelta
-      sumMood += moodDelta * moodDelta
-    })
-
-    const denominator = Math.sqrt(sumSleep * sumMood)
-    if (denominator !== 0) {
-      const correlation = numerator / denominator
-      const magnitude = Math.abs(correlation)
-      correlationLabel
-        = magnitude < 0.2
-          ? 'No clear'
-          : magnitude < 0.4
-            ? 'Weak'
-            : magnitude < 0.7
-              ? 'Moderate'
-              : 'Strong'
-
-      if (correlation > 0.05) correlationDirection = 'Higher sleep, better mood'
-      else if (correlation < -0.05)
-        correlationDirection = 'Higher sleep, lower mood'
-      else correlationDirection = 'No clear direction'
-    }
-  }
+  const sleepConsistencyLabel = getSleepConsistencyLabel(entries)
+  const {
+    label: correlationLabel,
+    direction: correlationDirection,
+  } = getCorrelationInsight(entries)
 
   let moodBySleepThreshold = { high: null, low: null } as {
     high: number | null
@@ -250,21 +154,8 @@ export const buildStats = (
     const windowEntries = entriesWithDate.filter(
       entry => entry.date >= start && entry.date <= end,
     )
-    if (!windowEntries.length) {
-      return { sleep: null, mood: null }
-    }
-    const totals = windowEntries.reduce(
-      (acc, entry) => {
-        acc.sleep += Number(entry.sleep_hours)
-        acc.mood += Number(entry.mood)
-        return acc
-      },
-      { sleep: 0, mood: 0 },
-    )
-    return {
-      sleep: totals.sleep / windowEntries.length,
-      mood: totals.mood / windowEntries.length,
-    }
+    const averages = calculateAverages(windowEntries)
+    return { sleep: averages.sleep, mood: averages.mood }
   }
 
   const rollingSeries = (() => {
@@ -345,36 +236,7 @@ export const buildStats = (
     }
   })()
 
-  const tagInsights = (() => {
-    const aggregates = new Map<
-      string,
-      { sleepSum: number, moodSum: number, count: number }
-    >()
-    entries.forEach((entry) => {
-      const tags = entry.tags ?? []
-      tags.forEach((tag) => {
-        const key = tag.trim()
-        if (!key) return
-        const current = aggregates.get(key) ?? {
-          sleepSum: 0,
-          moodSum: 0,
-          count: 0,
-        }
-        current.sleepSum += Number(entry.sleep_hours)
-        current.moodSum += Number(entry.mood)
-        current.count += 1
-        aggregates.set(key, current)
-      })
-    })
-    return Array.from(aggregates.entries())
-      .map(([tag, data]) => ({
-        tag,
-        sleep: data.count ? data.sleepSum / data.count : null,
-        mood: data.count ? data.moodSum / data.count : null,
-        count: data.count,
-      }))
-      .sort((a, b) => b.count - a.count)
-  })()
+  const tagInsights = buildTagInsights(entries)
 
   return {
     windowAverages,

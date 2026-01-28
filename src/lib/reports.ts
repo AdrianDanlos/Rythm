@@ -1,13 +1,11 @@
 import { jsPDF } from 'jspdf'
 import type { Entry } from './entries'
 import type { StatsResult } from './stats'
-
-const formatDate = (date: Date) =>
-  date.toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
+import { calculateAverages } from './utils/averages'
+import { getCorrelationInsight } from './utils/correlation'
+import { formatLongDate } from './utils/dateFormatters'
+import { getSleepConsistencyLabel } from './utils/sleepConsistency'
+import { buildTagInsights } from './utils/tagInsights'
 
 type ReportOptions = {
   rangeDays?: number
@@ -41,111 +39,17 @@ export const exportMonthlyReport = (
     return date >= priorStart && date <= priorEnd
   })
 
-  const getSleepConsistencyLabel = (items: Entry[]) => {
-    if (!items.length) return null
-    const mean
-      = items.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
-        / items.length
-    const variance
-      = items.reduce((sum, entry) => {
-        const diff = Number(entry.sleep_hours) - mean
-        return sum + diff * diff
-      }, 0) / items.length
-    const sleepConsistency = Math.sqrt(variance)
-    if (sleepConsistency <= 0.9) return 'Very consistent'
-    if (sleepConsistency <= 2.0) return 'Consistent'
-    if (sleepConsistency <= 3.5) return 'Mixed'
-    return 'Unstable'
-  }
-
-  const getCorrelationLabel = (items: Entry[]) => {
-    if (items.length < 2) return null
-    const meanSleep
-      = items.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
-        / items.length
-    const meanMood
-      = items.reduce((sum, entry) => sum + Number(entry.mood), 0) / items.length
-
-    let numerator = 0
-    let sumSleep = 0
-    let sumMood = 0
-
-    items.forEach((entry) => {
-      const sleepDelta = Number(entry.sleep_hours) - meanSleep
-      const moodDelta = Number(entry.mood) - meanMood
-      numerator += sleepDelta * moodDelta
-      sumSleep += sleepDelta * sleepDelta
-      sumMood += moodDelta * moodDelta
-    })
-
-    const denominator = Math.sqrt(sumSleep * sumMood)
-    if (denominator === 0) return null
-
-    const correlation = numerator / denominator
-    const magnitude = Math.abs(correlation)
-    if (magnitude < 0.2) return 'No clear'
-    if (magnitude < 0.4) return 'Weak'
-    if (magnitude < 0.7) return 'Moderate'
-    return 'Strong'
-  }
-
   const monthlyConsistency = getSleepConsistencyLabel(recentEntries)
-  const monthlyCorrelation = getCorrelationLabel(recentEntries)
+  const monthlyCorrelation = getCorrelationInsight(recentEntries).label
 
-  const buildTagInsights = (items: Entry[]) => {
-    const aggregates = new Map<
-      string,
-      { sleepSum: number, moodSum: number, count: number }
-    >()
-    items.forEach((entry) => {
-      const tags = entry.tags ?? []
-      tags.forEach((tag) => {
-        const key = tag.trim()
-        if (!key) return
-        const current = aggregates.get(key) ?? {
-          sleepSum: 0,
-          moodSum: 0,
-          count: 0,
-        }
-        current.sleepSum += Number(entry.sleep_hours)
-        current.moodSum += Number(entry.mood)
-        current.count += 1
-        aggregates.set(key, current)
-      })
-    })
-    return Array.from(aggregates.entries())
-      .map(([tag, data]) => ({
-        tag,
-        sleep: data.count ? data.sleepSum / data.count : null,
-        mood: data.count ? data.moodSum / data.count : null,
-        count: data.count,
-      }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 5)
-  }
+  const monthlyTags = buildTagInsights(recentEntries, 5)
+  const allTimeTags = buildTagInsights(entries, 5)
 
-  const monthlyTags = buildTagInsights(recentEntries)
-  const allTimeTags = buildTagInsights(entries)
-
-  const avgSleep = recentEntries.length
-    ? recentEntries.reduce(
-      (sum, entry) => sum + Number(entry.sleep_hours),
-      0,
-    ) / recentEntries.length
-    : null
-  const avgMood = recentEntries.length
-    ? recentEntries.reduce((sum, entry) => sum + Number(entry.mood), 0)
-    / recentEntries.length
-    : null
-
-  const priorAvgSleep = priorEntries.length
-    ? priorEntries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
-    / priorEntries.length
-    : null
-  const priorAvgMood = priorEntries.length
-    ? priorEntries.reduce((sum, entry) => sum + Number(entry.mood), 0)
-    / priorEntries.length
-    : null
+  const { sleep: avgSleep, mood: avgMood } = calculateAverages(recentEntries)
+  const {
+    sleep: priorAvgSleep,
+    mood: priorAvgMood,
+  } = calculateAverages(priorEntries)
 
   const bestDay = recentEntries.reduce<Entry | null>((best, entry) => {
     if (!best || Number(entry.mood) > Number(best.mood)) return entry
@@ -165,7 +69,7 @@ export const exportMonthlyReport = (
 
   doc.setFontSize(11)
   doc.setTextColor(80)
-  doc.text(`${formatDate(start)} - ${formatDate(end)}`, 14, y)
+  doc.text(`${formatLongDate(start)} - ${formatLongDate(end)}`, 14, y)
   y += 10
 
   const drawSectionHeader = (label: string) => {
@@ -249,13 +153,10 @@ export const exportMonthlyReport = (
   y += 10
   doc.setFontSize(12)
 
-  const allTimeAvgSleep = entries.length
-    ? entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
-    / entries.length
-    : null
-  const allTimeAvgMood = entries.length
-    ? entries.reduce((sum, entry) => sum + Number(entry.mood), 0) / entries.length
-    : null
+  const {
+    sleep: allTimeAvgSleep,
+    mood: allTimeAvgMood,
+  } = calculateAverages(entries)
 
   drawSectionHeader('All time')
 

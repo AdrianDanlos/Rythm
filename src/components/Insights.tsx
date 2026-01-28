@@ -13,49 +13,21 @@ import {
   YAxis,
 } from 'recharts'
 import type { Entry } from '../lib/entries'
-
-type WindowStats = {
-  sleep: number | null
-  mood: number | null
-  count: number
-}
-
-type TrendPoint = {
-  date: string
-  sleep: number | null
-  mood: number | null
-}
-
-type RollingPoint = {
-  date: string
-  sleep7: number | null
-  sleep30: number | null
-  sleep90: number | null
-  mood7: number | null
-  mood30: number | null
-  mood90: number | null
-}
-
-type RollingSummary = {
-  days: number
-  sleep: number | null
-  mood: number | null
-  sleepDelta: number | null
-  moodDelta: number | null
-}
-
-type TagInsight = {
-  tag: string
-  sleep: number | null
-  mood: number | null
-  count: number
-}
+import type {
+  RollingPoint,
+  RollingSummary,
+  SleepMoodAverages,
+  TagInsight,
+  TrendPoint,
+  WindowStats,
+} from '../lib/types/stats'
+import { formatShortDate } from '../lib/utils/dateFormatters'
 
 type InsightsProps = {
   entries: Entry[]
   entriesLoading: boolean
   chartData: Entry[]
-  averages: { sleep: number | null, mood: number | null }
+  averages: SleepMoodAverages
   windowAverages: {
     last7: WindowStats
     last30: WindowStats
@@ -136,12 +108,6 @@ export const Insights = ({
   )
   const [rollingMetric, setRollingMetric] = useState<'sleep' | 'mood'>('sleep')
   const trendPoints = trendSeries[trendRange]
-
-  const formatShortDate = (value: string) => {
-    const date = new Date(`${value}T00:00:00`)
-    if (Number.isNaN(date.getTime())) return value
-    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-  }
 
   const formatLineValue = (value: number | string) => {
     if (value === null || value === undefined) return '—'
