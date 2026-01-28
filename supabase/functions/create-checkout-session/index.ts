@@ -1,10 +1,4 @@
 import '../types.ts'
-// @ts-expect-error Deno/Edge runtime URL import
-import { serve } from 'https://deno.land/std@0.203.0/http/server.ts'
-// @ts-expect-error Deno/Edge runtime URL import
-import Stripe from 'https://esm.sh/stripe@14.21.0?target=deno'
-// @ts-expect-error Deno/Edge runtime URL import
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2?target=deno'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -29,12 +23,7 @@ if (
   throw new Error('Missing required environment variables.')
 }
 
-const stripe = new Stripe(stripeSecretKey, {
-  apiVersion: '2023-10-16',
-  httpClient: Stripe.createFetchHttpClient(),
-})
-
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -47,37 +36,61 @@ serve(async (req) => {
     })
   }
 
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    global: { headers: { Authorization: authHeader } },
+  const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
+    headers: {
+      Authorization: authHeader,
+      apikey: supabaseAnonKey,
+    },
   })
-
-  const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) {
+  if (!userResponse.ok) {
     return new Response(JSON.stringify({ error: 'Invalid user session.' }), {
       status: 401,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }
 
-  const stripeCustomerId = data.user.app_metadata?.stripe_customer_id
-  const session = await stripe.checkout.sessions.create({
+  const userPayload = await userResponse.json()
+  const user = userPayload?.user ?? userPayload
+  if (!user) {
+    return new Response(JSON.stringify({ error: 'Invalid user session.' }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
+  const stripeCustomerId = user.app_metadata?.stripe_customer_id
+  const body = new URLSearchParams({
     mode: 'subscription',
-    line_items: [{ price: stripePriceId, quantity: 1 }],
     success_url: successUrl,
     cancel_url: cancelUrl,
-    customer: typeof stripeCustomerId === 'string' ? stripeCustomerId : undefined,
-    customer_email: typeof stripeCustomerId === 'string'
-      ? undefined
-      : data.user.email ?? undefined,
-    subscription_data: {
-      metadata: {
-        supabase_user_id: data.user.id,
-      },
-    },
-    metadata: {
-      supabase_user_id: data.user.id,
-    },
   })
+  body.append('line_items[0][price]', stripePriceId)
+  body.append('line_items[0][quantity]', '1')
+  body.append('subscription_data[metadata][supabase_user_id]', user.id)
+  body.append('metadata[supabase_user_id]', user.id)
+  if (typeof stripeCustomerId === 'string') {
+    body.append('customer', stripeCustomerId)
+  } else if (user.email) {
+    body.append('customer_email', user.email)
+  }
+
+  const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${stripeSecretKey}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body,
+  })
+  if (!stripeResponse.ok) {
+    const errorPayload = await stripeResponse.text()
+    return new Response(JSON.stringify({ error: 'Stripe error.', details: errorPayload }), {
+      status: 502,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
+  const session = await stripeResponse.json()
 
   return new Response(JSON.stringify({ url: session.url }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },

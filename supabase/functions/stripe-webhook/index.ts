@@ -1,8 +1,4 @@
 import '../types.ts'
-// @ts-expect-error Deno/Edge runtime URL import
-import { serve } from 'https://deno.land/std@0.203.0/http/server.ts'
-// @ts-expect-error Deno/Edge runtime URL import
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2?target=deno'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -21,11 +17,7 @@ if (
   throw new Error('Missing required environment variables.')
 }
 
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
-  auth: { persistSession: false },
-})
-
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -120,16 +112,28 @@ serve(async (req) => {
     userId: string,
     updates: Record<string, unknown>,
   ) => {
-    const { data, error } = await supabaseAdmin.auth.admin.getUserById(userId)
-    if (error || !data?.user) {
+    const adminHeaders = {
+      Authorization: `Bearer ${supabaseServiceRoleKey}`,
+      apikey: supabaseServiceRoleKey,
+      'Content-Type': 'application/json',
+    }
+    const userResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {
+      headers: adminHeaders,
+    })
+    if (!userResponse.ok) {
       return { error: 'Unable to fetch user.' }
     }
-    const currentMetadata = data.user.app_metadata ?? {}
-    const { error: updateError }
-      = await supabaseAdmin.auth.admin.updateUserById(userId, {
+
+    const userPayload = await userResponse.json()
+    const currentMetadata = userPayload?.app_metadata ?? {}
+    const updateResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {
+      method: 'PUT',
+      headers: adminHeaders,
+      body: JSON.stringify({
         app_metadata: { ...currentMetadata, ...updates },
-      })
-    if (updateError) {
+      }),
+    })
+    if (!updateResponse.ok) {
       return { error: 'Failed to update user.' }
     }
     return { error: null }
