@@ -13,11 +13,6 @@ These live in your local `.env` (dev) and your hosting provider (prod).
   - Dev: local anon key from `npx supabase start` output or `supabase/.env`.
   - Prod: hosted Supabase anon key from the project settings.
 
-##### Google Auth accounts
-
-- Prod Google auth account: `danlosadrian@gmail.com`
-- Dev Google auth account: `adrianf1team@gmail.com`
-
 ##### Edge Functions (Supabase secrets)
 
 These are set per Supabase project using `npx supabase secrets set` and are not stored in the repo.
@@ -44,6 +39,11 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 - `STRIPE_CANCEL_URL`: Redirect after cancel.
   - Dev: `http://localhost:5173/cancel`
   - Prod: `https://<your-domain>/cancel`
+
+##### Google Auth accounts
+
+- Prod Google auth account: `danlosadrian@gmail.com`
+- Dev Google auth account: `adrianf1team@gmail.com`
 
 ### Supabase + Strip: Dev vs Prod
 
