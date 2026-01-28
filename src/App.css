@@ -108,6 +108,34 @@
   margin-top: 16px;
 }
 
+.feedback-form {
+  margin-top: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.feedback-textarea {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #fff;
+  color: var(--text);
+  resize: vertical;
+}
+
+.feedback-textarea:focus {
+  outline: none;
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.12);
+}
+
+.feedback-textarea:disabled {
+  background: #f8fafc;
+  color: var(--muted);
+}
+
 .primary-button {
   background: #0f172a;
   color: #fff;

@@ -10,6 +10,7 @@ import { AuthForm } from './components/AuthForm'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
 import { PaywallModal } from './components/PaywallModal'
+import { FeedbackModal } from './components/FeedbackModal.tsx'
 import { Tooltip } from './components/Tooltip'
 import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
@@ -59,6 +60,7 @@ function App() {
   const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.Insights)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
@@ -261,6 +263,14 @@ function App() {
     setIsPaywallOpen(false)
   }
 
+  const handleOpenFeedback = () => {
+    setIsFeedbackOpen(true)
+  }
+
+  const handleCloseFeedback = () => {
+    setIsFeedbackOpen(false)
+  }
+
   const handleStartCheckout = async () => {
     try {
       const { data, error } = await supabase.functions.invoke(
@@ -298,18 +308,14 @@ function App() {
         <div className="header-actions">
 
           <Tooltip label="Send feedback">
-            <a
-              href={`mailto:danlosadrian@gmail.com?subject=${encodeURIComponent(
-                'Rythm feedback',
-              )}&body=${encodeURIComponent(
-                'Hi! I would like to share the following feedback:\n\n',
-              )}`}
-              aria-label="Send feedback via email"
+            <button
+              className="ghost icon-button"
+              type="button"
+              onClick={handleOpenFeedback}
+              aria-label="Send feedback"
             >
-              <button className="ghost icon-button">
-                <Mail className="icon" aria-hidden="true" />
-              </button>
-            </a>
+              <Mail className="icon" aria-hidden="true" />
+            </button>
           </Tooltip>
 
           {session
@@ -337,6 +343,12 @@ function App() {
         upgradeUrl={trimmedUpgradeUrl}
         onUpgrade={handleStartCheckout}
         priceLabel={trimmedPriceLabel}
+      />
+      <FeedbackModal
+        isOpen={isFeedbackOpen}
+        onClose={handleCloseFeedback}
+        userEmail={session?.user?.email ?? null}
+        userId={session?.user?.id ?? null}
       />
 
       {!session
