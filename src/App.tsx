@@ -16,6 +16,13 @@ import { LogOut, Mail } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
 import './App.css'
 
+enum Tabs {
+  Insights = 'insights',
+  Log = 'log',
+}
+
+type TabKey = typeof Tabs[keyof typeof Tabs]
+
 function App() {
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
   const [authEmail, setAuthEmail] = useState('')
@@ -49,7 +56,7 @@ function App() {
   const [tags, setTags] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [activeTab, setActiveTab] = useState<'log' | 'insights'>('insights')
+  const [activeTab, setActiveTab] = useState<TabKey>(Tabs.Insights)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
@@ -350,21 +357,21 @@ function App() {
               <div className="tabs">
                 <button
                   type="button"
-                  className={`tab-button ${activeTab === 'insights' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('insights')}
+                  className={`tab-button ${activeTab === Tabs.Insights ? 'active' : ''}`}
+                  onClick={() => setActiveTab(Tabs.Insights)}
                 >
                   Insights
                 </button>
                 <button
                   type="button"
-                  className={`tab-button ${activeTab === 'log' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('log')}
+                  className={`tab-button ${activeTab === Tabs.Log ? 'active' : ''}`}
+                  onClick={() => setActiveTab(Tabs.Log)}
                 >
                   Log
                 </button>
               </div>
 
-              {activeTab === 'log'
+              {activeTab === Tabs.Log
                 ? (
                     <LogForm
                       selectedDate={selectedDate}
