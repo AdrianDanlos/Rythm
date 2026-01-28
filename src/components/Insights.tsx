@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   CartesianGrid,
   Cell,
@@ -108,6 +108,22 @@ export const Insights = ({
     'last90',
   )
   const [rollingMetric, setRollingMetric] = useState<'sleep' | 'mood'>('sleep')
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+    const media = window.matchMedia('(max-width: 540px)')
+    const handleChange = () => setIsMobile(media.matches)
+    handleChange()
+
+    if (media.addEventListener) {
+      media.addEventListener('change', handleChange)
+      return () => media.removeEventListener('change', handleChange)
+    }
+
+    media.addListener(handleChange)
+    return () => media.removeListener(handleChange)
+  }, [])
   const trendPoints = trendSeries[trendRange]
 
   const formatLineValue = (value: number | string) => {
@@ -115,6 +131,15 @@ export const Insights = ({
     const numeric = typeof value === 'number' ? value : Number(value)
     return Number.isFinite(numeric) ? numeric.toFixed(1) : '—'
   }
+
+  const formatAxisValue = (value: number | string) => {
+    const formatted = formatLineValue(value)
+    return formatted.endsWith('.0') ? formatted.slice(0, -2) : formatted
+  }
+
+  const smoothedChartMargin = isMobile
+    ? { top: 12, right: 0, bottom: 0, left: -36 }
+    : { top: 12, right: 28, bottom: 0, left: -12 }
 
   const formatDeltaValue = (value: number | null) => {
     if (value === null || !Number.isFinite(value)) return '—'
@@ -312,7 +337,7 @@ export const Insights = ({
                   <ResponsiveContainer width="100%" height={220}>
                     <LineChart
                       data={rollingSeries}
-                      margin={{ top: 12, right: 28, bottom: 0, left: -12 }}
+                      margin={smoothedChartMargin}
                     >
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
                       <XAxis
@@ -321,7 +346,7 @@ export const Insights = ({
                         interval={rollingTickInterval}
                       />
                       <YAxis
-                        tickFormatter={formatLineValue}
+                        tickFormatter={formatAxisValue}
                         domain={
                           rollingMetric === 'sleep' ? [4, 10] : [1, 5]
                         }

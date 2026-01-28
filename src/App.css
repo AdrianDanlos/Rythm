@@ -381,7 +381,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .toggle-group {
@@ -397,8 +397,16 @@
 
 .trend-summary {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 12px;
   margin-top: 32px;
+}
+
+.trend-summary .stat-block {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  flex: 1 1 0;
 }
 
 .tag-grid {
@@ -600,6 +608,65 @@
 }
 
 @media (max-width: 540px) {
+  .chart-wrapper .recharts-legend-wrapper {
+    width: 100% !important;
+    left: 0 !important;
+  }
+
+  .chart-wrapper .recharts-default-legend {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    justify-content: center;
+    column-gap: 4px;
+    row-gap: 6px;
+    justify-items: center;
+  }
+
+  .chart-wrapper .recharts-legend-item {
+    margin: 0 !important;
+    font-size: 0.8rem;
+    text-align: center;
+    width: max-content;
+  }
+
+  .chart-wrapper .recharts-legend-item:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .toggle-group {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .chart-wrapper.full-bleed {
+    width: 100%;
+    margin: 0;
+  }
+
+  .trend-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: center;
+    column-gap: 12px;
+    row-gap: 12px;
+    margin-top: 28px;
+  }
+
+  .trend-summary .stat-block {
+    text-align: center;
+    width: 100%;
+  }
+
+  .trend-summary .helper {
+    justify-content: center;
+  }
+
   .insights-header {
     flex-direction: column;
     align-items: stretch;
@@ -616,6 +683,23 @@
 
   .tag-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 541px) {
+  .chart-wrapper .recharts-legend-wrapper {
+    width: 100% !important;
+    left: 0 !important;
+  }
+
+  .chart-wrapper .recharts-default-legend {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .chart-wrapper .recharts-legend-item {
+    margin: 0 !important;
   }
 }
 
