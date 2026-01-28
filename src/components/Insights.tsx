@@ -149,6 +149,12 @@ export const Insights = ({
     return Number.isFinite(numeric) ? numeric.toFixed(1) : '—'
   }
 
+  const formatDeltaValue = (value: number | null) => {
+    if (value === null || !Number.isFinite(value)) return '—'
+    const formatted = value.toFixed(1)
+    return value > 0 ? `+${formatted}` : formatted
+  }
+
   const getDateTickInterval = (pointCount: number, targetTicks = 6) => {
     if (!pointCount || pointCount <= targetTicks) return 0
     return Math.max(0, Math.ceil(pointCount / targetTicks) - 1)
@@ -483,8 +489,8 @@ export const Insights = ({
                             Change versus the prior {summary.days} days.
                           </span>
                         </span>
-                        : {summary.sleepDelta?.toFixed(1) ?? '—'}h ·{' '}
-                        {summary.moodDelta?.toFixed(1) ?? '—'}
+                        : {formatDeltaValue(summary.sleepDelta)}h ·{' '}
+                        {formatDeltaValue(summary.moodDelta)}
                       </p>
                     </div>
                   ))}

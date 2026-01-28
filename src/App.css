@@ -215,7 +215,7 @@
 }
 
 .date-picker .rdp-day-logged:not(.rdp-day_selected) {
-  background: #dcfce7;
+  background: #e2eafd;
   color: #0f172a;
   border-radius: 999px;
 }
