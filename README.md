@@ -35,10 +35,13 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
   - Prod: webhook secret from Stripe Dashboard.
 - `STRIPE_SUCCESS_URL`: Redirect after successful checkout.
   - Dev: `http://localhost:5173/success`
-  - Prod: `https://<your-domain>/success`
+  - Prod: `https://rythm-one.vercel.app//success`
 - `STRIPE_CANCEL_URL`: Redirect after cancel.
   - Dev: `http://localhost:5173/cancel`
-  - Prod: `https://<your-domain>/cancel`
+  - Prod: `https://rythm-one.vercel.app//cancel`
+- `STRIPE_PORTAL_RETURN_URL`: Return URL for the Stripe customer portal.
+  - Dev: `http://localhost:5173`
+  - Prod: `https://rythm-one.vercel.app/`
 
 ##### Google Auth accounts
 
@@ -66,36 +69,50 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
    - Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in your Vercel.
 2. Deploy Edge Functions to the prod project:
    - `npx supabase functions deploy create-checkout-session`
+   - `npx supabase functions deploy create-portal-session`
    - `npx supabase functions deploy submit-feedback --no-verify-jwt`
    - `npx supabase functions deploy stripe-webhook --no-verify-jwt`
 3. Set Supabase secrets in the prod project:
    - `npx supabase secrets set STRIPE_SECRET_KEY=sk_live_...`
    - `npx supabase secrets set STRIPE_PRICE_ID=price_...`
-   - `npx supabase secrets set STRIPE_SUCCESS_URL=https://<your-domain>/success`
-   - `npx supabase secrets set STRIPE_CANCEL_URL=https://<your-domain>/cancel`
+   - `npx supabase secrets set STRIPE_SUCCESS_URL=https://rythm-one.vercel.app//success`
+   - `npx supabase secrets set STRIPE_CANCEL_URL=https://rythm-one.vercel.app//cancel`
+   - `npx supabase secrets set STRIPE_PORTAL_RETURN_URL=https://rythm-one.vercel.app/`
    - `npx supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...`
 4. Configure the Stripe webhook:
    - Endpoint URL: `https://mdruanwmwapdaecrayyi.functions.supabase.co/stripe-webhook`
-   - Events: `checkout.session.completed`
+   - Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
 
-## How payments and Pro work
+## How payments and Pro work (simple flow)
 
-The Pro upgrade uses two Supabase Edge Functions plus Stripe:
+**Click Upgrade → get checkout URL → pay in Stripe → webhook marks you Pro → app refreshes session.**
 
-1. `create-checkout-session`
-   - Called from the frontend when you click **Upgrade**.
-   - Reads the current Supabase user from the auth token.
-   - Creates a Stripe Checkout Session with:
-     - `STRIPE_PRICE_ID`
-     - `STRIPE_SUCCESS_URL` / `STRIPE_CANCEL_URL`
-     - `metadata.supabase_user_id = <user.id>`
-   - Returns `session.url` to the frontend, which redirects the browser to Stripe Checkout.
+1. **Frontend: user clicks Upgrade**
+   - `PaywallModal` triggers the upgrade handler in `App`.
+   - `App` calls the Supabase Edge Function `create-checkout-session`.
 
-2. `stripe-webhook`
-   - Called by Stripe when a payment succeeds (`checkout.session.completed`).
-   - Verifies the event with `STRIPE_WEBHOOK_SECRET`.
+2. **Edge Function: create checkout session**
+   - `create-checkout-session` validates the user token.
+   - Creates a Stripe Checkout Session (subscription) using `STRIPE_PRICE_ID`.
+   - Returns `session.url` to the frontend.
+
+3. **Stripe: user completes payment**
+   - Browser is redirected to Stripe Checkout.
+   - After payment, Stripe calls our webhook.
+
+4. **Edge Function: webhook marks Pro**
+   - `stripe-webhook` verifies the event (`STRIPE_WEBHOOK_SECRET`).
    - Reads `session.metadata.supabase_user_id`.
-   - Uses the Supabase **service role** key to set `app_metadata.is_pro = true` for that user.
+   - Sets `app_metadata.is_pro = true` and stores Stripe IDs.
+   - Handles cancel/updates by setting `is_pro = false` when needed.
+
+5. **Frontend: refresh session**
+   - User returns to `/success`.
+   - `App` refreshes the Supabase session so Pro features unlock.
+
+**Manage subscription**
+
+- `create-portal-session` opens Stripe’s customer portal for users with a stored `stripe_customer_id`.
 
 The app and Edge Functions talk to local Supabase in development and the remote Supabase project in production. Stripe webhooks point at `https://mdruanwmwapdaecrayyi.functions.supabase.co/stripe-webhook` for production.
 

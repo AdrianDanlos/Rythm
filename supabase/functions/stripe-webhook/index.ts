@@ -116,28 +116,85 @@ serve(async (req) => {
     )
   }
 
+  const updateUserMetadata = async (
+    userId: string,
+    updates: Record<string, unknown>,
+  ) => {
+    const { data, error } = await supabaseAdmin.auth.admin.getUserById(userId)
+    if (error || !data?.user) {
+      return { error: 'Unable to fetch user.' }
+    }
+    const currentMetadata = data.user.app_metadata ?? {}
+    const { error: updateError }
+      = await supabaseAdmin.auth.admin.updateUserById(userId, {
+        app_metadata: { ...currentMetadata, ...updates },
+      })
+    if (updateError) {
+      return { error: 'Failed to update user.' }
+    }
+    return { error: null }
+  }
+
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as {
       metadata?: Record<string, string>
+      customer?: string | null
+      subscription?: string | null
     }
     const userId = session.metadata?.supabase_user_id
     if (!userId) {
       return new Response('Missing supabase_user_id metadata.', { status: 400 })
     }
 
-    const { data, error } = await supabaseAdmin.auth.admin.getUserById(userId)
-    if (error || !data?.user) {
-      return new Response('Unable to fetch user.', { status: 500 })
+    const updates: Record<string, unknown> = { is_pro: true }
+    if (typeof session.customer === 'string') {
+      updates.stripe_customer_id = session.customer
+    }
+    if (typeof session.subscription === 'string') {
+      updates.stripe_subscription_id = session.subscription
     }
 
-    const currentMetadata = data.user.app_metadata ?? {}
-    const { error: updateError }
-      = await supabaseAdmin.auth.admin.updateUserById(userId, {
-        app_metadata: { ...currentMetadata, is_pro: true },
-      })
+    const { error } = await updateUserMetadata(userId, updates)
+    if (error) {
+      return new Response(error, { status: 500 })
+    }
+  }
 
-    if (updateError) {
-      return new Response('Failed to update user.', { status: 500 })
+  if (
+    event.type === 'customer.subscription.updated'
+    || event.type === 'customer.subscription.deleted'
+  ) {
+    const subscription = event.data.object as {
+      id?: string
+      status?: string
+      metadata?: Record<string, string>
+      customer?: string | null
+    }
+    const userId = subscription.metadata?.supabase_user_id
+    if (!userId) {
+      return new Response('Missing supabase_user_id metadata.', { status: 200 })
+    }
+
+    const status = subscription.status ?? ''
+    const isActive = status === 'active' || status === 'trialing'
+    const shouldEnable = event.type === 'customer.subscription.updated'
+      ? isActive
+      : false
+
+    const updates: Record<string, unknown> = {
+      is_pro: shouldEnable,
+    }
+
+    if (typeof subscription.customer === 'string') {
+      updates.stripe_customer_id = subscription.customer
+    }
+    if (typeof subscription.id === 'string') {
+      updates.stripe_subscription_id = subscription.id
+    }
+
+    const { error } = await updateUserMetadata(userId, updates)
+    if (error) {
+      return new Response(error, { status: 500 })
     }
   }
 

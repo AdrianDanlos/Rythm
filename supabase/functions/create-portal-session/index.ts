@@ -14,17 +14,12 @@ const corsHeaders = {
 const supabaseUrl = Deno.env.get('SUPABASE_URL') || Deno.env.get('URL')
 const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('ANON_KEY')
 const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY')
-const stripePriceId = Deno.env.get('STRIPE_PRICE_ID')
-const successUrl = Deno.env.get('STRIPE_SUCCESS_URL')
-const cancelUrl = Deno.env.get('STRIPE_CANCEL_URL')
+const portalReturnUrl = Deno.env.get('STRIPE_PORTAL_RETURN_URL')
 
 if (
   !supabaseUrl
   || !supabaseAnonKey
   || !stripeSecretKey
-  || !stripePriceId
-  || !successUrl
-  || !cancelUrl
 ) {
   throw new Error('Missing required environment variables.')
 }
@@ -60,23 +55,24 @@ serve(async (req) => {
   }
 
   const stripeCustomerId = data.user.app_metadata?.stripe_customer_id
-  const session = await stripe.checkout.sessions.create({
-    mode: 'subscription',
-    line_items: [{ price: stripePriceId, quantity: 1 }],
-    success_url: successUrl,
-    cancel_url: cancelUrl,
-    customer: typeof stripeCustomerId === 'string' ? stripeCustomerId : undefined,
-    customer_email: typeof stripeCustomerId === 'string'
-      ? undefined
-      : data.user.email ?? undefined,
-    subscription_data: {
-      metadata: {
-        supabase_user_id: data.user.id,
-      },
-    },
-    metadata: {
-      supabase_user_id: data.user.id,
-    },
+  if (typeof stripeCustomerId !== 'string' || !stripeCustomerId.trim()) {
+    return new Response(JSON.stringify({ error: 'Missing Stripe customer.' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
+  const returnUrl = portalReturnUrl ?? req.headers.get('origin') ?? ''
+  if (!returnUrl) {
+    return new Response(JSON.stringify({ error: 'Missing return URL.' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+
+  const session = await stripe.billingPortal.sessions.create({
+    customer: stripeCustomerId,
+    return_url: returnUrl,
   })
 
   return new Response(JSON.stringify({ url: session.url }), {

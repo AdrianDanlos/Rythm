@@ -14,7 +14,7 @@ import { FeedbackModal } from './components/FeedbackModal.tsx'
 import { Tooltip } from './components/Tooltip'
 import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
-import { LogOut, Mail } from 'lucide-react'
+import { CreditCard, LogOut, Mail } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
 import { StripeLanding } from './components/StripeLanding.tsx'
 import { ROUTES, isStripeLanding, isStripeReturn } from './lib/routes'
@@ -65,6 +65,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.Insights)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
+  const [isPortalLoading, setIsPortalLoading] = useState(false)
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
@@ -315,6 +316,32 @@ function App() {
     }
   }
 
+  const handleManageSubscription = async () => {
+    if (isPortalLoading) return
+    setIsPortalLoading(true)
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        'create-portal-session',
+        { body: {} },
+      )
+      if (error) {
+        throw error
+      }
+      const portalUrl = data?.url as string | undefined
+      if (portalUrl) {
+        window.location.href = portalUrl
+        return
+      }
+      throw new Error('Missing portal URL.')
+    }
+    catch {
+      window.alert('Unable to open subscription management.')
+    }
+    finally {
+      setIsPortalLoading(false)
+    }
+  }
+
   if (showStripeLanding) {
     return <StripeLanding logo={logo} />
   }
@@ -345,6 +372,21 @@ function App() {
           {session
             ? (
                 <>
+                  {isPro
+                    ? (
+                        <Tooltip label="Manage subscription">
+                          <button
+                            className="ghost icon-button"
+                            type="button"
+                            onClick={handleManageSubscription}
+                            aria-label="Manage subscription"
+                            disabled={isPortalLoading}
+                          >
+                            <CreditCard className="icon" aria-hidden="true" />
+                          </button>
+                        </Tooltip>
+                      )
+                    : null}
                   <Tooltip label="Sign out">
                     <button
                       className="ghost icon-button"
