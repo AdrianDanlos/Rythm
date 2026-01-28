@@ -243,6 +243,10 @@
   fill: #0f172a;
 }
 
+.date-picker .rdp-today:not(.rdp-outside) {
+  color: var(--text);
+}
+
 .date-picker .rdp-day-logged:not(.rdp-day_selected) {
   background: #e2eafd;
   color: #0f172a;

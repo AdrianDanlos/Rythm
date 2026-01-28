@@ -79,7 +79,7 @@ export const LogForm = ({
           />
         </label>
         <div className="field">
-          Mood
+          Mood today
           <div className="mood-row">
             {[1, 2, 3, 4, 5].map(value => (
               <button
