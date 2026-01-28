@@ -16,6 +16,8 @@ import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
 import { LogOut, Mail } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
+import { StripeLanding } from './components/StripeLanding.tsx'
+import { ROUTES, isStripeLanding, isStripeReturn } from './lib/routes'
 import './App.css'
 
 enum Tabs {
@@ -26,6 +28,7 @@ enum Tabs {
 type TabKey = typeof Tabs[keyof typeof Tabs]
 
 function App() {
+  const showStripeLanding = isStripeLanding()
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
   const [authEmail, setAuthEmail] = useState('')
   const [authPassword, setAuthPassword] = useState('')
@@ -72,9 +75,9 @@ function App() {
 
   useEffect(() => {
     const path = window.location.pathname
-    if (path !== '/success' && path !== '/cancel') return
+    if (!isStripeReturn(path)) return
 
-    if (path === '/success') {
+    if (path === ROUTES.stripeSuccess) {
       void refreshSession()
     }
 
@@ -293,6 +296,10 @@ function App() {
     if (trimmedUpgradeUrl) {
       window.open(trimmedUpgradeUrl, '_blank', 'noreferrer')
     }
+  }
+
+  if (showStripeLanding) {
+    return <StripeLanding logo={logo} />
   }
 
   return (

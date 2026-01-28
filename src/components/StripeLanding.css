@@ -1,0 +1,83 @@
+.stripe-landing {
+  min-height: 100vh;
+  background: #0f1115;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  padding: 48px 20px 72px;
+}
+
+.stripe-landing__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 auto 40px;
+  width: min(960px, 100%);
+}
+
+.stripe-landing__logo {
+  width: 56px;
+  height: 56px;
+}
+
+.stripe-landing__eyebrow {
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.stripe-landing__title {
+  margin: 4px 0 0;
+  font-size: 2rem;
+}
+
+.stripe-landing__content {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 28px;
+}
+
+.stripe-landing__lede {
+  color: #cbd5f5;
+  margin: 0;
+}
+
+.stripe-landing__section {
+  background: rgba(148, 163, 184, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.stripe-landing__section h3 {
+  margin-top: 0;
+}
+
+.stripe-landing__section ul {
+  margin: 12px 0 0;
+  padding-left: 20px;
+}
+
+.stripe-landing__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.stripe-landing__primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #22c55e;
+  color: #0f1115;
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.stripe-landing a {
+  color: #ffffff;
+}
