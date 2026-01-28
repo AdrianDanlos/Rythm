@@ -41,6 +41,7 @@ type InsightsProps = {
   moodByPersonalThreshold: { high: number | null, low: number | null }
   tagInsights: TagInsight[]
   isPro: boolean
+  exportError: string | null
   onExportCsv: () => void
   onExportMonthlyReport: () => void
   onOpenPaywall: () => void
@@ -66,13 +67,13 @@ export const Insights = ({
   moodByPersonalThreshold,
   tagInsights,
   isPro,
+  exportError,
   onExportCsv,
   onExportMonthlyReport,
   onOpenPaywall,
 }: InsightsProps) => {
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
-  const exportReportDisabled = isPro ? !entries.length : false
   const jitterFromId = (id: string, scale = 0.18) => {
     let hash = 0
     for (let i = 0; i < id.length; i += 1) {
@@ -157,9 +158,9 @@ export const Insights = ({
         moodColors={moodColors}
       />
       <InsightsExport
-        entriesLength={entries.length}
+        hasEntries={entries.length > 0}
         isPro={isPro}
-        exportReportDisabled={exportReportDisabled}
+        exportError={exportError}
         onExportCsv={onExportCsv}
         onExportMonthlyReport={onExportMonthlyReport}
         onOpenPaywall={onOpenPaywall}

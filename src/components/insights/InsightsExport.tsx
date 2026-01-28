@@ -1,16 +1,16 @@
 type InsightsExportProps = {
-  entriesLength: number
+  hasEntries: boolean
   isPro: boolean
-  exportReportDisabled: boolean
+  exportError: string | null
   onExportCsv: () => void
   onExportMonthlyReport: () => void
   onOpenPaywall: () => void
 }
 
 export const InsightsExport = ({
-  entriesLength,
+  hasEntries,
   isPro,
-  exportReportDisabled,
+  exportError,
   onExportCsv,
   onExportMonthlyReport,
   onOpenPaywall,
@@ -21,6 +21,14 @@ export const InsightsExport = ({
       return
     }
     action?.()
+  }
+
+  const handleReportClick = () => {
+    if (!hasEntries) {
+      onExportMonthlyReport()
+      return
+    }
+    handleProAction(onExportMonthlyReport)
   }
 
   return (
@@ -36,20 +44,19 @@ export const InsightsExport = ({
               type="button"
               className="ghost"
               onClick={onExportCsv}
-              disabled={!entriesLength}
             >
               Export CSV
             </button>
             <button
               type="button"
               className={`ghost ${!isPro ? 'pro-locked-button' : ''}`}
-              onClick={() => handleProAction(onExportMonthlyReport)}
-              disabled={exportReportDisabled}
+              onClick={handleReportClick}
             >
               Export Report
               {!isPro ? <span className="pro-pill">Pro</span> : null}
             </button>
           </div>
+          {exportError ? <p className="error">{exportError}</p> : null}
         </div>
       </div>
     </section>

@@ -47,6 +47,7 @@ function App() {
   const [entries, setEntries] = useState<Entry[]>([])
   const [entriesLoading, setEntriesLoading] = useState(false)
   const [entriesError, setEntriesError] = useState<string | null>(null)
+  const [exportError, setExportError] = useState<string | null>(null)
 
   const todayDate = useMemo(() => {
     const date = new Date()
@@ -124,6 +125,12 @@ function App() {
     setNote('')
     setTags('')
   }, [entryDate, entries])
+
+  useEffect(() => {
+    if (entries.length && exportError) {
+      setExportError(null)
+    }
+  }, [entries.length, exportError])
 
   const chartData = useMemo(
     () =>
@@ -250,11 +257,21 @@ function App() {
   }
 
   const handleExportCsv = () => {
+    if (!entries.length) {
+      setExportError('Add at least one entry to export.')
+      return
+    }
+    setExportError(null)
     exportEntriesCsv(entries)
   }
 
   const handleExportMonthlyReport = () => {
-    if (!entries.length || !isPro) return
+    if (!entries.length) {
+      setExportError('Add at least one entry to export.')
+      return
+    }
+    if (!isPro) return
+    setExportError(null)
     exportMonthlyReport(entries, stats, { title: 'Rythm Report' })
   }
 
@@ -439,6 +456,7 @@ function App() {
                       moodByPersonalThreshold={stats.moodByPersonalThreshold}
                       tagInsights={stats.tagInsights}
                       isPro={isPro}
+                      exportError={exportError}
                       onExportCsv={handleExportCsv}
                       onExportMonthlyReport={handleExportMonthlyReport}
                       onOpenPaywall={handleOpenPaywall}
