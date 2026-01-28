@@ -145,12 +145,33 @@
   gap: 12px;
 }
 
+.auth-title {
+  margin-bottom: 16px;
+}
+
+.auth-card .stack {
+  margin-bottom: 4px;
+}
+
 .oauth-button {
   width: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  margin-bottom: 16px;
+}
+
+.oauth-logo {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.auth-toggle {
+  display: block;
+  width: fit-content;
+  margin-left: auto;
 }
 
 .field {

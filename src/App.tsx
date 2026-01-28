@@ -9,6 +9,7 @@ import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
 import { LogOut, Mail } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
+import googleLogo from './assets/google-logo.png'
 import './App.css'
 
 function App() {
@@ -385,10 +386,9 @@ function App() {
       {!session
         ? (
             <section className="card auth-card">
-              <h2>{authMode === 'signin' ? 'Sign in' : 'Create account'}</h2>
-              <p className="muted">
-                Use email + password to keep your entries private.
-              </p>
+              <h2 className="auth-title">
+                {authMode === 'signin' ? 'Sign in' : 'Create account'}
+              </h2>
               <form onSubmit={handleAuth} className="stack">
                 <label className="field">
                   Email
@@ -425,10 +425,11 @@ function App() {
                 type="button"
                 onClick={handleGoogleSignIn}
               >
+                <img className="oauth-logo" src={googleLogo} alt="Google logo" />
                 Continue with Google
               </button>
               <button
-                className="ghost"
+                className="ghost auth-toggle"
                 type="button"
                 onClick={() =>
                   setAuthMode(mode => (mode === 'signin' ? 'signup' : 'signin'))}
