@@ -511,17 +511,21 @@
   color: var(--muted);
 }
 
-.delta-tooltip {
+.app-tooltip {
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   cursor: help;
-  outline: none;
 }
 
+.tooltip-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
 
-.delta-tooltip-icon {
+.tooltip-icon {
   width: 16px;
   height: 16px;
   border-radius: 999px;
@@ -534,7 +538,7 @@
   background: #fff;
 }
 
-.delta-tooltip-bubble {
+.app-tooltip-bubble {
   position: absolute;
   left: 50%;
   bottom: calc(100% + 8px);
@@ -554,9 +558,8 @@
   z-index: 2;
 }
 
-.delta-tooltip:hover .delta-tooltip-bubble,
-.delta-tooltip:focus .delta-tooltip-bubble,
-.delta-tooltip:focus-within .delta-tooltip-bubble {
+.app-tooltip:hover .app-tooltip-bubble,
+.app-tooltip:focus-within .app-tooltip-bubble {
   opacity: 1;
   visibility: visible;
 }

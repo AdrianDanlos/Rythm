@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
   Scatter,
   ScatterChart,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   XAxis,
   YAxis,
 } from 'recharts'
@@ -22,6 +22,7 @@ import type {
   WindowStats,
 } from '../lib/types/stats'
 import { formatShortDate } from '../lib/utils/dateFormatters'
+import { Tooltip } from './Tooltip'
 
 type InsightsProps = {
   entries: Entry[]
@@ -350,7 +351,7 @@ export const Insights = ({
                           rollingMetric === 'sleep' ? [4, 6, 8, 10] : [1, 2, 3, 4, 5]
                         }
                       />
-                      <Tooltip
+                      <RechartsTooltip
                         formatter={(value) => {
                           const normalized = Array.isArray(value) ? value[0] : value
                           const formatted = formatLineValue(
@@ -446,15 +447,14 @@ export const Insights = ({
                         / {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
                       </p>
                       <p className="helper">
-                        <span className="delta-tooltip" tabIndex={0}>
-                          <span className="delta-tooltip-icon" aria-hidden="true">
-                            i
+                        <Tooltip label={`Change versus the prior ${summary.days} days.`}>
+                          <span className="tooltip-trigger">
+                            <span className="tooltip-icon" aria-hidden="true">
+                              i
+                            </span>
+                            Delta
                           </span>
-                          Delta
-                          <span className="delta-tooltip-bubble" role="tooltip">
-                            Change versus the prior {summary.days} days.
-                          </span>
-                        </span>
+                        </Tooltip>
                         : {formatDeltaValue(summary.sleepDelta)}h ·{' '}
                         {formatDeltaValue(summary.moodDelta)}
                       </p>
@@ -516,7 +516,7 @@ export const Insights = ({
                     />
                     <YAxis yAxisId="left" />
                     <YAxis yAxisId="right" orientation="right" />
-                    <Tooltip />
+                    <RechartsTooltip />
                     <Legend />
                     <Line
                       type="monotone"
@@ -664,7 +664,7 @@ export const Insights = ({
                         width={35}
                         tickMargin={2}
                       />
-                      <Tooltip content={renderTooltip} />
+                      <RechartsTooltip content={renderTooltip} />
                       <Scatter data={plottedData}>
                         {plottedData.map(entry => (
                           <Cell

@@ -10,6 +10,7 @@ import { AuthForm } from './components/AuthForm'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
 import { PaywallModal } from './components/PaywallModal'
+import { Tooltip } from './components/Tooltip'
 import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
 import { LogOut, Mail } from 'lucide-react'
@@ -296,31 +297,34 @@ function App() {
         </div>
         <div className="header-actions">
 
-          <a
-            href={`mailto:danlosadrian@gmail.com?subject=${encodeURIComponent(
-              'Rythm feedback',
-            )}&body=${encodeURIComponent(
-              'Hi! I would like to share the following feedback:\n\n',
-            )}`}
-            aria-label="Send feedback via email"
-          >
-            <button className="ghost icon-button">
-              <Mail className="icon" aria-hidden="true" />
-            </button>
-          </a>
+          <Tooltip label="Send feedback">
+            <a
+              href={`mailto:danlosadrian@gmail.com?subject=${encodeURIComponent(
+                'Rythm feedback',
+              )}&body=${encodeURIComponent(
+                'Hi! I would like to share the following feedback:\n\n',
+              )}`}
+              aria-label="Send feedback via email"
+            >
+              <button className="ghost icon-button">
+                <Mail className="icon" aria-hidden="true" />
+              </button>
+            </a>
+          </Tooltip>
 
           {session
             ? (
                 <>
-                  <button
-                    className="ghost icon-button"
-                    onClick={handleSignOut}
-                    type="button"
-                    aria-label="Sign out"
-                    title="Sign out"
-                  >
-                    <LogOut className="icon" aria-hidden="true" />
-                  </button>
+                  <Tooltip label="Sign out">
+                    <button
+                      className="ghost icon-button"
+                      onClick={handleSignOut}
+                      type="button"
+                      aria-label="Sign out"
+                    >
+                      <LogOut className="icon" aria-hidden="true" />
+                    </button>
+                  </Tooltip>
                 </>
               )
             : null}
