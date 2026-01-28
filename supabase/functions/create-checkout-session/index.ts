@@ -11,8 +11,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const supabaseUrl = Deno.env.get('SUPABASE_URL')
-const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')
+const supabaseUrl = Deno.env.get('SUPABASE_URL') || Deno.env.get('URL')
+const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('ANON_KEY')
 const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY')
 const stripePriceId = Deno.env.get('STRIPE_PRICE_ID')
 const successUrl = Deno.env.get('STRIPE_SUCCESS_URL')
