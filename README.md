@@ -51,11 +51,13 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 
 1. Start local Supabase:
    - `npx supabase start`
-2. Serve Edge Functions locally:
+2. Seed test data:
+   - Run the content of `supabase/seed.sql` in `http://localhost:54323/project/default/sql`, which is an in-browser SQL editor in Supabase Studio.
+3. Serve Edge Functions locally:
    - `npx supabase functions serve --env-file supabase/.env`
-3. Forward Stripe webhooks to local:
+4. Forward Stripe webhooks to local:
    - `stripe listen --forward-to http://localhost:54321/functions/v1/stripe-webhook`
-4. Run the React app (Vite dev server):
+5. Run the React app (Vite dev server):
    - `npm run dev`
 
 ##### Production

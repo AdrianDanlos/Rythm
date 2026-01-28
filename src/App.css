@@ -427,6 +427,7 @@
 }
 
 .pro-pill {
+  display: inline-flex;
   margin-left: 6px;
   padding: 2px 6px;
   border-radius: 999px;
