@@ -75,7 +75,7 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
    - `npx supabase secrets set STRIPE_CANCEL_URL=https://<your-domain>/cancel`
    - `npx supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...`
 4. Configure the Stripe webhook:
-   - Endpoint URL: `https://<project-ref>.functions.supabase.co/stripe-webhook`
+   - Endpoint URL: `https://mdruanwmwapdaecrayyi.functions.supabase.co/stripe-webhook`
    - Events: `checkout.session.completed`
 
 ## How payments and Pro work
@@ -97,7 +97,7 @@ The Pro upgrade uses two Supabase Edge Functions plus Stripe:
    - Reads `session.metadata.supabase_user_id`.
    - Uses the Supabase **service role** key to set `app_metadata.is_pro = true` for that user.
 
-The app and Edge Functions talk to local Supabase in development and the remote Supabase project in production. Stripe webhooks point at `https://<project-ref>.functions.supabase.co/stripe-webhook` for production.
+The app and Edge Functions talk to local Supabase in development and the remote Supabase project in production. Stripe webhooks point at `https://mdruanwmwapdaecrayyi.functions.supabase.co/stripe-webhook` for production.
 
 ### App development
 
