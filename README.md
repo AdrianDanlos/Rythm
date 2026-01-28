@@ -47,15 +47,6 @@ Required environment variables for the Stripe flow:
 - `SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 
-Required environment variables for feedback email:
-
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `RESEND_API_KEY`
-- `FEEDBACK_FROM_EMAIL`
-- `FEEDBACK_TO_EMAIL` (defaults to `danlosadrian@gmail.com`)
-
 For local web testing, you can set:
 
 - `STRIPE_SUCCESS_URL=http://localhost:5173/success`
