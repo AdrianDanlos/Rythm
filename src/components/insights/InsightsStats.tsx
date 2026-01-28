@@ -1,0 +1,144 @@
+import type { SleepMoodAverages, WindowStats } from '../../lib/types/stats'
+
+type InsightsStatsProps = {
+  isLoading: boolean
+  averages: SleepMoodAverages
+  windowAverages: {
+    last7: WindowStats
+    last30: WindowStats
+    last90: WindowStats
+    last365: WindowStats
+  }
+  streak: number
+  sleepConsistencyLabel: string | null
+  correlationLabel: string | null
+  correlationDirection: string | null
+  moodBySleepThreshold: { high: number | null, low: number | null }
+  sleepThreshold: number
+}
+
+export const InsightsStats = ({
+  isLoading,
+  averages,
+  windowAverages,
+  streak,
+  sleepConsistencyLabel,
+  correlationLabel,
+  correlationDirection,
+  moodBySleepThreshold,
+  sleepThreshold,
+}: InsightsStatsProps) => (
+  <>
+    <section className="card stats">
+      {isLoading
+        ? (
+            <>
+              <div className="stat-block">
+                <p className="label">Average sleep</p>
+                <div className="skeleton-line" />
+              </div>
+              <div className="stat-block">
+                <p className="label">Average mood</p>
+                <div className="skeleton-line" />
+              </div>
+            </>
+          )
+        : (
+            <>
+              <div>
+                <p className="label">Average sleep</p>
+                <p className="value">
+                  {averages.sleep !== null ? `${averages.sleep.toFixed(1)} hrs` : '—'}
+                </p>
+              </div>
+              <div>
+                <p className="label">Average mood</p>
+                <p className="value">
+                  {averages.mood !== null ? averages.mood.toFixed(1) : '—'} / 5
+                </p>
+              </div>
+            </>
+          )}
+    </section>
+
+    <section className="card stats-stack">
+      {isLoading
+        ? (
+            <>
+              {[1, 2, 3, 4, 5, 6].map(item => (
+                <div className="stat-block" key={item}>
+                  <div className="skeleton-line" />
+                  <div className="skeleton-line short" />
+                </div>
+              ))}
+            </>
+          )
+        : (
+            <>
+              <div className="stat-block">
+                <p className="label">Last 7 days</p>
+                <p className="value">
+                  {windowAverages.last7.sleep !== null
+                    && windowAverages.last7.mood !== null
+                    ? `${windowAverages.last7.sleep.toFixed(1)}h / ${windowAverages.last7.mood.toFixed(1)}`
+                    : '—'}
+                </p>
+                <p className="helper">
+                  Sleep avg / Mood avg · {windowAverages.last7.count} entries
+                </p>
+              </div>
+              <div className="stat-divider" aria-hidden />
+              <div className="stat-block">
+                <p className="label">Last 30 days</p>
+                <p className="value">
+                  {windowAverages.last30.sleep !== null
+                    && windowAverages.last30.mood !== null
+                    ? `${windowAverages.last30.sleep.toFixed(1)}h / ${windowAverages.last30.mood.toFixed(1)}`
+                    : '—'}
+                </p>
+                <p className="helper">
+                  Sleep avg / Mood avg · {windowAverages.last30.count} entries
+                </p>
+              </div>
+              <div className="stat-divider" aria-hidden />
+              <div className="stat-block">
+                <p className="label">Streak</p>
+                <p className="value">
+                  {streak} days
+                </p>
+                <p className="helper">Consecutive days logged</p>
+              </div>
+              <div className="stat-divider" aria-hidden />
+              <div className="stat-block">
+                <p className="label">Sleep consistency</p>
+                <p className="value">{sleepConsistencyLabel ?? '—'}</p>
+                <p className="helper">How steady your sleep hours are</p>
+              </div>
+              <div className="stat-divider" aria-hidden />
+              <div className="stat-block">
+                <p className="label">Sleep–mood link</p>
+                <p className="value">{correlationLabel ?? '—'}</p>
+                {correlationDirection
+                  ? (
+                      <p className="helper">{correlationDirection}</p>
+                    )
+                  : null}
+              </div>
+              <div className="stat-divider" aria-hidden />
+              <div className="stat-block">
+                <p className="label">Mood by sleep</p>
+                <p className="value">
+                  {moodBySleepThreshold.high !== null
+                    || moodBySleepThreshold.low !== null
+                    ? `≥${sleepThreshold}h ${moodBySleepThreshold.high?.toFixed(1) ?? '—'} / <${sleepThreshold}h ${moodBySleepThreshold.low?.toFixed(1) ?? '—'}`
+                    : '—'}
+                </p>
+                <p className="helper">
+                  Avg mood split at {sleepThreshold} hours
+                </p>
+              </div>
+            </>
+          )}
+    </section>
+  </>
+)
