@@ -70,6 +70,8 @@ function App() {
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
   const isPro = Boolean(session?.user?.app_metadata?.is_pro)
+  const canManageSubscription = isPro
+    && Boolean(session?.user?.app_metadata?.stripe_customer_id)
   const upgradeUrl = import.meta.env.VITE_UPGRADE_URL as string | undefined
   const trimmedUpgradeUrl = upgradeUrl?.trim()
   const priceLabel = import.meta.env.VITE_PRO_PRICE_LABEL as string | undefined
@@ -372,7 +374,7 @@ function App() {
           {session
             ? (
                 <>
-                  {isPro
+                  {canManageSubscription
                     ? (
                         <Tooltip label="Manage subscription">
                           <button
