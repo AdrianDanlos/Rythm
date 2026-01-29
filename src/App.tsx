@@ -285,23 +285,33 @@ function App() {
     await signOut()
   }
 
-  const handleExportCsv = () => {
+  const handleExportCsv = async () => {
     if (!entries.length) {
       setExportError('Add at least one entry to export.')
       return
     }
     setExportError(null)
-    exportEntriesCsv(entries)
+    try {
+      await exportEntriesCsv(entries)
+    }
+    catch {
+      setExportError('Unable to export CSV.')
+    }
   }
 
-  const handleExportMonthlyReport = () => {
+  const handleExportMonthlyReport = async () => {
     if (!entries.length) {
       setExportError('Add at least one entry to export.')
       return
     }
     if (!isPro) return
     setExportError(null)
-    exportMonthlyReport(entries, stats, { title: 'Rythm Report' })
+    try {
+      await exportMonthlyReport(entries, stats, { title: 'Rythm Report' })
+    }
+    catch {
+      setExportError('Unable to export report.')
+    }
   }
 
   const handleOpenPaywall = () => {

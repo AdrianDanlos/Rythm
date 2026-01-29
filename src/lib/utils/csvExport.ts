@@ -1,7 +1,9 @@
+import { Encoding } from '@capacitor/filesystem'
 import type { Entry } from '../entries'
+import { exportFile } from './fileExport'
 import { escapeCsv } from './stringUtils'
 
-export const exportEntriesCsv = (entries: Entry[]) => {
+export const exportEntriesCsv = async (entries: Entry[]) => {
   if (!entries.length) return
 
   const rows = [
@@ -15,13 +17,10 @@ export const exportEntriesCsv = (entries: Entry[]) => {
   ]
 
   const csv = rows.map(row => row.map(escapeCsv).join(',')).join('\n')
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = 'rythm-entries.csv'
-  document.body.appendChild(link)
-  link.click()
-  link.remove()
-  URL.revokeObjectURL(url)
+  await exportFile({
+    filename: 'rythm-entries.csv',
+    mimeType: 'text/csv;charset=utf-8;',
+    data: csv,
+    encoding: Encoding.UTF8,
+  })
 }

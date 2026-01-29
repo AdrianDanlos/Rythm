@@ -4,6 +4,7 @@ import type { StatsResult } from './stats'
 import { calculateAverages } from './utils/averages'
 import { getCorrelationInsight } from './utils/correlation'
 import { formatLongDate } from './utils/dateFormatters'
+import { exportFile } from './utils/fileExport'
 import { getSleepConsistencyLabel } from './utils/sleepConsistency'
 import { buildTagInsights } from './utils/tagInsights'
 
@@ -12,7 +13,7 @@ type ReportOptions = {
   title?: string
 }
 
-export const exportMonthlyReport = (
+export const exportMonthlyReport = async (
   entries: Entry[],
   stats: StatsResult,
   options: ReportOptions = {},
@@ -190,5 +191,10 @@ export const exportMonthlyReport = (
 
   y += 8
 
-  doc.save('rythm-report.pdf')
+  const pdfBuffer = doc.output('arraybuffer') as ArrayBuffer
+  await exportFile({
+    filename: 'rythm-report.pdf',
+    mimeType: 'application/pdf',
+    data: pdfBuffer,
+  })
 }
