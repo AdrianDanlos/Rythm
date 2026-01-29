@@ -5,6 +5,14 @@
 ##### Frontend (Vite)
 
 These live in your local `.env` (dev) and your hosting provider (prod).
+For Android builds, use `.env.production` so the app targets hosted Supabase.
+
+Example `.env.production`:
+
+```
+VITE_SUPABASE_URL=https://<project>.supabase.co
+VITE_SUPABASE_ANON_KEY=<prod_anon_key>
+```
 
 - `VITE_SUPABASE_URL`: Supabase project URL.
   - Dev: local URL from `npx supabase start` (typically `http://localhost:54321`).

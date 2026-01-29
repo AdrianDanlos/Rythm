@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { Capacitor } from '@capacitor/core'
+import { App as CapacitorApp } from '@capacitor/app'
 import { fetchEntries, type Entry, upsertEntry } from './lib/entries'
 import { buildStats } from './lib/stats'
 import { exportMonthlyReport } from './lib/reports'
@@ -77,6 +79,26 @@ function App() {
   const trimmedUpgradeUrl = upgradeUrl?.trim()
   const priceLabel = import.meta.env.VITE_PRO_PRICE_LABEL as string | undefined
   const trimmedPriceLabel = priceLabel?.trim()
+
+  // This is needed for the Android app to work.
+  // It is used to set the session token when the app is opened from a link.
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return
+    const listenerPromise = CapacitorApp.addListener('appUrlOpen', ({ url }) => {
+      const fragment = url?.split('#')[1] ?? ''
+      const params = new URLSearchParams(fragment)
+      const accessToken = params.get('access_token')
+      const refreshToken = params.get('refresh_token')
+      if (accessToken && refreshToken) {
+        void supabase.auth
+          .setSession({ access_token: accessToken, refresh_token: refreshToken })
+      }
+    })
+
+    return () => {
+      void listenerPromise.then(listener => listener.remove())
+    }
+  }, [])
 
   useEffect(() => {
     const path = window.location.pathname
@@ -192,10 +214,13 @@ function App() {
   const handleGoogleSignIn = async () => {
     setAuthError(null)
     setAuthMessage(null)
+    const redirectTo = Capacitor.isNativePlatform()
+      ? 'capacitor://localhost'
+      : window.location.origin
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin,
+        redirectTo,
       },
     })
     if (error) {
@@ -430,95 +455,95 @@ function App() {
             </div>
           )
         : !session
-        ? (
-            <AuthForm
-              authMode={authMode}
-              authEmail={authEmail}
-              authPassword={authPassword}
-              authLoading={authLoading}
-              authError={authError}
-              authMessage={authMessage}
-              onEmailChange={setAuthEmail}
-              onPasswordChange={setAuthPassword}
-              onSubmit={handleAuth}
-              onGoogleSignIn={handleGoogleSignIn}
-              onToggleMode={() =>
-                setAuthMode(mode => (mode === 'signin' ? 'signup' : 'signin'))}
-            />
-          )
-        : (
-            <>
-              <div className="tabs">
-                <button
-                  type="button"
-                  className={`tab-button ${activeTab === Tabs.Insights ? 'active' : ''}`}
-                  onClick={() => setActiveTab(Tabs.Insights)}
-                >
-                  Insights
-                </button>
-                <button
-                  type="button"
-                  className={`tab-button ${activeTab === Tabs.Log ? 'active' : ''}`}
-                  onClick={() => setActiveTab(Tabs.Log)}
-                >
-                  Log
-                </button>
-              </div>
+            ? (
+                <AuthForm
+                  authMode={authMode}
+                  authEmail={authEmail}
+                  authPassword={authPassword}
+                  authLoading={authLoading}
+                  authError={authError}
+                  authMessage={authMessage}
+                  onEmailChange={setAuthEmail}
+                  onPasswordChange={setAuthPassword}
+                  onSubmit={handleAuth}
+                  onGoogleSignIn={handleGoogleSignIn}
+                  onToggleMode={() =>
+                    setAuthMode(mode => (mode === 'signin' ? 'signup' : 'signin'))}
+                />
+              )
+            : (
+                <>
+                  <div className="tabs">
+                    <button
+                      type="button"
+                      className={`tab-button ${activeTab === Tabs.Insights ? 'active' : ''}`}
+                      onClick={() => setActiveTab(Tabs.Insights)}
+                    >
+                      Insights
+                    </button>
+                    <button
+                      type="button"
+                      className={`tab-button ${activeTab === Tabs.Log ? 'active' : ''}`}
+                      onClick={() => setActiveTab(Tabs.Log)}
+                    >
+                      Log
+                    </button>
+                  </div>
 
-              {activeTab === Tabs.Log
-                ? (
-                    <LogForm
-                      selectedDate={selectedDate}
-                      todayDate={todayDate}
-                      highlightedDates={highlightedDates}
-                      sleepHours={sleepHours}
-                      mood={mood}
-                      note={note}
-                      tags={tags}
-                      saving={saving}
-                      saved={saved}
-                      entriesError={entriesError}
-                      moodColors={moodColors}
-                      isPro={isPro}
-                      formatLocalDate={formatLocalDate}
-                      onEntryDateChange={setEntryDate}
-                      onSleepHoursChange={setSleepHours}
-                      onMoodChange={setMood}
-                      onNoteChange={setNote}
-                      onTagsChange={setTags}
-                      onSave={handleSave}
-                      onOpenPaywall={handleOpenPaywall}
-                    />
-                  )
-                : (
-                    <Insights
-                      entries={entries}
-                      entriesLoading={entriesLoading}
-                      chartData={chartData}
-                      averages={averages}
-                      windowAverages={stats.windowAverages}
-                      streak={stats.streak}
-                      sleepConsistencyLabel={stats.sleepConsistencyLabel}
-                      correlationLabel={stats.correlationLabel}
-                      correlationDirection={stats.correlationDirection}
-                      moodBySleepThreshold={stats.moodBySleepThreshold}
-                      sleepThreshold={sleepThreshold}
-                      moodColors={moodColors}
-                      trendSeries={stats.trendSeries}
-                      rollingSeries={stats.rollingSeries}
-                      rollingSummaries={stats.rollingSummaries}
-                      personalSleepThreshold={stats.personalSleepThreshold}
-                      moodByPersonalThreshold={stats.moodByPersonalThreshold}
-                      tagInsights={stats.tagInsights}
-                      isPro={isPro}
-                      exportError={exportError}
-                      onExportCsv={handleExportCsv}
-                      onExportMonthlyReport={handleExportMonthlyReport}
-                      onOpenPaywall={handleOpenPaywall}
-                    />
-                  )}
-            </>
-          )}
+                  {activeTab === Tabs.Log
+                    ? (
+                        <LogForm
+                          selectedDate={selectedDate}
+                          todayDate={todayDate}
+                          highlightedDates={highlightedDates}
+                          sleepHours={sleepHours}
+                          mood={mood}
+                          note={note}
+                          tags={tags}
+                          saving={saving}
+                          saved={saved}
+                          entriesError={entriesError}
+                          moodColors={moodColors}
+                          isPro={isPro}
+                          formatLocalDate={formatLocalDate}
+                          onEntryDateChange={setEntryDate}
+                          onSleepHoursChange={setSleepHours}
+                          onMoodChange={setMood}
+                          onNoteChange={setNote}
+                          onTagsChange={setTags}
+                          onSave={handleSave}
+                          onOpenPaywall={handleOpenPaywall}
+                        />
+                      )
+                    : (
+                        <Insights
+                          entries={entries}
+                          entriesLoading={entriesLoading}
+                          chartData={chartData}
+                          averages={averages}
+                          windowAverages={stats.windowAverages}
+                          streak={stats.streak}
+                          sleepConsistencyLabel={stats.sleepConsistencyLabel}
+                          correlationLabel={stats.correlationLabel}
+                          correlationDirection={stats.correlationDirection}
+                          moodBySleepThreshold={stats.moodBySleepThreshold}
+                          sleepThreshold={sleepThreshold}
+                          moodColors={moodColors}
+                          trendSeries={stats.trendSeries}
+                          rollingSeries={stats.rollingSeries}
+                          rollingSummaries={stats.rollingSummaries}
+                          personalSleepThreshold={stats.personalSleepThreshold}
+                          moodByPersonalThreshold={stats.moodByPersonalThreshold}
+                          tagInsights={stats.tagInsights}
+                          isPro={isPro}
+                          exportError={exportError}
+                          onExportCsv={handleExportCsv}
+                          onExportMonthlyReport={handleExportMonthlyReport}
+                          onOpenPaywall={handleOpenPaywall}
+                        />
+                      )}
+                </>
+              )}
     </div>
   )
 }
