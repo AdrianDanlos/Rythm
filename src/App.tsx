@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
 import { fetchEntries, type Entry, upsertEntry } from './lib/entries'
@@ -13,6 +13,7 @@ import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
 import { PaywallModal } from './components/PaywallModal'
 import { FeedbackModal } from './components/FeedbackModal.tsx'
+import { WelcomeModal } from './components/WelcomeModal'
 import { Tooltip } from './components/Tooltip'
 import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
@@ -66,7 +67,7 @@ function App() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.Insights)
-  const hasInitializedTab = useRef(false)
+  const [isWelcomeOpen, setIsWelcomeOpen] = useState(false)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
   const [isPortalLoading, setIsPortalLoading] = useState(false)
@@ -116,6 +117,7 @@ function App() {
     const userId = session?.user?.id
     if (!userId) {
       setEntries([])
+      setIsWelcomeOpen(false)
       return
     }
 
@@ -125,6 +127,14 @@ function App() {
       try {
         const data = await fetchEntries(userId)
         setEntries(data)
+        if (data.length) {
+          setActiveTab(Tabs.Insights)
+          setIsWelcomeOpen(false)
+        }
+        else {
+          setActiveTab(Tabs.Log)
+          setIsWelcomeOpen(true)
+        }
       }
       catch {
         setEntriesError('Unable to load entries.')
@@ -152,17 +162,6 @@ function App() {
     setNote('')
     setTags('')
   }, [entryDate, entries])
-
-  useEffect(() => {
-    hasInitializedTab.current = false
-  }, [session?.user?.id])
-
-  useEffect(() => {
-    if (hasInitializedTab.current) return
-    if (!session?.user?.id || entriesLoading || entriesError) return
-    setActiveTab(entries.length ? Tabs.Insights : Tabs.Log)
-    hasInitializedTab.current = true
-  }, [entries.length, entriesError, entriesLoading, session?.user?.id])
 
   useEffect(() => {
     if (entries.length && exportError) {
@@ -333,6 +332,10 @@ function App() {
     setIsPaywallOpen(true)
   }
 
+  const handleCloseWelcome = () => {
+    setIsWelcomeOpen(false)
+  }
+
   const handleClosePaywall = () => {
     setIsPaywallOpen(false)
   }
@@ -462,6 +465,10 @@ function App() {
         upgradeUrl={trimmedUpgradeUrl}
         onUpgrade={handleStartCheckout}
         priceLabel={trimmedPriceLabel}
+      />
+      <WelcomeModal
+        isOpen={isWelcomeOpen}
+        onClose={handleCloseWelcome}
       />
       <FeedbackModal
         isOpen={isFeedbackOpen}
