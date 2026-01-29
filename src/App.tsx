@@ -14,6 +14,7 @@ import { Insights } from './components/Insights'
 import { PaywallModal } from './components/PaywallModal'
 import { FeedbackModal } from './components/FeedbackModal.tsx'
 import { WelcomeModal } from './components/WelcomeModal'
+import { StreakModal } from './components/StreakModal'
 import { Tooltip } from './components/Tooltip'
 import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
@@ -68,6 +69,7 @@ function App() {
   const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.Insights)
   const [isWelcomeOpen, setIsWelcomeOpen] = useState(false)
+  const [isStreakOpen, setIsStreakOpen] = useState(false)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
   const [isPortalLoading, setIsPortalLoading] = useState(false)
@@ -274,12 +276,17 @@ function App() {
         ...(isPro ? { tags: tagList.length ? tagList : null } : {}),
       })
 
-      setEntries((prev) => {
-        const filtered = prev.filter(item => item.entry_date !== entryDate)
+      const nextEntries = (() => {
+        const filtered = entries.filter(item => item.entry_date !== entryDate)
         return [...filtered, saved].sort((a, b) =>
           a.entry_date.localeCompare(b.entry_date),
         )
-      })
+      })()
+      setEntries(nextEntries)
+      const nextStats = buildStats(nextEntries, sleepThreshold, formatLocalDate)
+      if (nextStats.streak === 7 && stats.streak < 7) {
+        setIsStreakOpen(true)
+      }
       setSaved(true)
       window.setTimeout(() => setSaved(false), 2000)
       if (entryDate === today) {
@@ -334,6 +341,10 @@ function App() {
 
   const handleCloseWelcome = () => {
     setIsWelcomeOpen(false)
+  }
+
+  const handleCloseStreak = () => {
+    setIsStreakOpen(false)
   }
 
   const handleClosePaywall = () => {
@@ -469,6 +480,10 @@ function App() {
       <WelcomeModal
         isOpen={isWelcomeOpen}
         onClose={handleCloseWelcome}
+      />
+      <StreakModal
+        isOpen={isStreakOpen}
+        onClose={handleCloseStreak}
       />
       <FeedbackModal
         isOpen={isFeedbackOpen}
