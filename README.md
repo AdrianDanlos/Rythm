@@ -69,7 +69,7 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
    - Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in your Vercel.
 2. Deploy Edge Functions to the prod project:
    - `npx supabase functions deploy create-checkout-session`
-   - `npx supabase functions deploy create-portal-session`
+   - `npx supabase functions deploy create-portal-session --no-verify-jwt`
    - `npx supabase functions deploy submit-feedback --no-verify-jwt`
    - `npx supabase functions deploy stripe-webhook --no-verify-jwt`
 3. Set Supabase secrets in the prod project:
