@@ -37,6 +37,7 @@ function App() {
     session,
     authLoading,
     authError,
+    authInitialized,
     signIn,
     signUp,
     signOut,
@@ -418,7 +419,17 @@ function App() {
         userEmail={session?.user?.email ?? null}
       />
 
-      {!session
+      {!authInitialized
+        ? (
+            <div className="card auth-loading" aria-live="polite">
+              <h2 className="auth-title">Loading your account</h2>
+              <div className="loading-row">
+                <span className="loading-spinner" aria-hidden="true" />
+                <span className="muted">Checking your session...</span>
+              </div>
+            </div>
+          )
+        : !session
         ? (
             <AuthForm
               authMode={authMode}

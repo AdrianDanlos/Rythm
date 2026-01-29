@@ -6,19 +6,33 @@ export const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
+  const [authInitialized, setAuthInitialized] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session ?? null)
-    })
+    let isMounted = true
+
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        if (!isMounted) return
+        setSession(data.session ?? null)
+        setAuthInitialized(true)
+      })
+      .catch(() => {
+        if (!isMounted) return
+        setAuthInitialized(true)
+      })
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      if (!isMounted) return
       setSession(newSession)
+      setAuthInitialized(true)
     })
 
     return () => {
+      isMounted = false
       subscription.unsubscribe()
     }
   }, [])
@@ -68,6 +82,7 @@ export const useAuth = () => {
     session,
     authLoading,
     authError,
+    authInitialized,
     signIn,
     signUp,
     signOut,
