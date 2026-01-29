@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.2",
+    "@capacitor/cli": "^7.4.5",
+    "@capacitor/core": "^8.0.2",
     "@supabase/supabase-js": "^2.91.1",
     "jspdf": "^4.0.0",
     "lucide-react": "^0.563.0",
