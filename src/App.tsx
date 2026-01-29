@@ -272,7 +272,7 @@ function App() {
       setSaved(true)
       window.setTimeout(() => setSaved(false), 2000)
       if (entryDate === today) {
-        window.setTimeout(() => setActiveTab(Tabs.Insights), 1000)
+        window.setTimeout(() => setActiveTab(Tabs.Insights), 500)
       }
     }
     catch {
