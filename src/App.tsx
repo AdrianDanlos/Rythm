@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
 import { fetchEntries, type Entry, upsertEntry } from './lib/entries'
@@ -66,6 +66,7 @@ function App() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.Insights)
+  const hasInitializedTab = useRef(false)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
   const [isPortalLoading, setIsPortalLoading] = useState(false)
@@ -151,6 +152,17 @@ function App() {
     setNote('')
     setTags('')
   }, [entryDate, entries])
+
+  useEffect(() => {
+    hasInitializedTab.current = false
+  }, [session?.user?.id])
+
+  useEffect(() => {
+    if (hasInitializedTab.current) return
+    if (!session?.user?.id || entriesLoading || entriesError) return
+    setActiveTab(entries.length ? Tabs.Insights : Tabs.Log)
+    hasInitializedTab.current = true
+  }, [entries.length, entriesError, entriesLoading, session?.user?.id])
 
   useEffect(() => {
     if (entries.length && exportError) {
