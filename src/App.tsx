@@ -502,6 +502,14 @@ function App() {
 
                   {activeTab === Tabs.Log
                     ? (
+                        <p className="helper">
+                          Log your sleep hours, mood, and other variables in the tags section to spot patterns over time.
+                        </p>
+                      )
+                    : null}
+
+                  {activeTab === Tabs.Log
+                    ? (
                         <LogForm
                           selectedDate={selectedDate}
                           todayDate={todayDate}
