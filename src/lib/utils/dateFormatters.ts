@@ -11,9 +11,24 @@ export const formatShortDate = (value: string) => {
   return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 }
 
-export const formatLongDate = (date: Date) =>
-  date.toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
+const MONTHS_SHORT = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
+
+export const formatLongDate = (date: Date) => {
+  const month = MONTHS_SHORT[date.getMonth()]
+  const day = date.getDate()
+  const year = date.getFullYear()
+  return `${month} ${day}, ${year}`
+}
