@@ -271,6 +271,9 @@ function App() {
       })
       setSaved(true)
       window.setTimeout(() => setSaved(false), 2000)
+      if (entryDate === today) {
+        window.setTimeout(() => setActiveTab(Tabs.Insights), 1000)
+      }
     }
     catch {
       setEntriesError('Unable to save entry.')
