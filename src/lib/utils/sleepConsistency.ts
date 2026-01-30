@@ -52,6 +52,8 @@ export const getSleepConsistencyBadges = (
     description: string,
     unlocked: boolean,
     progressText: string | null,
+    progressValue: number,
+    progressTotal: number,
   ) => {
     badges.push({
       id,
@@ -59,6 +61,8 @@ export const getSleepConsistencyBadges = (
       description,
       unlocked,
       progressText: unlocked ? null : progressText,
+      progressValue,
+      progressTotal,
     })
   }
 
@@ -135,6 +139,8 @@ export const getSleepConsistencyBadges = (
     '7+ hours for 5 nights.',
     sevenHourCount >= 5,
     `${Math.min(sevenHourCount, 5)}/5 nights`,
+    Math.min(sevenHourCount, 5),
+    5,
   )
   const eightHourCount = countAtLeast(8)
   addBadge(
@@ -143,6 +149,8 @@ export const getSleepConsistencyBadges = (
     '8+ hours for 3 nights.',
     eightHourCount >= 3,
     `${Math.min(eightHourCount, 3)}/3 nights`,
+    Math.min(eightHourCount, 3),
+    3,
   )
   const nineHourCount = countAtLeast(9)
   addBadge(
@@ -151,6 +159,8 @@ export const getSleepConsistencyBadges = (
     'Logged 9+ hours once.',
     nineHourCount >= 1,
     `${Math.min(nineHourCount, 1)}/1 nights`,
+    Math.min(nineHourCount, 1),
+    1,
   )
   addBadge(
     'three-day-streak',
@@ -158,6 +168,8 @@ export const getSleepConsistencyBadges = (
     'Logged 3 days in a row.',
     hasThreeDay,
     `${Math.min(maxStreak, 3)}/3 days`,
+    Math.min(maxStreak, 3),
+    3,
   )
   addBadge(
     'consistent-week',
@@ -165,6 +177,8 @@ export const getSleepConsistencyBadges = (
     'Logged 7 days in a row.',
     hasSevenDay,
     `${Math.min(maxStreak, 7)}/7 days`,
+    Math.min(maxStreak, 7),
+    7,
   )
   addBadge(
     'balanced-week',
@@ -172,6 +186,8 @@ export const getSleepConsistencyBadges = (
     'All 7 nights between 6–9 hours.',
     hasBalancedWeek,
     `${Math.min(maxBalancedRun, 7)}/7 nights in range`,
+    Math.min(maxBalancedRun, 7),
+    7,
   )
   addBadge(
     'monthly-milestone',
@@ -179,6 +195,8 @@ export const getSleepConsistencyBadges = (
     '30 logged nights in a month.',
     maxMonthlyCount >= 30,
     `${Math.min(maxMonthlyCount, 30)}/30 nights`,
+    Math.min(maxMonthlyCount, 30),
+    30,
   )
   addBadge(
     'century-club',
@@ -186,6 +204,8 @@ export const getSleepConsistencyBadges = (
     '100 total logged nights.',
     totalNights >= 100,
     `${Math.min(totalNights, 100)}/100 nights`,
+    Math.min(totalNights, 100),
+    100,
   )
   addBadge(
     'half-year-habit',
@@ -193,6 +213,8 @@ export const getSleepConsistencyBadges = (
     '180 total logged nights.',
     totalNights >= 180,
     `${Math.min(totalNights, 180)}/180 nights`,
+    Math.min(totalNights, 180),
+    180,
   )
   addBadge(
     'rest-reward',
@@ -200,7 +222,15 @@ export const getSleepConsistencyBadges = (
     '50+ hours in 7 nights.',
     maxSevenTotal >= 50,
     `${maxSevenTotal.toFixed(1)}h / 50h`,
+    Math.min(maxSevenTotal, 50),
+    50,
   )
 
-  return badges.sort((a, b) => Number(b.unlocked) - Number(a.unlocked))
+  return badges.sort((a, b) => {
+    const aProgress = (a.progressValue ?? 0) / (a.progressTotal || 1)
+    const bProgress = (b.progressValue ?? 0) / (b.progressTotal || 1)
+    if (bProgress !== aProgress) return bProgress - aProgress
+    if (a.unlocked !== b.unlocked) return Number(b.unlocked) - Number(a.unlocked)
+    return a.title.localeCompare(b.title)
+  })
 }

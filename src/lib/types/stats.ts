@@ -52,4 +52,6 @@ export type SleepConsistencyBadge = {
   description: string
   unlocked: boolean
   progressText: string | null
+  progressValue: number
+  progressTotal: number
 }
