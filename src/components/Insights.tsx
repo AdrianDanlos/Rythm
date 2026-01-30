@@ -131,6 +131,29 @@ export const Insights = ({
         moodBySleepThreshold={moodBySleepThreshold}
         sleepThreshold={sleepThreshold}
       />
+      <InsightsScatter
+        isLoading={isLoading}
+        isEmpty={isEmpty}
+        entries={entries}
+        plottedData={plottedData}
+        moodColors={moodColors}
+      />
+      <InsightsTagInsights
+        isPro={isPro}
+        tagDrivers={tagDrivers}
+        onOpenPaywall={onOpenPaywall}
+      />
+      <InsightsPersonalThreshold
+        isPro={isPro}
+        personalSleepThreshold={personalSleepThreshold}
+        moodByPersonalThreshold={moodByPersonalThreshold}
+        onOpenPaywall={onOpenPaywall}
+      />
+      <InsightsCalendarHeatmap
+        entries={entries}
+        moodColors={moodColors}
+        isMobile={isMobile}
+      />
       <InsightsSmoothedTrends
         isPro={isPro}
         isMobile={isMobile}
@@ -143,29 +166,6 @@ export const Insights = ({
         isMobile={isMobile}
         trendSeries={trendSeries}
         onOpenPaywall={onOpenPaywall}
-      />
-      <InsightsCalendarHeatmap
-        entries={entries}
-        moodColors={moodColors}
-        isMobile={isMobile}
-      />
-      <InsightsPersonalThreshold
-        isPro={isPro}
-        personalSleepThreshold={personalSleepThreshold}
-        moodByPersonalThreshold={moodByPersonalThreshold}
-        onOpenPaywall={onOpenPaywall}
-      />
-      <InsightsTagInsights
-        isPro={isPro}
-        tagDrivers={tagDrivers}
-        onOpenPaywall={onOpenPaywall}
-      />
-      <InsightsScatter
-        isLoading={isLoading}
-        isEmpty={isEmpty}
-        entries={entries}
-        plottedData={plottedData}
-        moodColors={moodColors}
       />
       <section className="card">
         <div className="card-header">
