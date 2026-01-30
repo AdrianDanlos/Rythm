@@ -68,13 +68,10 @@ export const LogForm = ({
         <label className="field">
           Sleep hours
           <input
-            type="number"
-            min={0}
-            max={12}
-            step={0.1}
+            type="text"
             value={sleepHours}
             onChange={event => onSleepHoursChange(event.target.value)}
-            placeholder="0-12"
+            placeholder="e.g., 7 or 7:30"
             required
           />
         </label>

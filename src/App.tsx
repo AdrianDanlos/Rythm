@@ -241,6 +241,26 @@ function App() {
     }
   }
 
+  // Parse sleep hours from string to number.
+  // Supports both hours and hours:minutes format.
+  const parseSleepHours = (value: string) => {
+    const trimmed = value.trim()
+    if (!trimmed) return null
+    if (trimmed.includes(':')) {
+      const match = /^(\d{1,2})\s*:\s*(\d{1,2})$/.exec(trimmed)
+      if (!match) return null
+      const hours = Number(match[1])
+      const minutes = Number(match[2])
+      if (!Number.isFinite(hours) || !Number.isFinite(minutes) || minutes >= 60) {
+        return null
+      }
+      return hours + minutes / 60
+    }
+    const asNumber = Number(trimmed)
+    if (!Number.isFinite(asNumber)) return null
+    return asNumber
+  }
+
   const handleSave = async (event: FormEvent) => {
     event.preventDefault()
     if (!session?.user?.id) return
@@ -251,8 +271,13 @@ function App() {
       return
     }
 
-    const parsedSleep = Number(sleepHours)
-    if (!Number.isFinite(parsedSleep) || parsedSleep < 0 || parsedSleep > 12) {
+    const parsedSleep = parseSleepHours(sleepHours)
+    if (parsedSleep === null) {
+      setEntriesError('Sleep hours must be a number or time like 7:30.')
+      setSaved(false)
+      return
+    }
+    if (parsedSleep < 0 || parsedSleep > 12) {
       setEntriesError('Sleep hours must be between 0 and 12.')
       setSaved(false)
       return
