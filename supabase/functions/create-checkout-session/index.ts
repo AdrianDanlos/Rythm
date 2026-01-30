@@ -9,16 +9,18 @@ const supabaseUrl = Deno.env.get('SUPABASE_URL') || Deno.env.get('URL')
 const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('ANON_KEY')
 const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY')
 const stripePriceId = Deno.env.get('STRIPE_PRICE_ID')
-const successUrl = Deno.env.get('STRIPE_SUCCESS_URL')
-const cancelUrl = Deno.env.get('STRIPE_CANCEL_URL')
+const webSuccessUrl = Deno.env.get('STRIPE_SUCCESS_URL')
+const webCancelUrl = Deno.env.get('STRIPE_CANCEL_URL')
+const mobileSuccessUrl = Deno.env.get('STRIPE_SUCCESS_URL_MOBILE')
+const mobileCancelUrl = Deno.env.get('STRIPE_CANCEL_URL_MOBILE')
 
 if (
   !supabaseUrl
   || !supabaseAnonKey
   || !stripeSecretKey
   || !stripePriceId
-  || !successUrl
-  || !cancelUrl
+  || !webSuccessUrl
+  || !webCancelUrl
 ) {
   throw new Error('Missing required environment variables.')
 }
@@ -35,6 +37,12 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   }
+
+  const payload = await req.json().catch(() => ({} as Record<string, unknown>))
+  const platform = typeof payload.platform === 'string' ? payload.platform : undefined
+  const useMobileUrls = platform === 'mobile' || platform === 'native'
+  const successUrl = useMobileUrls && mobileSuccessUrl ? mobileSuccessUrl : webSuccessUrl
+  const cancelUrl = useMobileUrls && mobileCancelUrl ? mobileCancelUrl : webCancelUrl
 
   const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
     headers: {
