@@ -11,6 +11,7 @@ import {
   YAxis,
 } from 'recharts'
 import type { RollingPoint, RollingSummary } from '../../lib/types/stats'
+import { buildMockRollingSeries } from '../../lib/insightsMock'
 import { formatShortDate } from '../../lib/utils/dateFormatters'
 import { Tooltip } from '../Tooltip'
 
@@ -60,10 +61,12 @@ export const InsightsSmoothedTrends = ({
   onOpenPaywall,
 }: InsightsSmoothedTrendsProps) => {
   const [rollingMetric, setRollingMetric] = useState<'sleep' | 'mood'>('mood')
+  const previewRollingSeries = buildMockRollingSeries()
   const smoothedChartMargin = isMobile
     ? { top: 12, right: 0, bottom: 0, left: -36 }
     : { top: 12, right: 28, bottom: 0, left: -12 }
   const rollingTickInterval = getDateTickInterval(rollingSeries.length)
+  const previewRollingTickInterval = getDateTickInterval(previewRollingSeries.length)
   const mobileTickProps = isMobile
     ? { angle: -35, textAnchor: 'end' as const, dy: 6, fontSize: 11 }
     : undefined
@@ -105,11 +108,121 @@ export const InsightsSmoothedTrends = ({
       </div>
       {!isPro
         ? (
-            <div className="locked-message">
-              <p className="muted">Upgrade to Pro to view rolling trend lines.</p>
-              <button type="button" className="ghost" onClick={onOpenPaywall}>
-                Upgrade to Pro
-              </button>
+            <div className="premium-preview">
+              <div className="premium-preview__blur">
+                <div className="chart-wrapper full-bleed">
+                  <ResponsiveContainer width="100%" height={180}>
+                    <LineChart
+                      data={previewRollingSeries}
+                      margin={smoothedChartMargin}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis
+                        dataKey="date"
+                        tickFormatter={formatShortDate}
+                        interval={isMobile
+                          ? Math.max(previewRollingTickInterval, 1)
+                          : previewRollingTickInterval}
+                        tick={mobileTickProps}
+                        height={isMobile ? 36 : 30}
+                      />
+                      <YAxis
+                        tickFormatter={formatAxisValue}
+                        domain={
+                          rollingMetric === 'sleep' ? [4, 10] : [1, 5]
+                        }
+                        ticks={
+                          rollingMetric === 'sleep' ? [4, 6, 8, 10] : [1, 2, 3, 4, 5]
+                        }
+                      />
+                      <RechartsTooltip
+                        formatter={(value) => {
+                          const normalized = Array.isArray(value) ? value[0] : value
+                          const formatted = formatLineValue(
+                            normalized ?? '',
+                          )
+                          return rollingMetric === 'sleep' && formatted !== '—'
+                            ? `${formatted}h`
+                            : formatted
+                        }}
+                        itemSorter={(item) => {
+                          const name = String(item.name ?? '')
+                          if (name.includes('7')) return 1
+                          if (name.includes('30')) return 2
+                          if (name.includes('90')) return 3
+                          return 99
+                        }}
+                      />
+                      <Legend itemSorter={rollingLegendSorter} wrapperStyle={legendWrapperStyle} />
+                      {rollingMetric === 'sleep'
+                        ? (
+                            <>
+                              <Line
+                                type="monotone"
+                                dataKey="sleep7"
+                                name="Last 7 days"
+                                stroke="#0f172a"
+                                dot={false}
+                                strokeWidth={2}
+                              />
+                              <Line
+                                type="monotone"
+                                dataKey="sleep30"
+                                name="Last 30 days"
+                                stroke="#2563eb"
+                                dot={false}
+                                strokeWidth={2}
+                              />
+                              <Line
+                                type="monotone"
+                                dataKey="sleep90"
+                                name="Last 90 days"
+                                stroke="#f97316"
+                                dot={false}
+                                strokeWidth={2}
+                              />
+                            </>
+                          )
+                        : (
+                            <>
+                              <Line
+                                type="monotone"
+                                dataKey="mood7"
+                                name="Last 7 days"
+                                stroke="#0f172a"
+                                dot={false}
+                                strokeWidth={2}
+                              />
+                              <Line
+                                type="monotone"
+                                dataKey="mood30"
+                                name="Last 30 days"
+                                stroke="#2563eb"
+                                dot={false}
+                                strokeWidth={2}
+                              />
+                              <Line
+                                type="monotone"
+                                dataKey="mood90"
+                                name="Last 90 days"
+                                stroke="#f97316"
+                                dot={false}
+                                strokeWidth={2}
+                              />
+                            </>
+                          )}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <div className="premium-preview__overlay">
+                <div className="locked-message">
+                  <p className="muted">Upgrade to Pro to view rolling trend lines.</p>
+                  <button type="button" className="ghost" onClick={onOpenPaywall}>
+                    Upgrade to Pro
+                  </button>
+                </div>
+              </div>
             </div>
           )
         : (

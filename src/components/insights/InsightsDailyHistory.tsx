@@ -10,6 +10,7 @@ import {
   YAxis,
 } from 'recharts'
 import type { TrendPoint } from '../../lib/types/stats'
+import { buildMockTrendSeries } from '../../lib/insightsMock'
 import { buildWeeklyTrendSeries } from '../../lib/stats'
 import { formatShortDate } from '../../lib/utils/dateFormatters'
 
@@ -51,7 +52,16 @@ export const InsightsDailyHistory = ({
   const trendDisplayPoints = isMobile && trendRange === 'last365' && trendGranularity === 'weekly'
     ? weeklyTrendPoints
     : trendPoints
+  const previewTrendSeries = buildMockTrendSeries()
+  const previewTrendPoints = previewTrendSeries[trendRange]
+  const previewWeeklyTrendPoints = trendRange === 'last365'
+    ? buildWeeklyTrendSeries(previewTrendSeries.last365)
+    : []
+  const previewTrendDisplayPoints = isMobile && trendRange === 'last365' && trendGranularity === 'weekly'
+    ? previewWeeklyTrendPoints
+    : previewTrendPoints
   const trendTickInterval = getDateTickInterval(trendDisplayPoints.length)
+  const previewTickInterval = getDateTickInterval(previewTrendDisplayPoints.length)
   const mobileTickProps = isMobile
     ? { angle: -35, textAnchor: 'end' as const, dy: 6, fontSize: 11 }
     : undefined
@@ -130,11 +140,62 @@ export const InsightsDailyHistory = ({
       </div>
       {!isPro
         ? (
-            <div className="locked-message">
-              <p className="muted">Upgrade to Pro for long-range trends.</p>
-              <button type="button" className="ghost" onClick={onOpenPaywall}>
-                Upgrade to Pro
-              </button>
+            <div className="premium-preview">
+              <div className="premium-preview__blur">
+                <div className="chart-wrapper">
+                  <ResponsiveContainer width="100%" height={180}>
+                    <LineChart data={previewTrendDisplayPoints} margin={trendChartMargin}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis
+                        dataKey="date"
+                        tickFormatter={formatShortDate}
+                        interval={isMobile ? Math.max(previewTickInterval, 1) : previewTickInterval}
+                        tick={mobileTickProps}
+                        height={isMobile ? 36 : 30}
+                      />
+                      <YAxis
+                        yAxisId="left"
+                        domain={[4, 10]}
+                        ticks={[2, 4, 6, 8, 10]}
+                        tickFormatter={formatAxisValue}
+                      />
+                      <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        domain={[1, 5]}
+                        ticks={[1, 2, 3, 4, 5]}
+                        tickFormatter={formatAxisValue}
+                      />
+                      <RechartsTooltip />
+                      <Legend wrapperStyle={legendWrapperStyle} />
+                      <Line
+                        type="monotone"
+                        dataKey="sleep"
+                        name="Sleep"
+                        stroke="#0f172a"
+                        dot={false}
+                        yAxisId="left"
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="mood"
+                        name="Mood"
+                        stroke="#22c55e"
+                        dot={false}
+                        yAxisId="right"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <div className="premium-preview__overlay">
+                <div className="locked-message">
+                  <p className="muted">Upgrade to Pro for long-range trends.</p>
+                  <button type="button" className="ghost" onClick={onOpenPaywall}>
+                    Upgrade to Pro
+                  </button>
+                </div>
+              </div>
             </div>
           )
         : (
