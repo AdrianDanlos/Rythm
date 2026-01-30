@@ -95,6 +95,19 @@ export const exportMonthlyReport = async (
     doc.setFontSize(12)
   }
 
+  const drawLines = (lines: string[], indent = 18) => {
+    doc.setFontSize(11)
+    lines.forEach((line) => {
+      doc.text(line, indent, y)
+      y += 6
+      if (y > 270) {
+        doc.addPage()
+        y = 18
+      }
+    })
+    doc.setFontSize(12)
+  }
+
   doc.setTextColor(20)
   drawSectionHeader('Last 30 days')
 
@@ -108,9 +121,15 @@ export const exportMonthlyReport = async (
 
   if (bestDay) {
     const bestTags = bestDay.tags?.length ? bestDay.tags.join(', ') : '—'
-    drawBullets([
-      `Best day: ${bestDay.entry_date} · Mood ${bestDay.mood} · Sleep ${bestDay.sleep_hours}h · Tags: ${bestTags}`,
-    ])
+    drawBullets([`Best day: ${bestDay.entry_date}`])
+    drawLines(
+      [
+        `Mood: ${bestDay.mood}`,
+        `Sleep: ${bestDay.sleep_hours}h`,
+        `Tags: ${bestTags}`,
+      ],
+      22,
+    )
   }
 
   if (monthlyTags.length) {
