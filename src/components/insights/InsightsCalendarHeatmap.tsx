@@ -96,17 +96,50 @@ export const InsightsCalendarHeatmap = ({
   )
   const legendColors = metric === 'mood' ? moodColors : sleepColors
   const monthLabels = useMemo(() => {
-    const formatter = new Intl.DateTimeFormat(undefined, { month: 'short' })
+    const formatter = new Intl.DateTimeFormat('en-US', { month: 'short' })
+    const monthTotals = new Map<string, number>()
+
+    weeks.forEach(week => {
+      week.forEach(day => {
+        if (!day.inRange) return
+        const date = new Date(`${day.date}T00:00:00`)
+        const key = `${date.getFullYear()}-${date.getMonth()}`
+        monthTotals.set(key, (monthTotals.get(key) ?? 0) + 1)
+      })
+    })
+
+    const labelMaxByMonthName = new Map<string, number>()
+    monthTotals.forEach((count, key) => {
+      const [yearValue, monthValue] = key.split('-').map(Number)
+      const label = formatter.format(new Date(yearValue, monthValue, 1))
+      const currentMax = labelMaxByMonthName.get(label) ?? 0
+      if (count > currentMax) {
+        labelMaxByMonthName.set(label, count)
+      }
+    })
+
     return weeks.map((week, index) => {
       const firstDay = week.find(day => day.inRange) ?? week[0]
       if (!firstDay) return ''
       const date = new Date(`${firstDay.date}T00:00:00`)
       const label = formatter.format(date)
-      if (index === 0) return label
+      const monthKey = `${date.getFullYear()}-${date.getMonth()}`
+      const monthTotal = monthTotals.get(monthKey) ?? 0
+      const maxForLabel = labelMaxByMonthName.get(label) ?? monthTotal
+
+      if (index === 0) {
+        return monthTotal < maxForLabel ? '' : label
+      }
       const previous = weeks[index - 1]?.find(day => day.inRange) ?? weeks[index - 1]?.[0]
-      if (!previous) return label
+      if (!previous) return monthTotal < maxForLabel ? '' : label
       const previousDate = new Date(`${previous.date}T00:00:00`)
-      return previousDate.getMonth() === date.getMonth() ? '' : label
+      if (
+        previousDate.getMonth() === date.getMonth()
+        && previousDate.getFullYear() === date.getFullYear()
+      ) {
+        return ''
+      }
+      return monthTotal < maxForLabel ? '' : label
     })
   }, [weeks])
 

@@ -37,7 +37,7 @@
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -583,7 +583,7 @@
 .heatmap-months {
   display: grid;
   gap: 2px;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--muted);
 }
 
@@ -605,7 +605,7 @@
 }
 
 .heatmap-day-label {
-  font-size: 0.6rem;
+  font-size: 0.7rem;
   color: var(--muted);
   line-height: 1;
   height: 100%;
