@@ -10,6 +10,7 @@ import { calculateAverages } from './lib/utils/averages'
 import { parseTags } from './lib/utils/stringUtils'
 import { AuthForm } from './components/AuthForm'
 import { LogForm } from './components/LogForm'
+import { Challenges } from './components/Challenges'
 import { Insights } from './components/Insights'
 import { PaywallModal } from './components/PaywallModal'
 import { FeedbackModal } from './components/FeedbackModal.tsx'
@@ -27,6 +28,7 @@ import './App.css'
 enum Tabs {
   Insights = 'insights',
   Log = 'log',
+  Challenges = 'challenges',
 }
 
 type TabKey = typeof Tabs[keyof typeof Tabs]
@@ -115,6 +117,14 @@ function App() {
 
     window.history.replaceState({}, '', '/')
   }, [refreshSession])
+
+  useEffect(() => {
+    if (!session?.user?.id) return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('invite')) {
+      setActiveTab(Tabs.Challenges)
+    }
+  }, [session?.user?.id])
 
   useEffect(() => {
     const userId = session?.user?.id
@@ -584,6 +594,13 @@ function App() {
                     >
                       Log
                     </button>
+                    <button
+                      type="button"
+                      className={`tab-button ${activeTab === Tabs.Challenges ? 'active' : ''}`}
+                      onClick={() => setActiveTab(Tabs.Challenges)}
+                    >
+                      Challenges
+                    </button>
                   </div>
 
                   {activeTab === Tabs.Log
@@ -621,7 +638,9 @@ function App() {
                           onOpenPaywall={handleOpenPaywall}
                         />
                       )
-                    : (
+                    : null}
+                  {activeTab === Tabs.Insights
+                    ? (
                         <Insights
                           entries={entries}
                           entriesLoading={entriesLoading}
@@ -648,7 +667,16 @@ function App() {
                           onExportMonthlyReport={handleExportMonthlyReport}
                           onOpenPaywall={handleOpenPaywall}
                         />
-                      )}
+                      )
+                    : null}
+                  {activeTab === Tabs.Challenges
+                    ? (
+                        <Challenges
+                          userId={session.user.id}
+                          entries={entries}
+                        />
+                      )
+                    : null}
                 </>
               )}
     </div>
