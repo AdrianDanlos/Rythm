@@ -59,7 +59,7 @@ export const InsightsSmoothedTrends = ({
   rollingSummaries,
   onOpenPaywall,
 }: InsightsSmoothedTrendsProps) => {
-  const [rollingMetric, setRollingMetric] = useState<'sleep' | 'mood'>('sleep')
+  const [rollingMetric, setRollingMetric] = useState<'sleep' | 'mood'>('mood')
   const smoothedChartMargin = isMobile
     ? { top: 12, right: 0, bottom: 0, left: -36 }
     : { top: 12, right: 28, bottom: 0, left: -12 }
@@ -89,17 +89,17 @@ export const InsightsSmoothedTrends = ({
         <div className="toggle-group">
           <button
             type="button"
-            className={`ghost ${rollingMetric === 'sleep' ? 'active' : ''}`}
-            onClick={() => handleProAction(() => setRollingMetric('sleep'))}
-          >
-            Sleep
-          </button>
-          <button
-            type="button"
             className={`ghost ${rollingMetric === 'mood' ? 'active' : ''}`}
             onClick={() => handleProAction(() => setRollingMetric('mood'))}
           >
             Mood
+          </button>
+          <button
+            type="button"
+            className={`ghost ${rollingMetric === 'sleep' ? 'active' : ''}`}
+            onClick={() => handleProAction(() => setRollingMetric('sleep'))}
+          >
+            Sleep
           </button>
         </div>
       </div>
