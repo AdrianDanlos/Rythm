@@ -27,7 +27,7 @@ export const InsightsPersonalThreshold = ({
               <p className="muted">
                 Upgrade to Pro to see your personal threshold.
               </p>
-              <button type="button" className="ghost" onClick={onOpenPaywall}>
+              <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
                 Upgrade to Pro
               </button>
             </div>

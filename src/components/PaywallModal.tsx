@@ -80,7 +80,7 @@ export const PaywallModal = ({
         <div className="modal-actions">
           <button
             type="button"
-            className="primary-button"
+            className="primary-button cta-button"
             disabled={!canUpgrade || isLoading}
             onClick={handleUpgrade}
           >

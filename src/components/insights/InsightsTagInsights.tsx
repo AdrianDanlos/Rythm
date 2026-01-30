@@ -40,7 +40,7 @@ export const InsightsTagInsights = ({
         ? (
             <div className="locked-message">
               <p className="muted">Upgrade to Pro to see tag drivers.</p>
-              <button type="button" className="ghost" onClick={onOpenPaywall}>
+              <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
                 Upgrade to Pro
               </button>
             </div>

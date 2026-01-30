@@ -191,7 +191,7 @@ export const InsightsDailyHistory = ({
               <div className="premium-preview__overlay">
                 <div className="locked-message">
                   <p className="muted">Upgrade to Pro for long-range trends.</p>
-                  <button type="button" className="ghost" onClick={onOpenPaywall}>
+                  <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
                     Upgrade to Pro
                   </button>
                 </div>
