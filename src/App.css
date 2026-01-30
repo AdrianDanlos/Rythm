@@ -532,7 +532,6 @@
   opacity: 0.7;
 }
 
-
 .badge-title {
   margin: 0;
   font-weight: 600;
@@ -715,7 +714,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 20px;
 }
 
 .chart-wrapper {

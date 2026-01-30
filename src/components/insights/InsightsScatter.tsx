@@ -53,7 +53,10 @@ export const InsightsScatter = ({
   return (
     <section className="card chart-card">
       <div className="chart-header">
-        <h2>Rythm insights</h2>
+        <div>
+          <h2>Rythm insights</h2>
+          <p className="muted">Each dot is one day: more sleep is right, better mood is higher.</p>
+        </div>
         <p className="muted">
           {isLoading ? 'Loading entries...' : `${entries.length} entries`}
         </p>
