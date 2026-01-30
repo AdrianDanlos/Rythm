@@ -9,7 +9,7 @@ export const WelcomeModal = ({ isOpen, onClose }: WelcomeModalProps) => {
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
       <div
-        className="modal-card"
+        className="modal-card modal-fade-in"
         role="dialog"
         aria-modal="true"
         aria-labelledby="welcome-title"
