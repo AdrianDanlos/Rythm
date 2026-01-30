@@ -410,9 +410,10 @@ function App() {
 
   const handleStartCheckout = async () => {
     try {
+      const platform = Capacitor.isNativePlatform() ? 'mobile' : 'web'
       const { data, error } = await supabase.functions.invoke(
         'create-checkout-session',
-        { body: {} },
+        { body: { platform } },
       )
       if (error) {
         throw error
@@ -628,6 +629,7 @@ function App() {
                           chartData={chartData}
                           averages={averages}
                           windowAverages={stats.windowAverages}
+                          rhythmScore={stats.rhythmScore}
                           streak={stats.streak}
                           sleepConsistencyLabel={stats.sleepConsistencyLabel}
                           sleepConsistencyBadges={stats.sleepConsistencyBadges}

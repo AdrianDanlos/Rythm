@@ -22,6 +22,7 @@ export type StatsResult = {
     last90: WindowStats
     last365: WindowStats
   }
+  rhythmScore: number | null
   streak: number
   sleepConsistencyLabel: string | null
   sleepConsistencyBadges: SleepConsistencyBadge[]
@@ -78,19 +79,20 @@ export const buildStats = (
     return { ...entry, date }
   })
 
-  const buildWindow = (days: number, offsetDays = 0): WindowStats => {
+  const getWindowEntries = (days: number, offsetDays = 0) => {
     const end = new Date()
     end.setHours(0, 0, 0, 0)
     end.setDate(end.getDate() - offsetDays)
     const start = new Date(end)
     start.setDate(end.getDate() - (days - 1))
 
-    const windowEntries = entriesWithDate.filter(
+    return entriesWithDate.filter(
       entry => entry.date >= start && entry.date <= end,
     )
-
-    return calculateAverages(windowEntries)
   }
+
+  const buildWindow = (days: number, offsetDays = 0): WindowStats =>
+    calculateAverages(getWindowEntries(days, offsetDays))
 
   const windowAverages = {
     last7: buildWindow(7),
@@ -98,6 +100,24 @@ export const buildStats = (
     last90: buildWindow(90),
     last365: buildWindow(365),
   }
+
+  const rhythmScore = (() => {
+    const windowEntries = getWindowEntries(30)
+    if (windowEntries.length < 5) return null
+    const sleepValues = windowEntries
+      .map(entry => Number(entry.sleep_hours))
+      .filter((value): value is number => Number.isFinite(value))
+    if (sleepValues.length < 5) return null
+    const mean = sleepValues.reduce((sum, value) => sum + value, 0) / sleepValues.length
+    const variance = sleepValues.reduce((sum, value) => {
+      const diff = value - mean
+      return sum + diff * diff
+    }, 0) / sleepValues.length
+    const stdDev = Math.sqrt(variance)
+    const maxStdDev = 3
+    const normalized = 1 - Math.min(maxStdDev, Math.max(0, stdDev)) / maxStdDev
+    return Math.round(Math.max(0, Math.min(1, normalized)) * 100)
+  })()
 
   let streak = 0
   if (entriesWithDate.length) {
@@ -273,6 +293,7 @@ export const buildStats = (
 
   return {
     windowAverages,
+    rhythmScore,
     streak,
     sleepConsistencyLabel,
     sleepConsistencyBadges,

@@ -30,6 +30,7 @@ type InsightsProps = {
     last90: WindowStats
     last365: WindowStats
   }
+  rhythmScore: number | null
   streak: number
   sleepConsistencyLabel: string | null
   sleepConsistencyBadges: SleepConsistencyBadge[]
@@ -57,6 +58,7 @@ export const Insights = ({
   chartData,
   averages,
   windowAverages,
+  rhythmScore,
   streak,
   sleepConsistencyLabel,
   sleepConsistencyBadges,
@@ -124,6 +126,7 @@ export const Insights = ({
         isLoading={isLoading}
         averages={averages}
         windowAverages={windowAverages}
+        rhythmScore={rhythmScore}
         streak={streak}
         sleepConsistencyLabel={sleepConsistencyLabel}
         correlationLabel={correlationLabel}

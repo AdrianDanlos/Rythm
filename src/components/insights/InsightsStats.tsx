@@ -9,6 +9,7 @@ type InsightsStatsProps = {
     last90: WindowStats
     last365: WindowStats
   }
+  rhythmScore: number | null
   streak: number
   sleepConsistencyLabel: string | null
   correlationLabel: string | null
@@ -21,6 +22,7 @@ export const InsightsStats = ({
   isLoading,
   averages,
   windowAverages,
+  rhythmScore,
   streak,
   sleepConsistencyLabel,
   correlationLabel,
@@ -65,7 +67,7 @@ export const InsightsStats = ({
       {isLoading
         ? (
             <>
-              {[1, 2, 3, 4, 5, 6].map(item => (
+              {[1, 2, 3, 4, 5, 6, 7].map(item => (
                 <div className="stat-block" key={item}>
                   <div className="skeleton-line" />
                   <div className="skeleton-line short" />
@@ -107,6 +109,14 @@ export const InsightsStats = ({
                   {streak} days
                 </p>
                 <p className="helper">Consecutive days logged</p>
+              </div>
+              <div className="stat-divider" aria-hidden />
+              <div className="stat-block">
+                <p className="label">Rhythm score</p>
+                <p className="value">
+                  {rhythmScore !== null ? `${rhythmScore} / 100` : '—'}
+                </p>
+                <p className="helper">Sleep stability over the last 30 days</p>
               </div>
               <div className="stat-divider" aria-hidden />
               <div className="stat-block">
