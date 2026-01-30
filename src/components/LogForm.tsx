@@ -1,6 +1,7 @@
 import type { FormEvent } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
+import { parseTags } from '../lib/utils/stringUtils'
 
 export type LogFormProps = {
   selectedDate: Date
@@ -10,6 +11,8 @@ export type LogFormProps = {
   mood: number | null
   note: string
   tags: string
+  tagSuggestions: string[]
+  maxTagsPerEntry: number
   saving: boolean
   saved: boolean
   entriesError: string | null
@@ -33,6 +36,8 @@ export const LogForm = ({
   mood,
   note,
   tags,
+  tagSuggestions,
+  maxTagsPerEntry,
   saving,
   saved,
   entriesError,
@@ -47,6 +52,29 @@ export const LogForm = ({
   onSave,
   onOpenPaywall,
 }: LogFormProps) => {
+  const usedTags = parseTags(tags)
+  const usedTagSet = new Set(usedTags)
+  const lastCommaIndex = tags.lastIndexOf(',')
+  const rawToken = lastCommaIndex === -1 ? tags : tags.slice(lastCommaIndex + 1)
+  const token = rawToken.trim()
+  const tokenLower = token.toLowerCase()
+  const matchingSuggestions = tokenLower.length
+    ? tagSuggestions.filter(tag =>
+        tag.startsWith(tokenLower) && !usedTagSet.has(tag),
+      )
+    : []
+
+  const handleSuggestionSelect = (suggestion: string) => {
+    const prefix = lastCommaIndex === -1 ? '' : tags.slice(0, lastCommaIndex + 1)
+    const spacer = rawToken.startsWith(' ') ? ' ' : ''
+    const baseValue = `${prefix}${spacer}${suggestion}`
+    const nextTagList = parseTags(baseValue)
+    const shouldAppendComma = nextTagList.length < maxTagsPerEntry
+      && !baseValue.trim().endsWith(',')
+    const nextValue = shouldAppendComma ? `${baseValue}, ` : baseValue
+    onTagsChange(nextValue)
+  }
+
   return (
     <section className="card">
       <form onSubmit={onSave} className="stack">
@@ -110,16 +138,34 @@ export const LogForm = ({
           }}
         >
           Tags (Pro)
-          <input
-            type="text"
-            value={tags}
-            onChange={event => onTagsChange(event.target.value)}
-            placeholder="e.g., exercise, late screens"
-            disabled={!isPro}
-          />
+          <div className="tag-input">
+            <input
+              type="text"
+              value={tags}
+              onChange={event => onTagsChange(event.target.value)}
+              placeholder="e.g., exercise, late screens"
+              disabled={!isPro}
+            />
+            {isPro && matchingSuggestions.length > 0
+              ? (
+                  <div className="tag-suggestions" role="listbox">
+                    {matchingSuggestions.map(suggestion => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        className="tag-suggestion"
+                        onClick={() => handleSuggestionSelect(suggestion)}
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                )
+              : null}
+          </div>
           <p className="helper">
             {isPro
-              ? 'Separate tags with commas.'
+              ? `Up to ${maxTagsPerEntry} tags per entry. Separate tags with commas.`
               : 'Upgrade to Pro to add tags.'}
           </p>
         </label>

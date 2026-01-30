@@ -239,6 +239,48 @@
   background: #fff;
 }
 
+.tag-input {
+  position: relative;
+}
+
+.tag-input input {
+  width: 100%;
+}
+
+.tag-suggestions {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 5;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.tag-suggestion {
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: var(--text);
+}
+
+.tag-suggestion:hover,
+.tag-suggestion:focus {
+  background: #f1f5f9;
+  border-color: var(--border);
+}
+
 .date-picker {
   display: flex;
   justify-content: center;

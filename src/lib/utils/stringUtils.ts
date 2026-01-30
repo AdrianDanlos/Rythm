@@ -3,6 +3,7 @@ export const parseTags = (value: string) =>
     .split(',')
     .map(tag => tag.trim().toLowerCase())
     .filter(tag => tag.length)
+    .filter((tag, index, list) => list.indexOf(tag) === index)
 
 export const escapeCsv = (value: string | number | null) => {
   const stringValue = value === null ? '' : String(value)

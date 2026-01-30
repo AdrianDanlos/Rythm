@@ -76,6 +76,7 @@ function App() {
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
+  const maxTagsPerEntry = 10
   const isPro = Boolean(session?.user?.app_metadata?.is_pro)
   const canManageSubscription = isPro
     && Boolean(session?.user?.app_metadata?.stripe_customer_id)
@@ -203,6 +204,23 @@ function App() {
     [entries, sleepThreshold],
   )
 
+  const tagSuggestions = useMemo(() => {
+    const sorted = [...entries].sort((a, b) =>
+      b.entry_date.localeCompare(a.entry_date),
+    )
+    const seen = new Set<string>()
+    const suggestions: string[] = []
+    sorted.forEach((entry) => {
+      entry.tags?.forEach((tag) => {
+        const normalized = tag.trim().toLowerCase()
+        if (!normalized || seen.has(normalized)) return
+        seen.add(normalized)
+        suggestions.push(normalized)
+      })
+    })
+    return suggestions
+  }, [entries])
+
   const handleAuth = async (event: FormEvent) => {
     event.preventDefault()
     setAuthError(null)
@@ -288,10 +306,16 @@ function App() {
       return
     }
 
+    const tagList = isPro ? parseTags(tags) : []
+    if (isPro && tagList.length > maxTagsPerEntry) {
+      setEntriesError(`Limit ${maxTagsPerEntry} tags per entry.`)
+      setSaved(false)
+      return
+    }
+
     setSaving(true)
     setEntriesError(null)
     try {
-      const tagList = isPro ? parseTags(tags) : []
       const saved = await upsertEntry({
         user_id: session.user.id,
         entry_date: entryDate,
@@ -580,6 +604,8 @@ function App() {
                           mood={mood}
                           note={note}
                           tags={tags}
+                          tagSuggestions={tagSuggestions}
+                          maxTagsPerEntry={maxTagsPerEntry}
                           saving={saving}
                           saved={saved}
                           entriesError={entriesError}
