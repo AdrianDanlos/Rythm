@@ -33,7 +33,7 @@ export const InsightsTagInsights = ({
       <div className="card-header">
         <div>
           <h2>Tag Insights</h2>
-          <p className="muted">Impact of tags on your mood</p>
+          <p className="muted">Impact of tags on your mood and sleep</p>
         </div>
       </div>
       {!isPro
@@ -86,8 +86,8 @@ export const InsightsTagInsights = ({
             )
           : (
               <p className="muted">
-                No clear drivers yet. Add tags (at least {DEFAULT_TAG_DRIVER_MIN_COUNT}
-                entries per tag) to see patterns.
+                {`Add tags (at least ${DEFAULT_TAG_DRIVER_MIN_COUNT} entries per tag) to see patterns.`}
+
               </p>
             )}
     </section>
