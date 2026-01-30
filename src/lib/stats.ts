@@ -2,14 +2,18 @@ import type { Entry } from './entries'
 import type {
   RollingPoint,
   RollingSummary,
-  TagInsight,
+  SleepConsistencyBadge,
+  TagDriver,
   TrendPoint,
   WindowStats,
 } from './types/stats'
 import { calculateAverages } from './utils/averages'
 import { getCorrelationInsight } from './utils/correlation'
-import { getSleepConsistencyLabel } from './utils/sleepConsistency'
-import { buildTagInsights } from './utils/tagInsights'
+import {
+  getSleepConsistencyBadges,
+  getSleepConsistencyLabel,
+} from './utils/sleepConsistency'
+import { buildTagDrivers } from './utils/tagInsights'
 
 export type StatsResult = {
   windowAverages: {
@@ -20,6 +24,7 @@ export type StatsResult = {
   }
   streak: number
   sleepConsistencyLabel: string | null
+  sleepConsistencyBadges: SleepConsistencyBadge[]
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
@@ -32,7 +37,7 @@ export type StatsResult = {
   }
   rollingSeries: RollingPoint[]
   rollingSummaries: RollingSummary[]
-  tagInsights: TagInsight[]
+  tagDrivers: TagDriver[]
 }
 
 export const buildWeeklyTrendSeries = (points: TrendPoint[]): TrendPoint[] => {
@@ -112,6 +117,7 @@ export const buildStats = (
   }
 
   const sleepConsistencyLabel = getSleepConsistencyLabel(entries)
+  const sleepConsistencyBadges = getSleepConsistencyBadges(entries)
   const {
     label: correlationLabel,
     direction: correlationDirection,
@@ -263,12 +269,13 @@ export const buildStats = (
     }
   })()
 
-  const tagInsights = buildTagInsights(entries)
+  const tagDrivers = buildTagDrivers(entries)
 
   return {
     windowAverages,
     streak,
     sleepConsistencyLabel,
+    sleepConsistencyBadges,
     correlationLabel,
     correlationDirection,
     moodBySleepThreshold,
@@ -277,6 +284,6 @@ export const buildStats = (
     trendSeries,
     rollingSeries,
     rollingSummaries,
-    tagInsights,
+    tagDrivers,
   }
 }

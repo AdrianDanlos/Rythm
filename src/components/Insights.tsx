@@ -4,17 +4,20 @@ import type {
   RollingPoint,
   RollingSummary,
   SleepMoodAverages,
-  TagInsight,
+  SleepConsistencyBadge,
+  TagDriver,
   TrendPoint,
   WindowStats,
 } from '../lib/types/stats'
 import { InsightsDailyHistory } from './insights/InsightsDailyHistory'
 import { InsightsExport } from './insights/InsightsExport'
+import { InsightsCalendarHeatmap } from './insights/InsightsCalendarHeatmap'
 import { InsightsPersonalThreshold } from './insights/InsightsPersonalThreshold'
 import { InsightsScatter } from './insights/InsightsScatter'
 import { InsightsSmoothedTrends } from './insights/InsightsSmoothedTrends'
 import { InsightsStats } from './insights/InsightsStats'
 import { InsightsTagInsights } from './insights/InsightsTagInsights'
+import { Award, Lock } from 'lucide-react'
 
 type InsightsProps = {
   entries: Entry[]
@@ -29,6 +32,7 @@ type InsightsProps = {
   }
   streak: number
   sleepConsistencyLabel: string | null
+  sleepConsistencyBadges: SleepConsistencyBadge[]
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
@@ -39,7 +43,7 @@ type InsightsProps = {
   rollingSummaries: RollingSummary[]
   personalSleepThreshold: number | null
   moodByPersonalThreshold: { high: number | null, low: number | null }
-  tagInsights: TagInsight[]
+  tagDrivers: TagDriver[]
   isPro: boolean
   exportError: string | null
   onExportCsv: () => void
@@ -55,6 +59,7 @@ export const Insights = ({
   windowAverages,
   streak,
   sleepConsistencyLabel,
+  sleepConsistencyBadges,
   correlationLabel,
   correlationDirection,
   moodBySleepThreshold,
@@ -65,7 +70,7 @@ export const Insights = ({
   rollingSummaries,
   personalSleepThreshold,
   moodByPersonalThreshold,
-  tagInsights,
+  tagDrivers,
   isPro,
   exportError,
   onExportCsv,
@@ -139,6 +144,11 @@ export const Insights = ({
         trendSeries={trendSeries}
         onOpenPaywall={onOpenPaywall}
       />
+      <InsightsCalendarHeatmap
+        entries={entries}
+        moodColors={moodColors}
+        isMobile={isMobile}
+      />
       <InsightsPersonalThreshold
         isPro={isPro}
         personalSleepThreshold={personalSleepThreshold}
@@ -147,7 +157,7 @@ export const Insights = ({
       />
       <InsightsTagInsights
         isPro={isPro}
-        tagInsights={tagInsights}
+        tagDrivers={tagDrivers}
         onOpenPaywall={onOpenPaywall}
       />
       <InsightsScatter
@@ -157,6 +167,41 @@ export const Insights = ({
         plottedData={plottedData}
         moodColors={moodColors}
       />
+      <section className="card">
+        <div className="card-header">
+          <div>
+            <h2>Sleep badges</h2>
+            <p className="muted">Consistency rewards based on your logs</p>
+          </div>
+        </div>
+        {sleepConsistencyBadges.length
+          ? (
+              <div className="badge-grid">
+                {sleepConsistencyBadges.map(badge => (
+                  <div
+                    className={`badge-pill ${badge.unlocked ? 'unlocked' : 'locked'}`}
+                    key={badge.id}
+                  >
+                    <div className="badge-title-row">
+                      <p className="badge-title">{badge.title}</p>
+                      {badge.unlocked
+                        ? <Award className="badge-status-icon" aria-hidden />
+                        : <Lock className="badge-status-icon" aria-hidden />}
+                    </div>
+                    <p className="badge-helper">{badge.description}</p>
+                    {badge.progressText
+                      ? (
+                          <p className="badge-progress">{badge.progressText}</p>
+                        )
+                      : null}
+                  </div>
+                ))}
+              </div>
+            )
+          : (
+              <p className="muted">Log more nights to unlock badges.</p>
+            )}
+      </section>
       <InsightsExport
         hasEntries={entries.length > 0}
         isPro={isPro}

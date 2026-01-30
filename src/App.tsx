@@ -630,6 +630,7 @@ function App() {
                           windowAverages={stats.windowAverages}
                           streak={stats.streak}
                           sleepConsistencyLabel={stats.sleepConsistencyLabel}
+                          sleepConsistencyBadges={stats.sleepConsistencyBadges}
                           correlationLabel={stats.correlationLabel}
                           correlationDirection={stats.correlationDirection}
                           moodBySleepThreshold={stats.moodBySleepThreshold}
@@ -640,7 +641,7 @@ function App() {
                           rollingSummaries={stats.rollingSummaries}
                           personalSleepThreshold={stats.personalSleepThreshold}
                           moodByPersonalThreshold={stats.moodByPersonalThreshold}
-                          tagInsights={stats.tagInsights}
+                          tagDrivers={stats.tagDrivers}
                           isPro={isPro}
                           exportError={exportError}
                           onExportCsv={handleExportCsv}

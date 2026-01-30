@@ -37,3 +37,19 @@ export type TagInsight = {
   mood: number | null
   count: number
 }
+
+export type TagDriver = {
+  tag: string
+  count: number
+  moodWith: number | null
+  moodWithout: number | null
+  delta: number | null
+}
+
+export type SleepConsistencyBadge = {
+  id: string
+  title: string
+  description: string
+  unlocked: boolean
+  progressText: string | null
+}

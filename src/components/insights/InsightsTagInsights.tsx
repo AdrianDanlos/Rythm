@@ -1,48 +1,95 @@
-import type { TagInsight } from '../../lib/types/stats'
+import type { TagDriver } from '../../lib/types/stats'
+import { DEFAULT_TAG_DRIVER_MIN_COUNT } from '../../lib/utils/tagInsights'
 
 type InsightsTagInsightsProps = {
   isPro: boolean
-  tagInsights: TagInsight[]
+  tagDrivers: TagDriver[]
   onOpenPaywall: () => void
 }
 
 export const InsightsTagInsights = ({
   isPro,
-  tagInsights,
+  tagDrivers,
   onOpenPaywall,
-}: InsightsTagInsightsProps) => (
-  <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
-    <div className="card-header">
-      <div>
-        <h2>Tag insights</h2>
-        <p className="muted">Sleep and Mood by tag</p>
+}: InsightsTagInsightsProps) => {
+  const positiveDrivers = [...tagDrivers]
+    .filter(driver => typeof driver.delta === 'number' && driver.delta > 0)
+    .sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0))
+    .slice(0, 4)
+  const negativeDrivers = [...tagDrivers]
+    .filter(driver => typeof driver.delta === 'number' && driver.delta < 0)
+    .sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0))
+    .slice(0, 4)
+  const hasDrivers = positiveDrivers.length > 0 || negativeDrivers.length > 0
+
+  const formatDelta = (delta: number | null) => {
+    if (delta === null) return '—'
+    const sign = delta >= 0 ? '+' : ''
+    return `${sign}${delta.toFixed(1)} mood vs days without`
+  }
+
+  return (
+    <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
+      <div className="card-header">
+        <div>
+          <h2>Tag Insights</h2>
+          <p className="muted">Impact of tags on your mood</p>
+        </div>
       </div>
-    </div>
-    {!isPro
-      ? (
-          <div className="locked-message">
-            <p className="muted">Upgrade to Pro to see tag insights.</p>
-            <button type="button" className="ghost" onClick={onOpenPaywall}>
-              Upgrade to Pro
-            </button>
-          </div>
-        )
-      : tagInsights.length
+      {!isPro
         ? (
-            <div className="tag-grid">
-              {tagInsights.slice(0, 8).map(tag => (
-                <div className="tag-card" key={tag.tag}>
-                  <p className="tag-title">{tag.tag}</p>
-                  <p className="helper">
-                    {tag.count} entries · {tag.sleep?.toFixed(1) ?? '—'}h /{' '}
-                    {tag.mood?.toFixed(1) ?? '—'}
-                  </p>
-                </div>
-              ))}
+            <div className="locked-message">
+              <p className="muted">Upgrade to Pro to see tag drivers.</p>
+              <button type="button" className="ghost" onClick={onOpenPaywall}>
+                Upgrade to Pro
+              </button>
             </div>
           )
-        : (
-            <p className="muted">Add tags to see insights.</p>
-          )}
-  </section>
-)
+        : hasDrivers
+          ? (
+              <>
+                {positiveDrivers.length
+                  ? (
+                      <div className="tag-driver-section">
+                        <p className="label">Top positive tags</p>
+                        <div className="tag-grid">
+                          {positiveDrivers.map(tag => (
+                            <div className="tag-card" key={tag.tag}>
+                              <p className="tag-title">{tag.tag}</p>
+                              <p className="helper">
+                                {formatDelta(tag.delta)} · {tag.count} entries
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  : null}
+                {negativeDrivers.length
+                  ? (
+                      <div className="tag-driver-section">
+                        <p className="label">Top negative tags</p>
+                        <div className="tag-grid">
+                          {negativeDrivers.map(tag => (
+                            <div className="tag-card" key={tag.tag}>
+                              <p className="tag-title">{tag.tag}</p>
+                              <p className="helper">
+                                {formatDelta(tag.delta)} · {tag.count} entries
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  : null}
+              </>
+            )
+          : (
+              <p className="muted">
+                No clear drivers yet. Add tags (at least {DEFAULT_TAG_DRIVER_MIN_COUNT}
+                entries per tag) to see patterns.
+              </p>
+            )}
+    </section>
+  )
+}

@@ -1,0 +1,219 @@
+import { useMemo, useState } from 'react'
+import type { Entry } from '../../lib/entries'
+import { formatLocalDate, formatLongDate } from '../../lib/utils/dateFormatters'
+import { Tooltip } from '../Tooltip'
+
+type HeatmapDay = {
+  date: string
+  inRange: boolean
+  isFuture: boolean
+  mood: number | null
+  sleep: number | null
+}
+
+type InsightsCalendarHeatmapProps = {
+  entries: Entry[]
+  moodColors: string[]
+  isMobile: boolean
+}
+
+const sleepColors = ['#e0f2fe', '#bae6fd', '#7dd3fc', '#38bdf8', '#0ea5e9']
+const dayLabels = ['Mon', '', 'Wed', '', 'Fri', '', '']
+
+const buildHeatmapWeeks = (entries: Entry[], days: number): HeatmapDay[][] => {
+  const end = new Date()
+  end.setHours(0, 0, 0, 0)
+  const start = new Date(end)
+  start.setDate(end.getDate() - (days - 1))
+
+  const entriesByDate = new Map(entries.map(entry => [entry.entry_date, entry]))
+  const startMs = start.getTime()
+  const endMs = end.getTime()
+
+  const startOffset = (start.getDay() + 6) % 7
+  const gridStart = new Date(start)
+  gridStart.setDate(start.getDate() - startOffset)
+
+  const endOffset = 6 - ((end.getDay() + 6) % 7)
+  const gridEnd = new Date(end)
+  gridEnd.setDate(end.getDate() + endOffset)
+
+  const weeks: HeatmapDay[][] = []
+  const cursor = new Date(gridStart)
+
+  while (cursor <= gridEnd) {
+    const week: HeatmapDay[] = []
+    for (let i = 0; i < 7; i += 1) {
+      const current = new Date(cursor)
+      const currentMs = current.getTime()
+      const inRange = currentMs >= startMs && currentMs <= endMs
+      const isFuture = currentMs > endMs
+      const key = formatLocalDate(current)
+      const entry = entriesByDate.get(key) ?? null
+      week.push({
+        date: key,
+        inRange,
+        isFuture,
+        mood: entry ? Number(entry.mood) : null,
+        sleep: entry ? Number(entry.sleep_hours) : null,
+      })
+      cursor.setDate(cursor.getDate() + 1)
+    }
+    weeks.push(week)
+  }
+
+  return weeks
+}
+
+const clampIndex = (value: number, maxIndex: number) => {
+  if (!Number.isFinite(value)) return 0
+  return Math.min(maxIndex, Math.max(0, Math.round(value)))
+}
+
+const getMoodColor = (mood: number | null, palette: string[]) => {
+  if (!mood) return null
+  const index = clampIndex(mood - 1, palette.length - 1)
+  return palette[index] ?? null
+}
+
+const getSleepColor = (sleep: number | null) => {
+  if (!sleep) return null
+  const normalized = Math.min(1, Math.max(0, (sleep - 4) / 6))
+  const index = Math.min(sleepColors.length - 1, Math.floor(normalized * sleepColors.length))
+  return sleepColors[index] ?? null
+}
+
+export const InsightsCalendarHeatmap = ({
+  entries,
+  moodColors,
+  isMobile,
+}: InsightsCalendarHeatmapProps) => {
+  const [metric, setMetric] = useState<'mood' | 'sleep'>('mood')
+  const totalDays = isMobile ? 90 : 365
+  const weeks = useMemo(
+    () => buildHeatmapWeeks(entries, totalDays),
+    [entries, totalDays],
+  )
+  const legendColors = metric === 'mood' ? moodColors : sleepColors
+  const monthLabels = useMemo(() => {
+    const formatter = new Intl.DateTimeFormat(undefined, { month: 'short' })
+    return weeks.map((week, index) => {
+      const firstDay = week.find(day => day.inRange) ?? week[0]
+      if (!firstDay) return ''
+      const date = new Date(`${firstDay.date}T00:00:00`)
+      const label = formatter.format(date)
+      if (index === 0) return label
+      const previous = weeks[index - 1]?.find(day => day.inRange) ?? weeks[index - 1]?.[0]
+      if (!previous) return label
+      const previousDate = new Date(`${previous.date}T00:00:00`)
+      return previousDate.getMonth() === date.getMonth() ? '' : label
+    })
+  }, [weeks])
+
+  return (
+    <section className="card">
+      <div className="card-header">
+        <div>
+          <h2>Calendar heatmap</h2>
+          <p className="muted">
+            Daily {metric} · Last {totalDays} days
+          </p>
+        </div>
+        <div className="toggle-group">
+          <button
+            type="button"
+            className={`ghost ${metric === 'mood' ? 'active' : ''}`}
+            onClick={() => setMetric('mood')}
+          >
+            Mood
+          </button>
+          <button
+            type="button"
+            className={`ghost ${metric === 'sleep' ? 'active' : ''}`}
+            onClick={() => setMetric('sleep')}
+          >
+            Sleep
+          </button>
+        </div>
+      </div>
+      <div className="heatmap-layout" role="img" aria-label="Calendar heatmap">
+        <div className="heatmap-header">
+          <div className="heatmap-spacer" aria-hidden="true" />
+          <div
+            className="heatmap-months"
+            style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}
+          >
+            {monthLabels.map((label, index) => (
+              <span className="heatmap-month" key={`month-${index}`}>
+                {label}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="heatmap-body">
+          <div className="heatmap-days" aria-hidden="true">
+            {dayLabels.map((label, index) => (
+              <span className="heatmap-day-label" key={`day-${index}`}>
+                {label}
+              </span>
+            ))}
+          </div>
+          <div
+            className="heatmap-grid"
+            style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}
+          >
+            {weeks.map((week, weekIndex) => (
+              <div className="heatmap-week" key={`week-${weekIndex}`}>
+                {week.map((day) => {
+                  const color = metric === 'mood'
+                    ? getMoodColor(day.mood, moodColors)
+                    : getSleepColor(day.sleep)
+                  const labelDate = formatLongDate(new Date(`${day.date}T00:00:00`))
+              const valueLabel = metric === 'mood'
+                ? day.mood
+                  ? `${day.mood.toFixed(0)} / 5`
+                  : 'No entry'
+                : day.sleep
+                  ? `${day.sleep.toFixed(1)}h`
+                  : 'No entry'
+              if (day.isFuture) {
+                return (
+                  <span
+                    key={day.date}
+                    className="heatmap-day future"
+                    aria-hidden="true"
+                  />
+                )
+              }
+
+              const tooltipLabel = `${labelDate} · ${valueLabel}`
+              return (
+                <Tooltip key={day.date} label={tooltipLabel}>
+                  <span
+                    className={`heatmap-day${color ? ' filled' : ''}`}
+                    style={color ? { backgroundColor: color } : undefined}
+                  />
+                </Tooltip>
+              )
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="heatmap-legend">
+        <span className="muted">Low</span>
+        <div className="heatmap-legend-scale">
+          {legendColors.map(color => (
+            <span
+              className="heatmap-legend-swatch"
+              key={color}
+              style={{ backgroundColor: color }}
+            />
+          ))}
+        </div>
+        <span className="muted">High</span>
+      </div>
+    </section>
+  )
+}
