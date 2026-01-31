@@ -137,6 +137,7 @@ export const Insights = ({
       <InsightsScatter
         isLoading={isLoading}
         isEmpty={isEmpty}
+        isMobile={isMobile}
         entries={entries}
         plottedData={plottedData}
         moodColors={moodColors}

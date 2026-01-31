@@ -62,9 +62,9 @@ export const InsightsDailyHistory = ({
     : previewTrendPoints
   const trendTickInterval = getDateTickInterval(trendDisplayPoints.length)
   const previewTickInterval = getDateTickInterval(previewTrendDisplayPoints.length)
-  const baseTickProps = { fontSize: 12 }
+  const baseTickProps = { fontSize: 13 }
   const mobileTickProps = isMobile
-    ? { angle: -35, textAnchor: 'end' as const, dy: 6, fontSize: 11 }
+    ? { angle: -35, textAnchor: 'end' as const, dy: 6, fontSize: 12 }
     : undefined
   const legendWrapperStyle = isMobile ? { paddingTop: 12 } : undefined
   const trendChartMargin = isMobile

@@ -18,6 +18,7 @@ type PlottedEntry = Entry & {
 type InsightsScatterProps = {
   isLoading: boolean
   isEmpty: boolean
+  isMobile: boolean
   entries: Entry[]
   plottedData: PlottedEntry[]
   moodColors: string[]
@@ -26,10 +27,13 @@ type InsightsScatterProps = {
 export const InsightsScatter = ({
   isLoading,
   isEmpty,
+  isMobile,
   entries,
   plottedData,
   moodColors,
 }: InsightsScatterProps) => {
+  const baseTickProps = { fontSize: 13 }
+  const mobileTickProps = { fontSize: 12 }
   const renderTooltip = ({
     active,
     payload,
@@ -82,7 +86,7 @@ export const InsightsScatter = ({
                       dataKey="sleep_hours_jittered"
                       domain={[4, 10]}
                       ticks={[4, 5, 6, 7, 8, 9, 10]}
-                      tick={{ fontSize: 12 }}
+                      tick={isMobile ? mobileTickProps : baseTickProps}
                       tickFormatter={(value) => {
                         if (value === 4) return '≤4'
                         if (value === 10) return '≥10'
@@ -101,7 +105,7 @@ export const InsightsScatter = ({
                       dataKey="mood_jittered"
                       domain={[1, 5]}
                       ticks={[1, 2, 3, 4, 5]}
-                      tick={{ fontSize: 12 }}
+                      tick={isMobile ? mobileTickProps : baseTickProps}
                       label={{
                         value: 'Mood',
                         angle: -90,

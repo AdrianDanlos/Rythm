@@ -67,9 +67,9 @@ export const InsightsSmoothedTrends = ({
     : { top: 12, right: 28, bottom: 0, left: -12 }
   const rollingTickInterval = getDateTickInterval(rollingSeries.length)
   const previewRollingTickInterval = getDateTickInterval(previewRollingSeries.length)
-  const baseTickProps = { fontSize: 12 }
+  const baseTickProps = { fontSize: 13 }
   const mobileTickProps = isMobile
-    ? { angle: -35, textAnchor: 'end' as const, dy: 6, fontSize: 11 }
+    ? { angle: -35, textAnchor: 'end' as const, dy: 6, fontSize: 12 }
     : undefined
   const legendWrapperStyle = isMobile ? { paddingTop: 12 } : undefined
 
