@@ -17,8 +17,8 @@ export const InsightsPersonalThreshold = ({
     <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
       <div className="card-header">
         <div>
-          <h2>Your sleep threshold</h2>
-          <p className="muted">Personalized sleep target</p>
+          <h2>Your sleep target</h2>
+          <p className="muted">Personalized target based on your sleep history.</p>
         </div>
       </div>
       {!isPro

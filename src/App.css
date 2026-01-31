@@ -952,6 +952,57 @@
   color: var(--muted);
 }
 
+.insights-intro {
+  display: grid;
+  gap: 16px;
+}
+
+.insights-intro__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.insights-intro__header .ghost {
+  min-width: 110px;
+  white-space: nowrap;
+}
+
+.insights-intro__header h2 {
+  margin: 6px 0 6px;
+}
+
+.insights-intro__steps {
+  display: grid;
+  gap: 12px;
+}
+
+.intro-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.intro-step__number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--button-hover-surface);
+  color: var(--text);
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+}
+
+.insights-intro__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
 .field-title {
   display: flex;
   align-items: center;

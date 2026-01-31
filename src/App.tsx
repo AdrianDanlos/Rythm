@@ -13,10 +13,10 @@ import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
 import { PaywallModal } from './components/PaywallModal'
 import { FeedbackModal } from './components/FeedbackModal.tsx'
-import { WelcomeModal } from './components/WelcomeModal'
 import { StreakModal } from './components/StreakModal'
 import { Tooltip } from './components/Tooltip'
 import { SettingsModal } from './components/SettingsModal'
+import { InsightsQuickStart } from './components/InsightsQuickStart'
 import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
 import { CreditCard, LogOut, Mail, Settings } from 'lucide-react'
@@ -79,7 +79,6 @@ function App() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.Insights)
-  const [isWelcomeOpen, setIsWelcomeOpen] = useState(false)
   const [isStreakOpen, setIsStreakOpen] = useState(false)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
@@ -164,7 +163,6 @@ function App() {
     const userId = session?.user?.id
     if (!userId) {
       setEntries([])
-      setIsWelcomeOpen(false)
       return
     }
 
@@ -176,11 +174,6 @@ function App() {
         setEntries(data)
         if (data.length) {
           setActiveTab(Tabs.Insights)
-          setIsWelcomeOpen(false)
-        }
-        else {
-          setActiveTab(Tabs.Log)
-          setIsWelcomeOpen(true)
         }
       }
       catch {
@@ -453,10 +446,6 @@ function App() {
     setIsPaywallOpen(true)
   }
 
-  const handleCloseWelcome = () => {
-    setIsWelcomeOpen(false)
-  }
-
   const handleCloseStreak = () => {
     setIsStreakOpen(false)
   }
@@ -614,10 +603,6 @@ function App() {
         onUpgrade={handleStartCheckout}
         priceLabel={priceLabel}
       />
-      <WelcomeModal
-        isOpen={isWelcomeOpen}
-        onClose={handleCloseWelcome}
-      />
       <StreakModal
         isOpen={isStreakOpen}
         onClose={handleCloseStreak}
@@ -683,6 +668,10 @@ function App() {
                       Log
                     </button>
                   </div>
+
+                  {activeTab === Tabs.Insights
+                    ? <InsightsQuickStart onStartLog={() => setActiveTab(Tabs.Log)} />
+                    : null}
 
                   {activeTab === Tabs.Log
                     ? (
