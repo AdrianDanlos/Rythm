@@ -165,7 +165,7 @@ export const InsightsSmoothedTrends = ({
                                 type="monotone"
                                 dataKey="sleep7"
                                 name="Last 7 days"
-                                stroke="#0f172a"
+                                stroke="var(--chart-sleep)"
                                 dot={false}
                                 strokeWidth={2}
                               />
@@ -193,7 +193,7 @@ export const InsightsSmoothedTrends = ({
                                 type="monotone"
                                 dataKey="mood7"
                                 name="Last 7 days"
-                                stroke="#0f172a"
+                                stroke="var(--chart-sleep)"
                                 dot={false}
                                 strokeWidth={2}
                               />
@@ -283,7 +283,7 @@ export const InsightsSmoothedTrends = ({
                               type="monotone"
                               dataKey="sleep7"
                               name="Last 7 days"
-                              stroke="#0f172a"
+                              stroke="var(--chart-sleep)"
                               dot={false}
                               strokeWidth={2}
                             />
@@ -311,7 +311,7 @@ export const InsightsSmoothedTrends = ({
                               type="monotone"
                               dataKey="mood7"
                               name="Last 7 days"
-                              stroke="#0f172a"
+                              stroke="var(--chart-sleep)"
                               dot={false}
                               strokeWidth={2}
                             />

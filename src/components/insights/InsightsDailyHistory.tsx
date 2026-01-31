@@ -178,7 +178,7 @@ export const InsightsDailyHistory = ({
                         type="monotone"
                         dataKey="sleep"
                         name="Sleep"
-                        stroke="#0f172a"
+                        stroke="var(--chart-sleep)"
                         dot={false}
                         yAxisId="left"
                       />
@@ -186,7 +186,7 @@ export const InsightsDailyHistory = ({
                         type="monotone"
                         dataKey="mood"
                         name="Mood"
-                        stroke="#22c55e"
+                        stroke="var(--chart-mood)"
                         dot={false}
                         yAxisId="right"
                       />
@@ -240,7 +240,7 @@ export const InsightsDailyHistory = ({
                     type="monotone"
                     dataKey="sleep"
                     name="Sleep"
-                    stroke="#0f172a"
+                    stroke="var(--chart-sleep)"
                     dot={false}
                     yAxisId="left"
                   />
@@ -248,7 +248,7 @@ export const InsightsDailyHistory = ({
                     type="monotone"
                     dataKey="mood"
                     name="Mood"
-                    stroke="#22c55e"
+                    stroke="var(--chart-mood)"
                     dot={false}
                     yAxisId="right"
                   />

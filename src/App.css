@@ -43,14 +43,14 @@
 .tab-button {
   background: transparent;
   color: var(--text);
-  border: 1px solid var(--border);
+  border: 1px solid var(--button-border);
   box-shadow: none;
 }
 
 .tab-button.active {
-  background: #0f172a;
-  color: #fff;
-  border-color: #0f172a;
+  background: var(--selected-bg);
+  color: var(--selected-text);
+  border-color: var(--selected-border);
 }
 
 .eyebrow {
@@ -72,7 +72,7 @@
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.55);
+  background: var(--modal-backdrop);
   display: grid;
   place-items: center;
   z-index: 40;
@@ -248,8 +248,8 @@
 
 .feedback-textarea:focus {
   outline: none;
-  border-color: #0f172a;
-  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.12);
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
 }
 
 .feedback-textarea:disabled {
@@ -260,7 +260,7 @@
 .primary-button {
   background: #0f172a;
   color: #fff;
-  border: 1px solid #0f172a;
+  border: 1px solid var(--button-primary-border);
   border-radius: 12px;
   padding: 10px 14px;
   text-decoration: none;
@@ -281,13 +281,17 @@
 .primary-button.cta-button:hover:not(:disabled),
 .primary-button.cta-button:focus-visible:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.28),
+  box-shadow: var(--button-hover-shadow-strong),
     inset 0 0 0 1px rgba(255, 255, 255, 0.18);
   filter: brightness(1.03);
 }
 
 .primary-button:disabled {
-  opacity: 0.6;
+  background: var(--button-disabled-bg);
+  color: var(--button-disabled-text);
+  border-color: var(--button-disabled-border);
+  box-shadow: none;
+  opacity: 1;
   cursor: not-allowed;
 }
 
@@ -392,6 +396,13 @@
   color: var(--muted);
 }
 
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
+}
+
 .tag-input {
   position: relative;
 }
@@ -477,18 +488,18 @@
 }
 
 .date-picker .rdp-day-logged:not(.rdp-day_selected) {
-  background: #e2eafd;
-  color: #0f172a;
+  background: var(--day-logged-bg);
+  color: var(--day-logged-text);
   border-radius: 999px;
 }
 
 .date-picker .rdp-day_selected {
-  background: #0f172a;
-  color: #fff;
+  background: var(--selected-bg);
+  color: var(--selected-text);
 }
 
 .date-picker .rdp-selected .rdp-day_button {
-  border: 1px solid #0f172a;
+  border: 1px solid var(--selected-border);
 }
 
 .mood-row {
@@ -499,7 +510,7 @@
 
 .mood-button {
   position: relative;
-  border: 1px solid var(--mood-color, var(--border));
+  border: 1px solid var(--mood-color, var(--button-border));
   background: transparent;
   padding: 12px 0 18px;
   min-height: 48px;
@@ -524,7 +535,7 @@
 }
 
 .mood-button:hover {
-  background: rgba(15, 23, 42, 0.04);
+  background: var(--button-hover-surface);
   transform: translateY(-1px);
 }
 
@@ -534,7 +545,7 @@
 }
 
 .mood-button.active {
-  background: rgba(15, 23, 42, 0.06);
+  background: var(--selected-surface);
   border-width: 2px;
   box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12);
 }
@@ -544,7 +555,7 @@
 }
 
 .ghost {
-  border: 1px solid var(--border);
+  border: 1px solid var(--button-border);
   background: transparent;
   color: var(--text);
 }
@@ -562,9 +573,9 @@
 .ghost.cta-ghost:hover,
 .ghost.cta-ghost:focus-visible {
   border-color: rgba(15, 23, 42, 0.5);
-  background: rgba(15, 23, 42, 0.095);
+  background: var(--button-hover-surface);
   transform: translateY(-1px);
-  box-shadow: 0 14px 22px rgba(15, 23, 42, 0.12);
+  box-shadow: var(--button-hover-shadow);
 }
 
 .icon-button {
@@ -673,9 +684,9 @@
 }
 
 .toggle-group .ghost.active {
-  background: #0f172a;
-  color: #fff;
-  border-color: #0f172a;
+  background: var(--selected-bg);
+  color: var(--selected-text);
+  border-color: var(--selected-border);
 }
 
 .trend-summary {
@@ -1021,13 +1032,13 @@
 }
 
 .tooltip {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: var(--tooltip-bg);
+  border: 1px solid var(--tooltip-border);
   padding: 8px 10px;
   border-radius: 10px;
   font-size: 0.85rem;
   color: var(--text);
-  box-shadow: 0 12px 22px rgba(15, 23, 42, 0.12);
+  box-shadow: var(--tooltip-shadow);
 }
 
 .tooltip-note {
@@ -1079,13 +1090,13 @@
   width: 16px;
   height: 16px;
   border-radius: 999px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--tooltip-border);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-size: 0.7rem;
   color: var(--muted);
-  background: var(--card);
+  background: var(--tooltip-bg);
 }
 
 .app-tooltip-bubble {
@@ -1093,14 +1104,14 @@
   left: 50%;
   bottom: calc(100% + 8px);
   transform: translateX(-50%);
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: var(--tooltip-bg);
+  border: 1px solid var(--tooltip-border);
   border-radius: 10px;
   padding: 6px 10px;
   font-size: 0.78rem;
   color: var(--text);
   white-space: nowrap;
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
+  box-shadow: var(--tooltip-shadow);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -1112,6 +1123,24 @@
 .app-tooltip:focus-within .app-tooltip-bubble {
   opacity: 1;
   visibility: visible;
+}
+
+.recharts-default-tooltip {
+  background: var(--tooltip-bg) !important;
+  border: 1px solid var(--tooltip-border) !important;
+  border-radius: 10px;
+  color: var(--text);
+  box-shadow: var(--tooltip-shadow);
+}
+
+.recharts-tooltip-label,
+.recharts-tooltip-item {
+  color: var(--text) !important;
+}
+
+.recharts-tooltip-item-name,
+.recharts-tooltip-item-value {
+  color: var(--text) !important;
 }
 
 @media (max-width: 540px) {

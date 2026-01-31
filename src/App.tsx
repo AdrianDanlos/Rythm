@@ -87,7 +87,7 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isPortalLoading, setIsPortalLoading] = useState(false)
   const [dateFormat, setDateFormat] = useState<DateFormatPreference>('mdy')
-  const [theme, setTheme] = useState<ThemePreference>('light')
+  const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme())
   const [profileName, setProfileName] = useState('')
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
@@ -121,10 +121,6 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const storedTheme = getStoredTheme()
-    setTheme(storedTheme)
-    document.documentElement.dataset.theme = storedTheme
-
     const storedDateFormat = getStoredDateFormat()
     setDateFormat(storedDateFormat)
 

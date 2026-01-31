@@ -1,5 +1,5 @@
 :root {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -11,17 +11,63 @@
   --bg: #f8fafc;
   --card: #ffffff;
   --border: #e2e8f0;
+  --button-border: #e2e8f0;
   --text: #0f172a;
   --muted: #64748b;
+  --selected-bg: #0f172a;
+  --selected-text: #ffffff;
+  --selected-border: #0f172a;
+  --selected-surface: rgba(15, 23, 42, 0.06);
+  --button-hover-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
+  --button-hover-shadow-strong: 0 16px 30px rgba(15, 23, 42, 0.28);
+  --button-hover-surface: rgba(15, 23, 42, 0.04);
+  --button-disabled-bg: #e2e8f0;
+  --button-disabled-text: #64748b;
+  --button-disabled-border: #cbd5f5;
+  --button-primary-border: #0f172a;
+  --input-focus-border: #0f172a;
+  --input-focus-shadow: 0 0 0 2px rgba(15, 23, 42, 0.12);
+  --modal-backdrop: rgba(15, 23, 42, 0.55);
+  --chart-sleep: #0f172a;
+  --chart-mood: #22c55e;
+  --tooltip-bg: #ffffff;
+  --tooltip-border: #e2e8f0;
+  --tooltip-shadow: 0 12px 22px rgba(15, 23, 42, 0.12);
+  --day-logged-bg: #e2eafd;
+  --day-logged-text: #0f172a;
 }
 
-:root[data-theme='dark'] {
+:root[data-theme="dark"] {
   color: #f8fafc;
   --bg: #0f172a;
   --card: #111827;
   --border: #1f2937;
+  --button-border: #334155;
   --text: #f8fafc;
   --muted: #94a3b8;
+  --selected-bg: #1e293b;
+  --selected-text: #f8fafc;
+  --selected-border: rgba(56, 189, 248, 0.7);
+  --selected-surface: rgba(56, 189, 248, 0.18);
+  --button-hover-shadow: 0 10px 20px rgba(15, 23, 42, 0.45),
+    0 0 0 1px rgba(56, 189, 248, 0.45);
+  --button-hover-shadow-strong: 0 18px 36px rgba(15, 23, 42, 0.55),
+    0 0 18px rgba(56, 189, 248, 0.25), 0 0 0 1px rgba(56, 189, 248, 0.5);
+  --button-hover-surface: rgba(56, 189, 248, 0.14);
+  --button-disabled-bg: #0b1220;
+  --button-disabled-text: #94a3b8;
+  --button-disabled-border: #334155;
+  --button-primary-border: rgba(56, 189, 248, 0.7);
+  --input-focus-border: rgba(56, 189, 248, 0.8);
+  --input-focus-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+  --modal-backdrop: rgba(2, 6, 23, 0.78);
+  --chart-sleep: #7dd3fc;
+  --chart-mood: #4ade80;
+  --tooltip-bg: #111827;
+  --tooltip-border: rgba(56, 189, 248, 0.45);
+  --tooltip-shadow: 0 16px 28px rgba(2, 6, 23, 0.6);
+  --day-logged-bg: rgba(56, 189, 248, 0.18);
+  --day-logged-text: #e2e8f0;
 }
 
 * {
@@ -48,7 +94,7 @@ p {
 
 button {
   border-radius: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--button-border);
   padding: 10px 14px;
   font-size: 0.95rem;
   font-weight: 600;
@@ -61,7 +107,16 @@ button {
 
 button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
+  box-shadow: var(--button-hover-shadow);
+}
+
+button:disabled {
+  background: var(--button-disabled-bg);
+  color: var(--button-disabled-text);
+  border-color: var(--button-disabled-border);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
 }
 
 input {
