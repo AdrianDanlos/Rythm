@@ -132,6 +132,7 @@ export const InsightsStats = ({
                 <p className="value">{sleepConsistencyLabel ?? '—'}</p>
                 <p className="helper">How steady your sleep hours are</p>
               </div>
+              <div className="stat-divider" aria-hidden />
               <div className="stat-block">
                 <p className="label">Sleep–mood link</p>
                 <p className="value">{correlationLabel ?? '—'}</p>
