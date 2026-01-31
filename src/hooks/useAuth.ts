@@ -78,6 +78,34 @@ export const useAuth = () => {
     return { session: data.session ?? null, error }
   }, [])
 
+  // Keep session fresh during long idle/background periods.
+  useEffect(() => {
+    if (!session) return
+
+    let isMounted = true
+    const refreshIfMounted = async () => {
+      if (!isMounted) return
+      await refreshSession()
+    }
+
+    void refreshIfMounted()
+
+    const intervalId = window.setInterval(refreshIfMounted, 30 * 60 * 1000)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        void refreshIfMounted()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    return () => {
+      isMounted = false
+      window.clearInterval(intervalId)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [refreshSession, session])
+
   return {
     session,
     authLoading,
