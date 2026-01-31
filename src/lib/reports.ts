@@ -11,6 +11,7 @@ import { buildTagInsights } from './utils/tagInsights'
 type ReportOptions = {
   rangeDays?: number
   title?: string
+  profileName?: string
 }
 
 export const exportMonthlyReport = async (
@@ -20,6 +21,7 @@ export const exportMonthlyReport = async (
 ) => {
   const rangeDays = options.rangeDays ?? 30
   const title = options.title ?? 'Rythm Report'
+  const welcomeName = options.profileName?.trim()
   const end = new Date()
   end.setHours(0, 0, 0, 0)
   const start = new Date(end)
@@ -68,6 +70,13 @@ export const exportMonthlyReport = async (
   doc.text(title, 14, y)
   y += 8
 
+  if (welcomeName) {
+    doc.setFontSize(12)
+    doc.setTextColor(60)
+    doc.text(`Welcome to your report ${welcomeName}`, 14, y)
+    y += 7
+  }
+
   doc.setFontSize(11)
   doc.setTextColor(80)
   doc.text(`${formatLongDate(start)} - ${formatLongDate(end)}`, 14, y)
@@ -79,7 +88,7 @@ export const exportMonthlyReport = async (
     doc.setTextColor(15)
     doc.setFontSize(13)
     doc.text(label, 16, y + 1)
-    y += 14
+    y += 12
   }
 
   const drawBullets = (lines: string[], indent = 16) => {

@@ -425,7 +425,10 @@ function App() {
     if (!isPro) return
     setExportError(null)
     try {
-      await exportMonthlyReport(entries, stats, { title: 'Rythm Report' })
+      await exportMonthlyReport(entries, stats, {
+        title: 'Rythm Report',
+        profileName,
+      })
     }
     catch {
       setExportError('Unable to export report.')
