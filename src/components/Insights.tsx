@@ -134,6 +134,12 @@ export const Insights = ({
         moodBySleepThreshold={moodBySleepThreshold}
         sleepThreshold={sleepThreshold}
       />
+      <InsightsPersonalThreshold
+        isPro={isPro}
+        personalSleepThreshold={personalSleepThreshold}
+        moodByPersonalThreshold={moodByPersonalThreshold}
+        onOpenPaywall={onOpenPaywall}
+      />
       <InsightsScatter
         isLoading={isLoading}
         isEmpty={isEmpty}
@@ -145,12 +151,6 @@ export const Insights = ({
       <InsightsTagInsights
         isPro={isPro}
         tagDrivers={tagDrivers}
-        onOpenPaywall={onOpenPaywall}
-      />
-      <InsightsPersonalThreshold
-        isPro={isPro}
-        personalSleepThreshold={personalSleepThreshold}
-        moodByPersonalThreshold={moodByPersonalThreshold}
         onOpenPaywall={onOpenPaywall}
       />
       <InsightsCalendarHeatmap

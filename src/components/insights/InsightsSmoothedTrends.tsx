@@ -219,7 +219,7 @@ export const InsightsSmoothedTrends = ({
               </div>
               <div className="premium-preview__overlay">
                 <div className="locked-message">
-                  <p className="muted">Upgrade to Pro to view rolling trend lines.</p>
+                  <p className="muted">Explore 7/30/90-day rolling trends for clearer sleep and mood direction.</p>
                   <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
                     Upgrade to Pro
                   </button>

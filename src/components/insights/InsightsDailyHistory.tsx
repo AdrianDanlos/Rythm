@@ -193,7 +193,7 @@ export const InsightsDailyHistory = ({
               </div>
               <div className="premium-preview__overlay">
                 <div className="locked-message">
-                  <p className="muted">Upgrade to Pro for long-range trends.</p>
+                  <p className="muted">Explore daily sleep and mood trends across 30/90/365 days.</p>
                   <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
                     Upgrade to Pro
                   </button>

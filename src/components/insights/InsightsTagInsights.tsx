@@ -39,7 +39,7 @@ export const InsightsTagInsights = ({
       {!isPro
         ? (
             <div className="locked-message">
-              <p className="muted">Upgrade to Pro to see tag drivers.</p>
+              <p className="muted">Finds the tags that have the biggest impact on your mood and sleep.</p>
               <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
                 Upgrade to Pro
               </button>

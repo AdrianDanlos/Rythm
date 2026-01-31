@@ -25,7 +25,7 @@ export const InsightsPersonalThreshold = ({
         ? (
             <div className="locked-message">
               <p className="muted">
-                Upgrade to Pro to see your personal threshold.
+                Instead of using the default 8h estimate, finds your ideal target sleep time.
               </p>
               <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
                 Upgrade to Pro
