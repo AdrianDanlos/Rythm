@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 import { parseTags } from '../lib/utils/stringUtils'
@@ -18,9 +18,6 @@ export type LogFormProps = {
   entriesError: string | null
   moodColors: string[]
   isPro: boolean
-  remindersEnabled: boolean
-  remindersSupported: boolean
-  onReminderToggle: (enabled: boolean) => void
   formatLocalDate: (date: Date) => string
   onEntryDateChange: (value: string) => void
   onSleepHoursChange: (value: string) => void
@@ -46,9 +43,6 @@ export const LogForm = ({
   entriesError,
   moodColors,
   isPro,
-  remindersEnabled,
-  remindersSupported,
-  onReminderToggle,
   formatLocalDate,
   onEntryDateChange,
   onSleepHoursChange,
@@ -58,6 +52,7 @@ export const LogForm = ({
   onSave,
   onOpenPaywall,
 }: LogFormProps) => {
+  const [isTagInputFocused, setIsTagInputFocused] = useState(false)
   const usedTags = parseTags(tags)
   const usedTagSet = new Set(usedTags)
   const lastCommaIndex = tags.lastIndexOf(',')
@@ -68,7 +63,9 @@ export const LogForm = ({
     ? tagSuggestions.filter(tag =>
         tag.startsWith(tokenLower) && !usedTagSet.has(tag),
       )
-    : []
+    : isTagInputFocused
+      ? tagSuggestions.filter(tag => !usedTagSet.has(tag))
+      : []
 
   const handleSuggestionSelect = (suggestion: string) => {
     const prefix = lastCommaIndex === -1 ? '' : tags.slice(0, lastCommaIndex + 1)
@@ -151,6 +148,8 @@ export const LogForm = ({
               onChange={event => onTagsChange(event.target.value)}
               placeholder="e.g., exercise, late screens"
               disabled={!isPro}
+              onFocus={() => setIsTagInputFocused(true)}
+              onBlur={() => setIsTagInputFocused(false)}
             />
             {isPro && matchingSuggestions.length > 0
               ? (
@@ -160,6 +159,7 @@ export const LogForm = ({
                         key={suggestion}
                         type="button"
                         className="tag-suggestion"
+                        onMouseDown={event => event.preventDefault()}
                         onClick={() => handleSuggestionSelect(suggestion)}
                       >
                         {suggestion}
@@ -173,20 +173,6 @@ export const LogForm = ({
             {isPro
               ? `Up to ${maxTagsPerEntry} tags per entry. Separate tags with commas.`
               : 'Upgrade to Pro to add tags.'}
-          </p>
-        </label>
-        <label className="field">
-          Daily reminder (mobile only)
-          <input
-            type="checkbox"
-            checked={remindersEnabled}
-            disabled={!remindersSupported}
-            onChange={event => onReminderToggle(event.target.checked)}
-          />
-          <p className="helper">
-            {remindersSupported
-              ? 'Get a notification every day at 8:00 PM.'
-              : 'Available on the mobile app only.'}
           </p>
         </label>
         {entriesError ? <p className="error">{entriesError}</p> : null}

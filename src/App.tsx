@@ -16,19 +16,24 @@ import { FeedbackModal } from './components/FeedbackModal.tsx'
 import { WelcomeModal } from './components/WelcomeModal'
 import { StreakModal } from './components/StreakModal'
 import { Tooltip } from './components/Tooltip'
+import { SettingsModal } from './components/SettingsModal'
 import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
-import { CreditCard, LogOut, Mail } from 'lucide-react'
+import { CreditCard, LogOut, Mail, Settings } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
 import { StripeLanding } from './components/StripeLanding.tsx'
 import { ROUTES, isStripeLanding, isStripeReturn } from './lib/routes'
 import { PRICING } from './lib/pricing'
 import {
-  cancelDailyReminder,
-  getStoredDailyReminderEnabled,
-  scheduleDailyReminder,
-  setStoredDailyReminderEnabled,
-} from './lib/notifications'
+  getStoredDateFormat,
+  getStoredProfileName,
+  getStoredTheme,
+  setStoredDateFormat,
+  setStoredProfileName,
+  setStoredTheme,
+  type DateFormatPreference,
+  type ThemePreference,
+} from './lib/settings'
 import './App.css'
 
 enum Tabs {
@@ -79,9 +84,11 @@ function App() {
   const [isStreakOpen, setIsStreakOpen] = useState(false)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isPortalLoading, setIsPortalLoading] = useState(false)
-  const [dailyReminderEnabled, setDailyReminderEnabled] = useState(false)
-  const remindersSupported = Capacitor.isNativePlatform()
+  const [dateFormat, setDateFormat] = useState<DateFormatPreference>('mdy')
+  const [theme, setTheme] = useState<ThemePreference>('light')
+  const [profileName, setProfileName] = useState('')
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
@@ -114,13 +121,37 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (!remindersSupported) return
-    const stored = getStoredDailyReminderEnabled()
-    setDailyReminderEnabled(stored)
-    if (stored) {
-      void scheduleDailyReminder()
+    const storedTheme = getStoredTheme()
+    setTheme(storedTheme)
+    document.documentElement.dataset.theme = storedTheme
+
+    const storedDateFormat = getStoredDateFormat()
+    setDateFormat(storedDateFormat)
+
+    const storedName = getStoredProfileName()
+    setProfileName(storedName)
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    setStoredTheme(theme)
+  }, [theme])
+
+  useEffect(() => {
+    const storedName = getStoredProfileName()
+    if (storedName) {
+      setProfileName(storedName)
+      return
     }
-  }, [remindersSupported])
+    const fallbackName = session?.user?.user_metadata?.full_name
+      ?? session?.user?.user_metadata?.name
+      ?? ''
+    setProfileName(fallbackName)
+  }, [
+    session?.user?.id,
+    session?.user?.user_metadata?.full_name,
+    session?.user?.user_metadata?.name,
+  ])
 
   useEffect(() => {
     const path = window.location.pathname
@@ -401,22 +432,18 @@ function App() {
     }
   }
 
-  const handleReminderToggle = async (enabled: boolean) => {
-    setDailyReminderEnabled(enabled)
-    setStoredDailyReminderEnabled(enabled)
+  const handleDateFormatChange = (value: DateFormatPreference) => {
+    setDateFormat(value)
+    setStoredDateFormat(value)
+  }
 
-    if (!remindersSupported) return
+  const handleThemeChange = (value: ThemePreference) => {
+    setTheme(value)
+  }
 
-    if (enabled) {
-      const scheduled = await scheduleDailyReminder()
-      if (!scheduled) {
-        setDailyReminderEnabled(false)
-        setStoredDailyReminderEnabled(false)
-      }
-      return
-    }
-
-    await cancelDailyReminder()
+  const handleProfileNameChange = (value: string) => {
+    setProfileName(value)
+    setStoredProfileName(value)
   }
 
   const handleOpenPaywall = () => {
@@ -441,6 +468,14 @@ function App() {
 
   const handleCloseFeedback = () => {
     setIsFeedbackOpen(false)
+  }
+
+  const handleOpenSettings = () => {
+    setIsSettingsOpen(true)
+  }
+
+  const handleCloseSettings = () => {
+    setIsSettingsOpen(false)
   }
 
   const handleStartCheckout = async () => {
@@ -509,6 +544,16 @@ function App() {
           </div>
         </div>
         <div className="header-actions">
+          <Tooltip label="Settings">
+            <button
+              className="ghost icon-button"
+              type="button"
+              onClick={handleOpenSettings}
+              aria-label="Settings"
+            >
+              <Settings className="icon" aria-hidden="true" />
+            </button>
+          </Tooltip>
 
           <Tooltip label="Send feedback">
             <button
@@ -574,6 +619,17 @@ function App() {
         isOpen={isFeedbackOpen}
         onClose={handleCloseFeedback}
         userEmail={session?.user?.email ?? null}
+      />
+      <SettingsModal
+        isOpen={isSettingsOpen}
+        onClose={handleCloseSettings}
+        name={profileName}
+        email={session?.user?.email ?? ''}
+        dateFormat={dateFormat}
+        theme={theme}
+        onNameChange={handleProfileNameChange}
+        onDateFormatChange={handleDateFormatChange}
+        onThemeChange={handleThemeChange}
       />
 
       {!authInitialized
@@ -647,9 +703,6 @@ function App() {
                           entriesError={entriesError}
                           moodColors={moodColors}
                           isPro={isPro}
-                          remindersEnabled={dailyReminderEnabled}
-                          remindersSupported={remindersSupported}
-                          onReminderToggle={handleReminderToggle}
                           formatLocalDate={formatLocalDate}
                           onEntryDateChange={setEntryDate}
                           onSleepHoursChange={setSleepHours}

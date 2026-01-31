@@ -4,12 +4,23 @@ import { LocalNotifications } from '@capacitor/local-notifications'
 const DAILY_REMINDER_ID = 1001
 const DAILY_REMINDER_CHANNEL_ID = 'daily-reminder'
 const DAILY_REMINDER_STORAGE_KEY = 'dailyReminderEnabled'
+const DAILY_REMINDER_TIME_STORAGE_KEY = 'dailyReminderTime'
 
 export const getStoredDailyReminderEnabled = () =>
   localStorage.getItem(DAILY_REMINDER_STORAGE_KEY) === 'true'
 
 export const setStoredDailyReminderEnabled = (enabled: boolean) => {
   localStorage.setItem(DAILY_REMINDER_STORAGE_KEY, String(enabled))
+}
+
+export const getStoredDailyReminderTime = () => {
+  const stored = localStorage.getItem(DAILY_REMINDER_TIME_STORAGE_KEY)
+  return stored && /^\d{2}:\d{2}$/.test(stored) ? stored : '20:00'
+}
+
+export const setStoredDailyReminderTime = (value: string) => {
+  if (!/^\d{2}:\d{2}$/.test(value)) return
+  localStorage.setItem(DAILY_REMINDER_TIME_STORAGE_KEY, value)
 }
 
 const ensureAndroidChannel = async () => {
@@ -25,9 +36,11 @@ const ensureAndroidChannel = async () => {
 export const scheduleDailyReminder = async ({
   hour = 20,
   minute = 0,
+  force = false,
 }: {
   hour?: number
   minute?: number
+  force?: boolean
 } = {}) => {
   if (!Capacitor.isNativePlatform()) return false
 
@@ -40,7 +53,12 @@ export const scheduleDailyReminder = async ({
   const hasReminder = pending.notifications.some(
     notification => notification.id === DAILY_REMINDER_ID,
   )
-  if (hasReminder) return true
+  if (hasReminder && !force) return true
+  if (hasReminder && force) {
+    await LocalNotifications.cancel({
+      notifications: [{ id: DAILY_REMINDER_ID }],
+    })
+  }
 
   await LocalNotifications.schedule({
     notifications: [
