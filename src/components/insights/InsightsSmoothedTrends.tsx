@@ -67,6 +67,7 @@ export const InsightsSmoothedTrends = ({
     : { top: 12, right: 28, bottom: 0, left: -12 }
   const rollingTickInterval = getDateTickInterval(rollingSeries.length)
   const previewRollingTickInterval = getDateTickInterval(previewRollingSeries.length)
+  const baseTickProps = { fontSize: 12 }
   const mobileTickProps = isMobile
     ? { angle: -35, textAnchor: 'end' as const, dy: 6, fontSize: 11 }
     : undefined
@@ -123,7 +124,7 @@ export const InsightsSmoothedTrends = ({
                         interval={isMobile
                           ? Math.max(previewRollingTickInterval, 1)
                           : previewRollingTickInterval}
-                        tick={mobileTickProps}
+                        tick={isMobile ? mobileTickProps : baseTickProps}
                         height={isMobile ? 36 : 30}
                       />
                       <YAxis
@@ -134,6 +135,7 @@ export const InsightsSmoothedTrends = ({
                         ticks={
                           rollingMetric === 'sleep' ? [4, 6, 8, 10] : [1, 2, 3, 4, 5]
                         }
+                        tick={baseTickProps}
                       />
                       <RechartsTooltip
                         formatter={(value) => {
@@ -238,7 +240,7 @@ export const InsightsSmoothedTrends = ({
                       dataKey="date"
                       tickFormatter={formatShortDate}
                       interval={isMobile ? Math.max(rollingTickInterval, 1) : rollingTickInterval}
-                      tick={mobileTickProps}
+                      tick={isMobile ? mobileTickProps : baseTickProps}
                       height={isMobile ? 36 : 30}
                     />
                     <YAxis
@@ -249,6 +251,7 @@ export const InsightsSmoothedTrends = ({
                       ticks={
                         rollingMetric === 'sleep' ? [4, 6, 8, 10] : [1, 2, 3, 4, 5]
                       }
+                      tick={baseTickProps}
                     />
                     <RechartsTooltip
                       formatter={(value) => {

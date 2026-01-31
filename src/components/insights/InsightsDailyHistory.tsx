@@ -62,6 +62,7 @@ export const InsightsDailyHistory = ({
     : previewTrendPoints
   const trendTickInterval = getDateTickInterval(trendDisplayPoints.length)
   const previewTickInterval = getDateTickInterval(previewTrendDisplayPoints.length)
+  const baseTickProps = { fontSize: 12 }
   const mobileTickProps = isMobile
     ? { angle: -35, textAnchor: 'end' as const, dy: 6, fontSize: 11 }
     : undefined
@@ -150,7 +151,7 @@ export const InsightsDailyHistory = ({
                         dataKey="date"
                         tickFormatter={formatShortDate}
                         interval={isMobile ? Math.max(previewTickInterval, 1) : previewTickInterval}
-                        tick={mobileTickProps}
+                        tick={isMobile ? mobileTickProps : baseTickProps}
                         height={isMobile ? 36 : 30}
                       />
                       <YAxis
@@ -158,6 +159,7 @@ export const InsightsDailyHistory = ({
                         domain={[4, 10]}
                         ticks={[2, 4, 6, 8, 10]}
                         tickFormatter={formatAxisValue}
+                        tick={baseTickProps}
                       />
                       <YAxis
                         yAxisId="right"
@@ -165,6 +167,7 @@ export const InsightsDailyHistory = ({
                         domain={[1, 5]}
                         ticks={[1, 2, 3, 4, 5]}
                         tickFormatter={formatAxisValue}
+                        tick={baseTickProps}
                       />
                       <RechartsTooltip />
                       <Legend wrapperStyle={legendWrapperStyle} />
@@ -207,7 +210,7 @@ export const InsightsDailyHistory = ({
                     dataKey="date"
                     tickFormatter={formatShortDate}
                     interval={isMobile ? Math.max(trendTickInterval, 1) : trendTickInterval}
-                    tick={mobileTickProps}
+                    tick={isMobile ? mobileTickProps : baseTickProps}
                     height={isMobile ? 36 : 30}
                   />
                   <YAxis
@@ -215,6 +218,7 @@ export const InsightsDailyHistory = ({
                     domain={[4, 10]}
                     ticks={[2, 4, 6, 8, 10]}
                     tickFormatter={formatAxisValue}
+                    tick={baseTickProps}
                   />
                   <YAxis
                     yAxisId="right"
@@ -222,6 +226,7 @@ export const InsightsDailyHistory = ({
                     domain={[1, 5]}
                     ticks={[1, 2, 3, 4, 5]}
                     tickFormatter={formatAxisValue}
+                    tick={baseTickProps}
                   />
                   <RechartsTooltip />
                   <Legend wrapperStyle={legendWrapperStyle} />

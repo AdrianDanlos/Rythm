@@ -1,4 +1,5 @@
 import type { SleepMoodAverages, WindowStats } from '../../lib/types/stats'
+import { Tooltip } from '../Tooltip'
 
 type InsightsStatsProps = {
   isLoading: boolean
@@ -112,7 +113,14 @@ export const InsightsStats = ({
               </div>
               <div className="stat-divider" aria-hidden />
               <div className="stat-block">
-                <p className="label">Rhythm score</p>
+                <p className="label">
+                  Rhythm score
+                  <Tooltip label="Based on how steady your sleep hours are in the last 30 days. Higher = more consistent.">
+                    <span className="tooltip-trigger">
+                      <span className="tooltip-icon" aria-hidden="true">i</span>
+                    </span>
+                  </Tooltip>
+                </p>
                 <p className="value">
                   {rhythmScore !== null ? `${rhythmScore} / 100` : '—'}
                 </p>

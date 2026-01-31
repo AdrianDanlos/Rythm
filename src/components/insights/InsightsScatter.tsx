@@ -82,6 +82,7 @@ export const InsightsScatter = ({
                       dataKey="sleep_hours_jittered"
                       domain={[4, 10]}
                       ticks={[4, 5, 6, 7, 8, 9, 10]}
+                      tick={{ fontSize: 12 }}
                       tickFormatter={(value) => {
                         if (value === 4) return '≤4'
                         if (value === 10) return '≥10'
@@ -100,6 +101,7 @@ export const InsightsScatter = ({
                       dataKey="mood_jittered"
                       domain={[1, 5]}
                       ticks={[1, 2, 3, 4, 5]}
+                      tick={{ fontSize: 12 }}
                       label={{
                         value: 'Mood',
                         angle: -90,
