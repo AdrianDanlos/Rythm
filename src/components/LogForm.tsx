@@ -125,16 +125,6 @@ export const LogForm = ({
             ))}
           </div>
         </div>
-        <label className="field">
-          Note (optional)
-          <input
-            type="text"
-            value={note}
-            onChange={event => onNoteChange(event.target.value)}
-            placeholder="Short reflection..."
-            maxLength={140}
-          />
-        </label>
         <label
           className="field"
           onClick={() => {
@@ -143,13 +133,20 @@ export const LogForm = ({
             }
           }}
         >
-          Tags (Pro)
+          <div className="field-title">
+            <span>Tags (Pro)</span>
+            <span className="field-hint">
+              {isPro
+                ? `Up to ${maxTagsPerEntry} tags per entry. Separate tags with commas.`
+                : 'Upgrade to Pro to add tags.'}
+            </span>
+          </div>
           <div className="tag-input">
             <input
               type="text"
               value={tags}
               onChange={event => onTagsChange(event.target.value)}
-              placeholder="e.g., exercise, late screens"
+              placeholder="Suggested: exercise, late screens, caffeine, insomnia..."
               disabled={!isPro}
               onFocus={() => setIsTagInputFocused(true)}
               onBlur={() => setIsTagInputFocused(false)}
@@ -172,11 +169,16 @@ export const LogForm = ({
                 )
               : null}
           </div>
-          <p className="helper">
-            {isPro
-              ? `Up to ${maxTagsPerEntry} tags per entry. Separate tags with commas.`
-              : 'Upgrade to Pro to add tags.'}
-          </p>
+        </label>
+        <label className="field">
+          Note (optional)
+          <input
+            type="text"
+            value={note}
+            onChange={event => onNoteChange(event.target.value)}
+            placeholder="Short reflection..."
+            maxLength={140}
+          />
         </label>
         {entriesError ? <p className="error">{entriesError}</p> : null}
         <button type="submit" disabled={saving} className="save-button">
