@@ -479,8 +479,8 @@
 }
 
 .date-picker .rdp-chevron {
-  color: #0f172a;
-  fill: #0f172a;
+  color: var(--text);
+  fill: var(--text);
 }
 
 .date-picker .rdp-today:not(.rdp-outside) {
@@ -510,7 +510,7 @@
 
 .mood-button {
   position: relative;
-  border: 1px solid var(--mood-color, var(--button-border));
+  outline: 1px solid var(--mood-color, var(--button-border));
   background: transparent;
   padding: 12px 0 18px;
   min-height: 48px;
@@ -546,7 +546,7 @@
 
 .mood-button.active {
   background: var(--selected-surface);
-  border-width: 2px;
+  outline-width: 2px;
   box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12);
 }
 
