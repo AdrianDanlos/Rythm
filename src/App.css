@@ -130,6 +130,10 @@
   margin-top: 16px;
 }
 
+.modal-actions.modal-actions-right {
+  justify-content: flex-end;
+}
+
 .settings-form {
   margin-top: 12px;
   display: grid;
@@ -774,6 +778,8 @@
   gap: 2px;
   width: 100%;
   height: 100%;
+  position: relative;
+  z-index: 0;
 }
 
 .heatmap-layout {
@@ -1051,6 +1057,12 @@
   align-items: center;
   gap: 6px;
   cursor: help;
+  z-index: 1;
+}
+
+.app-tooltip:hover,
+.app-tooltip:focus-within {
+  z-index: 10;
 }
 
 .tooltip-trigger {
@@ -1093,6 +1105,7 @@
   visibility: hidden;
   pointer-events: none;
   transition: opacity 0.15s ease;
+  z-index: 5;
 }
 
 .app-tooltip:hover .app-tooltip-bubble,

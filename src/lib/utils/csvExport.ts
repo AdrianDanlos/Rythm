@@ -1,5 +1,6 @@
 import { Encoding } from '@capacitor/filesystem'
 import type { Entry } from '../entries'
+import { formatLongDate } from './dateFormatters'
 import { exportFile } from './fileExport'
 import { escapeCsv } from './stringUtils'
 
@@ -9,7 +10,7 @@ export const exportEntriesCsv = async (entries: Entry[]) => {
   const rows = [
     ['date', 'sleep_hours', 'mood', 'note'],
     ...entries.map(entry => [
-      entry.entry_date,
+      formatLongDate(new Date(`${entry.entry_date}T00:00:00`)),
       entry.sleep_hours,
       entry.mood,
       entry.note ?? '',

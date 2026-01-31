@@ -238,6 +238,11 @@ export const SettingsModal = ({
               </div>
             </div>
           </section>
+          <div className="modal-actions modal-actions-right">
+            <button type="button" className="ghost" onClick={onClose}>
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>

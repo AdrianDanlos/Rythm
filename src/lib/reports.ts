@@ -121,7 +121,9 @@ export const exportMonthlyReport = async (
 
   if (bestDay) {
     const bestTags = bestDay.tags?.length ? bestDay.tags.join(', ') : '—'
-    drawBullets([`Best day: ${bestDay.entry_date}`])
+    drawBullets([
+      `Best day: ${formatLongDate(new Date(`${bestDay.entry_date}T00:00:00`))}`,
+    ])
     drawLines(
       [
         `Mood: ${bestDay.mood}`,
