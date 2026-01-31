@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type CSSProperties, type FormEvent } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 import { parseTags } from '../lib/utils/stringUtils'
@@ -112,13 +112,19 @@ export const LogForm = ({
         <div className="field">
           Mood today
           <div className="mood-row">
-            {[1, 2, 3, 4, 5].map(value => (
+            {([1, 2, 3, 4, 5] as const).map(value => (
               <button
                 key={value}
                 type="button"
                 className={`mood-button ${mood === value ? 'active' : ''}`}
                 onClick={() => onMoodChange(value)}
-                style={{ borderColor: moodColors[value - 1] }}
+                style={
+                  {
+                    '--mood-color': moodColors[value - 1],
+                  } as CSSProperties
+                }
+                aria-pressed={mood === value}
+                title={`Mood: ${value}`}
               >
                 {value}
               </button>

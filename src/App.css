@@ -439,17 +439,49 @@
 }
 
 .mood-button {
-  border: 1px solid var(--border);
+  position: relative;
+  border: 1px solid var(--mood-color, var(--border));
   background: transparent;
-  padding: 10px 0;
+  padding: 12px 0 18px;
+  min-height: 48px;
   border-radius: 10px;
   font-weight: 600;
   color: var(--text);
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease,
+    border-color 160ms ease;
+}
+
+.mood-button::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  width: 28px;
+  height: 4px;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  background: var(--mood-color, transparent);
+  opacity: 0.2;
+}
+
+.mood-button:hover {
+  background: rgba(15, 23, 42, 0.04);
+  transform: translateY(-1px);
+}
+
+.mood-button:focus-visible {
+  outline: 2px solid var(--mood-color, #0f172a);
+  outline-offset: 2px;
 }
 
 .mood-button.active {
   background: rgba(15, 23, 42, 0.06);
   border-width: 2px;
+  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12);
+}
+
+.mood-button.active::after {
+  opacity: 0.55;
 }
 
 .ghost {
