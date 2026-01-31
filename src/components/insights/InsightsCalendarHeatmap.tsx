@@ -100,8 +100,8 @@ export const InsightsCalendarHeatmap = ({
     const formatter = new Intl.DateTimeFormat(dateLocale, { month: 'short' })
     const monthTotals = new Map<string, number>()
 
-    weeks.forEach(week => {
-      week.forEach(day => {
+    weeks.forEach((week) => {
+      week.forEach((day) => {
         if (!day.inRange) return
         const date = new Date(`${day.date}T00:00:00`)
         const key = `${date.getFullYear()}-${date.getMonth()}`
@@ -210,32 +210,32 @@ export const InsightsCalendarHeatmap = ({
                     ? getMoodColor(day.mood, moodColors)
                     : getSleepColor(day.sleep)
                   const labelDate = formatLongDate(new Date(`${day.date}T00:00:00`))
-              const valueLabel = metric === 'mood'
-                ? day.mood
-                  ? `${day.mood.toFixed(0)} / 5`
-                  : 'No entry'
-                : day.sleep
-                  ? `${day.sleep.toFixed(1)}h`
-                  : 'No entry'
-              if (day.isFuture) {
-                return (
-                  <span
-                    key={day.date}
-                    className="heatmap-day future"
-                    aria-hidden="true"
-                  />
-                )
-              }
+                  const valueLabel = metric === 'mood'
+                    ? day.mood
+                      ? `${day.mood.toFixed(0)} / 5`
+                      : 'No entry'
+                    : day.sleep
+                      ? `${day.sleep.toFixed(1)}h`
+                      : 'No entry'
+                  if (day.isFuture) {
+                    return (
+                      <span
+                        key={day.date}
+                        className="heatmap-day future"
+                        aria-hidden="true"
+                      />
+                    )
+                  }
 
-              const tooltipLabel = `${labelDate} · ${valueLabel}`
-              return (
-                <Tooltip key={day.date} label={tooltipLabel}>
-                  <span
-                    className={`heatmap-day${color ? ' filled' : ''}`}
-                    style={color ? { backgroundColor: color } : undefined}
-                  />
-                </Tooltip>
-              )
+                  const tooltipLabel = `${labelDate} · ${valueLabel}`
+                  return (
+                    <Tooltip key={day.date} label={tooltipLabel}>
+                      <span
+                        className={`heatmap-day${color ? ' filled' : ''}`}
+                        style={color ? { backgroundColor: color } : undefined}
+                      />
+                    </Tooltip>
+                  )
                 })}
               </div>
             ))}
