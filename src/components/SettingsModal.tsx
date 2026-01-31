@@ -40,28 +40,25 @@ export const SettingsModal = ({
   const [reminderTime, setReminderTime] = useState(
     () => getStoredDailyReminderTime(),
   )
+  const [isDateFormatOpen, setIsDateFormatOpen] = useState(false)
 
-  const parseReminderTime = (value: string) => {
-    const [hourValue, minuteValue] = value.split(':')
-    const hour = Number(hourValue)
-    const minute = Number(minuteValue)
-    if (
-      !Number.isFinite(hour)
-      || !Number.isFinite(minute)
-      || hour < 0
-      || hour > 23
-      || minute < 0
-      || minute > 59
-    ) {
-      return { hour: 20, minute: 0 }
-    }
-    return { hour, minute }
+  const dateFormatOptions: { value: DateFormatPreference, label: string }[] = [
+    { value: 'mdy', label: 'Month / Day / Year' },
+    { value: 'dmy', label: 'Day / Month / Year' },
+    { value: 'ymd', label: 'Year / Month / Day' },
+  ]
+
+  const activeDateFormat = dateFormatOptions.find(option => option.value === dateFormat)
+    ?? dateFormatOptions[0]
+
+  const handleDateFormatSelect = (value: DateFormatPreference) => {
+    onDateFormatChange(value)
+    setIsDateFormatOpen(false)
   }
 
   useEffect(() => {
     if (!remindersSupported || !remindersEnabled) return
-    const { hour, minute } = parseReminderTime(reminderTime)
-    void scheduleDailyReminder({ hour, minute })
+    void scheduleDailyReminder({ time: reminderTime })
   }, [reminderTime, remindersEnabled, remindersSupported])
 
   const handleReminderToggle = async (enabled: boolean) => {
@@ -71,10 +68,8 @@ export const SettingsModal = ({
     if (!remindersSupported) return
 
     if (enabled) {
-      const { hour, minute } = parseReminderTime(reminderTime)
       const scheduled = await scheduleDailyReminder({
-        hour,
-        minute,
+        time: reminderTime,
         force: true,
       })
       if (!scheduled) {
@@ -91,8 +86,7 @@ export const SettingsModal = ({
     setReminderTime(value)
     setStoredDailyReminderTime(value)
     if (!remindersEnabled || !remindersSupported) return
-    const { hour, minute } = parseReminderTime(value)
-    await scheduleDailyReminder({ hour, minute, force: true })
+    await scheduleDailyReminder({ time: value, force: true })
   }
 
   if (!isOpen) return null
@@ -151,22 +145,49 @@ export const SettingsModal = ({
             <div className="settings-grid">
               <label className="field" htmlFor="settings-date-format">
                 <span>Preferred date format</span>
-                <select
-                  id="settings-date-format"
-                  value={dateFormat}
-                  onChange={event =>
-                    onDateFormatChange(event.target.value as DateFormatPreference)}
-                >
-                  <option value="mdy">Month / Day / Year</option>
-                  <option value="dmy">Day / Month / Year</option>
-                  <option value="ymd">Year / Month / Day</option>
-                </select>
+                <div className="tag-input">
+                  <input
+                    id="settings-date-format"
+                    type="text"
+                    readOnly
+                    value={activeDateFormat.label}
+                    onFocus={() => setIsDateFormatOpen(true)}
+                    onBlur={() => setIsDateFormatOpen(false)}
+                    onClick={() => setIsDateFormatOpen(true)}
+                    aria-haspopup="listbox"
+                    aria-expanded={isDateFormatOpen}
+                  />
+                  {isDateFormatOpen
+                    ? (
+                        <div className="tag-suggestions" role="listbox">
+                          {dateFormatOptions.map(option => (
+                            <button
+                              key={option.value}
+                              type="button"
+                              className="tag-suggestion"
+                              onMouseDown={(event) => {
+                                event.preventDefault()
+                                handleDateFormatSelect(option.value)
+                              }}
+                              onClick={(event) => {
+                                if (event.detail === 0) {
+                                  handleDateFormatSelect(option.value)
+                                }
+                              }}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      )
+                    : null}
+                </div>
               </label>
 
               <div className="field">
                 <span>Daily log reminder</span>
                 <div className="settings-inline">
-                  <label className="checkbox-row" htmlFor="settings-reminder">
+                  <label className="toggle-row">
                     <input
                       id="settings-reminder"
                       type="checkbox"
@@ -174,7 +195,10 @@ export const SettingsModal = ({
                       onChange={event => handleReminderToggle(event.target.checked)}
                       disabled={!remindersSupported}
                     />
-                    <span>Enabled</span>
+                    <span className="toggle-track" aria-hidden="true">
+                      <span className="toggle-thumb" />
+                    </span>
+                    <span className="toggle-text">Enabled</span>
                   </label>
                   <input
                     type="time"

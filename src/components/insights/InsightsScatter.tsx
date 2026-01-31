@@ -8,6 +8,7 @@ import {
   YAxis,
 } from 'recharts'
 import type { Entry } from '../../lib/entries'
+import { formatLongDate } from '../../lib/utils/dateFormatters'
 
 type PlottedEntry = Entry & {
   sleep_hours_clamped: number
@@ -44,9 +45,10 @@ export const InsightsScatter = ({
     if (!active || !payload?.length) return null
     const entry = payload[0]?.payload as Entry | undefined
     if (!entry) return null
+    const labelDate = formatLongDate(new Date(`${entry.entry_date}T00:00:00`))
     return (
       <div className="tooltip">
-        <p>{entry.entry_date}</p>
+        <p>{labelDate}</p>
         <p>Sleep: {entry.sleep_hours} hrs</p>
         <p>Mood: {entry.mood} / 5</p>
         {entry.note ? <p className="tooltip-note">{entry.note}</p> : null}

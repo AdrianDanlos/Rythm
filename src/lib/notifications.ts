@@ -23,6 +23,27 @@ export const setStoredDailyReminderTime = (value: string) => {
   localStorage.setItem(DAILY_REMINDER_TIME_STORAGE_KEY, value)
 }
 
+const parseReminderTime = (value?: string) => {
+  const candidate = value ?? getStoredDailyReminderTime()
+  if (!/^\d{2}:\d{2}$/.test(candidate)) {
+    return { hour: 20, minute: 0 }
+  }
+  const [hourValue, minuteValue] = candidate.split(':')
+  const hour = Number(hourValue)
+  const minute = Number(minuteValue)
+  if (
+    !Number.isFinite(hour)
+    || !Number.isFinite(minute)
+    || hour < 0
+    || hour > 23
+    || minute < 0
+    || minute > 59
+  ) {
+    return { hour: 20, minute: 0 }
+  }
+  return { hour, minute }
+}
+
 const ensureAndroidChannel = async () => {
   if (Capacitor.getPlatform() !== 'android') return
   await LocalNotifications.createChannel({
@@ -34,10 +55,12 @@ const ensureAndroidChannel = async () => {
 }
 
 export const scheduleDailyReminder = async ({
-  hour = 20,
-  minute = 0,
+  time,
+  hour,
+  minute,
   force = false,
 }: {
+  time?: string
   hour?: number
   minute?: number
   force?: boolean
@@ -60,6 +83,14 @@ export const scheduleDailyReminder = async ({
     })
   }
 
+  const resolvedTime = time
+    ? parseReminderTime(time)
+    : parseReminderTime(
+        Number.isFinite(hour) && Number.isFinite(minute)
+          ? `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`
+          : undefined,
+      )
+
   await LocalNotifications.schedule({
     notifications: [
       {
@@ -67,7 +98,7 @@ export const scheduleDailyReminder = async ({
         title: 'Log your day',
         body: 'Add your sleep and mood to keep your streak going.',
         schedule: {
-          on: { hour, minute },
+          on: { hour: resolvedTime.hour, minute: resolvedTime.minute },
           repeats: true,
           allowWhileIdle: true,
         },

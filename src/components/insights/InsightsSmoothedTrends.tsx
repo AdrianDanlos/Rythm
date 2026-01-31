@@ -12,7 +12,7 @@ import {
 } from 'recharts'
 import type { RollingPoint, RollingSummary } from '../../lib/types/stats'
 import { buildMockRollingSeries } from '../../lib/insightsMock'
-import { formatShortDate } from '../../lib/utils/dateFormatters'
+import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
 import { Tooltip } from '../Tooltip'
 
 type InsightsSmoothedTrendsProps = {
@@ -138,6 +138,8 @@ export const InsightsSmoothedTrends = ({
                         tick={baseTickProps}
                       />
                       <RechartsTooltip
+                        labelFormatter={value =>
+                          formatLongDate(new Date(`${value}T00:00:00`))}
                         formatter={(value) => {
                           const normalized = Array.isArray(value) ? value[0] : value
                           const formatted = formatLineValue(
@@ -254,6 +256,8 @@ export const InsightsSmoothedTrends = ({
                       tick={baseTickProps}
                     />
                     <RechartsTooltip
+                      labelFormatter={value =>
+                        formatLongDate(new Date(`${value}T00:00:00`))}
                       formatter={(value) => {
                         const normalized = Array.isArray(value) ? value[0] : value
                         const formatted = formatLineValue(

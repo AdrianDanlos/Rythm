@@ -1,6 +1,6 @@
 import { getStoredDateFormat } from '../settings'
 
-const resolveDateLocale = () => {
+export const getDateLocale = () => {
   const preference = getStoredDateFormat()
   if (preference === 'dmy') return 'en-GB'
   if (preference === 'ymd') return 'en-CA'
@@ -17,14 +17,14 @@ export const formatLocalDate = (date: Date) => {
 export const formatShortDate = (value: string) => {
   const date = new Date(`${value}T00:00:00`)
   if (Number.isNaN(date.getTime())) return value
-  return date.toLocaleDateString(resolveDateLocale(), {
+  return date.toLocaleDateString(getDateLocale(), {
     month: 'short',
     day: 'numeric',
   })
 }
 
 export const formatLongDate = (date: Date) => {
-  return new Intl.DateTimeFormat(resolveDateLocale(), {
+  return new Intl.DateTimeFormat(getDateLocale(), {
     month: 'short',
     day: 'numeric',
     year: 'numeric',

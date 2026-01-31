@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { Entry } from '../../lib/entries'
-import { formatLocalDate, formatLongDate } from '../../lib/utils/dateFormatters'
+import { formatLocalDate, formatLongDate, getDateLocale } from '../../lib/utils/dateFormatters'
 import { Tooltip } from '../Tooltip'
 
 type HeatmapDay = {
@@ -90,13 +90,14 @@ export const InsightsCalendarHeatmap = ({
 }: InsightsCalendarHeatmapProps) => {
   const [metric, setMetric] = useState<'mood' | 'sleep'>('mood')
   const totalDays = isMobile ? 90 : 365
+  const dateLocale = getDateLocale()
   const weeks = useMemo(
     () => buildHeatmapWeeks(entries, totalDays),
     [entries, totalDays],
   )
   const legendColors = metric === 'mood' ? moodColors : sleepColors
   const monthLabels = useMemo(() => {
-    const formatter = new Intl.DateTimeFormat('en-US', { month: 'short' })
+    const formatter = new Intl.DateTimeFormat(dateLocale, { month: 'short' })
     const monthTotals = new Map<string, number>()
 
     weeks.forEach(week => {
@@ -141,7 +142,7 @@ export const InsightsCalendarHeatmap = ({
       }
       return monthTotal < maxForLabel ? '' : label
     })
-  }, [weeks])
+  }, [dateLocale, weeks])
 
   return (
     <section className="card">

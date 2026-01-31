@@ -12,7 +12,7 @@ import {
 import type { TrendPoint } from '../../lib/types/stats'
 import { buildMockTrendSeries } from '../../lib/insightsMock'
 import { buildWeeklyTrendSeries } from '../../lib/stats'
-import { formatShortDate } from '../../lib/utils/dateFormatters'
+import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
 
 type InsightsDailyHistoryProps = {
   isPro: boolean
@@ -169,7 +169,10 @@ export const InsightsDailyHistory = ({
                         tickFormatter={formatAxisValue}
                         tick={baseTickProps}
                       />
-                      <RechartsTooltip />
+                      <RechartsTooltip
+                        labelFormatter={value =>
+                          formatLongDate(new Date(`${value}T00:00:00`))}
+                      />
                       <Legend wrapperStyle={legendWrapperStyle} />
                       <Line
                         type="monotone"
@@ -228,7 +231,10 @@ export const InsightsDailyHistory = ({
                     tickFormatter={formatAxisValue}
                     tick={baseTickProps}
                   />
-                  <RechartsTooltip />
+                  <RechartsTooltip
+                    labelFormatter={value =>
+                      formatLongDate(new Date(`${value}T00:00:00`))}
+                  />
                   <Legend wrapperStyle={legendWrapperStyle} />
                   <Line
                     type="monotone"
