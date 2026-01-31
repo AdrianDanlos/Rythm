@@ -157,7 +157,7 @@ export const InsightsDailyHistory = ({
                       <YAxis
                         yAxisId="left"
                         domain={[4, 10]}
-                        ticks={[2, 4, 6, 8, 10]}
+                        ticks={[4, 6, 8, 10]}
                         tickFormatter={formatAxisValue}
                         tick={baseTickProps}
                       />
@@ -216,7 +216,7 @@ export const InsightsDailyHistory = ({
                   <YAxis
                     yAxisId="left"
                     domain={[4, 10]}
-                    ticks={[2, 4, 6, 8, 10]}
+                    ticks={[4, 6, 8, 10]}
                     tickFormatter={formatAxisValue}
                     tick={baseTickProps}
                   />
