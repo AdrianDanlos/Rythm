@@ -23,6 +23,12 @@ import logo from './assets/rythm-logo.png'
 import { StripeLanding } from './components/StripeLanding.tsx'
 import { ROUTES, isStripeLanding, isStripeReturn } from './lib/routes'
 import { PRICING } from './lib/pricing'
+import {
+  cancelDailyReminder,
+  getStoredDailyReminderEnabled,
+  scheduleDailyReminder,
+  setStoredDailyReminderEnabled,
+} from './lib/notifications'
 import './App.css'
 
 enum Tabs {
@@ -74,6 +80,8 @@ function App() {
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
   const [isPortalLoading, setIsPortalLoading] = useState(false)
+  const [dailyReminderEnabled, setDailyReminderEnabled] = useState(false)
+  const remindersSupported = Capacitor.isNativePlatform()
 
   const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
@@ -104,6 +112,15 @@ function App() {
       void listenerPromise.then(listener => listener.remove())
     }
   }, [])
+
+  useEffect(() => {
+    if (!remindersSupported) return
+    const stored = getStoredDailyReminderEnabled()
+    setDailyReminderEnabled(stored)
+    if (stored) {
+      void scheduleDailyReminder()
+    }
+  }, [remindersSupported])
 
   useEffect(() => {
     const path = window.location.pathname
@@ -384,6 +401,24 @@ function App() {
     }
   }
 
+  const handleReminderToggle = async (enabled: boolean) => {
+    setDailyReminderEnabled(enabled)
+    setStoredDailyReminderEnabled(enabled)
+
+    if (!remindersSupported) return
+
+    if (enabled) {
+      const scheduled = await scheduleDailyReminder()
+      if (!scheduled) {
+        setDailyReminderEnabled(false)
+        setStoredDailyReminderEnabled(false)
+      }
+      return
+    }
+
+    await cancelDailyReminder()
+  }
+
   const handleOpenPaywall = () => {
     setIsPaywallOpen(true)
   }
@@ -612,6 +647,9 @@ function App() {
                           entriesError={entriesError}
                           moodColors={moodColors}
                           isPro={isPro}
+                          remindersEnabled={dailyReminderEnabled}
+                          remindersSupported={remindersSupported}
+                          onReminderToggle={handleReminderToggle}
                           formatLocalDate={formatLocalDate}
                           onEntryDateChange={setEntryDate}
                           onSleepHoursChange={setSleepHours}

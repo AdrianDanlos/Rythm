@@ -18,6 +18,9 @@ export type LogFormProps = {
   entriesError: string | null
   moodColors: string[]
   isPro: boolean
+  remindersEnabled: boolean
+  remindersSupported: boolean
+  onReminderToggle: (enabled: boolean) => void
   formatLocalDate: (date: Date) => string
   onEntryDateChange: (value: string) => void
   onSleepHoursChange: (value: string) => void
@@ -43,6 +46,9 @@ export const LogForm = ({
   entriesError,
   moodColors,
   isPro,
+  remindersEnabled,
+  remindersSupported,
+  onReminderToggle,
   formatLocalDate,
   onEntryDateChange,
   onSleepHoursChange,
@@ -167,6 +173,20 @@ export const LogForm = ({
             {isPro
               ? `Up to ${maxTagsPerEntry} tags per entry. Separate tags with commas.`
               : 'Upgrade to Pro to add tags.'}
+          </p>
+        </label>
+        <label className="field">
+          Daily reminder (mobile only)
+          <input
+            type="checkbox"
+            checked={remindersEnabled}
+            disabled={!remindersSupported}
+            onChange={event => onReminderToggle(event.target.checked)}
+          />
+          <p className="helper">
+            {remindersSupported
+              ? 'Get a notification every day at 8:00 PM.'
+              : 'Available on the mobile app only.'}
           </p>
         </label>
         {entriesError ? <p className="error">{entriesError}</p> : null}
