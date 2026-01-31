@@ -80,7 +80,7 @@ export const useAuth = () => {
 
   // Keep session fresh during long idle/background periods.
   useEffect(() => {
-    if (!session) return
+    if (!session?.user?.id) return
 
     let isMounted = true
     const refreshIfMounted = async () => {
@@ -104,7 +104,7 @@ export const useAuth = () => {
       window.clearInterval(intervalId)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [refreshSession, session])
+  }, [refreshSession, session?.user?.id])
 
   return {
     session,
