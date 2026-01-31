@@ -22,6 +22,7 @@ import { CreditCard, LogOut, Mail } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
 import { StripeLanding } from './components/StripeLanding.tsx'
 import { ROUTES, isStripeLanding, isStripeReturn } from './lib/routes'
+import { PRICING } from './lib/pricing'
 import './App.css'
 
 enum Tabs {
@@ -82,8 +83,7 @@ function App() {
     && Boolean(session?.user?.app_metadata?.stripe_customer_id)
   const upgradeUrl = import.meta.env.VITE_UPGRADE_URL as string | undefined
   const trimmedUpgradeUrl = upgradeUrl?.trim()
-  const priceLabel = import.meta.env.VITE_PRO_PRICE_LABEL as string | undefined
-  const trimmedPriceLabel = priceLabel?.trim()
+  const priceLabel = PRICING.pro.priceLabel
 
   // This is needed for the Android app to work.
   // It is used to set the session token when the app is opened from a link.
@@ -525,7 +525,7 @@ function App() {
         onClose={handleClosePaywall}
         upgradeUrl={trimmedUpgradeUrl}
         onUpgrade={handleStartCheckout}
-        priceLabel={trimmedPriceLabel}
+        priceLabel={priceLabel}
       />
       <WelcomeModal
         isOpen={isWelcomeOpen}
