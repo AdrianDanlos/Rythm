@@ -55,16 +55,19 @@ export const LogForm = ({
   const [isTagInputFocused, setIsTagInputFocused] = useState(false)
   const usedTags = parseTags(tags)
   const usedTagSet = new Set(usedTags)
+  const sortedTagSuggestions = [...tagSuggestions].sort((a, b) =>
+    a.localeCompare(b),
+  )
   const lastCommaIndex = tags.lastIndexOf(',')
   const rawToken = lastCommaIndex === -1 ? tags : tags.slice(lastCommaIndex + 1)
   const token = rawToken.trim()
   const tokenLower = token.toLowerCase()
   const matchingSuggestions = tokenLower.length
-    ? tagSuggestions.filter(tag =>
+    ? sortedTagSuggestions.filter(tag =>
         tag.startsWith(tokenLower) && !usedTagSet.has(tag),
       )
     : isTagInputFocused
-      ? tagSuggestions.filter(tag => !usedTagSet.has(tag))
+      ? sortedTagSuggestions.filter(tag => !usedTagSet.has(tag))
       : []
 
   const handleSuggestionSelect = (suggestion: string) => {
