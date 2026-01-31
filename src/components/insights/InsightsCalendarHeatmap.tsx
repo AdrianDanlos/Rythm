@@ -148,7 +148,14 @@ export const InsightsCalendarHeatmap = ({
     <section className="card">
       <div className="card-header">
         <div>
-          <h2>Calendar heatmap</h2>
+          <h2>
+            Calendar heatmap
+            <Tooltip label="What is this? A calendar view of daily mood or sleep over time.">
+              <span className="tooltip-trigger">
+                <span className="tooltip-icon" aria-hidden="true">i</span>
+              </span>
+            </Tooltip>
+          </h2>
           <p className="muted">
             Daily {metric} · Last {totalDays} days
           </p>

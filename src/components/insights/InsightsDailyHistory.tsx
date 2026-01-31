@@ -13,6 +13,7 @@ import type { TrendPoint } from '../../lib/types/stats'
 import { buildMockTrendSeries } from '../../lib/insightsMock'
 import { buildWeeklyTrendSeries } from '../../lib/stats'
 import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
+import { Tooltip } from '../Tooltip'
 
 type InsightsDailyHistoryProps = {
   isPro: boolean
@@ -83,7 +84,14 @@ export const InsightsDailyHistory = ({
     <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
       <div className="card-header">
         <div>
-          <h2>Daily history</h2>
+          <h2>
+            Daily history
+            <Tooltip label="What is this? Day-by-day mood and sleep values over time.">
+              <span className="tooltip-trigger">
+                <span className="tooltip-icon" aria-hidden="true">i</span>
+              </span>
+            </Tooltip>
+          </h2>
           <p className="muted">Raw day-by-day values across 30/90/365 days</p>
         </div>
         <div className="toggle-group">

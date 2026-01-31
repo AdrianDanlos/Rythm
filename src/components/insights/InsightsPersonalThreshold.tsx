@@ -1,3 +1,5 @@
+import { Tooltip } from '../Tooltip'
+
 type InsightsPersonalThresholdProps = {
   isPro: boolean
   personalSleepThreshold: number | null
@@ -17,7 +19,14 @@ export const InsightsPersonalThreshold = ({
     <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
       <div className="card-header">
         <div>
-          <h2>Your sleep target</h2>
+          <h2>
+            Your sleep target
+            <Tooltip label="What is this? An estimated sleep goal tied to your best mood days.">
+              <span className="tooltip-trigger">
+                <span className="tooltip-icon" aria-hidden="true">i</span>
+              </span>
+            </Tooltip>
+          </h2>
           <p className="muted">Personalized target based on your sleep history.</p>
         </div>
       </div>

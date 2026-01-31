@@ -9,6 +9,7 @@ import {
 } from 'recharts'
 import type { Entry } from '../../lib/entries'
 import { formatLongDate } from '../../lib/utils/dateFormatters'
+import { Tooltip } from '../Tooltip'
 
 type PlottedEntry = Entry & {
   sleep_hours_clamped: number
@@ -60,7 +61,14 @@ export const InsightsScatter = ({
     <section className="card chart-card">
       <div className="chart-header">
         <div>
-          <h2>Rythm insights</h2>
+          <h2>
+            Rythm insights
+            <Tooltip label="What is this? A scatter plot of daily sleep vs mood; hover dots for details.">
+              <span className="tooltip-trigger">
+                <span className="tooltip-icon" aria-hidden="true">i</span>
+              </span>
+            </Tooltip>
+          </h2>
           <p className="muted">Each dot is one day: more sleep is right, better mood is higher.</p>
         </div>
         <p className="muted">

@@ -1,5 +1,6 @@
 import type { TagDriver } from '../../lib/types/stats'
 import { DEFAULT_TAG_DRIVER_MIN_COUNT } from '../../lib/utils/tagInsights'
+import { Tooltip } from '../Tooltip'
 
 type InsightsTagInsightsProps = {
   isPro: boolean
@@ -32,7 +33,14 @@ export const InsightsTagInsights = ({
     <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
       <div className="card-header">
         <div>
-          <h2>Tag Insights</h2>
+          <h2>
+            Tag Insights
+            <Tooltip label="What is this? Compares mood/sleep on days with a tag vs without it.">
+              <span className="tooltip-trigger">
+                <span className="tooltip-icon" aria-hidden="true">i</span>
+              </span>
+            </Tooltip>
+          </h2>
           <p className="muted">Impact of tags on your mood and sleep</p>
         </div>
       </div>

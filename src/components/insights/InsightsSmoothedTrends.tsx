@@ -85,7 +85,14 @@ export const InsightsSmoothedTrends = ({
     <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
       <div className="card-header">
         <div>
-          <h2>Smoothed trends</h2>
+          <h2>
+            Smoothed trends
+            <Tooltip label="What is this? Rolling averages that smooth daily noise to show direction.">
+              <span className="tooltip-trigger">
+                <span className="tooltip-icon" aria-hidden="true">i</span>
+              </span>
+            </Tooltip>
+          </h2>
           <p className="muted">
             Rolling averages over 7/30/90 days to show direction
           </p>
@@ -353,15 +360,7 @@ export const InsightsSmoothedTrends = ({
                       / {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
                     </p>
                     <p className="helper">
-                      <Tooltip label={`Change versus the prior ${summary.days} days.`}>
-                        <span className="tooltip-trigger">
-                          <span className="tooltip-icon" aria-hidden="true">
-                            i
-                          </span>
-                          Delta
-                        </span>
-                      </Tooltip>
-                      : {formatDeltaValue(summary.sleepDelta)}h ·{' '}
+                      Delta: {formatDeltaValue(summary.sleepDelta)}h ·{' '}
                       {formatDeltaValue(summary.moodDelta)}
                     </p>
                   </div>
