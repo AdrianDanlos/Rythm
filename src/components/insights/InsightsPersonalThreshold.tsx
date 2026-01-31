@@ -47,7 +47,6 @@ export const InsightsPersonalThreshold = ({
             )
           : (
               <div className="stat-block">
-                <p className="label">Estimated threshold</p>
                 <p className="muted">
                   Not enough data yet. Log more sleep entries to estimate your
                   personal threshold.
