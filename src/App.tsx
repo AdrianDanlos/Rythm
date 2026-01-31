@@ -48,7 +48,6 @@ function App() {
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
   const [authEmail, setAuthEmail] = useState('')
   const [authPassword, setAuthPassword] = useState('')
-  const [authMessage, setAuthMessage] = useState<string | null>(null)
   const {
     session,
     authLoading,
@@ -268,13 +267,11 @@ function App() {
   const handleAuth = async (event: FormEvent) => {
     event.preventDefault()
     setAuthError(null)
-    setAuthMessage(null)
 
     try {
       if (authMode === 'signup') {
         const { error } = await signUp(authEmail, authPassword)
         if (error) throw error
-        setAuthMessage('Check your email to confirm your account.')
       }
       else {
         const { error } = await signIn(authEmail, authPassword)
@@ -288,7 +285,6 @@ function App() {
 
   const handleGoogleSignIn = async () => {
     setAuthError(null)
-    setAuthMessage(null)
     const redirectTo = Capacitor.isNativePlatform()
       ? 'capacitor://localhost'
       : window.location.origin
@@ -649,7 +645,6 @@ function App() {
                   authPassword={authPassword}
                   authLoading={authLoading}
                   authError={authError}
-                  authMessage={authMessage}
                   onEmailChange={setAuthEmail}
                   onPasswordChange={setAuthPassword}
                   onSubmit={handleAuth}

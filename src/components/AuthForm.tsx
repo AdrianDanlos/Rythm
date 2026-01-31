@@ -7,7 +7,6 @@ type AuthFormProps = {
   authPassword: string
   authLoading: boolean
   authError: string | null
-  authMessage: string | null
   onEmailChange: (value: string) => void
   onPasswordChange: (value: string) => void
   onSubmit: (event: FormEvent) => void
@@ -21,7 +20,6 @@ export const AuthForm = ({
   authPassword,
   authLoading,
   authError,
-  authMessage,
   onEmailChange,
   onPasswordChange,
   onSubmit,
@@ -54,7 +52,6 @@ export const AuthForm = ({
         />
       </label>
       {authError ? <p className="error">{authError}</p> : null}
-      {authMessage ? <p className="success">{authMessage}</p> : null}
       <button type="submit" disabled={authLoading}>
         {authLoading
           ? 'Working...'
