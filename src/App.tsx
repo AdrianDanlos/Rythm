@@ -85,6 +85,7 @@ function App() {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isPortalLoading, setIsPortalLoading] = useState(false)
+  const [isSignOutLoading, setIsSignOutLoading] = useState(false)
   const [dateFormat, setDateFormat] = useState<DateFormatPreference>('mdy')
   const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme())
   const [profileName, setProfileName] = useState('')
@@ -392,7 +393,14 @@ function App() {
   }
 
   const handleSignOut = async () => {
-    await signOut()
+    if (isSignOutLoading) return
+    setIsSignOutLoading(true)
+    try {
+      await signOut()
+    }
+    finally {
+      setIsSignOutLoading(false)
+    }
   }
 
   const handleExportCsv = async () => {
@@ -584,9 +592,13 @@ function App() {
                       className="ghost icon-button"
                       onClick={handleSignOut}
                       type="button"
-                      aria-label="Sign out"
+                      aria-label={isSignOutLoading ? 'Signing out' : 'Sign out'}
+                      aria-busy={isSignOutLoading}
+                      disabled={isSignOutLoading}
                     >
-                      <LogOut className="icon" aria-hidden="true" />
+                      {isSignOutLoading
+                        ? <span className="spinner" aria-hidden="true" />
+                        : <LogOut className="icon" aria-hidden="true" />}
                     </button>
                   </Tooltip>
                 </>
