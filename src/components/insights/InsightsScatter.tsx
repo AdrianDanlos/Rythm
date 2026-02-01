@@ -59,7 +59,7 @@ export const InsightsScatter = ({
 
   return (
     <section className="card chart-card">
-      <div className="chart-header">
+      <div className="card-header">
         <div>
           <h2>
             Rythm insights
