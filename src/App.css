@@ -1010,6 +1010,16 @@
   gap: 12px;
 }
 
+.insights-intro__actions .cta-button,
+.insights-intro__actions .ghost {
+  flex: 1 1 160px;
+  min-width: 140px;
+}
+
+.insights-intro__actions .helper {
+  flex-basis: 100%;
+}
+
 .field-title {
   display: flex;
   align-items: center;
@@ -1268,6 +1278,16 @@
   .insights-header {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .insights-intro__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .insights-intro__header .ghost {
+    min-width: auto;
+    width: 100%;
   }
   .insights-actions-buttons {
     display: grid;

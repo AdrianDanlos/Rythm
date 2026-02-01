@@ -30,13 +30,6 @@ export const InsightsQuickStart = ({ onStartLog }: InsightsQuickStartProps) => {
             that move your mood.
           </p>
         </div>
-        <button
-          className="ghost"
-          type="button"
-          onClick={handleDismiss}
-        >
-          Got it
-        </button>
       </div>
       <div className="insights-intro__steps">
         <div className="intro-step">
@@ -59,6 +52,13 @@ export const InsightsQuickStart = ({ onStartLog }: InsightsQuickStartProps) => {
           onClick={onStartLog}
         >
           Log today
+        </button>
+        <button
+          className="ghost"
+          type="button"
+          onClick={handleDismiss}
+        >
+          Got it
         </button>
         <p className="helper">Tip: the charts improve after 3–5 entries.</p>
       </div>
