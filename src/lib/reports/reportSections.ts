@@ -2,6 +2,7 @@ import type { jsPDF } from 'jspdf'
 import type { Entry } from '../entries'
 import type { StatsResult } from '../stats'
 import { formatLongDate } from '../utils/dateFormatters'
+import { formatSleepHours } from '../utils/sleepHours'
 import type { ReportData } from './reportData'
 import {
   drawBullets,
@@ -110,7 +111,7 @@ export const renderLast30DaysSection = ({
 
   drawBullets(doc, yRef, [
     `Entries logged: ${recentEntries.length}`,
-    `Average sleep: ${avgSleep !== null ? avgSleep.toFixed(1) : '—'} hrs`,
+    `Average sleep: ${avgSleep !== null ? formatSleepHours(avgSleep) : '—'}`,
     `Average mood: ${avgMood !== null ? avgMood.toFixed(1) : '—'} / 5`,
     `Sleep consistency: ${monthlyConsistency ?? '—'}`,
     `Sleep-mood link: ${monthlyCorrelation ?? '—'}`,
@@ -126,7 +127,7 @@ export const renderLast30DaysSection = ({
       yRef,
       [
         `Mood: ${bestDay.mood}`,
-        `Sleep: ${bestDay.sleep_hours}h`,
+        `Sleep: ${formatSleepHours(Number(bestDay.sleep_hours))}`,
         `Tags: ${bestTags}`,
       ],
       22,
@@ -160,8 +161,8 @@ export const renderLast30DaysSection = ({
       weeklySummaries.map(
         week =>
           `${week.label} · Sleep ${
-            week.avgSleep !== null ? week.avgSleep.toFixed(1) : '—'
-          }h · Mood ${week.avgMood !== null ? week.avgMood.toFixed(1) : '—'}`,
+            week.avgSleep !== null ? formatSleepHours(week.avgSleep) : '—'
+          } · Mood ${week.avgMood !== null ? week.avgMood.toFixed(1) : '—'}`,
       ),
       18,
     )
@@ -172,7 +173,7 @@ export const renderLast30DaysSection = ({
     const sleepValue = Number(bestNight.sleep_hours)
     if (Number.isFinite(sleepValue)) {
       highlightLines.push(
-        `Best night: ${formatLongDate(new Date(`${bestNight.entry_date}T00:00:00`))} (${sleepValue.toFixed(1)}h)`,
+        `Best night: ${formatLongDate(new Date(`${bestNight.entry_date}T00:00:00`))} (${formatSleepHours(sleepValue)})`,
       )
     }
   }
@@ -181,7 +182,7 @@ export const renderLast30DaysSection = ({
     .sort((a, b) => (a.sleepStdDev ?? 0) - (b.sleepStdDev ?? 0))[0]
   if (mostConsistentWeek?.sleepStdDev !== null) {
     highlightLines.push(
-      `Most consistent week: ${mostConsistentWeek.label} (+/-${mostConsistentWeek.sleepStdDev.toFixed(1)}h)`,
+      `Most consistent week: ${mostConsistentWeek.label} (+/-${formatSleepHours(mostConsistentWeek.sleepStdDev)})`,
     )
   }
   if (biggestMoodDip) {
@@ -201,8 +202,8 @@ export const renderLast30DaysSection = ({
   if (sleepDelta !== null) {
     summaryLines.push(
       sleepDelta >= 0
-        ? `Sleep increased by ${sleepDelta.toFixed(1)} hours vs prior 30 days.`
-        : `Sleep decreased by ${Math.abs(sleepDelta).toFixed(1)} hours vs prior 30 days.`,
+        ? `Sleep increased by ${formatSleepHours(sleepDelta)} vs prior 30 days.`
+        : `Sleep decreased by ${formatSleepHours(Math.abs(sleepDelta))} vs prior 30 days.`,
     )
   }
   if (moodDelta !== null) {
@@ -248,7 +249,7 @@ export const renderAllTimeSection = ({
 
   drawBullets(doc, yRef, [
     `Entries logged: ${entries.length}`,
-    `Average sleep: ${allTimeAvgSleep !== null ? allTimeAvgSleep.toFixed(1) : '—'} hrs`,
+    `Average sleep: ${allTimeAvgSleep !== null ? formatSleepHours(allTimeAvgSleep) : '—'}`,
     `Average mood: ${allTimeAvgMood !== null ? allTimeAvgMood.toFixed(1) : '—'} / 5`,
     `Sleep consistency: ${stats.sleepConsistencyLabel ?? '—'}`,
     `Sleep-mood link: ${stats.correlationLabel ?? '—'}`,

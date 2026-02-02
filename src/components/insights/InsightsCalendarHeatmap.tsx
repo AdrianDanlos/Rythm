@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Entry } from '../../lib/entries'
 import { formatLocalDate, formatLongDate, getDateLocale } from '../../lib/utils/dateFormatters'
 import { sleepHeatmapColors } from '../../lib/colors'
+import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 
 type HeatmapDay = {
@@ -260,7 +261,7 @@ export const InsightsCalendarHeatmap = ({
                       ? `${day.mood.toFixed(0)} / 5`
                       : 'No entry'
                     : day.sleep
-                      ? `${day.sleep.toFixed(1)}h`
+                      ? formatSleepHours(day.sleep)
                       : 'No entry'
                   if (day.isFuture) {
                     return (

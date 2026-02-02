@@ -43,7 +43,7 @@ describe('exportEntriesCsv', () => {
       mimeType: 'text/csv;charset=utf-8;',
       data: [
         'date,sleep_hours,mood,note',
-        '01/31/2026,8,5,"Note, with ""quotes"""',
+        '01/31/2026,8h,5,"Note, with ""quotes"""',
       ].join('\n'),
       encoding: Encoding.UTF8,
     })

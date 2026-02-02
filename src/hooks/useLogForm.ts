@@ -76,6 +76,16 @@ export const useLogForm = ({
       }
       return hours + minutes / 60
     }
+    if (/[hH]/.test(trimmed)) {
+      const match = /^(\d{1,2})\s*h(?:\s*(\d{1,2})\s*(?:m|min)?)?$/i.exec(trimmed)
+      if (!match) return null
+      const hours = Number(match[1])
+      const minutes = match[2] ? Number(match[2]) : 0
+      if (!Number.isFinite(hours) || !Number.isFinite(minutes) || minutes >= 60) {
+        return null
+      }
+      return hours + minutes / 60
+    }
     const asNumber = Number(trimmed)
     if (!Number.isFinite(asNumber)) return null
     return asNumber
@@ -109,7 +119,7 @@ export const useLogForm = ({
 
     const parsedSleep = parseSleepHours(sleepHours)
     if (parsedSleep === null) {
-      setEntriesError('Sleep hours must be a number or time like 7:30.')
+      setEntriesError('Sleep hours must be a number or time like 7h 30min or 7:30.')
       setSaved(false)
       return
     }

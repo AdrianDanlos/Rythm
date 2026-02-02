@@ -2,6 +2,7 @@ import { Encoding } from '@capacitor/filesystem'
 import type { Entry } from '../entries'
 import { formatLongDate } from './dateFormatters'
 import { exportFile } from './fileExport'
+import { formatSleepHours } from './sleepHours'
 import { escapeCsv } from './stringUtils'
 
 export const exportEntriesCsv = async (entries: Entry[]) => {
@@ -11,7 +12,7 @@ export const exportEntriesCsv = async (entries: Entry[]) => {
     ['date', 'sleep_hours', 'mood', 'note'],
     ...entries.map(entry => [
       formatLongDate(new Date(`${entry.entry_date}T00:00:00`)),
-      entry.sleep_hours,
+      formatSleepHours(entry.sleep_hours),
       entry.mood,
       entry.note ?? '',
     ]),

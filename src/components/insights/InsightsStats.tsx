@@ -1,4 +1,5 @@
 import type { SleepMoodAverages, WindowStats } from '../../lib/types/stats'
+import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 
 type InsightsStatsProps = {
@@ -43,7 +44,7 @@ export const InsightsStats = ({
       <section className="card stats">
         {renderTopStat(
           'Average sleep',
-          averages.sleep !== null ? `${averages.sleep.toFixed(1)} hrs` : '—',
+          averages.sleep !== null ? formatSleepHours(averages.sleep) : '—',
         )}
         {renderTopStat(
           'Average mood',
@@ -70,7 +71,7 @@ export const InsightsStats = ({
                   <p className="value">
                     {windowAverages.last7.sleep !== null
                       && windowAverages.last7.mood !== null
-                      ? `${windowAverages.last7.sleep.toFixed(1)}h / ${windowAverages.last7.mood.toFixed(1)}`
+                      ? `${formatSleepHours(windowAverages.last7.sleep)} / ${windowAverages.last7.mood.toFixed(1)}`
                       : '—'}
                   </p>
                   <p className="helper">
@@ -83,7 +84,7 @@ export const InsightsStats = ({
                   <p className="value">
                     {windowAverages.last30.sleep !== null
                       && windowAverages.last30.mood !== null
-                      ? `${windowAverages.last30.sleep.toFixed(1)}h / ${windowAverages.last30.mood.toFixed(1)}`
+                      ? `${formatSleepHours(windowAverages.last30.sleep)} / ${windowAverages.last30.mood.toFixed(1)}`
                       : '—'}
                   </p>
                   <p className="helper">
@@ -135,11 +136,11 @@ export const InsightsStats = ({
                   <p className="value">
                     {moodBySleepThreshold.high !== null
                       || moodBySleepThreshold.low !== null
-                      ? `≥${sleepThreshold}h ${moodBySleepThreshold.high?.toFixed(1) ?? '—'} / <${sleepThreshold}h ${moodBySleepThreshold.low?.toFixed(1) ?? '—'}`
+                      ? `≥${formatSleepHours(sleepThreshold)} ${moodBySleepThreshold.high?.toFixed(1) ?? '—'} / <${formatSleepHours(sleepThreshold)} ${moodBySleepThreshold.low?.toFixed(1) ?? '—'}`
                       : '—'}
                   </p>
                   <p className="helper">
-                    Avg mood split at {sleepThreshold} hours
+                    Avg mood split at {formatSleepHours(sleepThreshold)}
                   </p>
                 </div>
               </>

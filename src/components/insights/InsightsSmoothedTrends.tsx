@@ -14,6 +14,7 @@ import type { RollingPoint, RollingSummary } from '../../lib/types/stats'
 import { buildMockRollingSeries } from '../../lib/insightsMock'
 import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
 import { rollingTrendColors } from '../../lib/colors'
+import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 
 type InsightsSmoothedTrendsProps = {
@@ -35,6 +36,12 @@ const formatAxisValue = (value: number | string) => {
   return formatted.endsWith('.0') ? formatted.slice(0, -2) : formatted
 }
 
+const formatSleepAxisValue = (value: number | string) => {
+  if (value === null || value === undefined) return '—'
+  const numeric = typeof value === 'number' ? value : Number(value)
+  return Number.isFinite(numeric) ? formatSleepHours(numeric) : '—'
+}
+
 const rollingLegendSorter = (item: LegendPayload) => {
   const label = String(item.dataKey ?? item.value ?? '')
   if (label.includes('7')) return 1
@@ -47,6 +54,12 @@ const formatDeltaValue = (value: number | null) => {
   if (value === null || !Number.isFinite(value)) return '—'
   const formatted = value.toFixed(1)
   return value > 0 ? `+${formatted}` : formatted
+}
+
+const formatSleepDeltaValue = (value: number | null) => {
+  if (value === null || !Number.isFinite(value)) return '—'
+  const sign = value > 0 ? '+' : value < 0 ? '-' : ''
+  return `${sign}${formatSleepHours(Math.abs(value))}`
 }
 
 const getDateTickInterval = (pointCount: number, targetTicks = 6) => {
@@ -136,7 +149,11 @@ export const InsightsSmoothedTrends = ({
                         height={isMobile ? 36 : 30}
                       />
                       <YAxis
-                        tickFormatter={formatAxisValue}
+                        tickFormatter={
+                          rollingMetric === 'sleep'
+                            ? formatSleepAxisValue
+                            : formatAxisValue
+                        }
                         domain={
                           rollingMetric === 'sleep' ? [4, 10] : [1, 5]
                         }
@@ -150,12 +167,13 @@ export const InsightsSmoothedTrends = ({
                           formatLongDate(new Date(`${value}T00:00:00`))}
                         formatter={(value) => {
                           const normalized = Array.isArray(value) ? value[0] : value
-                          const formatted = formatLineValue(
-                            normalized ?? '',
-                          )
-                          return rollingMetric === 'sleep' && formatted !== '—'
-                            ? `${formatted}h`
-                            : formatted
+                          if (rollingMetric === 'sleep') {
+                            const numeric = typeof normalized === 'number'
+                              ? normalized
+                              : Number(normalized)
+                            return Number.isFinite(numeric) ? formatSleepHours(numeric) : '—'
+                          }
+                          return formatLineValue(normalized ?? '')
                         }}
                         itemSorter={(item) => {
                           const name = String(item.name ?? '')
@@ -254,7 +272,11 @@ export const InsightsSmoothedTrends = ({
                       height={isMobile ? 36 : 30}
                     />
                     <YAxis
-                      tickFormatter={formatAxisValue}
+                      tickFormatter={
+                        rollingMetric === 'sleep'
+                          ? formatSleepAxisValue
+                          : formatAxisValue
+                      }
                       domain={
                         rollingMetric === 'sleep' ? [4, 10] : [1, 5]
                       }
@@ -268,12 +290,13 @@ export const InsightsSmoothedTrends = ({
                         formatLongDate(new Date(`${value}T00:00:00`))}
                       formatter={(value) => {
                         const normalized = Array.isArray(value) ? value[0] : value
-                        const formatted = formatLineValue(
-                          normalized ?? '',
-                        )
-                        return rollingMetric === 'sleep' && formatted !== '—'
-                          ? `${formatted}h`
-                          : formatted
+                        if (rollingMetric === 'sleep') {
+                          const numeric = typeof normalized === 'number'
+                            ? normalized
+                            : Number(normalized)
+                          return Number.isFinite(numeric) ? formatSleepHours(numeric) : '—'
+                        }
+                        return formatLineValue(normalized ?? '')
                       }}
                       itemSorter={(item) => {
                         const name = String(item.name ?? '')
@@ -356,7 +379,7 @@ export const InsightsSmoothedTrends = ({
                     </p>
                     <p className="value">
                       {summary.sleep !== null
-                        ? `${summary.sleep.toFixed(1)}h`
+                        ? formatSleepHours(summary.sleep)
                         : '—'}{' '}
                       / {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
                     </p>
@@ -365,7 +388,7 @@ export const InsightsSmoothedTrends = ({
                         label={`Change vs prior ${summary.days}-day window.`}
                       >
                         <span className="tooltip-trigger">
-                          Delta: {formatDeltaValue(summary.sleepDelta)}h ·{' '}
+                          Delta: {formatSleepDeltaValue(summary.sleepDelta)} ·{' '}
                           {formatDeltaValue(summary.moodDelta)}
                         </span>
                       </Tooltip>

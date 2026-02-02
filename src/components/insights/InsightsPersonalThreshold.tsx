@@ -1,4 +1,5 @@
 import { Tooltip } from '../Tooltip'
+import { formatSleepHours } from '../../lib/utils/sleepHours'
 
 type InsightsPersonalThresholdProps = {
   isPro: boolean
@@ -45,11 +46,11 @@ export const InsightsPersonalThreshold = ({
           ? (
               <div className="stat-block">
                 <p className="label">Estimated threshold</p>
-                <p className="value">{`${personalSleepThreshold}h`}</p>
+                <p className="value">{formatSleepHours(personalSleepThreshold)}</p>
                 <p className="helper">
-                  Avg mood at ≥{personalSleepThreshold}h:{' '}
+                  Avg mood at ≥{formatSleepHours(personalSleepThreshold)}:{' '}
                   {moodByPersonalThreshold.high?.toFixed(1) ?? '—'} · &lt;
-                  {personalSleepThreshold}h:{' '}
+                  {formatSleepHours(personalSleepThreshold)}:{' '}
                   {moodByPersonalThreshold.low?.toFixed(1) ?? '—'}
                 </p>
               </div>

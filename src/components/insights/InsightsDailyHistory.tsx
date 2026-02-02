@@ -13,6 +13,7 @@ import type { TrendPoint } from '../../lib/types/stats'
 import { buildMockTrendSeries } from '../../lib/insightsMock'
 import { buildWeeklyTrendSeries } from '../../lib/stats'
 import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
+import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 
 type InsightsDailyHistoryProps = {
@@ -31,6 +32,12 @@ const formatLineValue = (value: number | string) => {
 const formatAxisValue = (value: number | string) => {
   const formatted = formatLineValue(value)
   return formatted.endsWith('.0') ? formatted.slice(0, -2) : formatted
+}
+
+const formatSleepAxisValue = (value: number | string) => {
+  if (value === null || value === undefined) return '—'
+  const numeric = typeof value === 'number' ? value : Number(value)
+  return Number.isFinite(numeric) ? formatSleepHours(numeric) : '—'
 }
 
 const getDateTickInterval = (pointCount: number, targetTicks = 6) => {
@@ -71,9 +78,13 @@ export const InsightsDailyHistory = ({
   const trendChartMargin = isMobile
     ? { top: 12, right: -42, bottom: 0, left: -36 }
     : { top: 12, right: -32, bottom: 0, left: -24 }
-  const formatTooltipValue = (value?: number | string) => {
+  const formatTooltipValue = (value?: number | string, name?: string) => {
     if (value === null || value === undefined) return '—'
-    return trendRange === 'last365' ? formatAxisValue(value) : value
+    const normalized = typeof value === 'number' ? value : Number(value)
+    if (name && name.toLowerCase().includes('sleep')) {
+      return Number.isFinite(normalized) ? formatSleepHours(normalized) : '—'
+    }
+    return formatAxisValue(value)
   }
 
   const handleProAction = (action?: () => void) => {
@@ -147,7 +158,7 @@ export const InsightsDailyHistory = ({
                         yAxisId="left"
                         domain={[4, 10]}
                         ticks={[4, 6, 8, 10]}
-                        tickFormatter={formatAxisValue}
+                        tickFormatter={formatSleepAxisValue}
                         tick={baseTickProps}
                       />
                       <YAxis
@@ -210,7 +221,7 @@ export const InsightsDailyHistory = ({
                     yAxisId="left"
                     domain={[4, 10]}
                     ticks={[4, 6, 8, 10]}
-                    tickFormatter={formatAxisValue}
+                    tickFormatter={formatSleepAxisValue}
                     tick={baseTickProps}
                   />
                   <YAxis

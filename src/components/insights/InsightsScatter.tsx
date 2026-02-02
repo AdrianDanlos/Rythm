@@ -75,7 +75,7 @@ export const InsightsScatter = ({
     return (
       <div className="tooltip">
         <p>{labelDate}</p>
-        <p>Sleep: {formatSleepHours(entry.sleep_hours)} hrs</p>
+        <p>Sleep: {formatSleepHours(entry.sleep_hours)}</p>
         <p>Mood: {entry.mood} / 5</p>
         {entry.note ? <p className="tooltip-note">{entry.note}</p> : null}
       </div>
@@ -123,9 +123,9 @@ export const InsightsScatter = ({
                       ticks={[4, 5, 6, 7, 8, 9, 10]}
                       tick={isMobile ? mobileTickProps : baseTickProps}
                       tickFormatter={(value) => {
-                        if (value === 4) return '≤4'
-                        if (value === 10) return '≥10'
-                        return String(value)
+                        if (value === 4) return '≤4h'
+                        if (value === 10) return '≥10h'
+                        return formatSleepHours(Number(value))
                       }}
                       label={{
                         value: 'Sleep hours',
