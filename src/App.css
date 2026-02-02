@@ -1348,6 +1348,10 @@
   margin-left: 6px;
 }
 
+.stat-tile .label .tooltip-trigger {
+  margin-left: 6px;
+}
+
 .tooltip-icon {
   width: 16px;
   height: 16px;

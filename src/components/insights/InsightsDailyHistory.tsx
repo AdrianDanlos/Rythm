@@ -51,7 +51,7 @@ export const InsightsDailyHistory = ({
   trendSeries,
   onOpenPaywall,
 }: InsightsDailyHistoryProps) => {
-  const [trendRange, setTrendRange] = useState<'last30' | 'last90' | 'last365'>('last90')
+  const [trendRange, setTrendRange] = useState<'last30' | 'last90' | 'last365'>('last30')
   const trendPoints = trendSeries[trendRange]
   const weeklyTrendPoints = trendRange === 'last365'
     ? buildWeeklyTrendSeries(trendSeries.last365)
