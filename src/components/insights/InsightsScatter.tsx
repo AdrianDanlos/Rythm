@@ -38,6 +38,29 @@ export const InsightsScatter = ({
   const baseTickProps = { fontSize: 13 }
   const mobileTickProps = { fontSize: 12 }
   const scatterSize = isMobile ? 28 : 36
+  const scatterRadius = scatterSize / 6
+  const renderDot = ({
+    cx,
+    cy,
+    fill,
+    fillOpacity,
+  }: {
+    cx?: number
+    cy?: number
+    fill?: string
+    fillOpacity?: number
+  }) => {
+    if (cx == null || cy == null) return null
+    return (
+      <circle
+        cx={cx}
+        cy={cy}
+        r={scatterRadius}
+        fill={fill}
+        fillOpacity={fillOpacity}
+      />
+    )
+  }
   const renderTooltip = ({
     active,
     payload,
@@ -128,7 +151,7 @@ export const InsightsScatter = ({
                       tickMargin={2}
                     />
                     <RechartsTooltip content={renderTooltip} />
-                    <Scatter data={plottedData} size={scatterSize}>
+                    <Scatter data={plottedData} shape={renderDot}>
                       {plottedData.map(entry => (
                         <Cell
                           key={entry.id}
