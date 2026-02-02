@@ -1,13 +1,10 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
-import { fetchEntries, type Entry, upsertEntry } from './lib/entries'
-import { buildStats } from './lib/stats'
+import type { Entry } from './lib/entries'
 import { exportMonthlyReport } from './lib/reports'
 import { exportEntriesCsv } from './lib/utils/csvExport'
 import { formatLocalDate } from './lib/utils/dateFormatters'
-import { calculateAverages } from './lib/utils/averages'
-import { parseTags } from './lib/utils/stringUtils'
 import { AuthForm } from './components/AuthForm'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
@@ -19,6 +16,10 @@ import { SettingsModal } from './components/SettingsModal'
 import { InsightsQuickStart } from './components/InsightsQuickStart'
 import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
+import { useAuthActions } from './hooks/useAuthActions'
+import { useBillingActions } from './hooks/useBillingActions'
+import { useEntries } from './hooks/useEntries'
+import { useLogForm } from './hooks/useLogForm'
 import { CreditCard, LogOut, Mail, Settings } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
 import { StripeLanding } from './components/StripeLanding.tsx'
@@ -60,9 +61,6 @@ function App() {
     setAuthError,
   } = useAuth()
 
-  const [entries, setEntries] = useState<Entry[]>([])
-  const [entriesLoading, setEntriesLoading] = useState(false)
-  const [entriesError, setEntriesError] = useState<string | null>(null)
   const [exportError, setExportError] = useState<string | null>(null)
 
   const todayDate = useMemo(() => {
@@ -71,13 +69,6 @@ function App() {
     return date
   }, [])
   const today = useMemo(() => formatLocalDate(todayDate), [todayDate])
-  const [entryDate, setEntryDate] = useState(today)
-  const [sleepHours, setSleepHours] = useState('')
-  const [mood, setMood] = useState<number | null>(null)
-  const [note, setNote] = useState('')
-  const [tags, setTags] = useState('')
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.Insights)
   const [isStreakOpen, setIsStreakOpen] = useState(false)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
@@ -98,6 +89,74 @@ function App() {
   const upgradeUrl = import.meta.env.VITE_UPGRADE_URL as string | undefined
   const trimmedUpgradeUrl = upgradeUrl?.trim()
   const priceLabel = PRICING.pro.priceLabel
+
+  const handleEntriesLoaded = useCallback((data: Entry[]) => {
+    if (data.length) {
+      setActiveTab(Tabs.Insights)
+    }
+  }, [])
+
+  const {
+    entries,
+    setEntries,
+    entriesLoading,
+    entriesError,
+    setEntriesError,
+    chartData,
+    averages,
+    highlightedDates,
+    stats,
+  } = useEntries({
+    userId: session?.user?.id,
+    sleepThreshold,
+    formatLocalDate,
+    onEntriesLoaded: handleEntriesLoaded,
+  })
+
+  const {
+    setEntryDate,
+    selectedDate,
+    sleepHours,
+    setSleepHours,
+    mood,
+    setMood,
+    note,
+    setNote,
+    tags,
+    setTags,
+    tagSuggestions,
+    saving,
+    saved,
+    handleSave,
+  } = useLogForm({
+    userId: session?.user?.id,
+    entries,
+    setEntries,
+    stats,
+    today,
+    formatLocalDate,
+    sleepThreshold,
+    isPro,
+    maxTagsPerEntry,
+    setEntriesError,
+    onStreakReached: () => setIsStreakOpen(true),
+    onEntrySavedForToday: () => setActiveTab(Tabs.Insights),
+  })
+
+  const { handleAuth, handleGoogleSignIn } = useAuthActions({
+    authMode,
+    authEmail,
+    authPassword,
+    signIn,
+    signUp,
+    setAuthError,
+  })
+
+  const { handleStartCheckout, handleManageSubscription } = useBillingActions({
+    trimmedUpgradeUrl,
+    isPortalLoading,
+    setIsPortalLoading,
+  })
 
   // This is needed for the Android app to work.
   // It is used to set the session token when the app is opened from a link.
@@ -160,240 +219,10 @@ function App() {
   }, [refreshSession])
 
   useEffect(() => {
-    const userId = session?.user?.id
-    if (!userId) {
-      setEntries([])
-      return
-    }
-
-    const loadEntries = async () => {
-      setEntriesLoading(true)
-      setEntriesError(null)
-      try {
-        const data = await fetchEntries(userId)
-        setEntries(data)
-        if (data.length) {
-          setActiveTab(Tabs.Insights)
-        }
-      }
-      catch {
-        setEntriesError('Unable to load entries.')
-      }
-      finally {
-        setEntriesLoading(false)
-      }
-    }
-
-    loadEntries()
-  }, [session?.user?.id])
-
-  useEffect(() => {
-    const existing = entries.find(item => item.entry_date === entryDate)
-    if (existing) {
-      setSleepHours(formatSleepHours(existing.sleep_hours))
-      setMood(existing.mood)
-      setNote(existing.note ?? '')
-      setTags(existing.tags?.join(', ') ?? '')
-      return
-    }
-
-    setSleepHours('')
-    setMood(null)
-    setNote('')
-    setTags('')
-  }, [entryDate, entries])
-
-  useEffect(() => {
     if (entries.length && exportError) {
       setExportError(null)
     }
   }, [entries.length, exportError])
-
-  const chartData = useMemo(
-    () =>
-      entries.map(entry => ({
-        ...entry,
-        sleep_hours: Number(entry.sleep_hours),
-        mood: Number(entry.mood),
-      })),
-    [entries],
-  )
-
-  const averages = useMemo(() => calculateAverages(entries), [entries])
-
-  const highlightedDates = useMemo(() => {
-    const uniqueDates = new Map<string, Date>()
-    entries.forEach((entry) => {
-      const date = new Date(`${entry.entry_date}T00:00:00`)
-      date.setHours(0, 0, 0, 0)
-      uniqueDates.set(entry.entry_date, date)
-    })
-    return Array.from(uniqueDates.values())
-  }, [entries])
-
-  const selectedDate = useMemo(
-    () => new Date(`${entryDate}T00:00:00`),
-    [entryDate],
-  )
-
-  const stats = useMemo(
-    () => buildStats(entries, sleepThreshold, formatLocalDate),
-    [entries, sleepThreshold],
-  )
-
-  const tagSuggestions = useMemo(() => {
-    const sorted = [...entries].sort((a, b) =>
-      b.entry_date.localeCompare(a.entry_date),
-    )
-    const seen = new Set<string>()
-    const suggestions: string[] = []
-    sorted.forEach((entry) => {
-      entry.tags?.forEach((tag) => {
-        const normalized = tag.trim().toLowerCase()
-        if (!normalized || seen.has(normalized)) return
-        seen.add(normalized)
-        suggestions.push(normalized)
-      })
-    })
-    return suggestions
-  }, [entries])
-
-  const handleAuth = async (event: FormEvent) => {
-    event.preventDefault()
-    setAuthError(null)
-
-    try {
-      if (authMode === 'signup') {
-        const { error } = await signUp(authEmail, authPassword)
-        if (error) throw error
-      }
-      else {
-        const { error } = await signIn(authEmail, authPassword)
-        if (error) throw error
-      }
-    }
-    catch {
-      setAuthError('Unable to authenticate. Check your details.')
-    }
-  }
-
-  const handleGoogleSignIn = async () => {
-    setAuthError(null)
-    const redirectTo = Capacitor.isNativePlatform()
-      ? 'capacitor://localhost'
-      : window.location.origin
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo,
-      },
-    })
-    if (error) {
-      setAuthError('Unable to start Google sign-in.')
-    }
-  }
-
-  // Parse sleep hours from string to number.
-  // Supports both hours and hours:minutes format.
-  const parseSleepHours = (value: string) => {
-    const trimmed = value.trim()
-    if (!trimmed) return null
-    if (trimmed.includes(':')) {
-      const match = /^(\d{1,2})\s*:\s*(\d{1,2})$/.exec(trimmed)
-      if (!match) return null
-      const hours = Number(match[1])
-      const minutes = Number(match[2])
-      if (!Number.isFinite(hours) || !Number.isFinite(minutes) || minutes >= 60) {
-        return null
-      }
-      return hours + minutes / 60
-    }
-    const asNumber = Number(trimmed)
-    if (!Number.isFinite(asNumber)) return null
-    return asNumber
-  }
-
-  const formatSleepHours = (value: number) => {
-    if (!Number.isFinite(value)) return ''
-    const wholeHours = Math.trunc(value)
-    const minutes = Math.round((value - wholeHours) * 60)
-    if (minutes === 0) return String(wholeHours)
-    const adjustedHours = minutes === 60 ? wholeHours + 1 : wholeHours
-    const adjustedMinutes = minutes === 60 ? 0 : minutes
-    return `${adjustedHours}:${String(adjustedMinutes).padStart(2, '0')}`
-  }
-
-  const handleSave = async (event: FormEvent) => {
-    event.preventDefault()
-    if (!session?.user?.id) return
-
-    if (entryDate > today) {
-      setEntriesError('You cannot log entries in the future.')
-      setSaved(false)
-      return
-    }
-
-    const parsedSleep = parseSleepHours(sleepHours)
-    if (parsedSleep === null) {
-      setEntriesError('Sleep hours must be a number or time like 7:30.')
-      setSaved(false)
-      return
-    }
-    if (parsedSleep < 0 || parsedSleep > 12) {
-      setEntriesError('Sleep hours must be between 0 and 12.')
-      setSaved(false)
-      return
-    }
-    if (!mood) {
-      setEntriesError('Select a mood rating.')
-      setSaved(false)
-      return
-    }
-
-    const tagList = isPro ? parseTags(tags) : []
-    if (isPro && tagList.length > maxTagsPerEntry) {
-      setEntriesError(`Limit ${maxTagsPerEntry} tags per entry.`)
-      setSaved(false)
-      return
-    }
-
-    setSaving(true)
-    setEntriesError(null)
-    try {
-      const saved = await upsertEntry({
-        user_id: session.user.id,
-        entry_date: entryDate,
-        sleep_hours: parsedSleep,
-        mood,
-        note: note.trim() ? note.trim() : null,
-        ...(isPro ? { tags: tagList.length ? tagList : null } : {}),
-      })
-
-      const nextEntries = (() => {
-        const filtered = entries.filter(item => item.entry_date !== entryDate)
-        return [...filtered, saved].sort((a, b) =>
-          a.entry_date.localeCompare(b.entry_date),
-        )
-      })()
-      setEntries(nextEntries)
-      const nextStats = buildStats(nextEntries, sleepThreshold, formatLocalDate)
-      if (nextStats.streak === 7 && stats.streak < 7) {
-        setIsStreakOpen(true)
-      }
-      setSaved(true)
-      window.setTimeout(() => setSaved(false), 2000)
-      if (entryDate === today) {
-        window.setTimeout(() => setActiveTab(Tabs.Insights), 500)
-      }
-    }
-    catch {
-      setEntriesError('Unable to save entry.')
-      setSaved(false)
-    }
-    finally {
-      setSaving(false)
-    }
-  }
 
   const handleSignOut = async () => {
     if (isSignOutLoading) return
@@ -478,57 +307,6 @@ function App() {
 
   const handleCloseSettings = () => {
     setIsSettingsOpen(false)
-  }
-
-  const handleStartCheckout = async () => {
-    try {
-      const platform = Capacitor.isNativePlatform() ? 'mobile' : 'web'
-      const { data, error } = await supabase.functions.invoke(
-        'create-checkout-session',
-        { body: { platform } },
-      )
-      if (error) {
-        throw error
-      }
-      const checkoutUrl = data?.url as string | undefined
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl
-        return
-      }
-    }
-    catch {
-      // Fall back to static upgrade URL if configured.
-    }
-
-    if (trimmedUpgradeUrl) {
-      window.open(trimmedUpgradeUrl, '_blank', 'noreferrer')
-    }
-  }
-
-  const handleManageSubscription = async () => {
-    if (isPortalLoading) return
-    setIsPortalLoading(true)
-    try {
-      const { data, error } = await supabase.functions.invoke(
-        'create-portal-session',
-        { body: {} },
-      )
-      if (error) {
-        throw error
-      }
-      const portalUrl = data?.url as string | undefined
-      if (portalUrl) {
-        window.location.href = portalUrl
-        return
-      }
-      throw new Error('Missing portal URL.')
-    }
-    catch {
-      window.alert('Unable to open subscription management.')
-    }
-    finally {
-      setIsPortalLoading(false)
-    }
   }
 
   if (showStripeLanding) {
