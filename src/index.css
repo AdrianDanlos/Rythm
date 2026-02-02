@@ -12,6 +12,9 @@
   --card: #ffffff;
   --border: #e2e8f0;
   --button-border: #e2e8f0;
+  --button-bg: #0f172a;
+  --button-text: #ffffff;
+  --ghost-bg: transparent;
   --text: #0f172a;
   --muted: #64748b;
   --selected-bg: #0f172a;
@@ -43,6 +46,9 @@
   --card: #111827;
   --border: #1f2937;
   --button-border: #334155;
+  --button-bg: #334155;
+  --button-text: #f8fafc;
+  --ghost-bg: rgba(56, 189, 248, 0.08);
   --text: #f8fafc;
   --muted: #94a3b8;
   --selected-bg: #1e293b;
@@ -99,8 +105,8 @@ button {
   font-size: 0.95rem;
   font-weight: 600;
   font-family: inherit;
-  background: #0f172a;
-  color: #fff;
+  background: var(--button-bg);
+  color: var(--button-text);
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }

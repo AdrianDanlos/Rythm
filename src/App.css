@@ -267,8 +267,8 @@
 }
 
 .primary-button {
-  background: #0f172a;
-  color: #fff;
+  background: var(--button-bg);
+  color: var(--button-text);
   border: 1px solid var(--button-primary-border);
   border-radius: 12px;
   padding: 10px 14px;
@@ -464,8 +464,13 @@
 
 .tag-suggestion:hover,
 .tag-suggestion:focus {
-  background: #f1f5f9;
+  background: var(--button-hover-surface);
   border-color: var(--border);
+}
+
+.tag-suggestion:hover::after,
+.tag-suggestion:focus::after {
+  opacity: 0;
 }
 
 .date-picker {
@@ -565,7 +570,7 @@
 
 .ghost {
   border: 1px solid var(--button-border);
-  background: transparent;
+  background: var(--ghost-bg);
   color: var(--text);
 }
 
