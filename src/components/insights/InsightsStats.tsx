@@ -60,6 +60,13 @@ export const InsightsStats = ({
 
   return (
     <>
+      <section className="card streak-card">
+        <div className="streak-card__content">
+          <p className="label">Streak</p>
+          {isLoading ? <div className="skeleton-line" /> : <p className="value">{streak} days</p>}
+          <p className="helper">Consecutive days logged</p>
+        </div>
+      </section>
       <section className="card stats">
         {renderTopStat(
           'Average sleep',
@@ -90,11 +97,6 @@ export const InsightsStats = ({
                   {renderWindowTile('Last 7 days', windowAverages.last7)}
                   {renderWindowTile('Last 30 days', windowAverages.last30)}
                   <div className="stat-tile">
-                    <p className="label">Streak</p>
-                    <p className="value">{streak} days</p>
-                    <p className="helper">Consecutive days logged</p>
-                  </div>
-                  <div className="stat-tile">
                     <p className="label">
                       Rhythm score
                       <Tooltip label="What is this? Based on how steady your sleep hours are in the last 30 days. Higher = more consistent.">
@@ -118,17 +120,37 @@ export const InsightsStats = ({
                       ? <p className="helper">{correlationDirection}</p>
                       : <p className="helper">Correlation strength</p>}
                   </div>
-                  <div className="stat-tile stat-tile--full">
+                  <div className="stat-tile">
                     <p className="label">Mood by sleep</p>
-                    <p className="value">
-                      {moodBySleepThreshold.high !== null
-                        || moodBySleepThreshold.low !== null
-                        ? `≥${formatSleepHours(sleepThreshold)} ${moodBySleepThreshold.high?.toFixed(1) ?? '—'} / <${formatSleepHours(sleepThreshold)} ${moodBySleepThreshold.low?.toFixed(1) ?? '—'}`
-                        : '—'}
-                    </p>
-                    <p className="helper">
-                      Avg mood split at {formatSleepHours(sleepThreshold)}
-                    </p>
+                    {moodBySleepThreshold.high !== null
+                      || moodBySleepThreshold.low !== null
+                      ? (
+                          <p className="helper helper-inline">
+                            <span className="helper-break" aria-hidden="true" />
+                            <span className="helper-tag">
+                              ≥{formatSleepHours(sleepThreshold)}
+                            </span>
+                            <span className="helper-tag helper-pill-value">
+                              {moodBySleepThreshold.high?.toFixed(1) ?? '—'}
+                            </span>
+                            <span className="helper-sep helper-sep--desktop">vs</span>
+                            <span className="helper-tag">
+                              &lt;{formatSleepHours(sleepThreshold)}
+                            </span>
+                            <span className="helper-tag helper-pill-value">
+                              {moodBySleepThreshold.low?.toFixed(1) ?? '—'}
+                            </span>
+                          </p>
+                        )
+                      : <p className="value">—</p>}
+                    {moodBySleepThreshold.high !== null
+                      || moodBySleepThreshold.low !== null
+                      ? (
+                          <p className="helper">
+                            Average mood for days above vs below 8h
+                          </p>
+                        )
+                      : null}
                   </div>
                 </>
               )}
