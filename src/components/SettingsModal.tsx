@@ -19,9 +19,11 @@ type SettingsModalProps = {
   email: string
   dateFormat: DateFormatPreference
   theme: ThemePreference
+  personalSleepTarget: number
   onNameChange: (value: string) => void
   onDateFormatChange: (value: DateFormatPreference) => void
   onThemeChange: (value: ThemePreference) => void
+  onPersonalSleepTargetChange: (value: number) => void
 }
 
 export const SettingsModal = ({
@@ -31,9 +33,11 @@ export const SettingsModal = ({
   email,
   dateFormat,
   theme,
+  personalSleepTarget,
   onNameChange,
   onDateFormatChange,
   onThemeChange,
+  onPersonalSleepTargetChange,
 }: SettingsModalProps) => {
   const remindersSupported = Capacitor.isNativePlatform()
   const [remindersEnabled, setRemindersEnabled] = useState(
@@ -43,6 +47,9 @@ export const SettingsModal = ({
     () => getStoredDailyReminderTime(),
   )
   const [isDateFormatOpen, setIsDateFormatOpen] = useState(false)
+  const [sleepTargetInput, setSleepTargetInput] = useState(
+    () => String(personalSleepTarget),
+  )
 
   const reminderActive = remindersSupported && remindersEnabled
 
@@ -54,6 +61,10 @@ export const SettingsModal = ({
 
   const activeDateFormat = dateFormatOptions.find(option => option.value === dateFormat)
     ?? dateFormatOptions[0]
+
+  useEffect(() => {
+    setSleepTargetInput(String(personalSleepTarget))
+  }, [personalSleepTarget])
 
   const handleDateFormatSelect = (value: DateFormatPreference) => {
     onDateFormatChange(value)
@@ -186,6 +197,33 @@ export const SettingsModal = ({
                       )
                     : null}
                 </div>
+              </label>
+
+              <label className="field" htmlFor="settings-sleep-target">
+                <span>Personal target sleep (hours)</span>
+                <input
+                  id="settings-sleep-target"
+                  type="number"
+                  inputMode="decimal"
+                  min={4}
+                  max={12}
+                  step={0.5}
+                  value={sleepTargetInput}
+                  onChange={(event) => {
+                    setSleepTargetInput(event.target.value)
+                  }}
+                  onBlur={() => {
+                    const parsed = Number(sleepTargetInput)
+                    if (Number.isFinite(parsed)) {
+                      onPersonalSleepTargetChange(parsed)
+                      return
+                    }
+                    setSleepTargetInput(String(personalSleepTarget))
+                  }}
+                />
+                <p className="settings-note">
+                  Used for avg sleep target and mood-by-sleep comparisons.
+                </p>
               </label>
 
               <div className="field">

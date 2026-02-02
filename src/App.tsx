@@ -29,9 +29,12 @@ import { moodColors } from './lib/colors'
 import {
   getStoredDateFormat,
   getStoredProfileName,
+  getStoredPersonalSleepTarget,
   getStoredTheme,
+  normalizeSleepTarget,
   setStoredDateFormat,
   setStoredProfileName,
+  setStoredPersonalSleepTarget,
   setStoredTheme,
   type DateFormatPreference,
   type ThemePreference,
@@ -80,8 +83,9 @@ function App() {
   const [dateFormat, setDateFormat] = useState<DateFormatPreference>('mdy')
   const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme())
   const [profileName, setProfileName] = useState('')
+  const [sleepTarget, setSleepTarget] = useState(() => getStoredPersonalSleepTarget())
 
-  const sleepThreshold = 8
+  const sleepThreshold = sleepTarget
   const maxTagsPerEntry = 10
   const isPro = Boolean(session?.user?.app_metadata?.is_pro)
   const canManageSubscription = isPro
@@ -184,6 +188,9 @@ function App() {
 
     const storedName = getStoredProfileName()
     setProfileName(storedName)
+
+    const storedSleepTarget = getStoredPersonalSleepTarget()
+    setSleepTarget(storedSleepTarget)
   }, [])
 
   useEffect(() => {
@@ -279,6 +286,12 @@ function App() {
   const handleProfileNameChange = (value: string) => {
     setProfileName(value)
     setStoredProfileName(value)
+  }
+
+  const handleSleepTargetChange = (value: number) => {
+    const normalized = normalizeSleepTarget(value)
+    setSleepTarget(normalized)
+    setStoredPersonalSleepTarget(normalized)
   }
 
   const handleOpenPaywall = () => {
@@ -407,9 +420,11 @@ function App() {
         email={session?.user?.email ?? ''}
         dateFormat={dateFormat}
         theme={theme}
+        personalSleepTarget={sleepTarget}
         onNameChange={handleProfileNameChange}
         onDateFormatChange={handleDateFormatChange}
         onThemeChange={handleThemeChange}
+        onPersonalSleepTargetChange={handleSleepTargetChange}
       />
 
       {!authInitialized

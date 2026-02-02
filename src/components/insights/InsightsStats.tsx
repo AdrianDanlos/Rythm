@@ -170,7 +170,7 @@ export const InsightsStats = ({
                       || moodBySleepThreshold.low !== null
                       ? (
                           <p className="helper">
-                            Average mood for days above vs below 8h
+                            Average mood for days above vs below {formatSleepHours(sleepThreshold)}
                           </p>
                         )
                       : null}
