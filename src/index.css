@@ -151,6 +151,10 @@
   --ghost-cta-shadow: 0 12px 20px rgba(2, 6, 23, 0.55),
     0 0 0 1px rgba(56, 189, 248, 0.35);
   --ghost-cta-border-hover: rgba(56, 189, 248, 0.85);
+  --cta-button-bg: linear-gradient(135deg, #0f172a, #1e3a8a);
+  --cta-button-shadow: 0 12px 26px rgba(15, 23, 42, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  --cta-button-shadow-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
   --heatmap-empty-bg: #64748b;
   --heatmap-empty-border: rgba(148, 163, 184, 0.35);
 }
