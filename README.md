@@ -130,11 +130,6 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 
 The app and Edge Functions talk to local Supabase in development and the remote Supabase project in production. Stripe webhooks point at `https://mdruanwmwapdaecrayyi.functions.supabase.co/stripe-webhook` for production.
 
-### App development
-
-- **Run the React app (Vite dev server)**:
-  - `npm run dev`
-
 ### Android (Capacitor)
 
 - **Build web assets for native**:
@@ -145,3 +140,8 @@ The app and Edge Functions talk to local Supabase in development and the remote 
   - `npx cap open android`
 - **Run on a device or emulator (optional)**:
   - `npx cap run android`
+
+### App development
+
+- **Run the React app (Vite dev server)**:
+  - `npm run dev`
