@@ -47,11 +47,21 @@ export const InsightsPersonalThreshold = ({
               <div className="stat-block">
                 <p className="label">Estimated threshold</p>
                 <p className="value">{formatSleepHours(personalSleepThreshold)}</p>
-                <p className="helper">
-                  Avg mood at ≥{formatSleepHours(personalSleepThreshold)}:{' '}
-                  {moodByPersonalThreshold.high?.toFixed(1) ?? '—'} · &lt;
-                  {formatSleepHours(personalSleepThreshold)}:{' '}
-                  {moodByPersonalThreshold.low?.toFixed(1) ?? '—'}
+                <p className="helper helper-inline">
+                  <span className="helper-title">Avg mood</span>
+                  <span className="helper-tag">
+                    {'>'}{formatSleepHours(personalSleepThreshold)}
+                  </span>
+                  <span className="helper-tag helper-pill-value">
+                    {moodByPersonalThreshold.high?.toFixed(1) ?? '—'}
+                  </span>
+                  <span className="helper-sep">·</span>
+                  <span className="helper-tag">
+                    {'<'}{formatSleepHours(personalSleepThreshold)}
+                  </span>
+                  <span className="helper-tag helper-pill-value">
+                    {moodByPersonalThreshold.low?.toFixed(1) ?? '—'}
+                  </span>
                 </p>
               </div>
             )

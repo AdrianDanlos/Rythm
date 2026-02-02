@@ -1170,6 +1170,36 @@
   color: var(--muted);
 }
 
+.helper.helper-inline {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.helper-inline .helper-title {
+  font-weight: 600;
+  color: var(--text);
+  margin-right: 2px;
+}
+
+.helper-inline .helper-tag {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  background: var(--card);
+  color: var(--text);
+}
+
+.helper-inline .helper-pill-value {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.helper-inline .helper-sep {
+  opacity: 0.7;
+}
+
 .insights-intro {
   display: grid;
   gap: 16px;
