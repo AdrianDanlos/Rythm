@@ -775,10 +775,6 @@
   background: var(--card);
 }
 
-.stat-tile--full {
-  grid-column: 1 / -1;
-}
-
 .stat-tile .value {
   font-size: 1.1rem;
 }
@@ -851,14 +847,6 @@
 
 .nav-brand {
   display: none;
-}
-
-.insights-actions-links {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  flex-wrap: wrap;
 }
 
 .review-cta {
@@ -1101,12 +1089,6 @@
   flex: 1 1 0;
 }
 
-.tag-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
 .tag-bar-list {
   display: grid;
   gap: 12px;
@@ -1163,20 +1145,6 @@
   margin-bottom: 8px;
 }
 
-.tag-card {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 10px 12px;
-  background: var(--card);
-}
-
-.badge-grid {
-  display: grid;
-  gap: 8px;
-  margin-top: 6px;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-}
-
 .badge-list {
   display: grid;
   gap: 10px;
@@ -1227,13 +1195,6 @@
   font-weight: 600;
 }
 
-.badge-pill {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 8px 10px;
-  background: var(--card);
-}
-
 .badge-title-row {
   display: flex;
   justify-content: space-between;
@@ -1252,15 +1213,6 @@
     width: 36px;
     height: 36px;
   }
-}
-
-.badge-pill.unlocked .badge-status-icon {
-  color: var(--badge-icon-unlocked);
-}
-
-.badge-pill.locked {
-  border-style: dashed;
-  opacity: 0.7;
 }
 
 .badge-title {
@@ -1444,11 +1396,6 @@
   opacity: 0.7;
 }
 
-.stat-divider {
-  height: 1px;
-  background: var(--border);
-}
-
 .helper {
   display: flex;
   margin-top: 4px;
@@ -1460,12 +1407,6 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-}
-
-.helper-inline .helper-title {
-  font-weight: 600;
-  color: var(--text);
-  margin-right: 2px;
 }
 
 .helper-inline .helper-tag {
@@ -1585,14 +1526,6 @@
 
 .chart-card {
   padding-bottom: 8px;
-}
-
-.chart-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 20px;
 }
 
 .chart-wrapper {
@@ -1938,10 +1871,6 @@
 
   .insights-actions-buttons .ghost {
     width: 100%;
-  }
-
-  .tag-grid {
-    grid-template-columns: 1fr;
   }
 
   .tag-bar-list {
