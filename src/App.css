@@ -1188,6 +1188,7 @@
   font-size: 0.78rem;
   color: var(--text);
   white-space: normal;
+  width: max-content;
   max-width: min(260px, 80vw);
   overflow-wrap: break-word;
   box-shadow: var(--tooltip-shadow);
@@ -1196,6 +1197,12 @@
   pointer-events: none;
   transition: opacity 0.15s ease;
   z-index: 5;
+}
+
+@media (min-width: 720px) {
+  .app-tooltip-bubble {
+    max-width: min(420px, 60vw);
+  }
 }
 
 .app-tooltip:hover .app-tooltip-bubble,
