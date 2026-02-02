@@ -117,8 +117,169 @@ export const exportMonthlyReport = async (
     doc.setFontSize(12)
   }
 
+  type SparkPoint = {
+    x: number
+    y: number
+  }
+
+  type WeekTotals = {
+    count: number
+    sleep: number
+    mood: number
+    sleeps: number[]
+  }
+
+  type MoodDip = {
+    from: Entry
+    to: Entry
+    delta: number
+  }
+
+  const drawSparkline = (
+    values: Array<number | null>,
+    x: number,
+    yStart: number,
+    width: number,
+    height: number,
+    color: [number, number, number],
+  ) => {
+    const valid = values.filter((value): value is number => value !== null)
+    if (valid.length < 2) return
+    const min = Math.min(...valid)
+    const max = Math.max(...valid)
+    const span = max - min || 1
+    const points = values
+      .map((value, index) => {
+        if (value === null) return null
+        const px = x + (index / (values.length - 1)) * width
+        const py = yStart + height - ((value - min) / span) * height
+        return { x: px, y: py } satisfies SparkPoint
+      })
+      .filter((point): point is SparkPoint => point !== null)
+    if (points.length < 2) return
+    doc.setDrawColor(...color)
+    doc.setLineWidth(0.6)
+    for (let i = 1; i < points.length; i += 1) {
+      const prev = points[i - 1]
+      const next = points[i]
+      doc.line(prev.x, prev.y, next.x, next.y)
+    }
+  }
+
+  const calculateStdDev = (values: number[]) => {
+    if (values.length < 2) return null
+    const mean = values.reduce((sum, value) => sum + value, 0) / values.length
+    const variance = values.reduce(
+      (sum, value) => sum + (value - mean) ** 2,
+      0,
+    ) / values.length
+    return Math.sqrt(variance)
+  }
+
+  const weeklySummaries = (() => {
+    if (!recentEntries.length) return []
+    const sorted = [...recentEntries].sort((a, b) =>
+      a.entry_date.localeCompare(b.entry_date),
+    )
+    const weekBuckets: Record<string, WeekTotals> = {}
+    sorted.forEach((entry) => {
+      const date = new Date(`${entry.entry_date}T00:00:00`)
+      const weekStart = new Date(date)
+      weekStart.setDate(date.getDate() - date.getDay())
+      weekStart.setHours(0, 0, 0, 0)
+      const key = weekStart.toISOString().slice(0, 10)
+      if (!weekBuckets[key]) {
+        weekBuckets[key] = { count: 0, sleep: 0, mood: 0, sleeps: [] }
+      }
+      const sleepValue = Number(entry.sleep_hours)
+      if (Number.isFinite(sleepValue)) {
+        weekBuckets[key].sleeps.push(sleepValue)
+      }
+      weekBuckets[key].count += 1
+      weekBuckets[key].sleep += Number(entry.sleep_hours) || 0
+      weekBuckets[key].mood += Number(entry.mood) || 0
+    })
+    return Object.entries(weekBuckets)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([startKey, totals]) => {
+        const weekStart = new Date(`${startKey}T00:00:00`)
+        const weekEnd = new Date(weekStart)
+        weekEnd.setDate(weekStart.getDate() + 6)
+        const avgSleep = totals.count ? totals.sleep / totals.count : null
+        const avgMood = totals.count ? totals.mood / totals.count : null
+        const sleepStdDev = calculateStdDev(totals.sleeps)
+        return {
+          label: `${formatLongDate(weekStart)} - ${formatLongDate(weekEnd)}`,
+          avgSleep,
+          avgMood,
+          sleepStdDev,
+        }
+      })
+      .slice(-4)
+  })()
+
+  const bestNight = recentEntries.reduce<Entry | null>((best, entry) => {
+    const sleepValue = Number(entry.sleep_hours)
+    if (!Number.isFinite(sleepValue)) return best
+    if (!best) return entry
+    const bestSleepValue = Number(best.sleep_hours)
+    if (!Number.isFinite(bestSleepValue)) return entry
+    return sleepValue > bestSleepValue ? entry : best
+  }, null)
+
+  const biggestMoodDip = (() => {
+    if (recentEntries.length < 2) return null
+    const sorted = [...recentEntries].sort((a, b) =>
+      a.entry_date.localeCompare(b.entry_date),
+    )
+    let dip: MoodDip | null = null
+    for (let i = 1; i < sorted.length; i += 1) {
+      const previous = sorted[i - 1]
+      const current = sorted[i]
+      const previousMood = Number(previous.mood)
+      const currentMood = Number(current.mood)
+      if (!Number.isFinite(previousMood) || !Number.isFinite(currentMood)) continue
+      const delta = currentMood - previousMood
+      if (delta < 0 && (!dip || Math.abs(delta) > Math.abs(dip.delta))) {
+        dip = { from: previous, to: current, delta }
+      }
+    }
+    return dip
+  })()
+
   doc.setTextColor(20)
   drawSectionHeader('Last 30 days')
+
+  if (recentEntries.length > 1) {
+    const chartWidth = 182
+    const chartHeight = 22
+    doc.setFontSize(12)
+    doc.text('Overview', 16, y)
+    y += 5
+    const sorted = [...recentEntries].sort((a, b) =>
+      a.entry_date.localeCompare(b.entry_date),
+    )
+    const sleepSeries = sorted.map(entry =>
+      entry.sleep_hours ? Number(entry.sleep_hours) : null,
+    )
+    const moodSeries = sorted.map(entry =>
+      entry.mood ? Number(entry.mood) : null,
+    )
+    drawSparkline(sleepSeries, 14, y, chartWidth, chartHeight, [79, 70, 229])
+    drawSparkline(moodSeries, 14, y, chartWidth, chartHeight, [14, 165, 233])
+    const legendY = y + chartHeight + 6
+    doc.setFontSize(10)
+    doc.setTextColor(60)
+    doc.setLineWidth(1.2)
+    doc.setDrawColor(79, 70, 229)
+    doc.line(16, legendY, 26, legendY)
+    doc.text('Sleep', 30, legendY + 1)
+    doc.setDrawColor(14, 165, 233)
+    doc.line(60, legendY, 70, legendY)
+    doc.text('Mood', 74, legendY + 1)
+    doc.setTextColor(20)
+    y += chartHeight + 18
+  }
 
   drawBullets([
     `Entries logged: ${recentEntries.length}`,
@@ -155,6 +316,52 @@ export const exportMonthlyReport = async (
       ),
       18,
     )
+  }
+
+  if (weeklySummaries.length) {
+    y += 6
+    doc.setFontSize(12)
+    doc.text('Weekly averages', 16, y)
+    y += 7
+    drawLines(
+      weeklySummaries.map(
+        week =>
+          `${week.label} · Sleep ${
+            week.avgSleep !== null ? week.avgSleep.toFixed(1) : '—'
+          }h · Mood ${week.avgMood !== null ? week.avgMood.toFixed(1) : '—'}`,
+      ),
+      18,
+    )
+  }
+
+  const highlightLines: string[] = []
+  if (bestNight) {
+    const sleepValue = Number(bestNight.sleep_hours)
+    if (Number.isFinite(sleepValue)) {
+      highlightLines.push(
+        `Best night: ${formatLongDate(new Date(`${bestNight.entry_date}T00:00:00`))} (${sleepValue.toFixed(1)}h)`,
+      )
+    }
+  }
+  const mostConsistentWeek = weeklySummaries
+    .filter(week => week.sleepStdDev !== null)
+    .sort((a, b) => (a.sleepStdDev ?? 0) - (b.sleepStdDev ?? 0))[0]
+  if (mostConsistentWeek?.sleepStdDev !== null) {
+    highlightLines.push(
+      `Most consistent week: ${mostConsistentWeek.label} (+/-${mostConsistentWeek.sleepStdDev.toFixed(1)}h)`,
+    )
+  }
+  if (biggestMoodDip) {
+    highlightLines.push(
+      `Biggest mood dip: ${formatLongDate(new Date(`${biggestMoodDip.from.entry_date}T00:00:00`))} to ${formatLongDate(new Date(`${biggestMoodDip.to.entry_date}T00:00:00`))} (${biggestMoodDip.delta.toFixed(1)})`,
+    )
+  }
+  if (highlightLines.length) {
+    y += 6
+    doc.setFontSize(12)
+    doc.text('Highlights', 16, y)
+    y += 7
+    drawBullets(highlightLines.slice(0, 4), 18)
   }
 
   const summaryLines: string[] = []
