@@ -43,8 +43,8 @@ export const SettingsModal = ({
   const [isDateFormatOpen, setIsDateFormatOpen] = useState(false)
 
   const dateFormatOptions: { value: DateFormatPreference, label: string }[] = [
-    { value: 'mdy', label: 'Month / Day / Year' },
     { value: 'dmy', label: 'Day / Month / Year' },
+    { value: 'mdy', label: 'Month / Day / Year' },
     { value: 'ymd', label: 'Year / Month / Day' },
   ]
 
