@@ -1421,6 +1421,15 @@
 }
 
 @media (max-width: 540px) {
+  .badge-row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .badge-progress-track {
+    margin-top: auto;
+  }
+
   .stats-stack-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
