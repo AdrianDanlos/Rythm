@@ -133,6 +133,7 @@
   --ghost-cta-shadow: 0 12px 20px rgba(2, 6, 23, 0.55),
     0 0 0 1px rgba(56, 189, 248, 0.35);
   --ghost-cta-border-hover: rgba(56, 189, 248, 0.85);
+  --heatmap-empty-bg: #64748b;
 }
 
 * {
