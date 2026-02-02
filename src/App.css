@@ -345,7 +345,7 @@
 }
 
 .auth-card .stack {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .oauth-button {
@@ -1183,7 +1183,9 @@
   padding: 6px 10px;
   font-size: 0.78rem;
   color: var(--text);
-  white-space: nowrap;
+  white-space: normal;
+  max-width: min(260px, 80vw);
+  overflow-wrap: break-word;
   box-shadow: var(--tooltip-shadow);
   opacity: 0;
   visibility: hidden;
