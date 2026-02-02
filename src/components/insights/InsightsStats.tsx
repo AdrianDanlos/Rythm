@@ -1,6 +1,7 @@
 import type { SleepMoodAverages, WindowStats } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
+import flame from '../../assets/flame.png'
 
 type InsightsStatsProps = {
   isLoading: boolean
@@ -61,6 +62,7 @@ export const InsightsStats = ({
   return (
     <>
       <section className="card streak-card">
+        <img className="streak-card__image" src={flame} alt="flame" />
         <div className="streak-card__content">
           <p className="label">Streak</p>
           {isLoading ? <div className="skeleton-line" /> : <p className="value">{streak} days</p>}

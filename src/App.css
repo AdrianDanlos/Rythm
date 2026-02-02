@@ -710,6 +710,13 @@
   gap: 16px;
 }
 
+.streak-card__image {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .streak-card__content {
   display: flex;
   flex-direction: column;
