@@ -26,7 +26,18 @@ export const InsightsTagInsights = ({
   const formatDelta = (delta: number | null) => {
     if (delta === null) return '—'
     const sign = delta >= 0 ? '+' : ''
-    return `${sign}${delta.toFixed(1)} mood vs days without`
+    return `${sign}${delta.toFixed(1)}`
+  }
+
+  const maxAbsDelta = Math.max(
+    0,
+    ...positiveDrivers.map(driver => Math.abs(driver.delta ?? 0)),
+    ...negativeDrivers.map(driver => Math.abs(driver.delta ?? 0)),
+  )
+
+  const buildDeltaWidth = (delta: number | null) => {
+    if (delta === null || maxAbsDelta === 0) return 0
+    return Math.min(100, Math.max(0, (Math.abs(delta) / maxAbsDelta) * 100))
   }
 
   return (
@@ -59,13 +70,20 @@ export const InsightsTagInsights = ({
                   ? (
                       <div className="tag-driver-section">
                         <p className="label">Top positive tags</p>
-                        <div className="tag-grid">
+                        <div className="tag-bar-list">
                           {positiveDrivers.map(tag => (
-                            <div className="tag-card" key={tag.tag}>
-                              <p className="tag-title">{tag.tag}</p>
-                              <p className="helper">
-                                {formatDelta(tag.delta)} · {tag.count} entries
-                              </p>
+                            <div className="tag-bar-item positive" key={tag.tag}>
+                              <div className="tag-bar-header">
+                                <p className="tag-title">{tag.tag}</p>
+                                <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
+                              </div>
+                              <div className="tag-bar-track" aria-hidden="true">
+                                <span
+                                  className="tag-bar-fill"
+                                  style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
+                                />
+                              </div>
+                              <p className="helper">{tag.count} entries</p>
                             </div>
                           ))}
                         </div>
@@ -76,13 +94,20 @@ export const InsightsTagInsights = ({
                   ? (
                       <div className="tag-driver-section">
                         <p className="label">Top negative tags</p>
-                        <div className="tag-grid">
+                        <div className="tag-bar-list">
                           {negativeDrivers.map(tag => (
-                            <div className="tag-card" key={tag.tag}>
-                              <p className="tag-title">{tag.tag}</p>
-                              <p className="helper">
-                                {formatDelta(tag.delta)} · {tag.count} entries
-                              </p>
+                            <div className="tag-bar-item negative" key={tag.tag}>
+                              <div className="tag-bar-header">
+                                <p className="tag-title">{tag.tag}</p>
+                                <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
+                              </div>
+                              <div className="tag-bar-track" aria-hidden="true">
+                                <span
+                                  className="tag-bar-fill"
+                                  style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
+                                />
+                              </div>
+                              <p className="helper">{tag.count} entries</p>
                             </div>
                           ))}
                         </div>

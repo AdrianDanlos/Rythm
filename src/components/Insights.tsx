@@ -180,22 +180,35 @@ export const Insights = ({
         </div>
         {sleepConsistencyBadges.length
           ? (
-              <div className="badge-grid">
+              <div className="badge-list">
                 {sleepConsistencyBadges.map(badge => (
                   <div
-                    className={`badge-pill ${badge.unlocked ? 'unlocked' : 'locked'}`}
+                    className={`badge-row ${badge.unlocked ? 'unlocked' : 'locked'}`}
                     key={badge.id}
                   >
-                    <div className="badge-title-row">
-                      <p className="badge-title">{badge.title}</p>
-                      {badge.unlocked
-                        ? <Award className="badge-status-icon" aria-hidden />
-                        : <Lock className="badge-status-icon" aria-hidden />}
+                    <div className="badge-row-header">
+                      <div className="badge-title-row">
+                        <p className="badge-title">{badge.title}</p>
+                        {badge.unlocked
+                          ? <Award className="badge-status-icon" aria-hidden />
+                          : <Lock className="badge-status-icon" aria-hidden />}
+                      </div>
+                      <p className="badge-helper">{badge.description}</p>
                     </div>
-                    <p className="badge-helper">{badge.description}</p>
+                    <div className="badge-progress-track" aria-hidden="true">
+                      <span
+                        className="badge-progress-fill"
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            Math.max(0, (badge.progressValue / (badge.progressTotal || 1)) * 100),
+                          )}%`,
+                        }}
+                      />
+                    </div>
                     {badge.progressText
                       ? (
-                          <p className="badge-progress">{badge.progressText}</p>
+                          <p className="badge-progress-text">{badge.progressText}</p>
                         )
                       : null}
                   </div>

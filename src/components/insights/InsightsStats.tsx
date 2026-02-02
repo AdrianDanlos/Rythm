@@ -39,6 +39,25 @@ export const InsightsStats = ({
     </div>
   )
 
+  const renderWindowTile = (
+    label: string,
+    window: WindowStats,
+  ) => {
+    const value = window.sleep !== null && window.mood !== null
+      ? `${formatSleepHours(window.sleep)} / ${window.mood.toFixed(1)}`
+      : '—'
+
+    return (
+      <div className="stat-tile">
+        <p className="label">{label}</p>
+        <p className="value">{value}</p>
+        <p className="helper">
+          Sleep avg / Mood avg · {window.count} entries
+        </p>
+      </div>
+    )
+  }
+
   return (
     <>
       <section className="card stats">
@@ -53,98 +72,67 @@ export const InsightsStats = ({
       </section>
 
       <section className="card stats-stack">
-        {isLoading
-          ? (
-              <>
-                {[1, 2, 3, 4, 5, 6, 7].map(item => (
-                  <div className="stat-block" key={item}>
-                    <div className="skeleton-line" />
-                    <div className="skeleton-line short" />
+        <div className="stats-stack-grid">
+          {isLoading
+            ? (
+                <>
+                  {[1, 2, 3, 4, 5, 6, 7].map(item => (
+                    <div className="stat-tile stat-tile--skeleton" key={item}>
+                      <div className="skeleton-line" />
+                      <div className="skeleton-line short" />
+                      <div className="skeleton-line" />
+                    </div>
+                  ))}
+                </>
+              )
+            : (
+                <>
+                  {renderWindowTile('Last 7 days', windowAverages.last7)}
+                  {renderWindowTile('Last 30 days', windowAverages.last30)}
+                  <div className="stat-tile">
+                    <p className="label">Streak</p>
+                    <p className="value">{streak} days</p>
+                    <p className="helper">Consecutive days logged</p>
                   </div>
-                ))}
-              </>
-            )
-          : (
-              <>
-                <div className="stat-block">
-                  <p className="label">Last 7 days</p>
-                  <p className="value">
-                    {windowAverages.last7.sleep !== null
-                      && windowAverages.last7.mood !== null
-                      ? `${formatSleepHours(windowAverages.last7.sleep)} / ${windowAverages.last7.mood.toFixed(1)}`
-                      : '—'}
-                  </p>
-                  <p className="helper">
-                    Sleep avg / Mood avg · {windowAverages.last7.count} entries
-                  </p>
-                </div>
-                <div className="stat-divider" aria-hidden />
-                <div className="stat-block">
-                  <p className="label">Last 30 days</p>
-                  <p className="value">
-                    {windowAverages.last30.sleep !== null
-                      && windowAverages.last30.mood !== null
-                      ? `${formatSleepHours(windowAverages.last30.sleep)} / ${windowAverages.last30.mood.toFixed(1)}`
-                      : '—'}
-                  </p>
-                  <p className="helper">
-                    Sleep avg / Mood avg · {windowAverages.last30.count} entries
-                  </p>
-                </div>
-                <div className="stat-divider" aria-hidden />
-                <div className="stat-block">
-                  <p className="label">Streak</p>
-                  <p className="value">
-                    {streak} days
-                  </p>
-                  <p className="helper">Consecutive days logged</p>
-                </div>
-                <div className="stat-divider" aria-hidden />
-                <div className="stat-block">
-                  <p className="label">
-                    Rhythm score
-                    <Tooltip label="What is this? Based on how steady your sleep hours are in the last 30 days. Higher = more consistent.">
-                      <span className="tooltip-trigger">
-                        <span className="tooltip-icon" aria-hidden="true">i</span>
-                      </span>
-                    </Tooltip>
-                  </p>
-                  <p className="value">
-                    {rhythmScore !== null ? `${rhythmScore} / 100` : '—'}
-                  </p>
-                  <p className="helper">Sleep stability over the last 30 days</p>
-                </div>
-                <div className="stat-divider" aria-hidden />
-                <div className="stat-block">
-                  <p className="label">Sleep consistency</p>
-                  <p className="value">{sleepConsistencyLabel ?? '—'}</p>
-                  <p className="helper">How steady your sleep hours are</p>
-                </div>
-                <div className="stat-divider" aria-hidden />
-                <div className="stat-block">
-                  <p className="label">Sleep–mood link</p>
-                  <p className="value">{correlationLabel ?? '—'}</p>
-                  {correlationDirection
-                    ? (
-                        <p className="helper">{correlationDirection}</p>
-                      )
-                    : null}
-                </div>
-                <div className="stat-divider" aria-hidden />
-                <div className="stat-block">
-                  <p className="label">Mood by sleep</p>
-                  <p className="value">
-                    {moodBySleepThreshold.high !== null
-                      || moodBySleepThreshold.low !== null
-                      ? `≥${formatSleepHours(sleepThreshold)} ${moodBySleepThreshold.high?.toFixed(1) ?? '—'} / <${formatSleepHours(sleepThreshold)} ${moodBySleepThreshold.low?.toFixed(1) ?? '—'}`
-                      : '—'}
-                  </p>
-                  <p className="helper">
-                    Avg mood split at {formatSleepHours(sleepThreshold)}
-                  </p>
-                </div>
-              </>
-            )}
+                  <div className="stat-tile">
+                    <p className="label">
+                      Rhythm score
+                      <Tooltip label="What is this? Based on how steady your sleep hours are in the last 30 days. Higher = more consistent.">
+                        <span className="tooltip-trigger">
+                          <span className="tooltip-icon" aria-hidden="true">i</span>
+                        </span>
+                      </Tooltip>
+                    </p>
+                    <p className="value">{rhythmScore !== null ? `${rhythmScore} / 100` : '—'}</p>
+                    <p className="helper">Sleep stability over the last 30 days</p>
+                  </div>
+                  <div className="stat-tile">
+                    <p className="label">Sleep consistency</p>
+                    <p className="value">{sleepConsistencyLabel ?? '—'}</p>
+                    <p className="helper">How steady your sleep hours are</p>
+                  </div>
+                  <div className="stat-tile">
+                    <p className="label">Sleep–mood link</p>
+                    <p className="value">{correlationLabel ?? '—'}</p>
+                    {correlationDirection
+                      ? <p className="helper">{correlationDirection}</p>
+                      : <p className="helper">Correlation strength</p>}
+                  </div>
+                  <div className="stat-tile stat-tile--full">
+                    <p className="label">Mood by sleep</p>
+                    <p className="value">
+                      {moodBySleepThreshold.high !== null
+                        || moodBySleepThreshold.low !== null
+                        ? `≥${formatSleepHours(sleepThreshold)} ${moodBySleepThreshold.high?.toFixed(1) ?? '—'} / <${formatSleepHours(sleepThreshold)} ${moodBySleepThreshold.low?.toFixed(1) ?? '—'}`
+                        : '—'}
+                    </p>
+                    <p className="helper">
+                      Avg mood split at {formatSleepHours(sleepThreshold)}
+                    </p>
+                  </div>
+                </>
+              )}
+        </div>
       </section>
     </>
   )
