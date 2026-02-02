@@ -167,6 +167,11 @@
   gap: 12px;
 }
 
+.settings-grid .field + .field:not(.settings-divider-none) {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
 .settings-inline {
   display: flex;
   flex-wrap: wrap;
