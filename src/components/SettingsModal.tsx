@@ -9,6 +9,7 @@ import {
   setStoredDailyReminderTime,
 } from '../lib/notifications'
 import type { DateFormatPreference, ThemePreference } from '../lib/settings'
+import { useLockBodyScroll } from '../hooks/useLockBodyScroll'
 
 type SettingsModalProps = {
   isOpen: boolean
@@ -41,6 +42,9 @@ export const SettingsModal = ({
     () => getStoredDailyReminderTime(),
   )
   const [isDateFormatOpen, setIsDateFormatOpen] = useState(false)
+
+  useLockBodyScroll(isOpen)
+  const reminderActive = remindersSupported && remindersEnabled
 
   const dateFormatOptions: { value: DateFormatPreference, label: string }[] = [
     { value: 'dmy', label: 'Day / Month / Year' },
@@ -217,7 +221,9 @@ export const SettingsModal = ({
                     <span className="toggle-track" aria-hidden="true">
                       <span className="toggle-thumb" />
                     </span>
-                    <span className="toggle-text">Enabled</span>
+                    <span className="toggle-text">
+                      {reminderActive ? 'Enabled' : 'Disabled'}
+                    </span>
                   </label>
                   <input
                     type="time"
