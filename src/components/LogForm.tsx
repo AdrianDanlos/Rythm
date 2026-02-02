@@ -236,7 +236,7 @@ export const LogForm = ({
             <span>Tags (Pro)</span>
             <span className="field-hint">
               {isPro
-                ? `Up to ${maxTagsPerEntry} tags per entry. Separate tags with commas.`
+                ? 'Separate tags with commas.'
                 : 'Upgrade to Pro to add tags.'}
             </span>
           </div>
