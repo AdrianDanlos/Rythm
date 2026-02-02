@@ -13,7 +13,6 @@ import { FeedbackModal } from './components/FeedbackModal.tsx'
 import { StreakModal } from './components/StreakModal'
 import { Tooltip } from './components/Tooltip'
 import { SettingsModal } from './components/SettingsModal'
-import { InsightsQuickStart } from './components/InsightsQuickStart'
 import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
 import { useAuthActions } from './hooks/useAuthActions'
@@ -484,10 +483,6 @@ function App() {
                     </button>
                   </div>
 
-                  {activeTab === Tabs.Insights
-                    ? <InsightsQuickStart onStartLog={() => setActiveTab(Tabs.Log)} />
-                    : null}
-
                   {activeTab === Tabs.Log
                     ? (
                         <p className="helper">
@@ -550,6 +545,7 @@ function App() {
                           onExportCsv={handleExportCsv}
                           onExportMonthlyReport={handleExportMonthlyReport}
                           onOpenPaywall={handleOpenPaywall}
+                          onStartLog={() => setActiveTab(Tabs.Log)}
                           activeTab={activeInsightsTab}
                         />
                       )}

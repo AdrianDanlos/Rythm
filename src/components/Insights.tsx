@@ -18,6 +18,7 @@ import { InsightsSmoothedTrends } from './insights/InsightsSmoothedTrends'
 import { InsightsStats } from './insights/InsightsStats'
 import { InsightsTagInsights } from './insights/InsightsTagInsights'
 import { InsightsMoodDistribution } from './insights/InsightsMoodDistribution'
+import { InsightsQuickStart } from './InsightsQuickStart'
 import badgeIcon from '../assets/badge.png'
 import googleLogo from '../assets/playstore.png'
 
@@ -55,6 +56,7 @@ type InsightsProps = {
   onExportMonthlyReport: () => void
   onOpenPaywall: () => void
   activeTab: InsightsTab
+  onStartLog: () => void
 }
 
 export const Insights = ({
@@ -84,6 +86,7 @@ export const Insights = ({
   onExportMonthlyReport,
   onOpenPaywall,
   activeTab,
+  onStartLog,
 }: InsightsProps) => {
   const reviewUrl = 'https://play.google.com/store/apps/details?id=com.rythm.app'
   const isLoading = entriesLoading
@@ -134,6 +137,7 @@ export const Insights = ({
       {activeTab === 'summary'
         ? (
             <div className="insights-panel">
+              <InsightsQuickStart onStartLog={onStartLog} />
               <InsightsStats
                 isLoading={isLoading}
                 averages={averages}
