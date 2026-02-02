@@ -9,6 +9,7 @@ import {
 } from 'recharts'
 import type { Entry } from '../../lib/entries'
 import { formatLongDate } from '../../lib/utils/dateFormatters'
+import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 
 type PlottedEntry = Entry & {
@@ -51,7 +52,7 @@ export const InsightsScatter = ({
     return (
       <div className="tooltip">
         <p>{labelDate}</p>
-        <p>Sleep: {entry.sleep_hours} hrs</p>
+        <p>Sleep: {formatSleepHours(entry.sleep_hours)} hrs</p>
         <p>Mood: {entry.mood} / 5</p>
         {entry.note ? <p className="tooltip-note">{entry.note}</p> : null}
       </div>
