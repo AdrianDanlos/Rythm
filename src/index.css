@@ -122,6 +122,11 @@
   --tooltip-shadow: 0 16px 28px rgba(2, 6, 23, 0.6);
   --day-logged-bg: rgba(56, 189, 248, 0.18);
   --day-logged-text: #e2e8f0;
+  --premium-overlay-bg: linear-gradient(
+    180deg,
+    rgba(2, 6, 23, 0.6),
+    rgba(2, 6, 23, 0.9)
+  );
   --ghost-cta-border: rgba(56, 189, 248, 0.55);
   --ghost-cta-bg: rgba(56, 189, 248, 0.12);
   --ghost-cta-text: #e2e8f0;
