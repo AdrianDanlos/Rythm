@@ -134,3 +134,14 @@ The app and Edge Functions talk to local Supabase in development and the remote 
 
 - **Run the React app (Vite dev server)**:
   - `npm run dev`
+
+### Android (Capacitor)
+
+- **Build web assets for native**:
+  - `npm run build`
+- **Sync web assets and plugins to Android**:
+  - `npx cap sync android`
+- **Open the project in Android Studio**:
+  - `npx cap open android`
+- **Run on a device or emulator (optional)**:
+  - `npx cap run android`
