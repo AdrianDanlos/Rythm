@@ -24,6 +24,15 @@
   background: transparent;
 }
 
+.header-actions .spinner {
+  border-color: rgba(15, 23, 42, 0.25);
+  border-top-color: var(--text);
+}
+
+:root[data-theme="dark"] .header-actions .spinner {
+  border-color: rgba(248, 250, 252, 0.35);
+}
+
 .app-brand {
   display: flex;
   align-items: center;
