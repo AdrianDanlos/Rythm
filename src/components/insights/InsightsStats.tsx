@@ -33,12 +33,27 @@ export const InsightsStats = ({
   moodBySleepThreshold,
   sleepThreshold,
 }: InsightsStatsProps) => {
-  const renderTopStat = (label: string, value: string) => (
-    <div className={isLoading ? 'stat-block' : undefined}>
-      <p className="label">{label}</p>
-      {isLoading ? <div className="skeleton-line" /> : <p className="value">{value}</p>}
-    </div>
-  )
+  const renderTopStat = (
+    label: string,
+    value: string,
+    progress: number | null,
+    toneClass: string,
+  ) => {
+    const ringStyle = progress === null
+      ? undefined
+      : { ['--stat-progress' as string]: `${Math.min(100, Math.max(0, progress))}%` }
+
+    return (
+      <div className={`stat-block stat-block--ring ${toneClass}`}>
+        <div className="stat-ring" style={ringStyle}>
+          <div className="stat-ring__inner">
+            <p className="label">{label}</p>
+            {isLoading ? <div className="skeleton-line" /> : <p className="value">{value}</p>}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const renderWindowTile = (
     label: string,
@@ -73,10 +88,14 @@ export const InsightsStats = ({
         {renderTopStat(
           'Average sleep',
           averages.sleep !== null ? formatSleepHours(averages.sleep) : '—',
+          averages.sleep !== null ? (averages.sleep / sleepThreshold) * 100 : null,
+          'stat-block--sleep',
         )}
         {renderTopStat(
           'Average mood',
           `${averages.mood !== null ? averages.mood.toFixed(1) : '—'} / 5`,
+          averages.mood !== null ? (averages.mood / 5) * 100 : null,
+          'stat-block--mood',
         )}
       </section>
 
