@@ -25,6 +25,7 @@ import logo from './assets/rythm-logo.png'
 import { StripeLanding } from './components/StripeLanding.tsx'
 import { ROUTES, isStripeLanding, isStripeReturn } from './lib/routes'
 import { PRICING } from './lib/pricing'
+import { moodColors } from './lib/colors'
 import {
   getStoredDateFormat,
   getStoredProfileName,
@@ -80,7 +81,6 @@ function App() {
   const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme())
   const [profileName, setProfileName] = useState('')
 
-  const moodColors = ['#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e']
   const sleepThreshold = 8
   const maxTagsPerEntry = 10
   const isPro = Boolean(session?.user?.app_metadata?.is_pro)

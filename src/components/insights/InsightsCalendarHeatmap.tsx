@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Entry } from '../../lib/entries'
 import { formatLocalDate, formatLongDate, getDateLocale } from '../../lib/utils/dateFormatters'
+import { sleepHeatmapColors } from '../../lib/colors'
 import { Tooltip } from '../Tooltip'
 
 type HeatmapDay = {
@@ -17,7 +18,6 @@ type InsightsCalendarHeatmapProps = {
   isMobile: boolean
 }
 
-const sleepColors = ['#e0f2fe', '#bae6fd', '#7dd3fc', '#38bdf8', '#0ea5e9']
 const dayLabels = ['Mon', '', 'Wed', '', 'Fri', '', '']
 
 const buildHeatmapWeeks = (entries: Entry[], days: number): HeatmapDay[][] => {
@@ -79,8 +79,11 @@ const getMoodColor = (mood: number | null, palette: string[]) => {
 const getSleepColor = (sleep: number | null) => {
   if (!sleep) return null
   const normalized = Math.min(1, Math.max(0, (sleep - 4) / 6))
-  const index = Math.min(sleepColors.length - 1, Math.floor(normalized * sleepColors.length))
-  return sleepColors[index] ?? null
+  const index = Math.min(
+    sleepHeatmapColors.length - 1,
+    Math.floor(normalized * sleepHeatmapColors.length),
+  )
+  return sleepHeatmapColors[index] ?? null
 }
 
 export const InsightsCalendarHeatmap = ({
@@ -98,7 +101,7 @@ export const InsightsCalendarHeatmap = ({
     [entries, totalDays],
   )
   const gapSize = 2
-  const legendColors = metric === 'mood' ? moodColors : sleepColors
+  const legendColors = metric === 'mood' ? moodColors : sleepHeatmapColors
   const monthLabels = useMemo(() => {
     const formatter = new Intl.DateTimeFormat(dateLocale, { month: 'short' })
     const monthTotals = new Map<string, number>()
