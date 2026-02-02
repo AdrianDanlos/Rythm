@@ -6,46 +6,52 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #0f172a;
+  color: var(--neutral-900);
 
-  --bg: #f8fafc;
-  --card: #ffffff;
-  --border: #e2e8f0;
-  --button-border: #e2e8f0;
-  --button-bg: #0f172a;
-  --button-text: #ffffff;
+  --neutral-900: #0f172a;
+  --neutral-50: #f8fafc;
+  --neutral-200: #e2e8f0;
+  --neutral-500: #64748b;
+  --white: #ffffff;
+
+  --bg: var(--neutral-50);
+  --card: var(--white);
+  --border: var(--neutral-200);
+  --button-border: var(--neutral-200);
+  --button-bg: var(--neutral-900);
+  --button-text: var(--white);
   --ghost-bg: rgba(214, 219, 231, 0.11);
-  --text: #0f172a;
-  --muted: #64748b;
-  --selected-bg: #0f172a;
-  --selected-text: #ffffff;
-  --selected-border: #0f172a;
+  --text: var(--neutral-900);
+  --muted: var(--neutral-500);
+  --selected-bg: var(--neutral-900);
+  --selected-text: var(--white);
+  --selected-border: var(--neutral-900);
   --selected-surface: rgba(15, 23, 42, 0.06);
   --button-hover-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
   --button-hover-shadow-strong: 0 16px 30px rgba(15, 23, 42, 0.28);
   --button-hover-surface: rgba(15, 23, 42, 0.04);
-  --button-disabled-bg: #e2e8f0;
-  --button-disabled-text: #64748b;
+  --button-disabled-bg: var(--neutral-200);
+  --button-disabled-text: var(--neutral-500);
   --button-disabled-border: #cbd5f5;
-  --button-primary-border: #0f172a;
-  --input-focus-border: #0f172a;
+  --button-primary-border: var(--neutral-900);
+  --input-focus-border: var(--neutral-900);
   --input-focus-shadow: 0 0 0 2px rgba(15, 23, 42, 0.12);
   --modal-backdrop: rgba(15, 23, 42, 0.55);
-  --chart-sleep: #0f172a;
+  --chart-sleep: var(--neutral-900);
   --chart-mood: #22c55e;
-  --tooltip-bg: #ffffff;
-  --tooltip-border: #e2e8f0;
+  --tooltip-bg: var(--white);
+  --tooltip-border: var(--neutral-200);
   --tooltip-shadow: 0 12px 22px rgba(15, 23, 42, 0.12);
   --day-logged-bg: #e2eafd;
-  --day-logged-text: #0f172a;
+  --day-logged-text: var(--neutral-900);
   --app-logo-shadow: 0 6px 18px rgba(15, 23, 42, 0.18);
   --card-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
   --modal-shadow: 0 20px 35px rgba(15, 23, 42, 0.18);
   --tag-suggestions-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
   --mood-active-shadow: 0 10px 18px rgba(15, 23, 42, 0.12);
-  --toggle-track-bg: linear-gradient(120deg, #e2e8f0, #cbd5f5);
+  --toggle-track-bg: linear-gradient(120deg, var(--neutral-200), #cbd5f5);
   --toggle-track-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.15);
-  --toggle-thumb-bg: #ffffff;
+  --toggle-thumb-bg: var(--white);
   --toggle-thumb-shadow: 0 4px 10px rgba(15, 23, 42, 0.18);
   --toggle-track-checked-bg: linear-gradient(120deg, #1d4ed8, #14b8a6);
   --toggle-track-checked-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.1),
@@ -53,54 +59,65 @@
   --toggle-track-focus-shadow: 0 0 0 2px rgba(15, 23, 42, 0.18),
     0 6px 14px rgba(20, 184, 166, 0.28);
   --toggle-track-disabled-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.1);
-  --cta-button-bg: linear-gradient(135deg, #0f172a, #1e3a8a);
+  --cta-button-bg: linear-gradient(135deg, var(--neutral-900), #1e3a8a);
   --cta-button-shadow: 0 12px 26px rgba(15, 23, 42, 0.22),
     inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   --cta-button-shadow-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
   --loading-spinner-border: rgba(15, 23, 42, 0.2);
   --ghost-cta-border: rgba(15, 23, 42, 0.28);
   --ghost-cta-bg: rgba(15, 23, 42, 0.045);
-  --ghost-cta-text: #0f172a;
+  --ghost-cta-text: var(--neutral-900);
   --ghost-cta-shadow: 0 10px 18px rgba(15, 23, 42, 0.08);
   --ghost-cta-border-hover: rgba(15, 23, 42, 0.5);
   --spinner-border: rgba(255, 255, 255, 0.4);
-  --spinner-border-top: #ffffff;
+  --spinner-border-top: var(--white);
   --heatmap-empty-bg: #f1f5f9;
-  --pro-pill-bg: #0f172a;
-  --pro-pill-text: #ffffff;
+  --pro-pill-bg: var(--neutral-900);
+  --pro-pill-text: var(--white);
   --premium-overlay-bg: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.5),
     rgba(255, 255, 255, 0.85)
   );
-  --skeleton-bg: linear-gradient(90deg, #e2e8f0, #f1f5f9, #e2e8f0);
+  --skeleton-bg: linear-gradient(
+    90deg,
+    var(--neutral-200),
+    #f1f5f9,
+    var(--neutral-200)
+  );
   --status-error: #dc2626;
   --status-success: #16a34a;
-  --badge-icon-unlocked: #0f172a;
+  --badge-icon-unlocked: var(--neutral-900);
   --stripe-landing-bg: #0f1115;
-  --stripe-landing-text: #f8fafc;
+  --stripe-landing-text: var(--neutral-50);
   --stripe-landing-muted: #94a3b8;
   --stripe-landing-lede: #cbd5f5;
   --stripe-landing-section-bg: rgba(148, 163, 184, 0.08);
   --stripe-landing-section-border: rgba(148, 163, 184, 0.2);
   --stripe-landing-primary-bg: #22c55e;
   --stripe-landing-primary-text: #0f1115;
-  --stripe-landing-link: #ffffff;
+  --stripe-landing-link: var(--white);
 }
 
 :root[data-theme="dark"] {
-  color: #f8fafc;
-  --bg: #0b1220;
+  color: var(--neutral-900);
+  --neutral-900: #f8fafc;
+  --neutral-50: #0b1220;
+  --neutral-200: #1f2937;
+  --neutral-500: #94a3b8;
+  --white: #f8fafc;
+
+  --bg: var(--neutral-50);
   --card: #111827;
-  --border: #1f2937;
+  --border: var(--neutral-200);
   --button-border: #334155;
   --button-bg: #334155;
-  --button-text: #f8fafc;
+  --button-text: var(--white);
   --ghost-bg: rgba(56, 189, 248, 0.08);
-  --text: #f8fafc;
-  --muted: #94a3b8;
+  --text: var(--white);
+  --muted: var(--neutral-500);
   --selected-bg: #1e293b;
-  --selected-text: #f8fafc;
+  --selected-text: var(--white);
   --selected-border: rgba(56, 189, 248, 0.7);
   --selected-surface: rgba(56, 189, 248, 0.18);
   --button-hover-shadow: 0 10px 20px rgba(15, 23, 42, 0.45),
@@ -108,8 +125,8 @@
   --button-hover-shadow-strong: 0 18px 36px rgba(15, 23, 42, 0.55),
     0 0 18px rgba(56, 189, 248, 0.25), 0 0 0 1px rgba(56, 189, 248, 0.5);
   --button-hover-surface: rgba(56, 189, 248, 0.14);
-  --button-disabled-bg: #0b1220;
-  --button-disabled-text: #94a3b8;
+  --button-disabled-bg: var(--neutral-50);
+  --button-disabled-text: var(--neutral-500);
   --button-disabled-border: #334155;
   --button-primary-border: rgba(56, 189, 248, 0.7);
   --input-focus-border: rgba(56, 189, 248, 0.8);
