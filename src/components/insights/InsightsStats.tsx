@@ -151,6 +151,7 @@ export const InsightsStats = ({
                             <span className="helper-tag">
                               ≥{formatSleepHours(sleepThreshold)}
                             </span>
+                            <span className="helper-arrow" aria-hidden="true">→</span>
                             <span className="helper-tag helper-pill-value">
                               {moodBySleepThreshold.high?.toFixed(1) ?? '—'}
                             </span>
@@ -158,6 +159,7 @@ export const InsightsStats = ({
                             <span className="helper-tag">
                               &lt;{formatSleepHours(sleepThreshold)}
                             </span>
+                            <span className="helper-arrow" aria-hidden="true">→</span>
                             <span className="helper-tag helper-pill-value">
                               {moodBySleepThreshold.low?.toFixed(1) ?? '—'}
                             </span>

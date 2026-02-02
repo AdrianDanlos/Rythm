@@ -50,6 +50,7 @@ export const InsightsPersonalThreshold = ({
                   <span className="helper-tag">
                     {'>'}{formatSleepHours(personalSleepThreshold)}
                   </span>
+                  <span className="helper-arrow" aria-hidden="true">→</span>
                   <span className="helper-tag helper-pill-value">
                     {moodByPersonalThreshold.high?.toFixed(1) ?? '—'}
                   </span>
@@ -57,6 +58,7 @@ export const InsightsPersonalThreshold = ({
                   <span className="helper-tag">
                     {'<'}{formatSleepHours(personalSleepThreshold)}
                   </span>
+                  <span className="helper-arrow" aria-hidden="true">→</span>
                   <span className="helper-tag helper-pill-value">
                     {moodByPersonalThreshold.low?.toFixed(1) ?? '—'}
                   </span>

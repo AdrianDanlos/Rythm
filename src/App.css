@@ -1261,6 +1261,13 @@
 
 .helper-inline .helper-sep {
   opacity: 0.7;
+  margin: 0px 5px 4px 5px;
+}
+
+.helper-inline .helper-arrow {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin: 0 2px 4px;
 }
 
 .helper-inline .helper-break {
