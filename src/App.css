@@ -1112,6 +1112,10 @@
   font-size: 0.85rem;
   color: var(--text);
   box-shadow: var(--tooltip-shadow);
+  max-width: min(260px, 80vw);
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .tooltip-note {
