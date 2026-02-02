@@ -36,6 +36,7 @@ export const InsightsScatter = ({
 }: InsightsScatterProps) => {
   const baseTickProps = { fontSize: 13 }
   const mobileTickProps = { fontSize: 12 }
+  const scatterSize = isMobile ? 28 : 36
   const renderTooltip = ({
     active,
     payload,
@@ -126,7 +127,7 @@ export const InsightsScatter = ({
                       tickMargin={2}
                     />
                     <RechartsTooltip content={renderTooltip} />
-                    <Scatter data={plottedData}>
+                    <Scatter data={plottedData} size={scatterSize}>
                       {plottedData.map(entry => (
                         <Cell
                           key={entry.id}
