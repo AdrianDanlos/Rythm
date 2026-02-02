@@ -53,6 +53,7 @@ function App() {
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
   const [authEmail, setAuthEmail] = useState('')
   const [authPassword, setAuthPassword] = useState('')
+  const isNativeApp = Capacitor.isNativePlatform()
   const {
     session,
     authLoading,
@@ -456,6 +457,7 @@ function App() {
                   authPassword={authPassword}
                   authLoading={authLoading}
                   authError={authError}
+                  showEmailPassword={!isNativeApp}
                   onEmailChange={setAuthEmail}
                   onPasswordChange={setAuthPassword}
                   onSubmit={handleAuth}
