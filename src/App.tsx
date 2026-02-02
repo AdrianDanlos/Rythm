@@ -43,10 +43,13 @@ import './App.css'
 enum Tabs {
   Insights = 'insights',
   Log = 'log',
+  Summary = 'summary',
+  Charts = 'charts',
+  Data = 'data',
 }
 
-type TabKey = typeof Tabs[keyof typeof Tabs]
-type InsightsSection = 'summary' | 'charts' | 'data'
+type TabKey = Tabs.Insights | Tabs.Log
+type InsightsSection = Tabs.Summary | Tabs.Charts | Tabs.Data
 
 function App() {
   const showStripeLanding = isStripeLanding()
@@ -75,7 +78,7 @@ function App() {
   }, [])
   const today = useMemo(() => formatLocalDate(todayDate), [todayDate])
   const [activeTab, setActiveTab] = useState<TabKey>(Tabs.Insights)
-  const [activeInsightsTab, setActiveInsightsTab] = useState<InsightsSection>('summary')
+  const [activeInsightsTab, setActiveInsightsTab] = useState<InsightsSection>(Tabs.Summary)
   const [isStreakOpen, setIsStreakOpen] = useState(false)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
@@ -146,7 +149,10 @@ function App() {
     maxTagsPerEntry,
     setEntriesError,
     onStreakReached: () => setIsStreakOpen(true),
-    onEntrySavedForToday: () => setActiveTab(Tabs.Insights),
+    onEntrySavedForToday: () => {
+      setActiveTab(Tabs.Insights)
+      setActiveInsightsTab(Tabs.Summary)
+    },
   })
 
   const { handleAuth, handleGoogleSignIn } = useAuthActions({
@@ -349,31 +355,31 @@ function App() {
           </div>
         </a>
         <div className="header-actions">
-          <Tooltip label="Settings">
-            <button
-              className="ghost icon-button"
-              type="button"
-              onClick={handleOpenSettings}
-              aria-label="Settings"
-            >
-              <Settings className="icon" aria-hidden="true" />
-            </button>
-          </Tooltip>
-
-          <Tooltip label="Send feedback">
-            <button
-              className="ghost icon-button"
-              type="button"
-              onClick={handleOpenFeedback}
-              aria-label="Send feedback"
-            >
-              <Mail className="icon" aria-hidden="true" />
-            </button>
-          </Tooltip>
-
           {session
             ? (
                 <>
+                  <Tooltip label="Settings">
+                    <button
+                      className="ghost icon-button"
+                      type="button"
+                      onClick={handleOpenSettings}
+                      aria-label="Settings"
+                    >
+                      <Settings className="icon" aria-hidden="true" />
+                    </button>
+                  </Tooltip>
+
+                  <Tooltip label="Send feedback">
+                    <button
+                      className="ghost icon-button"
+                      type="button"
+                      onClick={handleOpenFeedback}
+                      aria-label="Send feedback"
+                    >
+                      <Mail className="icon" aria-hidden="true" />
+                    </button>
+                  </Tooltip>
+
                   {canManageSubscription
                     ? (
                         <Tooltip label="Manage subscription">
@@ -564,10 +570,10 @@ function App() {
                       <div className="tabs insights-bottom-nav__tabs" role="tablist" aria-label="Insights navigation">
                         <button
                           type="button"
-                          className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === 'summary' ? 'active' : ''}`}
+                          className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Summary ? 'active' : ''}`}
                           onClick={() => {
                             setActiveTab(Tabs.Insights)
-                            setActiveInsightsTab('summary')
+                            setActiveInsightsTab(Tabs.Summary)
                           }}
                         >
                           <span className="tab-icon" aria-hidden="true">
@@ -580,10 +586,10 @@ function App() {
                         </button>
                         <button
                           type="button"
-                          className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === 'charts' ? 'active' : ''}`}
+                          className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Charts ? 'active' : ''}`}
                           onClick={() => {
                             setActiveTab(Tabs.Insights)
-                            setActiveInsightsTab('charts')
+                            setActiveInsightsTab(Tabs.Charts)
                           }}
                         >
                           <span className="tab-icon" aria-hidden="true">
@@ -624,10 +630,10 @@ function App() {
                         </button>
                         <button
                           type="button"
-                          className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === 'data' ? 'active' : ''}`}
+                          className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Data ? 'active' : ''}`}
                           onClick={() => {
                             setActiveTab(Tabs.Insights)
-                            setActiveInsightsTab('data')
+                            setActiveInsightsTab(Tabs.Data)
                           }}
                         >
                           <span className="tab-icon" aria-hidden="true">

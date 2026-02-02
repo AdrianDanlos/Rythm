@@ -50,13 +50,13 @@ export const AuthForm = ({
       role={showEmailPassword ? undefined : 'button'}
       tabIndex={showEmailPassword ? undefined : 0}
     >
-      <h2 className="auth-title">
-        {showEmailPassword
-          ? authMode === 'signin'
-            ? 'Sign in'
-            : 'Create account'
-          : 'Continue with Google'}
-      </h2>
+      {showEmailPassword
+        ? (
+            <h2 className="auth-title">
+              {authMode === 'signin' ? 'Sign in' : 'Create account'}
+            </h2>
+          )
+        : null}
       {authError ? <p className="error">{authError}</p> : null}
       {showEmailPassword
         ? (

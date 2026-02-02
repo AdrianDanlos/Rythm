@@ -913,6 +913,10 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
 
+.review-cta--standalone .review-cta__link {
+  width: 100%;
+}
+
 .review-cta__link:hover {
   filter: brightness(0.98);
   transform: translateY(-1px);
