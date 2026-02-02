@@ -1,7 +1,7 @@
 .app {
   max-width: 720px;
   margin: 0 auto;
-  padding: 24px 16px 48px;
+  padding: 24px 16px 96px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -58,12 +58,29 @@
   color: var(--text);
   border: 1px solid var(--button-border);
   box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  font-weight: 600;
 }
 
 .tab-button.active {
   background: var(--selected-bg);
   color: var(--selected-text);
   border-color: var(--selected-border);
+}
+
+.tab-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+}
+
+.tab-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .eyebrow {
@@ -784,6 +801,113 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+.insights-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.primary-tabs {
+  display: none;
+}
+
+.insights-bottom-nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 12px;
+  z-index: 30;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: var(--card-shadow);
+}
+
+.insights-actions-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.review-cta {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--selected-bg) 85%, transparent),
+    color-mix(in srgb, var(--card) 85%, transparent)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: var(--card-shadow);
+}
+
+.review-cta--standalone {
+  margin-top: 0;
+}
+
+.review-cta__content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.review-cta__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.review-cta__icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--card) 70%, transparent);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.review-cta__icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.review-cta__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-weight: 600;
+  border: 1px solid var(--selected-border);
+  color: var(--selected-text);
+  background: color-mix(in srgb, var(--selected-bg) 85%, transparent);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.review-cta__link:hover {
+  filter: brightness(0.98);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
 .stat-block {
@@ -1671,8 +1795,36 @@
     overflow-x: hidden;
   }
 
-  .tabs {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .primary-tabs {
+    display: none;
+  }
+
+  .insights-bottom-nav {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    box-shadow: none;
+  }
+
+  .insights-bottom-nav .tab-button {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.75rem;
+    padding: 8px 6px;
+    border: 0;
+  }
+
+  .insights-bottom-nav .tab-button.active {
+    background: var(--selected-bg);
+  }
+
+  .insights-bottom-nav .tab-icon {
+    width: 20px;
+    height: 20px;
   }
 
   .chart-wrapper .recharts-legend-wrapper {
@@ -1773,8 +1925,33 @@
 }
 
 @media (min-width: 541px) {
+  .app {
+    padding-top: 96px;
+  }
+
   .card.stats {
     padding: 24px;
+  }
+
+  .insights-bottom-nav {
+    top: 16px;
+    bottom: auto;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(720px, calc(100% - 32px));
+    padding: 10px 12px;
+  }
+
+  .insights-bottom-nav .tab-button {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    gap: 8px;
+  }
+
+  .insights-bottom-nav .tab-icon {
+    width: 18px;
+    height: 18px;
   }
 
   .mood-distribution {
