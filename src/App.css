@@ -836,6 +836,77 @@
   margin-top: 8px;
 }
 
+.mood-distribution {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+.mood-pie {
+  --mood-ring-track: color-mix(in srgb, var(--border) 70%, transparent);
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+}
+
+.mood-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 160px;
+}
+
+.mood-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 4px;
+}
+
+.mood-total .value {
+  font-variant-numeric: tabular-nums;
+}
+
+.mood-legend-row {
+  display: grid;
+  grid-template-columns: 12px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.mood-legend-metrics {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  justify-self: end;
+}
+
+.mood-legend-separator {
+  color: var(--muted);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.mood-legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--swatch-color);
+}
+
+.mood-legend-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.mood-legend-percent {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
 .stat-block .value {
   margin-top: 2px;
   margin-bottom: 10px;
@@ -1572,6 +1643,26 @@
     height: 124px;
   }
 
+  .mood-distribution {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mood-pie {
+    width: 140px;
+    height: 140px;
+    align-self: center;
+  }
+
+  .mood-legend {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .mood-legend-row {
+    grid-template-columns: 12px 1fr auto;
+  }
+
   .helper-sep--desktop {
     display: none;
   }
@@ -1684,6 +1775,22 @@
 @media (min-width: 541px) {
   .card.stats {
     padding: 24px;
+  }
+
+  .mood-distribution {
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 10px;
+  }
+
+  .mood-pie {
+    width: 180px;
+    height: 180px;
+  }
+
+  .mood-legend {
+    min-width: 200px;
   }
 
   .stats-stack-grid {

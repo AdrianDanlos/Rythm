@@ -17,6 +17,7 @@ import { InsightsScatter } from './insights/InsightsScatter'
 import { InsightsSmoothedTrends } from './insights/InsightsSmoothedTrends'
 import { InsightsStats } from './insights/InsightsStats'
 import { InsightsTagInsights } from './insights/InsightsTagInsights'
+import { InsightsMoodDistribution } from './insights/InsightsMoodDistribution'
 import badgeIcon from '../assets/badge.png'
 
 type InsightsProps = {
@@ -152,6 +153,10 @@ export const Insights = ({
         isPro={isPro}
         tagDrivers={tagDrivers}
         onOpenPaywall={onOpenPaywall}
+      />
+      <InsightsMoodDistribution
+        entries={entries}
+        moodColors={moodColors}
       />
       <InsightsCalendarHeatmap
         entries={entries}
