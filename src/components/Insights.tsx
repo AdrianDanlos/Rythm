@@ -195,17 +195,21 @@ export const Insights = ({
                       </div>
                       <p className="badge-helper">{badge.description}</p>
                     </div>
-                    <div className="badge-progress-track" aria-hidden="true">
-                      <span
-                        className="badge-progress-fill"
-                        style={{
-                          width: `${Math.min(
-                            100,
-                            Math.max(0, (badge.progressValue / (badge.progressTotal || 1)) * 100),
-                          )}%`,
-                        }}
-                      />
-                    </div>
+                    {!badge.unlocked
+                      ? (
+                          <div className="badge-progress-track" aria-hidden="true">
+                            <span
+                              className="badge-progress-fill"
+                              style={{
+                                width: `${Math.min(
+                                  100,
+                                  Math.max(0, (badge.progressValue / (badge.progressTotal || 1)) * 100),
+                                )}%`,
+                              }}
+                            />
+                          </div>
+                        )
+                      : null}
                     {badge.progressText
                       ? (
                           <p className="badge-progress-text">{badge.progressText}</p>

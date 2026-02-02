@@ -913,11 +913,11 @@
 .badge-progress-fill {
   height: 100%;
   display: block;
-  background: var(--badge-icon-unlocked);
+  background: #8052ab;
 }
 
 .badge-row.locked .badge-progress-fill {
-  background: var(--border);
+  background: #8052ab;
 }
 
 .badge-progress-text {
