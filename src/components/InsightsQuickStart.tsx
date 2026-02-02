@@ -26,8 +26,8 @@ export const InsightsQuickStart = ({ onStartLog }: InsightsQuickStartProps) => {
           <p className="eyebrow">Quick start</p>
           <h2>Understand your sleep + mood patterns</h2>
           <p className="muted">
-            Log a few nights and we highlight trends, consistency, and tags
-            that move your mood.
+            Log a few nights and we highlight trends, consistency, and which tags
+            shift your mood.
           </p>
         </div>
       </div>

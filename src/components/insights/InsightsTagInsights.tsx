@@ -94,7 +94,7 @@ export const InsightsTagInsights = ({
             )
           : (
               <p className="muted">
-                {`Add tags on your daily logs (at least ${DEFAULT_TAG_DRIVER_MIN_COUNT} entries per tag) to see patterns.`}
+                {`Add tags to see how each one changes your mood (at least ${DEFAULT_TAG_DRIVER_MIN_COUNT} entries per tag).`}
 
               </p>
             )}
