@@ -1779,6 +1779,10 @@
 }
 
 @media (max-width: 540px) {
+  .tabs {
+    gap: 20px;
+  }
+
   .badge-row {
     display: flex;
     flex-direction: column;
