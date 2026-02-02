@@ -1025,10 +1025,17 @@
 }
 
 .badge-status-icon {
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   color: var(--muted);
   flex: 0 0 auto;
+}
+
+@media (min-width: 900px) {
+  .badge-status-icon {
+    width: 36px;
+    height: 36px;
+  }
 }
 
 .badge-pill.unlocked .badge-status-icon {

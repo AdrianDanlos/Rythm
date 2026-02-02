@@ -17,7 +17,7 @@ import { InsightsScatter } from './insights/InsightsScatter'
 import { InsightsSmoothedTrends } from './insights/InsightsSmoothedTrends'
 import { InsightsStats } from './insights/InsightsStats'
 import { InsightsTagInsights } from './insights/InsightsTagInsights'
-import { Award, Lock } from 'lucide-react'
+import badgeIcon from '../assets/badge.png'
 
 type InsightsProps = {
   entries: Entry[]
@@ -189,9 +189,12 @@ export const Insights = ({
                     <div className="badge-row-header">
                       <div className="badge-title-row">
                         <p className="badge-title">{badge.title}</p>
-                        {badge.unlocked
-                          ? <Award className="badge-status-icon" aria-hidden />
-                          : <Lock className="badge-status-icon" aria-hidden />}
+                        <img
+                          className="badge-status-icon"
+                          src={badgeIcon}
+                          alt=""
+                          aria-hidden
+                        />
                       </div>
                       <p className="badge-helper">{badge.description}</p>
                     </div>
