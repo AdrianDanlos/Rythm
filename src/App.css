@@ -1055,7 +1055,6 @@
   box-sizing: border-box;
   border-radius: 3px;
   background: var(--heatmap-empty-bg);
-  border: 1px solid var(--heatmap-empty-border);
   display: block;
   cursor: pointer;
 }
