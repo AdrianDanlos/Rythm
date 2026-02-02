@@ -128,7 +128,7 @@ export const SettingsModal = ({
                   onChange={event => onNameChange(event.target.value)}
                 />
               </label>
-              <label className="field" htmlFor="settings-email">
+              <label className="field settings-divider-none" htmlFor="settings-email">
                 <span>Email</span>
                 <input
                   id="settings-email"
