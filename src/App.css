@@ -408,6 +408,43 @@
   color: var(--text);
 }
 
+.sleep-hours-row {
+  display: flex;
+  gap: 10px;
+}
+
+.sleep-select {
+  position: relative;
+  flex: 1;
+  min-width: 120px;
+}
+
+.sleep-select-button {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  background: var(--card);
+  color: var(--text);
+}
+
+.sleep-select-button:disabled {
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.sleep-select-button:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
+}
+
+.sleep-select-menu {
+  margin-top: 0;
+}
+
 .field input:disabled,
 .field select:disabled {
   background: var(--bg);

@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 import { parseTags } from '../lib/utils/stringUtils'
@@ -52,6 +52,39 @@ export const LogForm = ({
   onSave,
   onOpenPaywall,
 }: LogFormProps) => {
+  const sleepHourOptions = Array.from({ length: 13 }, (_, index) => index)
+  const sleepMinuteOptions = [0, 15, 30, 45]
+  const parsedSleepHours = Number(sleepHours)
+  const hasSleepValue = sleepHours.trim().length > 0 && Number.isFinite(parsedSleepHours)
+  const totalSleepMinutes = hasSleepValue ? Math.round(parsedSleepHours * 60) : 0
+  const sleepHourValue = hasSleepValue ? String(Math.floor(totalSleepMinutes / 60)) : ''
+  const sleepMinuteValue = hasSleepValue ? String(totalSleepMinutes % 60) : ''
+  const sleepMenuRef = useRef<HTMLDivElement | null>(null)
+  const [sleepMenu, setSleepMenu] = useState<'hours' | 'minutes' | null>(null)
+
+  const updateSleepHours = (hourValue: string, minuteValue: string) => {
+    if (!hourValue) {
+      onSleepHoursChange('')
+      return
+    }
+    const minutes = minuteValue ? Number(minuteValue) : 0
+    const nextValue = Number(hourValue) + minutes / 60
+    const formatted = nextValue.toFixed(2).replace(/\.?0+$/, '')
+    onSleepHoursChange(formatted)
+  }
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (!sleepMenuRef.current) return
+      if (event.target instanceof Node && sleepMenuRef.current.contains(event.target)) {
+        return
+      }
+      setSleepMenu(null)
+    }
+
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
   const [isTagInputFocused, setIsTagInputFocused] = useState(false)
   const usedTags = parseTags(tags)
   const usedTagSet = new Set(usedTags)
@@ -101,13 +134,73 @@ export const LogForm = ({
         </div>
         <label className="field">
           Sleep hours
-          <input
-            type="text"
-            value={sleepHours}
-            onChange={event => onSleepHoursChange(event.target.value)}
-            placeholder="e.g., 7h / 7h 30m / 7:30"
-            required
-          />
+          <div className="sleep-hours-row" ref={sleepMenuRef}>
+            <div className="sleep-select">
+              <button
+                type="button"
+                className="sleep-select-button"
+                aria-haspopup="listbox"
+                aria-expanded={sleepMenu === 'hours'}
+                onClick={() => setSleepMenu(sleepMenu === 'hours' ? null : 'hours')}
+              >
+                {sleepHourValue ? `${sleepHourValue}h` : 'Hours'}
+              </button>
+              {sleepMenu === 'hours'
+                ? (
+                    <div className="tag-suggestions sleep-select-menu" role="listbox">
+                      {sleepHourOptions.map(value => (
+                        <button
+                          key={value}
+                          type="button"
+                          className="tag-suggestion"
+                          onMouseDown={(event) => {
+                            event.preventDefault()
+                            event.stopPropagation()
+                            updateSleepHours(String(value), sleepMinuteValue)
+                            setSleepMenu('minutes')
+                          }}
+                        >
+                          {value}h
+                        </button>
+                      ))}
+                    </div>
+                  )
+                : null}
+            </div>
+            <div className="sleep-select">
+              <button
+                type="button"
+                className="sleep-select-button"
+                aria-haspopup="listbox"
+                aria-expanded={sleepMenu === 'minutes'}
+                onClick={() => setSleepMenu(sleepMenu === 'minutes' ? null : 'minutes')}
+                disabled={!sleepHourValue}
+              >
+                {sleepMinuteValue ? `${String(sleepMinuteValue).padStart(2, '0')}m` : 'Minutes'}
+              </button>
+              {sleepMenu === 'minutes' && sleepHourValue
+                ? (
+                    <div className="tag-suggestions sleep-select-menu" role="listbox">
+                      {sleepMinuteOptions.map(value => (
+                        <button
+                          key={value}
+                          type="button"
+                          className="tag-suggestion"
+                          onMouseDown={(event) => {
+                            event.preventDefault()
+                            event.stopPropagation()
+                            updateSleepHours(sleepHourValue, String(value))
+                            setSleepMenu(null)
+                          }}
+                        >
+                          {String(value).padStart(2, '0')}m
+                        </button>
+                      ))}
+                    </div>
+                  )
+                : null}
+            </div>
+          </div>
         </label>
         <div className="field">
           Mood today

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { upsertEntry, type Entry } from '../lib/entries'
 import { buildStats, type StatsResult } from '../lib/stats'
-import { formatSleepHours } from '../lib/utils/sleepHours'
 import { parseTags } from '../lib/utils/stringUtils'
 
 type UseLogFormParams = {
@@ -91,10 +90,15 @@ export const useLogForm = ({
     return asNumber
   }
 
+  const formatSleepHoursOption = (value: number) => {
+    const rounded = Math.round(value * 4) / 4
+    return rounded.toFixed(2).replace(/\.?0+$/, '')
+  }
+
   useEffect(() => {
     const existing = entries.find(item => item.entry_date === entryDate)
     if (existing) {
-      setSleepHours(formatSleepHours(existing.sleep_hours))
+      setSleepHours(formatSleepHoursOption(existing.sleep_hours))
       setMood(existing.mood)
       setNote(existing.note ?? '')
       setTags(existing.tags?.join(', ') ?? '')
@@ -119,7 +123,7 @@ export const useLogForm = ({
 
     const parsedSleep = parseSleepHours(sleepHours)
     if (parsedSleep === null) {
-      setEntriesError('Sleep hours must be a number or time like 7h 30m or 7:30.')
+      setEntriesError('Select sleep hours.')
       setSaved(false)
       return
     }
