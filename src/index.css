@@ -159,6 +159,8 @@
   --cta-button-shadow-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
   --heatmap-empty-bg: #64748b;
   --heatmap-empty-border: rgba(148, 163, 184, 0.35);
+  --pro-pill-bg: #38bdf8;
+  --pro-pill-text: #0b1220;
   --status-error-soft: #f87171;
   --status-success-soft: #4ade80;
 }
