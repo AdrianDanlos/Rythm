@@ -365,7 +365,6 @@ export const InsightsSmoothedTrends = ({
                         label={`Change vs prior ${summary.days}-day window.`}
                       >
                         <span className="tooltip-trigger">
-                          <span className="tooltip-icon" aria-hidden="true">i</span>
                           Delta: {formatDeltaValue(summary.sleepDelta)}h ·{' '}
                           {formatDeltaValue(summary.moodDelta)}
                         </span>
