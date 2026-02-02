@@ -43,10 +43,10 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
   - Prod: webhook secret from Stripe Dashboard.
 - `STRIPE_SUCCESS_URL`: Redirect after successful checkout.
   - Dev: `http://localhost:5173/success`
-  - Prod: `https://rythm-one.vercel.app//success`
+  - Prod: `https://rythm-one.vercel.app/success`
 - `STRIPE_CANCEL_URL`: Redirect after cancel.
   - Dev: `http://localhost:5173/cancel`
-  - Prod: `https://rythm-one.vercel.app//cancel`
+  - Prod: `https://rythm-one.vercel.app/cancel`
 - `STRIPE_PORTAL_RETURN_URL`: Return URL for the Stripe customer portal.
   - Dev: `http://localhost:5173`
   - Prod: `https://rythm-one.vercel.app/`
@@ -56,7 +56,7 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 - Prod Google auth account: `danlosadrian@gmail.com`
 - Dev Google auth account: `adrianf1team@gmail.com`
 
-### Supabase + Strip: Dev vs Prod
+### Supabase + Stripe: Dev vs Prod
 
 ##### Local development
 
@@ -83,10 +83,12 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 3. Set Supabase secrets in the prod project:
    - `npx supabase secrets set STRIPE_SECRET_KEY=sk_live_...`
    - `npx supabase secrets set STRIPE_PRICE_ID=price_...`
-   - `npx supabase secrets set STRIPE_SUCCESS_URL=https://rythm-one.vercel.app//success`
-   - `npx supabase secrets set STRIPE_CANCEL_URL=https://rythm-one.vercel.app//cancel`
-   - `npx supabase secrets set STRIPE_PORTAL_RETURN_URL=https://rythm-one.vercel.app/`
-   - `npx supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...`
+
+- `npx supabase secrets set STRIPE_SUCCESS_URL=https://rythm-one.vercel.app/success`
+- `npx supabase secrets set STRIPE_CANCEL_URL=https://rythm-one.vercel.app/cancel`
+- `npx supabase secrets set STRIPE_PORTAL_RETURN_URL=https://rythm-one.vercel.app/`
+- `npx supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...`
+
 4. Configure the Stripe webhook:
    - Endpoint URL: `https://mdruanwmwapdaecrayyi.functions.supabase.co/stripe-webhook`
    - Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
@@ -96,19 +98,23 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 **Click Upgrade → get checkout URL → pay in Stripe → webhook marks you Pro → app refreshes session.**
 
 1. **Frontend: user clicks Upgrade**
+
    - `PaywallModal` triggers the upgrade handler in `App`.
    - `App` calls the Supabase Edge Function `create-checkout-session`.
 
 2. **Edge Function: create checkout session**
+
    - `create-checkout-session` validates the user token.
    - Creates a Stripe Checkout Session (subscription) using `STRIPE_PRICE_ID`.
    - Returns `session.url` to the frontend.
 
 3. **Stripe: user completes payment**
+
    - Browser is redirected to Stripe Checkout.
    - After payment, Stripe calls our webhook.
 
 4. **Edge Function: webhook marks Pro**
+
    - `stripe-webhook` verifies the event (`STRIPE_WEBHOOK_SECRET`).
    - Reads `session.metadata.supabase_user_id`.
    - Sets `app_metadata.is_pro = true` and stores Stripe IDs.
