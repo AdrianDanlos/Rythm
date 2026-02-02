@@ -15,7 +15,7 @@ describe('settings storage helpers', () => {
 
   it('falls back to defaults when storage is empty', () => {
     expect(getStoredDateFormat()).toBe('mdy')
-    expect(getStoredTheme()).toBe('light')
+    expect(getStoredTheme()).toBe('dark')
     expect(getStoredProfileName()).toBe('')
   })
 
@@ -34,7 +34,7 @@ describe('settings storage helpers', () => {
     window.localStorage.setItem('themePreference', 'invalid')
 
     expect(getStoredDateFormat()).toBe('mdy')
-    expect(getStoredTheme()).toBe('light')
+    expect(getStoredTheme()).toBe('dark')
   })
 
   it('handles storage failures safely', () => {
@@ -43,7 +43,7 @@ describe('settings storage helpers', () => {
         throw new Error('storage failure')
       })
 
-    expect(getStoredTheme()).toBe('light')
+    expect(getStoredTheme()).toBe('dark')
     getItemSpy.mockRestore()
   })
 })

@@ -44,7 +44,7 @@ export const getStoredTheme = (): ThemePreference => {
   if (value === 'dark' || value === 'light') {
     return value
   }
-  return 'light'
+  return 'dark'
 }
 
 export const setStoredTheme = (value: ThemePreference) => {
