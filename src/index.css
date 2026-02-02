@@ -42,7 +42,7 @@
 
 :root[data-theme="dark"] {
   color: #f8fafc;
-  --bg: #0f172a;
+  --bg: #0b1220;
   --card: #111827;
   --border: #1f2937;
   --button-border: #334155;
@@ -78,6 +78,7 @@
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
