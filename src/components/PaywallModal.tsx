@@ -4,7 +4,7 @@ type PaywallModalProps = {
   isOpen: boolean
   onClose: () => void
   upgradeUrl?: string
-  onUpgrade?: () => Promise<void> | void
+  onUpgrade?: () => Promise<boolean> | boolean
   priceLabel?: string
 }
 
@@ -36,9 +36,13 @@ export const PaywallModal = ({
     }
     setIsLoading(true)
     try {
-      await onUpgrade()
+      const didStartCheckout = await onUpgrade()
+      if (didStartCheckout) {
+        return
+      }
+      setIsLoading(false)
     }
-    finally {
+    catch {
       setIsLoading(false)
     }
   }

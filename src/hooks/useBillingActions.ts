@@ -25,7 +25,7 @@ export const useBillingActions = ({
       const checkoutUrl = data?.url as string | undefined
       if (checkoutUrl) {
         window.location.href = checkoutUrl
-        return
+        return true
       }
     }
     catch {
@@ -34,7 +34,9 @@ export const useBillingActions = ({
 
     if (trimmedUpgradeUrl) {
       window.open(trimmedUpgradeUrl, '_blank', 'noreferrer')
+      return true
     }
+    return false
   }
 
   const handleManageSubscription = async () => {
