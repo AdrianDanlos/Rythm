@@ -72,6 +72,7 @@
   --spinner-border: rgba(255, 255, 255, 0.4);
   --spinner-border-top: var(--white);
   --heatmap-empty-bg: #f1f5f9;
+  --heatmap-empty-border: rgba(15, 23, 42, 0.12);
   --pro-pill-bg: var(--neutral-900);
   --pro-pill-text: var(--white);
   --premium-overlay-bg: linear-gradient(
@@ -151,6 +152,7 @@
     0 0 0 1px rgba(56, 189, 248, 0.35);
   --ghost-cta-border-hover: rgba(56, 189, 248, 0.85);
   --heatmap-empty-bg: #64748b;
+  --heatmap-empty-border: rgba(148, 163, 184, 0.35);
 }
 
 * {
