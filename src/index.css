@@ -14,7 +14,7 @@
   --button-border: #e2e8f0;
   --button-bg: #0f172a;
   --button-text: #ffffff;
-  --ghost-bg: transparent;
+  --ghost-bg: rgba(214, 219, 231, 0.11);
   --text: #0f172a;
   --muted: #64748b;
   --selected-bg: #0f172a;
