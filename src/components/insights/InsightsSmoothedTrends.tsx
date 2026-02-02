@@ -13,6 +13,7 @@ import {
 import type { RollingPoint, RollingSummary } from '../../lib/types/stats'
 import { buildMockRollingSeries } from '../../lib/insightsMock'
 import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
+import { rollingTrendColors } from '../../lib/colors'
 import { Tooltip } from '../Tooltip'
 
 type InsightsSmoothedTrendsProps = {
@@ -180,7 +181,7 @@ export const InsightsSmoothedTrends = ({
                                 type="monotone"
                                 dataKey="sleep30"
                                 name="Last 30 days"
-                                stroke="#2563eb"
+                                stroke={rollingTrendColors.mid}
                                 dot={false}
                                 strokeWidth={2}
                               />
@@ -188,7 +189,7 @@ export const InsightsSmoothedTrends = ({
                                 type="monotone"
                                 dataKey="sleep90"
                                 name="Last 90 days"
-                                stroke="#f97316"
+                                stroke={rollingTrendColors.long}
                                 dot={false}
                                 strokeWidth={2}
                               />
@@ -208,7 +209,7 @@ export const InsightsSmoothedTrends = ({
                                 type="monotone"
                                 dataKey="mood30"
                                 name="Last 30 days"
-                                stroke="#2563eb"
+                                stroke={rollingTrendColors.mid}
                                 dot={false}
                                 strokeWidth={2}
                               />
@@ -216,7 +217,7 @@ export const InsightsSmoothedTrends = ({
                                 type="monotone"
                                 dataKey="mood90"
                                 name="Last 90 days"
-                                stroke="#f97316"
+                                stroke={rollingTrendColors.long}
                                 dot={false}
                                 strokeWidth={2}
                               />
@@ -298,7 +299,7 @@ export const InsightsSmoothedTrends = ({
                               type="monotone"
                               dataKey="sleep30"
                               name="Last 30 days"
-                              stroke="#2563eb"
+                              stroke={rollingTrendColors.mid}
                               dot={false}
                               strokeWidth={2}
                             />
@@ -306,7 +307,7 @@ export const InsightsSmoothedTrends = ({
                               type="monotone"
                               dataKey="sleep90"
                               name="Last 90 days"
-                              stroke="#f97316"
+                              stroke={rollingTrendColors.long}
                               dot={false}
                               strokeWidth={2}
                             />
@@ -326,7 +327,7 @@ export const InsightsSmoothedTrends = ({
                               type="monotone"
                               dataKey="mood30"
                               name="Last 30 days"
-                              stroke="#2563eb"
+                              stroke={rollingTrendColors.mid}
                               dot={false}
                               strokeWidth={2}
                             />
@@ -334,7 +335,7 @@ export const InsightsSmoothedTrends = ({
                               type="monotone"
                               dataKey="mood90"
                               name="Last 90 days"
-                              stroke="#f97316"
+                              stroke={rollingTrendColors.long}
                               dot={false}
                               strokeWidth={2}
                             />
@@ -360,8 +361,15 @@ export const InsightsSmoothedTrends = ({
                       / {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
                     </p>
                     <p className="helper">
-                      Delta: {formatDeltaValue(summary.sleepDelta)}h ·{' '}
-                      {formatDeltaValue(summary.moodDelta)}
+                      <Tooltip
+                        label={`Change vs prior ${summary.days}-day window.`}
+                      >
+                        <span className="tooltip-trigger">
+                          <span className="tooltip-icon" aria-hidden="true">i</span>
+                          Delta: {formatDeltaValue(summary.sleepDelta)}h ·{' '}
+                          {formatDeltaValue(summary.moodDelta)}
+                        </span>
+                      </Tooltip>
                     </p>
                   </div>
                 ))}
