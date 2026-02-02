@@ -235,6 +235,15 @@
   gap: 12px;
 }
 
+.feedback-status {
+  min-height: 1.2em;
+  margin: 0;
+}
+
+.feedback-status.is-empty {
+  visibility: hidden;
+}
+
 .feedback-textarea {
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -683,7 +692,6 @@
   align-items: center;
   gap: 8px;
 }
-
 
 .toggle-group {
   display: inline-flex;

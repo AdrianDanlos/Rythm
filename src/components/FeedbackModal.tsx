@@ -114,13 +114,15 @@ export const FeedbackModal = ({
             rows={5}
             disabled={!userEmail || isLoading}
           />
-          {status
-            ? (
-                <p className={status.type === 'error' ? 'error' : 'success'}>
-                  {status.message}
-                </p>
-              )
-            : null}
+          <p
+            className={
+              status
+                ? `feedback-status ${status.type === 'error' ? 'error' : 'success'}`
+                : 'feedback-status is-empty'
+            }
+          >
+            {status?.message ?? ''}
+          </p>
           <div className="modal-actions">
             <button
               type="submit"
