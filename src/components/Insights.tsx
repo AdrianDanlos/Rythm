@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Entry } from '../lib/entries'
 import type {
   RollingPoint,
@@ -98,19 +98,21 @@ export const Insights = ({
     return (normalized - 0.5) * scale
   }
 
-  const plottedData = chartData.map((entry) => {
-    const sleep = Number(entry.sleep_hours)
-    const mood = Number(entry.mood)
-    const sleepClamped = Math.min(10, Math.max(4, sleep))
-    const moodClamped = Math.min(5, Math.max(1, mood))
-    const jitter = jitterFromId(entry.id)
-    return {
-      ...entry,
-      sleep_hours_clamped: sleepClamped,
-      sleep_hours_jittered: Math.min(10, Math.max(4, sleepClamped + jitter)),
-      mood_jittered: Math.min(5, Math.max(1, moodClamped + jitter / 2)),
-    }
-  })
+  const plottedData = useMemo(() => {
+    return chartData.map((entry) => {
+      const sleep = Number(entry.sleep_hours)
+      const mood = Number(entry.mood)
+      const sleepClamped = Math.min(10, Math.max(4, sleep))
+      const moodClamped = Math.min(5, Math.max(1, mood))
+      const jitter = jitterFromId(entry.id)
+      return {
+        ...entry,
+        sleep_hours_clamped: sleepClamped,
+        sleep_hours_jittered: Math.min(10, Math.max(4, sleepClamped + jitter)),
+        mood_jittered: Math.min(5, Math.max(1, moodClamped + jitter / 2)),
+      }
+    })
+  }, [chartData])
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
