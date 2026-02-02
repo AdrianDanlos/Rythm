@@ -45,12 +45,12 @@ export const InsightsDailyHistory = ({
   onOpenPaywall,
 }: InsightsDailyHistoryProps) => {
   const [trendRange, setTrendRange] = useState<'last30' | 'last90' | 'last365'>('last90')
-  const [trendGranularity, setTrendGranularity] = useState<'daily' | 'weekly'>('daily')
   const trendPoints = trendSeries[trendRange]
   const weeklyTrendPoints = trendRange === 'last365'
     ? buildWeeklyTrendSeries(trendSeries.last365)
     : []
-  const trendDisplayPoints = isMobile && trendRange === 'last365' && trendGranularity === 'weekly'
+  const isYearly = trendRange === 'last365'
+  const trendDisplayPoints = isYearly
     ? weeklyTrendPoints
     : trendPoints
   const previewTrendSeries = buildMockTrendSeries()
@@ -58,7 +58,7 @@ export const InsightsDailyHistory = ({
   const previewWeeklyTrendPoints = trendRange === 'last365'
     ? buildWeeklyTrendSeries(previewTrendSeries.last365)
     : []
-  const previewTrendDisplayPoints = isMobile && trendRange === 'last365' && trendGranularity === 'weekly'
+  const previewTrendDisplayPoints = isYearly
     ? previewWeeklyTrendPoints
     : previewTrendPoints
   const trendTickInterval = getDateTickInterval(trendDisplayPoints.length)
@@ -71,6 +71,10 @@ export const InsightsDailyHistory = ({
   const trendChartMargin = isMobile
     ? { top: 12, right: -42, bottom: 0, left: -36 }
     : { top: 12, right: -32, bottom: 0, left: -24 }
+  const formatTooltipValue = (value?: number | string) => {
+    if (value === null || value === undefined) return '—'
+    return trendRange === 'last365' ? formatAxisValue(value) : value
+  }
 
   const handleProAction = (action?: () => void) => {
     if (!isPro) {
@@ -100,7 +104,6 @@ export const InsightsDailyHistory = ({
             className={`ghost ${trendRange === 'last30' ? 'active' : ''}`}
             onClick={() => handleProAction(() => {
               setTrendRange('last30')
-              setTrendGranularity('daily')
             })}
           >
             30 days
@@ -110,7 +113,6 @@ export const InsightsDailyHistory = ({
             className={`ghost ${trendRange === 'last90' ? 'active' : ''}`}
             onClick={() => handleProAction(() => {
               setTrendRange('last90')
-              setTrendGranularity('daily')
             })}
           >
             90 days
@@ -120,32 +122,11 @@ export const InsightsDailyHistory = ({
             className={`ghost ${trendRange === 'last365' ? 'active' : ''}`}
             onClick={() => handleProAction(() => {
               setTrendRange('last365')
-              setTrendGranularity(isMobile ? 'weekly' : 'daily')
             })}
           >
             365 days
           </button>
         </div>
-        {isMobile && trendRange === 'last365'
-          ? (
-              <div className="toggle-group">
-                <button
-                  type="button"
-                  className={`ghost ${trendGranularity === 'weekly' ? 'active' : ''}`}
-                  onClick={() => handleProAction(() => setTrendGranularity('weekly'))}
-                >
-                  Weekly
-                </button>
-                <button
-                  type="button"
-                  className={`ghost ${trendGranularity === 'daily' ? 'active' : ''}`}
-                  onClick={() => handleProAction(() => setTrendGranularity('daily'))}
-                >
-                  Daily
-                </button>
-              </div>
-            )
-          : null}
       </div>
       {!isPro
         ? (
@@ -180,6 +161,7 @@ export const InsightsDailyHistory = ({
                       <RechartsTooltip
                         labelFormatter={value =>
                           formatLongDate(new Date(`${value}T00:00:00`))}
+                        formatter={formatTooltipValue}
                       />
                       <Legend wrapperStyle={legendWrapperStyle} />
                       <Line
@@ -242,6 +224,7 @@ export const InsightsDailyHistory = ({
                   <RechartsTooltip
                     labelFormatter={value =>
                       formatLongDate(new Date(`${value}T00:00:00`))}
+                    formatter={formatTooltipValue}
                   />
                   <Legend wrapperStyle={legendWrapperStyle} />
                   <Line
