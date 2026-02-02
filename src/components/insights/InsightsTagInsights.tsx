@@ -35,13 +35,13 @@ export const InsightsTagInsights = ({
         <div>
           <h2>
             Tag Insights
-            <Tooltip label="What is this? Compares mood/sleep on days with a tag vs without it.">
+            <Tooltip label="What is this? Compares mood on days with a tag vs without it.">
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
             </Tooltip>
           </h2>
-          <p className="muted">Finds the tags that have the biggest impact on your mood and sleep.</p>
+          <p className="muted">Finds the tags that have the biggest impact on your mood.</p>
         </div>
       </div>
       {!isPro
@@ -94,7 +94,6 @@ export const InsightsTagInsights = ({
           : (
               <p className="muted">
                 {`Add tags to see how each one changes your mood (at least ${DEFAULT_TAG_DRIVER_MIN_COUNT} entries per tag).`}
-
               </p>
             )}
     </section>
