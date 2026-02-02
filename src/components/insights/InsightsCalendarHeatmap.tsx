@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Entry } from '../../lib/entries'
 import { formatLocalDate, formatLongDate, getDateLocale } from '../../lib/utils/dateFormatters'
 import { Tooltip } from '../Tooltip'
@@ -89,12 +89,15 @@ export const InsightsCalendarHeatmap = ({
   isMobile,
 }: InsightsCalendarHeatmapProps) => {
   const [metric, setMetric] = useState<'mood' | 'sleep'>('mood')
+  const [daySize, setDaySize] = useState<number | null>(null)
+  const gridRef = useRef<HTMLDivElement | null>(null)
   const totalDays = isMobile ? 90 : 365
   const dateLocale = getDateLocale()
   const weeks = useMemo(
     () => buildHeatmapWeeks(entries, totalDays),
     [entries, totalDays],
   )
+  const gapSize = 2
   const legendColors = metric === 'mood' ? moodColors : sleepColors
   const monthLabels = useMemo(() => {
     const formatter = new Intl.DateTimeFormat(dateLocale, { month: 'short' })
@@ -144,6 +147,40 @@ export const InsightsCalendarHeatmap = ({
     })
   }, [dateLocale, weeks])
 
+  useEffect(() => {
+    const element = gridRef.current
+    if (!element) return
+
+    const updateSize = () => {
+      const width = element.clientWidth
+      const columns = weeks.length
+      if (width <= 0 || columns <= 0) {
+        setDaySize(null)
+        return
+      }
+      const totalGap = gapSize * (columns - 1)
+      const size = Math.floor((width - totalGap) / columns)
+      if (size <= 0) {
+        setDaySize(null)
+        return
+      }
+      setDaySize(current => (current === size ? current : size))
+    }
+
+    updateSize()
+    const observer = new ResizeObserver(updateSize)
+    observer.observe(element)
+
+    return () => observer.disconnect()
+  }, [gapSize, weeks.length])
+
+  const columnTemplate = daySize
+    ? `repeat(${weeks.length}, ${daySize}px)`
+    : `repeat(${weeks.length}, minmax(0, 1fr))`
+  const rowTemplate = daySize
+    ? `repeat(7, ${daySize}px)`
+    : 'repeat(7, minmax(0, 1fr))'
+
   return (
     <section className="card">
       <div className="card-header">
@@ -182,7 +219,7 @@ export const InsightsCalendarHeatmap = ({
           <div className="heatmap-spacer" aria-hidden="true" />
           <div
             className="heatmap-months"
-            style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}
+            style={{ gridTemplateColumns: columnTemplate }}
           >
             {monthLabels.map((label, index) => (
               <span className="heatmap-month" key={`month-${index}`}>
@@ -201,10 +238,15 @@ export const InsightsCalendarHeatmap = ({
           </div>
           <div
             className="heatmap-grid"
-            style={{ gridTemplateColumns: `repeat(${weeks.length}, minmax(0, 1fr))` }}
+            ref={gridRef}
+            style={{ gridTemplateColumns: columnTemplate }}
           >
             {weeks.map((week, weekIndex) => (
-              <div className="heatmap-week" key={`week-${weekIndex}`}>
+              <div
+                className="heatmap-week"
+                key={`week-${weekIndex}`}
+                style={{ gridTemplateRows: rowTemplate }}
+              >
                 {week.map((day) => {
                   const color = metric === 'mood'
                     ? getMoodColor(day.mood, moodColors)

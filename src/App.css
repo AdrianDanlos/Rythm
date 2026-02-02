@@ -807,6 +807,7 @@
   height: 100%;
   position: relative;
   z-index: 0;
+  min-width: 0;
 }
 
 .heatmap-layout {
@@ -817,8 +818,9 @@
 
 .heatmap-header {
   display: grid;
-  grid-template-columns: 32px 1fr;
+  grid-template-columns: 32px minmax(0, 1fr);
   align-items: end;
+  min-width: 0;
 }
 
 .heatmap-spacer {
@@ -830,6 +832,8 @@
   gap: 2px;
   font-size: 0.7rem;
   color: var(--muted);
+  min-width: 0;
+  width: 100%;
 }
 
 .heatmap-month {
@@ -838,8 +842,9 @@
 
 .heatmap-body {
   display: grid;
-  grid-template-columns: 32px 1fr;
+  grid-template-columns: 32px minmax(0, 1fr);
   align-items: stretch;
+  min-width: 0;
 }
 
 .heatmap-days {
@@ -852,7 +857,7 @@
 .heatmap-day-label {
   font-size: 0.7rem;
   color: var(--muted);
-  line-height: 1;
+  line-height: 0;
   height: 100%;
   display: flex;
   align-items: center;
@@ -867,6 +872,7 @@
 .heatmap-day {
   width: 100%;
   aspect-ratio: 1 / 1;
+  box-sizing: border-box;
   border-radius: 3px;
   background: var(--heatmap-empty-bg);
   border: 1px solid var(--border);
