@@ -119,7 +119,7 @@ export const useLogForm = ({
 
     const parsedSleep = parseSleepHours(sleepHours)
     if (parsedSleep === null) {
-      setEntriesError('Sleep hours must be a number or time like 7h 30min or 7:30.')
+      setEntriesError('Sleep hours must be a number or time like 7h 30m or 7:30.')
       setSaved(false)
       return
     }

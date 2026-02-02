@@ -105,7 +105,7 @@ export const LogForm = ({
             type="text"
             value={sleepHours}
             onChange={event => onSleepHoursChange(event.target.value)}
-            placeholder="e.g., 7h or 7h 30min"
+            placeholder="e.g., 7h / 7h 30m / 7:30"
             required
           />
         </label>
