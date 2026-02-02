@@ -815,7 +815,7 @@
 
 .insights-bottom-nav {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   position: fixed;
   left: 16px;
   right: 16px;
@@ -826,6 +826,28 @@
   border-radius: 16px;
   padding: 8px;
   box-shadow: var(--card-shadow);
+}
+
+.insights-bottom-nav__tabs {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.nav-actions {
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.nav-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.nav-brand {
+  display: none;
 }
 
 .insights-actions-links {
@@ -1926,7 +1948,15 @@
 
 @media (min-width: 541px) {
   .app {
-    padding-top: 96px;
+    padding-top: 128px;
+  }
+
+  .app-header {
+    display: none;
+  }
+
+  .header-actions {
+    display: none;
   }
 
   .card.stats {
@@ -1934,18 +1964,73 @@
   }
 
   .insights-bottom-nav {
-    top: 16px;
+    top: 0;
     bottom: auto;
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    width: min(720px, calc(100% - 32px));
-    padding: 10px 12px;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
+  }
+
+  .insights-bottom-nav__tabs {
+    width: auto;
+    margin: 0 auto;
+  }
+
+  .nav-actions {
+    justify-content: center;
+    gap: 12px;
+    margin-left: 36px;
+  }
+
+  .insights-bottom-nav__tabs {
+    gap: 24px;
+  }
+
+  .insights-bottom-nav__tabs .tab-button {
+    padding: 12px 14px;
+    border: 0;
+  }
+
+  .insights-bottom-nav__tabs .tab-button.active {
+    border: 0;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-right: 16px;
+  }
+
+  .nav-center {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .nav-actions .icon-button {
+    padding: 10px;
+  }
+
+  .nav-actions .icon-button .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .nav-actions {
+    display: inline-flex;
   }
 
   .insights-bottom-nav .tab-button {
-    padding: 8px 10px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     gap: 8px;
   }
 
