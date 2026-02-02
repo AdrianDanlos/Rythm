@@ -37,7 +37,7 @@ export const getStoredDateFormat = (): DateFormatPreference => {
   if (value === 'dmy' || value === 'ymd' || value === 'mdy') {
     return value
   }
-  return 'mdy'
+  return 'dmy'
 }
 
 export const setStoredDateFormat = (value: DateFormatPreference) => {

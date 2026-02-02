@@ -85,7 +85,9 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isPortalLoading, setIsPortalLoading] = useState(false)
   const [isSignOutLoading, setIsSignOutLoading] = useState(false)
-  const [dateFormat, setDateFormat] = useState<DateFormatPreference>('mdy')
+  const [dateFormat, setDateFormat] = useState<DateFormatPreference>(
+    () => getStoredDateFormat(),
+  )
   const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme())
   const [profileName, setProfileName] = useState('')
   const [sleepTarget, setSleepTarget] = useState(() => getStoredPersonalSleepTarget())

@@ -213,7 +213,12 @@ export const SettingsModal = ({
                     setSleepTargetInput(event.target.value)
                   }}
                   onBlur={() => {
-                    const parsed = Number(sleepTargetInput)
+                    const trimmed = sleepTargetInput.trim()
+                    if (trimmed === '') {
+                      setSleepTargetInput(String(personalSleepTarget))
+                      return
+                    }
+                    const parsed = Number(trimmed)
                     if (Number.isFinite(parsed)) {
                       onPersonalSleepTargetChange(parsed)
                       return

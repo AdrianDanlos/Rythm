@@ -14,7 +14,7 @@ describe('settings storage helpers', () => {
   })
 
   it('falls back to defaults when storage is empty', () => {
-    expect(getStoredDateFormat()).toBe('mdy')
+    expect(getStoredDateFormat()).toBe('dmy')
     expect(getStoredTheme()).toBe('dark')
     expect(getStoredProfileName()).toBe('')
   })
@@ -33,7 +33,7 @@ describe('settings storage helpers', () => {
     window.localStorage.setItem('preferredDateFormat', 'invalid')
     window.localStorage.setItem('themePreference', 'invalid')
 
-    expect(getStoredDateFormat()).toBe('mdy')
+    expect(getStoredDateFormat()).toBe('dmy')
     expect(getStoredTheme()).toBe('dark')
   })
 
