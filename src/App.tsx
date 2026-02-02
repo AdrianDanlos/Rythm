@@ -258,6 +258,11 @@ function App() {
 
   const handleExportMonthlyReport = async () => {
     if (!entries.length) {
+      setExportError(null)
+      if (!isPro) {
+        setIsPaywallOpen(true)
+        return
+      }
       setExportError('Add at least one entry to export.')
       return
     }
