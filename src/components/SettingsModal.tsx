@@ -185,6 +185,25 @@ export const SettingsModal = ({
               </label>
 
               <div className="field">
+                <span>Appearance</span>
+                <div className="toggle-group">
+                  <button
+                    type="button"
+                    className={`ghost ${theme === 'light' ? 'active' : ''}`}
+                    onClick={() => onThemeChange('light')}
+                  >
+                    Light
+                  </button>
+                  <button
+                    type="button"
+                    className={`ghost ${theme === 'dark' ? 'active' : ''}`}
+                    onClick={() => onThemeChange('dark')}
+                  >
+                    Dark
+                  </button>
+                </div>
+              </div>
+              <div className="field">
                 <span>Daily log reminder</span>
                 <div className="settings-inline">
                   <label className="toggle-row">
@@ -216,25 +235,9 @@ export const SettingsModal = ({
                     )
                   : null}
               </div>
-
               <div className="field">
-                <span>Appearance</span>
-                <div className="toggle-group">
-                  <button
-                    type="button"
-                    className={`ghost ${theme === 'light' ? 'active' : ''}`}
-                    onClick={() => onThemeChange('light')}
-                  >
-                    Light
-                  </button>
-                  <button
-                    type="button"
-                    className={`ghost ${theme === 'dark' ? 'active' : ''}`}
-                    onClick={() => onThemeChange('dark')}
-                  >
-                    Dark
-                  </button>
-                </div>
+                <span>Wearable sync</span>
+                <p className="settings-note">Sync from wearable (coming soon).</p>
               </div>
             </div>
           </section>
