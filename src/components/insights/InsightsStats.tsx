@@ -33,7 +33,7 @@ export const InsightsStats = ({
 }: InsightsStatsProps) => {
   const renderTopStat = (label: string, value: string) => (
     <div className={isLoading ? 'stat-block' : undefined}>
-      <p className="label"><strong>{label}</strong></p>
+      <p className="label">{label}</p>
       {isLoading ? <div className="skeleton-line" /> : <p className="value">{value}</p>}
     </div>
   )
@@ -66,7 +66,7 @@ export const InsightsStats = ({
           : (
               <>
                 <div className="stat-block">
-                  <p className="label"><strong>Last 7 days</strong></p>
+                  <p className="label">Last 7 days</p>
                   <p className="value">
                     {windowAverages.last7.sleep !== null
                       && windowAverages.last7.mood !== null
@@ -79,7 +79,7 @@ export const InsightsStats = ({
                 </div>
                 <div className="stat-divider" aria-hidden />
                 <div className="stat-block">
-                  <p className="label"><strong>Last 30 days</strong></p>
+                  <p className="label">Last 30 days</p>
                   <p className="value">
                     {windowAverages.last30.sleep !== null
                       && windowAverages.last30.mood !== null
@@ -92,7 +92,7 @@ export const InsightsStats = ({
                 </div>
                 <div className="stat-divider" aria-hidden />
                 <div className="stat-block">
-                  <p className="label"><strong>Streak</strong></p>
+                  <p className="label">Streak</p>
                   <p className="value">
                     {streak} days
                   </p>
@@ -101,7 +101,7 @@ export const InsightsStats = ({
                 <div className="stat-divider" aria-hidden />
                 <div className="stat-block">
                   <p className="label">
-                    <strong>Rhythm score</strong>
+                    Rhythm score
                     <Tooltip label="What is this? Based on how steady your sleep hours are in the last 30 days. Higher = more consistent.">
                       <span className="tooltip-trigger">
                         <span className="tooltip-icon" aria-hidden="true">i</span>
@@ -115,13 +115,13 @@ export const InsightsStats = ({
                 </div>
                 <div className="stat-divider" aria-hidden />
                 <div className="stat-block">
-                  <p className="label"><strong>Sleep consistency</strong></p>
+                  <p className="label">Sleep consistency</p>
                   <p className="value">{sleepConsistencyLabel ?? '—'}</p>
                   <p className="helper">How steady your sleep hours are</p>
                 </div>
                 <div className="stat-divider" aria-hidden />
                 <div className="stat-block">
-                  <p className="label"><strong>Sleep–mood link</strong></p>
+                  <p className="label">Sleep–mood link</p>
                   <p className="value">{correlationLabel ?? '—'}</p>
                   {correlationDirection
                     ? (
@@ -131,7 +131,7 @@ export const InsightsStats = ({
                 </div>
                 <div className="stat-divider" aria-hidden />
                 <div className="stat-block">
-                  <p className="label"><strong>Mood by sleep</strong></p>
+                  <p className="label">Mood by sleep</p>
                   <p className="value">
                     {moodBySleepThreshold.high !== null
                       || moodBySleepThreshold.low !== null
