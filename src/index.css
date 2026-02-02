@@ -37,7 +37,7 @@
   --input-focus-border: var(--neutral-900);
   --input-focus-shadow: 0 0 0 2px rgba(15, 23, 42, 0.12);
   --modal-backdrop: rgba(15, 23, 42, 0.55);
-  --chart-sleep: var(--neutral-900);
+  --chart-sleep: #7dd3fc;
   --chart-mood: #22c55e;
   --tooltip-bg: var(--white);
   --tooltip-border: var(--neutral-200);
@@ -91,6 +91,15 @@
   --status-error-soft: #f87171;
   --status-success-soft: #4ade80;
   --badge-icon-unlocked: var(--neutral-900);
+  --review-cta-bg: linear-gradient(135deg, #f8fafc, #eef2ff);
+  --review-cta-border: var(--border);
+  --review-cta-button-bg: var(--cta-button-bg);
+  --review-cta-button-border: color-mix(
+    in srgb,
+    var(--neutral-900) 18%,
+    transparent
+  );
+  --review-cta-button-text: var(--white);
   --stripe-landing-bg: #0f1115;
   --stripe-landing-text: var(--neutral-50);
   --stripe-landing-muted: #94a3b8;
@@ -163,6 +172,19 @@
   --pro-pill-text: #0b1220;
   --status-error-soft: #f87171;
   --status-success-soft: #4ade80;
+  --review-cta-bg: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--selected-bg) 85%, transparent),
+    color-mix(in srgb, var(--card) 85%, transparent)
+  );
+  --review-cta-border: var(--border);
+  --review-cta-button-bg: color-mix(
+    in srgb,
+    var(--selected-bg) 85%,
+    transparent
+  );
+  --review-cta-button-border: var(--selected-border);
+  --review-cta-button-text: var(--selected-text);
 }
 
 * {

@@ -865,12 +865,8 @@
   margin-top: 12px;
   padding: 14px 16px;
   border-radius: 16px;
-  border: 1px solid var(--border);
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--selected-bg) 85%, transparent),
-    color-mix(in srgb, var(--card) 85%, transparent)
-  );
+  border: 1px solid var(--review-cta-border);
+  background: var(--review-cta-bg);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -921,9 +917,9 @@
   border-radius: 12px;
   padding: 8px 14px;
   font-weight: 600;
-  border: 1px solid var(--selected-border);
-  color: var(--selected-text);
-  background: color-mix(in srgb, var(--selected-bg) 85%, transparent);
+  border: 1px solid var(--review-cta-button-border);
+  color: var(--review-cta-button-text);
+  background: var(--review-cta-button-bg);
   text-decoration: none;
   white-space: nowrap;
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
