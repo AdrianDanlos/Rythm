@@ -72,6 +72,9 @@ export const normalizeSleepTarget = (value: number) => {
 
 export const getStoredPersonalSleepTarget = () => {
   const value = readStorage(PERSONAL_SLEEP_TARGET_KEY)
+  if (value === null || value.trim() === '') {
+    return DEFAULT_SLEEP_TARGET
+  }
   return normalizeSleepTarget(Number(value))
 }
 
