@@ -9,6 +9,8 @@ import {
   setStoredDailyReminderTime,
 } from '../lib/notifications'
 import type { DateFormatPreference, ThemePreference } from '../lib/settings'
+import appleLogo from '../assets/apple.png'
+import fitbitLogo from '../assets/fitbit.png'
 
 type SettingsModalProps = {
   isOpen: boolean
@@ -241,7 +243,11 @@ export const SettingsModal = ({
               </div>
               <div className="field">
                 <span>Wearable sync</span>
-                <p className="settings-note">Sync from wearable (coming soon).</p>
+                <p className="settings-note">Sync sleep from wearable (coming soon)</p>
+                <div className="wearable-logos">
+                  <img src={appleLogo} alt="Apple Health" className="wearable-logo" />
+                  <img src={fitbitLogo} alt="Fitbit" className="wearable-logo" />
+                </div>
               </div>
             </div>
           </section>
