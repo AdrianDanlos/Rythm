@@ -930,13 +930,13 @@
   height: 100%;
   display: block;
   border-radius: inherit;
-  background: var(--status-success);
-  opacity: 0.55;
+  background: var(--status-success-soft);
+  opacity: 0.6;
 }
 
 .tag-bar-item.negative .tag-bar-fill {
-  background: var(--status-error);
-  opacity: 0.55;
+  background: var(--status-error-soft);
+  opacity: 0.6;
 }
 
 .tag-driver-section {

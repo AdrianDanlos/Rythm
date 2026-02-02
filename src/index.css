@@ -88,6 +88,8 @@
   );
   --status-error: #dc2626;
   --status-success: #16a34a;
+  --status-error-soft: #f87171;
+  --status-success-soft: #4ade80;
   --badge-icon-unlocked: var(--neutral-900);
   --stripe-landing-bg: #0f1115;
   --stripe-landing-text: var(--neutral-50);
@@ -157,6 +159,8 @@
   --cta-button-shadow-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
   --heatmap-empty-bg: #64748b;
   --heatmap-empty-border: rgba(148, 163, 184, 0.35);
+  --status-error-soft: #f87171;
+  --status-success-soft: #4ade80;
 }
 
 * {
