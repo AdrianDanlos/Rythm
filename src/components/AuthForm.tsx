@@ -57,6 +57,7 @@ export const AuthForm = ({
             : 'Create account'
           : 'Continue with Google'}
       </h2>
+      {authError ? <p className="error">{authError}</p> : null}
       {showEmailPassword
         ? (
             <form onSubmit={onSubmit} className="stack">
@@ -80,7 +81,6 @@ export const AuthForm = ({
                   required
                 />
               </label>
-              {authError ? <p className="error">{authError}</p> : null}
               <button type="submit" disabled={authLoading}>
                 {authLoading
                   ? 'Working...'
