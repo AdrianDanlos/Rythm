@@ -1915,7 +1915,7 @@
     right: 0;
     transform: none;
     width: 100%;
-    padding: 16px 20px;
+    padding: 10px 16px;
     border-radius: 0;
     border-left: 0;
     border-right: 0;
@@ -1946,7 +1946,7 @@
   }
 
   .insights-bottom-nav__tabs .tab-button {
-    padding: 12px 14px;
+    padding: 8px 12px;
     border: 0;
   }
 
@@ -1963,7 +1963,23 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    margin-left: 20px;
     margin-right: 16px;
+  }
+
+  .nav-brand .app-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+  }
+
+  .nav-brand h1 {
+    margin: 0;
+    font-size: 1.6rem;
+  }
+
+  .nav-brand .eyebrow {
+    font-size: 0.75rem;
   }
 
   .nav-center {
@@ -1972,12 +1988,12 @@
   }
 
   .nav-actions .icon-button {
-    padding: 10px;
+    padding: 8px;
   }
 
   .nav-actions .icon-button .icon {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
 
   .nav-actions {

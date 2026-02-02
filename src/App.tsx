@@ -347,7 +347,7 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}`}>
       <header className="app-header">
         <a className="app-brand" href={playStoreUrl} target="_blank" rel="noreferrer">
           <img className="app-logo" src={logo} alt="Rythm logo" />
@@ -560,14 +560,21 @@ function App() {
                         />
                       )}
 
-                  <div className="insights-bottom-nav">
-                    <a className="app-brand nav-brand" href={playStoreUrl} target="_blank" rel="noreferrer">
-                      <img className="app-logo" src={logo} alt="Rythm logo" />
-                      <div>
-                        <p className="eyebrow">Sleep &amp; Mood</p>
-                        <h1>Rythm</h1>
-                      </div>
-                    </a>
+                </>
+              )}
+
+      {authInitialized
+        ? (
+            <div className="insights-bottom-nav">
+              <a className="app-brand nav-brand" href={playStoreUrl} target="_blank" rel="noreferrer">
+                <img className="app-logo" src={logo} alt="Rythm logo" />
+                <div>
+                  <p className="eyebrow">Sleep &amp; Mood</p>
+                  <h1>Rythm</h1>
+                </div>
+              </a>
+              {session
+                ? (
                     <div className="nav-center">
                       <div className="tabs insights-bottom-nav__tabs" role="tablist" aria-label="Insights navigation">
                         <button
@@ -681,46 +688,42 @@ function App() {
                           </button>
                         </Tooltip>
 
-                        {session
+                        {canManageSubscription
                           ? (
-                              <>
-                                {canManageSubscription
-                                  ? (
-                                      <Tooltip label="Manage subscription">
-                                        <button
-                                          className="ghost icon-button"
-                                          type="button"
-                                          onClick={handleManageSubscription}
-                                          aria-label="Manage subscription"
-                                          disabled={isPortalLoading}
-                                        >
-                                          <CreditCard className="icon" aria-hidden="true" />
-                                        </button>
-                                      </Tooltip>
-                                    )
-                                  : null}
-                                <Tooltip label="Sign out">
-                                  <button
-                                    className="ghost icon-button"
-                                    onClick={handleSignOut}
-                                    type="button"
-                                    aria-label={isSignOutLoading ? 'Signing out' : 'Sign out'}
-                                    aria-busy={isSignOutLoading}
-                                    disabled={isSignOutLoading}
-                                  >
-                                    {isSignOutLoading
-                                      ? <span className="spinner" aria-hidden="true" />
-                                      : <LogOut className="icon" aria-hidden="true" />}
-                                  </button>
-                                </Tooltip>
-                              </>
+                              <Tooltip label="Manage subscription">
+                                <button
+                                  className="ghost icon-button"
+                                  type="button"
+                                  onClick={handleManageSubscription}
+                                  aria-label="Manage subscription"
+                                  disabled={isPortalLoading}
+                                >
+                                  <CreditCard className="icon" aria-hidden="true" />
+                                </button>
+                              </Tooltip>
                             )
                           : null}
+                        <Tooltip label="Sign out">
+                          <button
+                            className="ghost icon-button"
+                            onClick={handleSignOut}
+                            type="button"
+                            aria-label={isSignOutLoading ? 'Signing out' : 'Sign out'}
+                            aria-busy={isSignOutLoading}
+                            disabled={isSignOutLoading}
+                          >
+                            {isSignOutLoading
+                              ? <span className="spinner" aria-hidden="true" />
+                              : <LogOut className="icon" aria-hidden="true" />}
+                          </button>
+                        </Tooltip>
                       </div>
                     </div>
-                  </div>
-                </>
-              )}
+                  )
+                : null}
+            </div>
+          )
+        : null}
     </div>
   )
 }
