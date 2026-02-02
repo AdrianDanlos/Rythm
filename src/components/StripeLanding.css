@@ -1,7 +1,7 @@
 .stripe-landing {
   min-height: 100vh;
-  background: #0f1115;
-  color: #f8fafc;
+  background: var(--stripe-landing-bg);
+  color: var(--stripe-landing-text);
   display: flex;
   flex-direction: column;
   padding: 48px 20px 72px;
@@ -24,7 +24,7 @@
   font-size: 0.85rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #94a3b8;
+  color: var(--stripe-landing-muted);
   margin: 0;
 }
 
@@ -41,13 +41,13 @@
 }
 
 .stripe-landing__lede {
-  color: #cbd5f5;
+  color: var(--stripe-landing-lede);
   margin: 0;
 }
 
 .stripe-landing__section {
-  background: rgba(148, 163, 184, 0.08);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: var(--stripe-landing-section-bg);
+  border: 1px solid var(--stripe-landing-section-border);
   border-radius: 16px;
   padding: 20px;
 }
@@ -70,8 +70,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #22c55e;
-  color: #0f1115;
+  background: var(--stripe-landing-primary-bg);
+  color: var(--stripe-landing-primary-text);
   padding: 12px 18px;
   border-radius: 999px;
   font-weight: 600;
@@ -79,5 +79,5 @@
 }
 
 .stripe-landing a {
-  color: #ffffff;
+  color: var(--stripe-landing-link);
 }
