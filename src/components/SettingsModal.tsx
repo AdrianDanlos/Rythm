@@ -231,17 +231,17 @@ export const SettingsModal = ({
                 <div className="toggle-group">
                   <button
                     type="button"
-                    className={`ghost ${theme === 'light' ? 'active' : ''}`}
-                    onClick={() => onThemeChange('light')}
-                  >
-                    Light
-                  </button>
-                  <button
-                    type="button"
                     className={`ghost ${theme === 'dark' ? 'active' : ''}`}
                     onClick={() => onThemeChange('dark')}
                   >
                     Dark
+                  </button>
+                  <button
+                    type="button"
+                    className={`ghost ${theme === 'light' ? 'active' : ''}`}
+                    onClick={() => onThemeChange('light')}
+                  >
+                    Light
                   </button>
                 </div>
               </div>

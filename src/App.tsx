@@ -317,6 +317,7 @@ function App() {
     setIsPaywallOpen(false)
   }
 
+  const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.rythm.app'
   const handleOpenFeedback = () => {
     setIsFeedbackOpen(true)
   }
@@ -340,13 +341,13 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <div className="app-brand">
+        <a className="app-brand" href={playStoreUrl} target="_blank" rel="noreferrer">
           <img className="app-logo" src={logo} alt="Rythm logo" />
           <div>
             <p className="eyebrow">Sleep &amp; Mood</p>
             <h1>Rythm</h1>
           </div>
-        </div>
+        </a>
         <div className="header-actions">
           <Tooltip label="Settings">
             <button
@@ -554,13 +555,13 @@ function App() {
                       )}
 
                   <div className="insights-bottom-nav">
-                    <div className="app-brand nav-brand">
+                    <a className="app-brand nav-brand" href={playStoreUrl} target="_blank" rel="noreferrer">
                       <img className="app-logo" src={logo} alt="Rythm logo" />
                       <div>
                         <p className="eyebrow">Sleep &amp; Mood</p>
                         <h1>Rythm</h1>
                       </div>
-                    </div>
+                    </a>
                     <div className="nav-center">
                       <div className="tabs insights-bottom-nav__tabs" role="tablist" aria-label="Insights navigation">
                         <button

@@ -37,6 +37,9 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
 
 .app-logo {
@@ -806,7 +809,7 @@
 .insights-panel {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 22px;
 }
 
 .primary-tabs {
@@ -915,7 +918,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
+  border-radius: 12px;
   padding: 8px 14px;
   font-weight: 600;
   border: 1px solid var(--selected-border);
@@ -1744,6 +1747,11 @@
   .app-tooltip-bubble {
     max-width: min(420px, 60vw);
   }
+
+  .header-actions .app-tooltip-bubble {
+    top: calc(100% + 8px);
+    bottom: auto;
+  }
 }
 
 .app-tooltip:hover .app-tooltip-bubble,
@@ -1947,6 +1955,10 @@
 }
 
 @media (min-width: 541px) {
+  .insights-panel {
+    gap: 28px;
+  }
+
   .app {
     padding-top: 128px;
   }
@@ -1991,6 +2003,11 @@
     margin-left: 36px;
   }
 
+  .nav-actions .app-tooltip-bubble {
+    top: calc(100% + 8px);
+    bottom: auto;
+  }
+
   .insights-bottom-nav__tabs {
     gap: 24px;
   }
@@ -1998,6 +2015,11 @@
   .insights-bottom-nav__tabs .tab-button {
     padding: 12px 14px;
     border: 0;
+  }
+
+  .insights-bottom-nav__tabs .tab-button:focus-visible {
+    outline: 2px solid var(--nav-focus-border);
+    outline-offset: 3px;
   }
 
   .insights-bottom-nav__tabs .tab-button.active {
