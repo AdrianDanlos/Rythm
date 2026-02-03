@@ -2039,7 +2039,7 @@
   }
 
   .mood-distribution {
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     gap: 50px;
     margin-bottom: 10px;

@@ -1,4 +1,5 @@
 import { jsPDF } from 'jspdf'
+import logo from '../assets/rythm-logo.png'
 import type { Entry } from './entries'
 import type { StatsResult } from './stats'
 import { exportFile } from './utils/fileExport'
@@ -19,6 +20,14 @@ type ReportOptions = {
   profileName?: string
 }
 
+const loadImage = (src: string) =>
+  new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image()
+    image.onload = () => resolve(image)
+    image.onerror = () => reject(new Error('Failed to load report logo'))
+    image.src = src
+  })
+
 export const exportMonthlyReport = async (
   entries: Entry[],
   stats: StatsResult,
@@ -33,6 +42,13 @@ export const exportMonthlyReport = async (
   const priorEntries = getEntriesInRange(entries, range.priorStart, range.priorEnd)
   const reportData = buildReportData(entries, recentEntries, priorEntries)
   const yRef = { value: 18 }
+  let brandImage: HTMLImageElement | undefined
+  try {
+    brandImage = await loadImage(logo)
+  }
+  catch {
+    brandImage = undefined
+  }
 
   renderReportHeader({
     doc,
@@ -41,6 +57,7 @@ export const exportMonthlyReport = async (
     welcomeName,
     start: range.start,
     end: range.end,
+    brandImage,
   })
   renderLast30DaysSection({ doc, yRef, data: reportData })
   renderAllTimeSection({

@@ -12,11 +12,12 @@ const ensurePageSpace = (doc: jsPDF, yRef: YRef) => {
 }
 
 export const drawSectionHeader = (doc: jsPDF, yRef: YRef, label: string) => {
-  doc.setFillColor(238, 242, 255)
+  doc.setFillColor(15, 23, 42)
   doc.rect(14, yRef.value - 5, 182, 9, 'F')
-  doc.setTextColor(15)
+  doc.setTextColor(255)
   doc.setFontSize(13)
   doc.text(label, 16, yRef.value + 1)
+  doc.setTextColor(20)
   yRef.value += 12
 }
 
@@ -50,6 +51,21 @@ export const drawLines = (
   doc.setFontSize(12)
 }
 
+/** Catmull-Rom to cubic Bezier: segment from p1 to p2 with neighbors p0, p3 */
+const smoothSegment = (
+  p0: { x: number; y: number },
+  p1: { x: number; y: number },
+  p2: { x: number; y: number },
+  p3: { x: number; y: number },
+  tension = 6,
+) => {
+  const cp1x = p1.x + (p2.x - p0.x) / tension
+  const cp1y = p1.y + (p2.y - p0.y) / tension
+  const cp2x = p2.x - (p3.x - p1.x) / tension
+  const cp2y = p2.y - (p3.y - p1.y) / tension
+  return { cp1x, cp1y, cp2x, cp2y, endx: p2.x, endy: p2.y }
+}
+
 export const drawSparkline = (
   doc: jsPDF,
   values: Array<number | null>,
@@ -67,17 +83,22 @@ export const drawSparkline = (
   const points = values
     .map((value, index) => {
       if (value === null) return null
-      const px = x + (index / (values.length - 1)) * width
+      const px = x + (index / Math.max(1, values.length - 1)) * width
       const py = yStart + height - ((value - min) / span) * height
       return { x: px, y: py }
     })
-    .filter((point): point is { x: number, y: number } => point !== null)
+    .filter((point): point is { x: number; y: number } => point !== null)
   if (points.length < 2) return
   doc.setDrawColor(...color)
   doc.setLineWidth(0.6)
+  doc.moveTo(points[0].x, points[0].y)
   for (let i = 1; i < points.length; i += 1) {
-    const prev = points[i - 1]
-    const next = points[i]
-    doc.line(prev.x, prev.y, next.x, next.y)
+    const p0 = points[i - 2] ?? points[i - 1]
+    const p1 = points[i - 1]
+    const p2 = points[i]
+    const p3 = points[i + 1] ?? points[i]
+    const { cp1x, cp1y, cp2x, cp2y, endx, endy } = smoothSegment(p0, p1, p2, p3)
+    doc.curveTo(cp1x, cp1y, cp2x, cp2y, endx, endy)
   }
+  doc.stroke()
 }

@@ -22,6 +22,7 @@ type ReportHeaderParams = {
   welcomeName?: string
   start: Date
   end: Date
+  brandImage?: HTMLImageElement
 }
 
 export const renderReportHeader = ({
@@ -31,10 +32,28 @@ export const renderReportHeader = ({
   welcomeName,
   start,
   end,
+  brandImage,
 }: ReportHeaderParams) => {
-  doc.setFontSize(18)
-  doc.text(title, 14, yRef.value)
-  yRef.value += 8
+  const pageWidth = doc.internal.pageSize.getWidth()
+  const bannerHeight = 20
+  const bannerY = 0
+  const logoSize = 12
+  const logoX = 14
+  const logoY = bannerY + (bannerHeight - logoSize) / 2
+
+  doc.setFillColor(15, 23, 42)
+  doc.rect(0, bannerY, pageWidth, bannerHeight, 'F')
+  if (brandImage) {
+    doc.addImage(brandImage, 'PNG', logoX, logoY, logoSize, logoSize)
+  }
+  const textX = logoX + logoSize + 6
+  doc.setFontSize(9)
+  doc.setTextColor(203, 213, 225)
+  doc.text('Sleep & Mood', textX, bannerY + 7)
+  doc.setFontSize(16)
+  doc.setTextColor(255)
+  doc.text('Rythm Report', textX, bannerY + 15)
+  yRef.value = bannerY + bannerHeight + 10
 
   if (welcomeName) {
     doc.setFontSize(12)
@@ -60,6 +79,7 @@ export const renderLast30DaysSection = ({
   yRef,
   data,
 }: Last30DaysParams) => {
+  yRef.value += 4
   const {
     recentEntries,
     monthlyConsistency,
