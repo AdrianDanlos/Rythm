@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { toast } from 'sonner'
 import { upsertEntry, type Entry } from '../lib/entries'
+import { getSupportMessage } from '../lib/supportMessage'
 import { buildStats, type StatsResult } from '../lib/stats'
 import { parseTags } from '../lib/utils/stringUtils'
 
@@ -169,6 +171,7 @@ export const useLogForm = ({
         onStreakReached?.()
       }
       setSaved(true)
+      toast.success(getSupportMessage(parsedSleep, mood, sleepThreshold, tagList))
       window.setTimeout(() => setSaved(false), 2000)
       if (entryDate === today) {
         window.setTimeout(() => onEntrySavedForToday?.(), 500)

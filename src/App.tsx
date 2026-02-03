@@ -38,6 +38,7 @@ import {
   type DateFormatPreference,
   type ThemePreference,
 } from './lib/settings'
+import { Toaster } from 'sonner'
 import './App.css'
 
 enum Tabs {
@@ -91,6 +92,16 @@ function App() {
   const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme())
   const [profileName, setProfileName] = useState('')
   const [sleepTarget, setSleepTarget] = useState(() => getStoredPersonalSleepTarget())
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' && !window.matchMedia('(min-width: 768px)').matches,
+  )
+
+  useEffect(() => {
+    const mql = window.matchMedia('(min-width: 768px)')
+    const handler = () => setIsMobile(!mql.matches)
+    mql.addEventListener('change', handler)
+    return () => mql.removeEventListener('change', handler)
+  }, [])
 
   const sleepThreshold = sleepTarget
   const maxTagsPerEntry = 10
@@ -724,6 +735,7 @@ function App() {
             </div>
           )
         : null}
+      <Toaster className="sonner-close-top-right" position={isMobile ? 'bottom-center' : 'top-right'} richColors closeButton />
     </div>
   )
 }

@@ -2101,3 +2101,10 @@
     transform: rotate(360deg);
   }
 }
+
+/* Sonner: close button on top-right of toast (override LTR default) */
+[data-sonner-toaster][dir="ltr"].sonner-close-top-right {
+  --toast-close-button-start: unset;
+  --toast-close-button-end: 0;
+  --toast-close-button-transform: translate(35%, -35%);
+}
