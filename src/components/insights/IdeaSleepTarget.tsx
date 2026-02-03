@@ -1,19 +1,19 @@
 import { Tooltip } from '../Tooltip'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 
-type InsightsPersonalThresholdProps = {
+type IdeaSleepTargetProps = {
   isPro: boolean
   personalSleepThreshold: number | null
   moodByPersonalThreshold: { high: number | null, low: number | null }
   onOpenPaywall: () => void
 }
 
-export const InsightsPersonalThreshold = ({
+export const IdeaSleepTarget = ({
   isPro,
   personalSleepThreshold,
   moodByPersonalThreshold,
   onOpenPaywall,
-}: InsightsPersonalThresholdProps) => {
+}: IdeaSleepTargetProps) => {
   const hasThreshold = typeof personalSleepThreshold === 'number'
 
   return (
@@ -21,7 +21,7 @@ export const InsightsPersonalThreshold = ({
       <div className="card-header">
         <div>
           <h2>
-            Your sleep target
+            Your ideal sleep target
             <Tooltip label="What is this? An estimated sleep goal tied to your best mood days.">
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>

@@ -12,7 +12,7 @@ import type {
 import { InsightsDailyHistory } from './insights/InsightsDailyHistory'
 import { InsightsExport } from './insights/InsightsExport'
 import { InsightsCalendarHeatmap } from './insights/InsightsCalendarHeatmap'
-import { InsightsPersonalThreshold } from './insights/InsightsPersonalThreshold'
+import { IdeaSleepTarget } from './insights/IdeaSleepTarget'
 import { InsightsScatter } from './insights/InsightsScatter'
 import { InsightsSmoothedTrends } from './insights/InsightsSmoothedTrends'
 import { InsightsStats } from './insights/InsightsStats'
@@ -150,7 +150,7 @@ export const Insights = ({
                 moodBySleepThreshold={moodBySleepThreshold}
                 sleepThreshold={sleepThreshold}
               />
-              <InsightsPersonalThreshold
+              <IdeaSleepTarget
                 isPro={isPro}
                 personalSleepThreshold={personalSleepThreshold}
                 moodByPersonalThreshold={moodByPersonalThreshold}

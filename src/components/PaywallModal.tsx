@@ -10,10 +10,10 @@ type PaywallModalProps = {
 
 const premiumFeatures = [
   'Tag insights',
-  'Export Full Report',
-  'Weekly and Monthly rolling trends',
+  'Personalized sleep target based on your history',
+  'Weekly and Monthly trends',
   '30/90/365 day history',
-  'Your Personal Sleep Threshold',
+  'Export Rythm Report',
 ]
 
 export const PaywallModal = ({

@@ -131,9 +131,6 @@ export const FeedbackModal = ({
             >
               {isLoading ? 'Sending...' : 'Send feedback'}
             </button>
-            <button type="button" className="ghost" onClick={onClose}>
-              Not now
-            </button>
           </div>
         </form>
       </div>

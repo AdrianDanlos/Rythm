@@ -200,7 +200,7 @@ export const SettingsModal = ({
               </label>
 
               <label className="field" htmlFor="settings-sleep-target">
-                <span>Personal target sleep (hours)</span>
+                <span>Personal sleep target (hours)</span>
                 <input
                   id="settings-sleep-target"
                   type="number"
