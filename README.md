@@ -76,8 +76,8 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 1. Point the app at the prod Supabase project:
    - Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in your Vercel.
 2. Deploy Edge Functions to the prod project:
-   - `npx supabase functions deploy create-checkout-session`
-   - `npx supabase functions deploy create-portal-session --no-verify-jwt`
+   - `npx supabase functions deploy stripe-checkout-session`
+   - `npx supabase functions deploy stripe-portal-session --no-verify-jwt`
    - `npx supabase functions deploy submit-feedback --no-verify-jwt`
    - `npx supabase functions deploy stripe-webhook --no-verify-jwt`
 3. Set Supabase secrets in the prod project:
@@ -100,11 +100,11 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 1. **Frontend: user clicks Upgrade**
 
    - `PaywallModal` triggers the upgrade handler in `App`.
-   - `App` calls the Supabase Edge Function `create-checkout-session`.
+   - `App` calls the Supabase Edge Function `stripe-checkout-session`.
 
 2. **Edge Function: create checkout session**
 
-   - `create-checkout-session` validates the user token.
+   - `stripe-checkout-session` validates the user token.
    - Creates a Stripe Checkout Session (subscription) using `STRIPE_PRICE_ID`.
    - Returns `session.url` to the frontend.
 
@@ -126,7 +126,7 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 
 **Manage subscription**
 
-- `create-portal-session` opens Stripe’s customer portal for users with a stored `stripe_customer_id`.
+- `stripe-portal-session` opens Stripe’s customer portal for users with a stored `stripe_customer_id`.
 
 The app and Edge Functions talk to local Supabase in development and the remote Supabase project in production. Stripe webhooks point at `https://mdruanwmwapdaecrayyi.functions.supabase.co/stripe-webhook` for production.
 
