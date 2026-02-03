@@ -108,10 +108,14 @@ function App() {
   const isPro = Boolean(session?.user?.app_metadata?.is_pro)
   const subscriptionSource = session?.user?.app_metadata?.subscription_source === 'play'
     ? 'play'
-    : (session?.user?.app_metadata?.stripe_customer_id ? 'stripe' : undefined)
+    : (session?.user?.app_metadata?.subscription_source === 'stripe'
+      || session?.user?.app_metadata?.stripe_customer_id
+        ? 'stripe'
+        : undefined)
   const canManageSubscription = isPro
     && (Boolean(session?.user?.app_metadata?.stripe_customer_id)
-      || session?.user?.app_metadata?.subscription_source === 'play')
+      || session?.user?.app_metadata?.subscription_source === 'play'
+      || session?.user?.app_metadata?.subscription_source === 'stripe')
   const upgradeUrl = import.meta.env.VITE_UPGRADE_URL as string | undefined
   const trimmedUpgradeUrl = upgradeUrl?.trim()
   const priceLabel = PRICING.pro.priceLabel
