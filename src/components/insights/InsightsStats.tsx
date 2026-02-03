@@ -74,6 +74,13 @@ export const InsightsStats = ({
     )
   }
 
+  const hasMissingStats = !isLoading && (
+    rhythmScore === null
+    || sleepConsistencyLabel === null
+    || correlationLabel === null
+    || (moodBySleepThreshold.high === null && moodBySleepThreshold.low === null)
+  )
+
   return (
     <>
       <section className="card streak-card">
@@ -100,6 +107,11 @@ export const InsightsStats = ({
       </section>
 
       <section className="card stats-stack">
+        {hasMissingStats
+          ? (
+              <p className="muted">Log a few more nights to unlock all stats.</p>
+            )
+          : null}
         <div className="stats-stack-grid">
           {isLoading
             ? (
