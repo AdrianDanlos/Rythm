@@ -1,8 +1,8 @@
 import { Capacitor } from '@capacitor/core'
 import { NativePurchases, PURCHASE_TYPE } from '@capgo/native-purchases'
 import { Browser } from '@capacitor/browser'
-import { supabase } from '../lib/supabaseClient'
-import { BILLING } from '../lib/billing'
+import { supabase } from '../../lib/supabaseClient'
+import { BILLING } from '../play/config'
 
 const PLAY_SUBSCRIPTIONS_URL = 'https://play.google.com/store/account/subscriptions'
 
@@ -44,7 +44,7 @@ export const useBillingActions = ({
         if (!purchaseToken || typeof purchaseToken !== 'string') {
           return false
         }
-        const { data, error } = await supabase.functions.invoke('verify-play-purchase', {
+        const { data, error } = await supabase.functions.invoke('play-verify-purchase', {
           body: {
             purchaseToken,
             subscriptionId,
@@ -70,7 +70,7 @@ export const useBillingActions = ({
     try {
       const platform = Capacitor.isNativePlatform() ? 'mobile' : 'web'
       const { data, error } = await supabase.functions.invoke(
-        'create-checkout-session',
+        'stripe-checkout-session',
         { body: { platform } },
       )
       if (error) {
@@ -104,7 +104,7 @@ export const useBillingActions = ({
         const token = p?.purchaseToken ?? p?.transactionId
         if (typeof token !== 'string') continue
         const subId = p?.productIdentifier ?? defaultSubId
-        const { data } = await supabase.functions.invoke('verify-play-purchase', {
+        const { data } = await supabase.functions.invoke('play-verify-purchase', {
           body: { purchaseToken: token, subscriptionId: subId },
         })
         if (data?.ok) {
@@ -127,7 +127,7 @@ export const useBillingActions = ({
         return
       }
       const { data, error } = await supabase.functions.invoke(
-        'create-portal-session',
+        'stripe-portal-session',
         { body: {} },
       )
       if (error) {

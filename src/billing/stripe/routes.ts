@@ -1,3 +1,4 @@
+/** Stripe (web) checkout and return routes. */
 export const ROUTES = {
   stripeLanding: '/stripe',
   stripeSuccess: '/success',

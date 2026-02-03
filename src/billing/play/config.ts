@@ -1,5 +1,5 @@
 /**
- * Billing config for Google Play (Android) and Stripe (web).
+ * Google Play (mobile) subscription config.
  * Set VITE_PLAY_SUBSCRIPTION_ID and VITE_PLAY_SUBSCRIPTION_BASE_PLAN_ID
  * to match your subscription in Google Play Console.
  */

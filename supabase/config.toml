@@ -387,7 +387,7 @@ s3_access_key = "env(S3_ACCESS_KEY)"
 s3_secret_key = "env(S3_SECRET_KEY)"
 
 # Bypasses 401 JWT error when supabase talks to the edge function
-[functions.create-checkout-session]
+[functions.stripe-checkout-session]
 verify_jwt = false
 
 [functions.stripe-webhook]
