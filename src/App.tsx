@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
 import type { Entry } from './lib/entries'
@@ -106,8 +106,12 @@ function App() {
   const sleepThreshold = sleepTarget
   const maxTagsPerEntry = 10
   const isPro = Boolean(session?.user?.app_metadata?.is_pro)
+  const subscriptionSource = session?.user?.app_metadata?.subscription_source === 'play'
+    ? 'play'
+    : (session?.user?.app_metadata?.stripe_customer_id ? 'stripe' : undefined)
   const canManageSubscription = isPro
-    && Boolean(session?.user?.app_metadata?.stripe_customer_id)
+    && (Boolean(session?.user?.app_metadata?.stripe_customer_id)
+      || session?.user?.app_metadata?.subscription_source === 'play')
   const upgradeUrl = import.meta.env.VITE_UPGRADE_URL as string | undefined
   const trimmedUpgradeUrl = upgradeUrl?.trim()
   const priceLabel = PRICING.pro.priceLabel
@@ -177,10 +181,12 @@ function App() {
     setAuthError,
   })
 
-  const { handleStartCheckout, handleManageSubscription } = useBillingActions({
+  const { handleStartCheckout, handleManageSubscription, handleRestorePurchases } = useBillingActions({
     trimmedUpgradeUrl,
     isPortalLoading,
     setIsPortalLoading,
+    subscriptionSource,
+    refreshSession,
   })
 
   // This is needed for the Android app to work.
@@ -249,6 +255,20 @@ function App() {
 
     window.history.replaceState({}, '', '/')
   }, [refreshSession])
+
+  // Restore Play purchases on Android when user is logged in (e.g. after reinstall).
+  const restoredForUserIdRef = useRef<string | null>(null)
+  useEffect(() => {
+    const userId = session?.user?.id
+    if (
+      !userId
+      || !isNativeApp
+      || Capacitor.getPlatform() !== 'android'
+    ) return
+    if (restoredForUserIdRef.current === userId) return
+    restoredForUserIdRef.current = userId
+    void handleRestorePurchases()
+  }, [session?.user?.id, handleRestorePurchases])
 
   useEffect(() => {
     if (entries.length && exportError) {
@@ -434,6 +454,8 @@ function App() {
         upgradeUrl={trimmedUpgradeUrl}
         onUpgrade={handleStartCheckout}
         priceLabel={priceLabel}
+        onRestore={handleRestorePurchases}
+        showRestore={isNativeApp && Capacitor.getPlatform() === 'android'}
       />
       <StreakModal
         isOpen={isStreakOpen}

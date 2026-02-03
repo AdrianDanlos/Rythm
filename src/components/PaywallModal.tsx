@@ -6,6 +6,8 @@ type PaywallModalProps = {
   upgradeUrl?: string
   onUpgrade?: () => Promise<boolean> | boolean
   priceLabel?: string
+  onRestore?: () => Promise<boolean>
+  showRestore?: boolean
 }
 
 const premiumFeatures = [
@@ -22,8 +24,11 @@ export const PaywallModal = ({
   upgradeUrl,
   onUpgrade,
   priceLabel,
+  onRestore,
+  showRestore,
 }: PaywallModalProps) => {
   const [isLoading, setIsLoading] = useState(false)
+  const [isRestoring, setIsRestoring] = useState(false)
   const canUpgrade = Boolean(onUpgrade || (upgradeUrl && upgradeUrl.trim()))
 
   if (!isOpen) return null
@@ -44,6 +49,19 @@ export const PaywallModal = ({
     }
     catch {
       setIsLoading(false)
+    }
+  }
+
+  const handleRestore = async () => {
+    if (!onRestore || isRestoring) return
+    setIsRestoring(true)
+    try {
+      const restored = await onRestore()
+      if (restored) {
+        onClose()
+      }
+    } finally {
+      setIsRestoring(false)
     }
   }
 
@@ -90,6 +108,18 @@ export const PaywallModal = ({
           >
             {isLoading ? 'Opening checkout...' : 'Upgrade now'}
           </button>
+          {showRestore && onRestore
+            ? (
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={isRestoring}
+                  onClick={handleRestore}
+                >
+                  {isRestoring ? 'Restoring...' : 'Restore purchases'}
+                </button>
+              )
+            : null}
           <button type="button" className="ghost" onClick={onClose}>
             Not now
           </button>

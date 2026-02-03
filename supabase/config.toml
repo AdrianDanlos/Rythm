@@ -393,6 +393,9 @@ verify_jwt = false
 [functions.stripe-webhook]
 verify_jwt = false
 
+[functions.play-rtdn]
+verify_jwt = false
+
 [auth.external.google]
 enabled = true
 client_id = "env(GOOGLE_OAUTH_CLIENT_ID)"

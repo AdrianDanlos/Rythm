@@ -150,7 +150,10 @@ Deno.serve(async (req) => {
       return new Response('Missing supabase_user_id metadata.', { status: 400 })
     }
 
-    const updates: Record<string, unknown> = { is_pro: true }
+    const updates: Record<string, unknown> = {
+      is_pro: true,
+      subscription_source: 'stripe',
+    }
     if (typeof session.customer === 'string') {
       updates.stripe_customer_id = session.customer
     }
@@ -187,6 +190,7 @@ Deno.serve(async (req) => {
 
     const updates: Record<string, unknown> = {
       is_pro: shouldEnable,
+      ...(shouldEnable ? { subscription_source: 'stripe' as const } : {}),
     }
 
     if (typeof subscription.customer === 'string') {

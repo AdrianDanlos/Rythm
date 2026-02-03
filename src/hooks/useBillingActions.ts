@@ -1,18 +1,72 @@
 import { Capacitor } from '@capacitor/core'
+import { NativePurchases, PURCHASE_TYPE } from '@capgo/native-purchases'
+import { Browser } from '@capacitor/browser'
 import { supabase } from '../lib/supabaseClient'
+import { BILLING } from '../lib/billing'
+
+const PLAY_SUBSCRIPTIONS_URL = 'https://play.google.com/store/account/subscriptions'
 
 type UseBillingActionsParams = {
   trimmedUpgradeUrl?: string
   isPortalLoading: boolean
   setIsPortalLoading: (value: boolean) => void
+  subscriptionSource?: 'stripe' | 'play'
+  refreshSession?: () => Promise<unknown>
+}
+
+function isAndroid(): boolean {
+  return Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android'
 }
 
 export const useBillingActions = ({
   trimmedUpgradeUrl,
   isPortalLoading,
   setIsPortalLoading,
+  subscriptionSource,
+  refreshSession,
 }: UseBillingActionsParams) => {
-  const handleStartCheckout = async () => {
+  const handleStartCheckout = async (): Promise<boolean> => {
+    if (isAndroid()) {
+      try {
+        const supported = await NativePurchases.isBillingSupported()
+        if (!supported?.isBillingSupported) {
+          window.alert('In-app purchases are not available on this device.')
+          return false
+        }
+        const { subscriptionId, basePlanId } = BILLING.play
+        const transaction = await NativePurchases.purchaseProduct({
+          productIdentifier: subscriptionId,
+          planIdentifier: basePlanId,
+          productType: PURCHASE_TYPE.SUBS,
+          quantity: 1,
+        })
+        const purchaseToken = transaction?.purchaseToken ?? transaction?.transactionId
+        if (!purchaseToken || typeof purchaseToken !== 'string') {
+          return false
+        }
+        const { data, error } = await supabase.functions.invoke('verify-play-purchase', {
+          body: {
+            purchaseToken,
+            subscriptionId,
+          },
+        })
+        if (error) {
+          throw error
+        }
+        if (data?.ok && refreshSession) {
+          await refreshSession()
+          return true
+        }
+        return false
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Purchase failed.'
+        if (!message.toLowerCase().includes('cancel')) {
+          window.alert(message)
+        }
+        return false
+      }
+    }
+
     try {
       const platform = Capacitor.isNativePlatform() ? 'mobile' : 'web'
       const { data, error } = await supabase.functions.invoke(
@@ -39,10 +93,39 @@ export const useBillingActions = ({
     return false
   }
 
+  const handleRestorePurchases = async (): Promise<boolean> => {
+    if (!isAndroid() || !refreshSession) return false
+    try {
+      const { purchases } = await NativePurchases.getPurchases({
+        productType: PURCHASE_TYPE.SUBS,
+      })
+      const { subscriptionId: defaultSubId } = BILLING.play
+      for (const p of purchases ?? []) {
+        const token = p?.purchaseToken ?? p?.transactionId
+        if (typeof token !== 'string') continue
+        const subId = p?.productIdentifier ?? defaultSubId
+        const { data } = await supabase.functions.invoke('verify-play-purchase', {
+          body: { purchaseToken: token, subscriptionId: subId },
+        })
+        if (data?.ok) {
+          await refreshSession()
+          return true
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return false
+  }
+
   const handleManageSubscription = async () => {
     if (isPortalLoading) return
     setIsPortalLoading(true)
     try {
+      if (isAndroid() && subscriptionSource === 'play') {
+        await Browser.open({ url: PLAY_SUBSCRIPTIONS_URL })
+        return
+      }
       const { data, error } = await supabase.functions.invoke(
         'create-portal-session',
         { body: {} },
@@ -68,5 +151,6 @@ export const useBillingActions = ({
   return {
     handleStartCheckout,
     handleManageSubscription,
+    handleRestorePurchases,
   }
 }
