@@ -25,8 +25,11 @@ export const useAuth = () => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    } = supabase.auth.onAuthStateChange((event, newSession) => {
       if (!isMounted) return
+      if (!newSession && event !== 'SIGNED_OUT') {
+        return
+      }
       setSession(newSession)
       setAuthInitialized(true)
     })
