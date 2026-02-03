@@ -44,10 +44,48 @@ export function StripeLanding({ logo }: StripeLandingProps) {
         </section>
 
         <section className="stripe-landing__section" id="privacy">
-          <h3>Privacy</h3>
+          <h3>Privacy Policy</h3>
           <p>
-            We only collect the data you enter and use it to provide your
-            insights. We do not sell your data.
+            This policy describes how Rythm (“we”) collects, uses, and protects
+            your information. By using Rythm, you agree to this policy.
+          </p>
+          <h4>Data we collect</h4>
+          <p>
+            We collect the data you provide: email address (for your account),
+            sleep and mood logs, optional profile details (e.g. name, sleep
+            target), and preferences (e.g. date format, theme). On mobile we may
+            receive device-related data necessary to provide the app (e.g. for
+            in-app purchases and notifications).
+          </p>
+          <h4>How we use it</h4>
+          <p>
+            We use your data to run the app: to store your logs, generate
+            insights and trends, and enable exports. We use your email to
+            manage your account and, if you choose, to send you product updates.
+            We do not sell your data to third parties.
+          </p>
+          <h4>Where your data is stored</h4>
+          <p>
+            Your account and log data are stored and processed by Supabase. If
+            you subscribe on the web, payment data is processed by Stripe. On
+            Android, in-app subscriptions are handled by Google Play. We do not
+            store your payment card details.
+          </p>
+          <h4>Your rights</h4>
+          <p>
+            You can access and export your data from within the app. You may
+            request deletion of your account and data by contacting us at{' '}
+            <a href="mailto:danlosadrian@gmail.com">danlosadrian@gmail.com</a>.
+          </p>
+          <h4>Updates</h4>
+          <p>
+            We may update this policy from time to time. The current version is
+            always available at this page. Continued use of Rythm after changes
+            means you accept the updated policy.
+          </p>
+          <p>
+            For privacy-related questions, contact us at{' '}
+            <a href="mailto:danlosadrian@gmail.com">danlosadrian@gmail.com</a>.
           </p>
         </section>
 

@@ -22,7 +22,7 @@ import { useLogForm } from './hooks/useLogForm'
 import { CreditCard, LogOut, Mail, Settings } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
 import { StripeLanding } from './billing/stripe/StripeLanding'
-import { ROUTES, isStripeLanding, isStripeReturn } from './billing/stripe/routes'
+import { ROUTES, isPrivacyPage, isStripeReturn } from './billing/stripe/routes'
 import { PRICING } from './billing/shared/pricing'
 import { moodColors } from './lib/colors'
 import {
@@ -53,7 +53,7 @@ type TabKey = Tabs.Insights | Tabs.Log
 type InsightsSection = Tabs.Summary | Tabs.Charts | Tabs.Data
 
 function App() {
-  const showStripeLanding = isStripeLanding()
+  const showPrivacyPage = isPrivacyPage()
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
   const [authEmail, setAuthEmail] = useState('')
   const [authPassword, setAuthPassword] = useState('')
@@ -377,7 +377,7 @@ function App() {
     setIsSettingsOpen(false)
   }
 
-  if (showStripeLanding) {
+  if (showPrivacyPage) {
     return <StripeLanding logo={logo} />
   }
 

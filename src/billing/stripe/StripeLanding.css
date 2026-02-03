@@ -56,6 +56,15 @@
   margin-top: 0;
 }
 
+.stripe-landing__section h4 {
+  font-size: 1rem;
+  margin: 1.25em 0 0.35em;
+}
+
+.stripe-landing__section h4:first-of-type {
+  margin-top: 0.75em;
+}
+
 .stripe-landing__section ul {
   margin: 12px 0 0;
   padding-left: 20px;
