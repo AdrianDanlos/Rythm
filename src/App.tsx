@@ -555,7 +555,7 @@ function App() {
                           onExportCsv={handleExportCsv}
                           onExportMonthlyReport={handleExportMonthlyReport}
                           onOpenPaywall={handleOpenPaywall}
-                          onStartLog={() => setActiveTab(Tabs.Log)}
+                          goToLog={() => setActiveTab(Tabs.Log)}
                           activeTab={activeInsightsTab}
                         />
                       )}

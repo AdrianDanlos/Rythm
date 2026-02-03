@@ -116,7 +116,7 @@ export const LogForm = ({
 
   return (
     <section className="card">
-      <form onSubmit={onSave} className="stack">
+      <form onSubmit={onSave} className="stack log-form-stack">
         <div className="field">
           <div className="date-picker">
             <DayPicker
@@ -236,8 +236,8 @@ export const LogForm = ({
             <span>Tags (Pro)</span>
             <span className="field-hint">
               {isPro
-                ? 'Separate tags with commas.'
-                : 'Upgrade to Pro to add tags.'}
+                ? 'Separate tags with commas'
+                : 'Upgrade to Pro to add tags'}
             </span>
           </div>
           <div className="tag-input">

@@ -25,6 +25,7 @@ type InsightsScatterProps = {
   entries: Entry[]
   plottedData: PlottedEntry[]
   moodColors: string[]
+  goToLog: () => void
 }
 
 export const InsightsScatter = ({
@@ -34,6 +35,7 @@ export const InsightsScatter = ({
   entries,
   plottedData,
   moodColors,
+  goToLog,
 }: InsightsScatterProps) => {
   const baseTickProps = { fontSize: 13 }
   const mobileTickProps = { fontSize: 12 }
@@ -109,7 +111,9 @@ export const InsightsScatter = ({
         : isEmpty
           ? (
               <div className="chart-empty">
-                <p>Add entries to see insights.</p>
+                <button type="button" className="muted link-button" onClick={goToLog}>
+                  Log a night to see insights.
+                </button>
               </div>
             )
           : (

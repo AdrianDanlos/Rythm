@@ -5,11 +5,13 @@ import type { Entry } from '../../lib/entries'
 type InsightsMoodDistributionProps = {
   entries: Entry[]
   moodColors: string[]
+  goToLog: () => void
 }
 
 export const InsightsMoodDistribution = ({
   entries,
   moodColors,
+  goToLog,
 }: InsightsMoodDistributionProps) => {
   const moodLabels = ['Very low', 'Low', 'Okay', 'Good', 'Great']
   const moodCounts = entries.reduce(
@@ -82,7 +84,9 @@ export const InsightsMoodDistribution = ({
             </div>
           )
         : (
-            <p className="muted">Log more nights to see your mood distribution.</p>
+            <button type="button" className="muted link-button" onClick={goToLog}>
+              Log more nights to see your mood distribution.
+            </button>
           )}
     </section>
   )

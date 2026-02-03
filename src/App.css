@@ -378,6 +378,10 @@
   gap: 12px;
 }
 
+.log-form-stack {
+  gap: 18px;
+}
+
 .auth-title {
   margin-bottom: 16px;
 }
@@ -1522,6 +1526,12 @@
   color: var(--muted);
 }
 
+.label--with-tooltip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .value {
   margin: 6px 0 0;
   font-size: 1.4rem;
@@ -1608,6 +1618,24 @@
 
 .muted {
   color: var(--muted);
+}
+
+.link-button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.link-button:hover,
+.link-button:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  box-shadow: none;
 }
 
 .app-tooltip {

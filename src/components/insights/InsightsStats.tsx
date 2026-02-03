@@ -19,6 +19,7 @@ type InsightsStatsProps = {
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
   sleepThreshold: number
+  goToLog: () => void
 }
 
 export const InsightsStats = ({
@@ -32,6 +33,7 @@ export const InsightsStats = ({
   correlationDirection,
   moodBySleepThreshold,
   sleepThreshold,
+  goToLog,
 }: InsightsStatsProps) => {
   const renderTopStat = (
     label: string,
@@ -109,7 +111,9 @@ export const InsightsStats = ({
       <section className="card stats-stack">
         {hasMissingStats
           ? (
-              <p className="muted">Log a few more nights to unlock all stats.</p>
+              <button type="button" className="muted link-button" onClick={goToLog}>
+                Log a few more nights to unlock all stats
+              </button>
             )
           : null}
         <div className="stats-stack-grid">
@@ -130,7 +134,7 @@ export const InsightsStats = ({
                   {renderWindowTile('Last 7 days', windowAverages.last7)}
                   {renderWindowTile('Last 30 days', windowAverages.last30)}
                   <div className="stat-tile">
-                    <p className="label">
+                    <p className="label label--with-tooltip">
                       Rhythm score
                       <Tooltip label="What is this? Based on how steady your sleep hours are in the last 30 days. Higher = more consistent.">
                         <span className="tooltip-trigger">
@@ -139,19 +143,31 @@ export const InsightsStats = ({
                       </Tooltip>
                     </p>
                     <p className="value">{rhythmScore !== null ? `${rhythmScore} / 100` : '—'}</p>
-                    <p className="helper">Sleep stability over the last 30 days</p>
+                    <p className="helper">
+                      {rhythmScore !== null
+                        ? 'Sleep stability over the last 30 days'
+                        : 'Needs 5 nights'}
+                    </p>
                   </div>
                   <div className="stat-tile">
                     <p className="label">Sleep consistency</p>
                     <p className="value">{sleepConsistencyLabel ?? '—'}</p>
-                    <p className="helper">How steady your sleep hours are</p>
+                    <p className="helper">
+                      {sleepConsistencyLabel
+                        ? 'How steady your sleep hours are'
+                        : 'Needs 2 nights'}
+                    </p>
                   </div>
                   <div className="stat-tile">
                     <p className="label">Sleep–mood link</p>
                     <p className="value">{correlationLabel ?? '—'}</p>
                     {correlationDirection
                       ? <p className="helper">{correlationDirection}</p>
-                      : <p className="helper">Correlation strength</p>}
+                      : (
+                          <p className="helper">
+                            {correlationLabel ? 'Correlation strength' : 'Needs 2 nights'}
+                          </p>
+                        )}
                   </div>
                   <div className="stat-tile">
                     <p className="label">Mood by sleep</p>

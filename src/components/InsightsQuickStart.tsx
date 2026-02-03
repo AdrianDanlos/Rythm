@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
 type InsightsQuickStartProps = {
-  onStartLog: () => void
+  goToLog: () => void
 }
 
-export const InsightsQuickStart = ({ onStartLog }: InsightsQuickStartProps) => {
+export const InsightsQuickStart = ({ goToLog }: InsightsQuickStartProps) => {
   const [isVisible, setIsVisible] = useState(() => {
     if (typeof window === 'undefined') return true
     return window.localStorage.getItem('rythm-hide-insights-intro') !== 'true'
@@ -49,7 +49,7 @@ export const InsightsQuickStart = ({ onStartLog }: InsightsQuickStartProps) => {
         <button
           className="primary-button cta-button"
           type="button"
-          onClick={onStartLog}
+          onClick={goToLog}
         >
           Log today
         </button>

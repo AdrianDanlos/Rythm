@@ -56,7 +56,7 @@ type InsightsProps = {
   onExportMonthlyReport: () => void
   onOpenPaywall: () => void
   activeTab: InsightsTab
-  onStartLog: () => void
+  goToLog: () => void
 }
 
 export const Insights = ({
@@ -86,7 +86,7 @@ export const Insights = ({
   onExportMonthlyReport,
   onOpenPaywall,
   activeTab,
-  onStartLog,
+  goToLog,
 }: InsightsProps) => {
   const reviewUrl = 'https://play.google.com/store/apps/details?id=com.rythm.app'
   const isLoading = entriesLoading
@@ -137,7 +137,7 @@ export const Insights = ({
       {activeTab === 'summary'
         ? (
             <div className="insights-panel">
-              <InsightsQuickStart onStartLog={onStartLog} />
+              <InsightsQuickStart goToLog={goToLog} />
               <InsightsStats
                 isLoading={isLoading}
                 averages={averages}
@@ -149,6 +149,7 @@ export const Insights = ({
                 correlationDirection={correlationDirection}
                 moodBySleepThreshold={moodBySleepThreshold}
                 sleepThreshold={sleepThreshold}
+                goToLog={goToLog}
               />
               <IdeaSleepTarget
                 isPro={isPro}
@@ -213,7 +214,9 @@ export const Insights = ({
                       </div>
                     )
                   : (
-                      <p className="muted">Log more nights to unlock badges.</p>
+                      <button type="button" className="muted link-button" onClick={goToLog}>
+                        Log more nights to unlock badges.
+                      </button>
                     )}
               </section>
             </div>
@@ -229,10 +232,12 @@ export const Insights = ({
                 entries={entries}
                 plottedData={plottedData}
                 moodColors={moodColors}
+                goToLog={goToLog}
               />
               <InsightsMoodDistribution
                 entries={entries}
                 moodColors={moodColors}
+                goToLog={goToLog}
               />
               <InsightsCalendarHeatmap
                 entries={entries}
