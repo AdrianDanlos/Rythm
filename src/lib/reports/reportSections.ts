@@ -52,7 +52,7 @@ export const renderReportHeader = ({
   doc.text('Sleep & Mood', textX, bannerY + 7)
   doc.setFontSize(16)
   doc.setTextColor(255)
-  doc.text('Rythm Report', textX, bannerY + 15)
+  doc.text(title, textX, bannerY + 15)
   yRef.value = bannerY + bannerHeight + 10
 
   if (welcomeName) {
