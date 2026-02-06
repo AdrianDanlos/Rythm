@@ -15,6 +15,12 @@ export const IdeaSleepTarget = ({
   onOpenPaywall,
 }: IdeaSleepTargetProps) => {
   const hasThreshold = typeof personalSleepThreshold === 'number'
+  const hasMoodData =
+    moodByPersonalThreshold.high !== null || moodByPersonalThreshold.low !== null
+  const moodDelta =
+    hasMoodData && moodByPersonalThreshold.high != null && moodByPersonalThreshold.low != null
+      ? moodByPersonalThreshold.high - moodByPersonalThreshold.low
+      : null
 
   return (
     <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
@@ -44,28 +50,39 @@ export const IdeaSleepTarget = ({
           )
         : hasThreshold
           ? (
-              <div className="stat-block">
-                <p className="value">{formatSleepHours(personalSleepThreshold)}</p>
-                <p className="helper helper-inline">
-                  <span className="helper-tag">
-                    {'>'}{formatSleepHours(personalSleepThreshold)}
-                  </span>
-                  <span className="helper-arrow" aria-hidden="true">→</span>
-                  <span className="helper-tag helper-pill-value">
-                    {moodByPersonalThreshold.high?.toFixed(1) ?? '—'}
-                  </span>
-                  <span className="helper-sep">vs</span>
-                  <span className="helper-tag">
-                    {'<'}{formatSleepHours(personalSleepThreshold)}
-                  </span>
-                  <span className="helper-arrow" aria-hidden="true">→</span>
-                  <span className="helper-tag helper-pill-value">
-                    {moodByPersonalThreshold.low?.toFixed(1) ?? '—'}
-                  </span>
-                </p>
-                <p className="helper">
-                  Average mood for days above vs below {formatSleepHours(personalSleepThreshold)}
-                </p>
+              <div className="ideal-sleep-target-content">
+                <div className="stat-block stat-block--ring stat-block--sleep ideal-sleep-target-ring">
+                  <div
+                    className="stat-ring"
+                    style={{ ['--stat-progress' as string]: '100%' }}
+                  >
+                    <div className="stat-ring__inner">
+                      <p className="label">Target</p>
+                      <p className="value">{formatSleepHours(personalSleepThreshold)}</p>
+                    </div>
+                  </div>
+                </div>
+                {hasMoodData && (
+                  <div className="ideal-sleep-mood-delta">
+                    <span className="ideal-sleep-mood-delta__pill ideal-sleep-mood-delta__pill--high">
+                      ≥{formatSleepHours(personalSleepThreshold)} → {moodByPersonalThreshold.high?.toFixed(1) ?? '—'}
+                    </span>
+                    <span className="ideal-sleep-mood-delta__arrow" aria-hidden="true">-</span>
+                    <span className="ideal-sleep-mood-delta__pill ideal-sleep-mood-delta__pill--low">
+                      &lt;{formatSleepHours(personalSleepThreshold)} → {moodByPersonalThreshold.low?.toFixed(1) ?? '—'}
+                    </span>
+                    {moodDelta !== null && (
+                      <span className="ideal-sleep-mood-delta__badge">
+                        +{moodDelta.toFixed(1)} mood when above target
+                      </span>
+                    )}
+                  </div>
+                )}
+                {!hasMoodData && (
+                  <p className="helper">
+                    Log more entries to see average mood above vs below {formatSleepHours(personalSleepThreshold)}
+                  </p>
+                )}
               </div>
             )
           : (

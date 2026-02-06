@@ -1667,128 +1667,54 @@
   padding-bottom: 8px;
 }
 
-/* Ideal sleep target: gauge + mood bars */
+/* Ideal sleep target: ring + mood delta */
 .ideal-sleep-target-content {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.ideal-sleep-target-stat {
-  gap: 12px;
-}
-
-.sleep-target-gauge {
-  width: 100%;
-  max-width: 280px;
-  margin: 0 auto;
-  position: relative;
-  padding-bottom: 28px;
-}
-
-.sleep-target-gauge__track {
-  height: 8px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--border) 70%, transparent);
-  position: relative;
-  overflow: visible;
-}
-
-.sleep-target-gauge__fill {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  border-radius: 999px;
-  background: var(--chart-sleep);
-  transition: width 0.25s ease;
-}
-
-.sleep-target-gauge__marker {
-  position: absolute;
-  top: 50%;
-  width: 16px;
-  height: 16px;
-  margin-left: -8px;
-  margin-top: -8px;
-  border-radius: 50%;
-  background: var(--chart-sleep);
-  border: 3px solid var(--card);
-  box-shadow: 0 0 0 1px var(--border);
-  transform: translateY(-50%);
-  transition: left 0.25s ease;
-  z-index: 1;
-}
-
-.sleep-target-gauge__ticks {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  padding: 0 2px;
-}
-
-.sleep-target-gauge__tick {
-  font-size: 0.75rem;
-  color: var(--muted);
-}
-
-.ideal-sleep-mood-bars__label {
-  font-size: 0.9rem;
-  color: var(--muted);
-  margin: 0 0 10px;
-}
-
-.ideal-sleep-mood-bars__row {
-  display: flex;
-  gap: 24px;
-  align-items: flex-end;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.ideal-sleep-mood-bar {
-  flex: 1;
-  min-width: 100px;
-  max-width: 140px;
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
 }
 
-.ideal-sleep-mood-bar__label {
-  font-size: 0.8rem;
+.ideal-sleep-target-ring {
+  margin: 0 auto;
+}
+
+.ideal-sleep-mood-delta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 14px;
+}
+
+.ideal-sleep-mood-delta__pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+}
+
+.ideal-sleep-mood-delta__pill--high {
+  background: color-mix(in srgb, var(--chart-mood) 25%, transparent);
+  color: var(--text);
+}
+
+.ideal-sleep-mood-delta__pill--low {
+  background: color-mix(in srgb, var(--border) 60%, transparent);
   color: var(--muted);
 }
 
-.ideal-sleep-mood-bar__track {
-  width: 100%;
-  height: 80px;
-  background: color-mix(in srgb, var(--border) 50%, transparent);
-  border-radius: 8px;
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
-}
-
-.ideal-sleep-mood-bar__fill {
-  width: 100%;
-  border-radius: 0 0 8px 8px;
-  min-height: 4px;
-  transition: height 0.25s ease;
-}
-
-.ideal-sleep-mood-bar__fill--high {
-  background: var(--chart-mood);
-}
-
-.ideal-sleep-mood-bar__fill--low {
-  background: color-mix(in srgb, var(--chart-sleep) 60%, var(--muted));
-}
-
-.ideal-sleep-mood-bar__value {
+.ideal-sleep-mood-delta__arrow {
+  color: var(--muted);
   font-size: 1rem;
-  font-weight: 600;
+}
+
+.ideal-sleep-mood-delta__badge {
+  width: 100%;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .chart-wrapper {
