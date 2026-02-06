@@ -247,6 +247,7 @@ export const Insights = ({
               <InsightsSmoothedTrends
                 isPro={isPro}
                 isMobile={isMobile}
+                entryCount={entries.length}
                 rollingSeries={rollingSeries}
                 rollingSummaries={rollingSummaries}
                 onOpenPaywall={onOpenPaywall}
@@ -254,6 +255,7 @@ export const Insights = ({
               <InsightsDailyHistory
                 isPro={isPro}
                 isMobile={isMobile}
+                entryCount={entries.length}
                 trendSeries={trendSeries}
                 onOpenPaywall={onOpenPaywall}
               />

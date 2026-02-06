@@ -10,15 +10,20 @@ import {
   YAxis,
 } from 'recharts'
 import type { TrendPoint } from '../../lib/types/stats'
+import { trimToDataExtentTrend } from '../../lib/chartUtils'
 import { buildMockTrendSeries } from '../../lib/insightsMock'
 import { buildWeeklyTrendSeries } from '../../lib/stats'
 import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 
+const DAILY_HISTORY_THRESHOLD_90 = 30
+const DAILY_HISTORY_THRESHOLD_365 = 90
+
 type InsightsDailyHistoryProps = {
   isPro: boolean
   isMobile: boolean
+  entryCount: number
   trendSeries: { last30: TrendPoint[], last90: TrendPoint[], last365: TrendPoint[] }
   onOpenPaywall: () => void
 }
@@ -45,13 +50,33 @@ const getDateTickInterval = (pointCount: number, targetTicks = 6) => {
   return Math.max(0, Math.ceil(pointCount / targetTicks) - 1)
 }
 
+type DailyHistoryLegendProps = {
+  wrapperStyle?: React.CSSProperties
+}
+
+const DailyHistoryLegend = ({ wrapperStyle }: DailyHistoryLegendProps) => (
+  <div className="rolling-trend-legend" style={wrapperStyle}>
+    <span className="rolling-trend-legend__item">
+      <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-sleep)' }} aria-hidden />
+      Sleep
+    </span>
+    <span className="rolling-trend-legend__item">
+      <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-mood)' }} aria-hidden />
+      Mood
+    </span>
+  </div>
+)
+
 export const InsightsDailyHistory = ({
   isPro,
   isMobile,
+  entryCount,
   trendSeries,
   onOpenPaywall,
 }: InsightsDailyHistoryProps) => {
   const [trendRange, setTrendRange] = useState<'last30' | 'last90' | 'last365'>('last30')
+  const show90 = entryCount >= DAILY_HISTORY_THRESHOLD_90
+  const show365 = entryCount >= DAILY_HISTORY_THRESHOLD_365
   const trendPoints = trendSeries[trendRange]
   const weeklyTrendPoints = trendRange === 'last365'
     ? buildWeeklyTrendSeries(trendSeries.last365)
@@ -60,6 +85,7 @@ export const InsightsDailyHistory = ({
   const trendDisplayPoints = isYearly
     ? weeklyTrendPoints
     : trendPoints
+  const trimmedTrendPoints = trimToDataExtentTrend(trendDisplayPoints)
   const previewTrendSeries = buildMockTrendSeries()
   const previewTrendPoints = previewTrendSeries[trendRange]
   const previewWeeklyTrendPoints = trendRange === 'last365'
@@ -68,8 +94,9 @@ export const InsightsDailyHistory = ({
   const previewTrendDisplayPoints = isYearly
     ? previewWeeklyTrendPoints
     : previewTrendPoints
-  const trendTickInterval = getDateTickInterval(trendDisplayPoints.length)
-  const previewTickInterval = getDateTickInterval(previewTrendDisplayPoints.length)
+  const trimmedPreviewPoints = trimToDataExtentTrend(previewTrendDisplayPoints)
+  const trendTickInterval = getDateTickInterval(trimmedTrendPoints.length)
+  const previewTickInterval = getDateTickInterval(trimmedPreviewPoints.length)
   const baseTickProps = { fontSize: 13 }
   const mobileTickProps = isMobile
     ? { angle: -35, textAnchor: 'end' as const, dy: 6, fontSize: 12 }
@@ -119,24 +146,44 @@ export const InsightsDailyHistory = ({
           >
             30 days
           </button>
-          <button
-            type="button"
-            className={`ghost ${trendRange === 'last90' ? 'active' : ''}`}
-            onClick={() => handleProAction(() => {
-              setTrendRange('last90')
-            })}
-          >
-            90 days
-          </button>
-          <button
-            type="button"
-            className={`ghost ${trendRange === 'last365' ? 'active' : ''}`}
-            onClick={() => handleProAction(() => {
-              setTrendRange('last365')
-            })}
-          >
-            365 days
-          </button>
+          {show90
+            ? (
+                <button
+                  type="button"
+                  className={`ghost ${trendRange === 'last90' ? 'active' : ''}`}
+                  onClick={() => handleProAction(() => {
+                    setTrendRange('last90')
+                  })}
+                >
+                  90 days
+                </button>
+              )
+            : (
+                <Tooltip label={`Log ${DAILY_HISTORY_THRESHOLD_90}+ nights to see 90-day history.`}>
+                  <span className="ghost toggle-group__btn--disabled">
+                    90 days
+                  </span>
+                </Tooltip>
+              )}
+          {show365
+            ? (
+                <button
+                  type="button"
+                  className={`ghost ${trendRange === 'last365' ? 'active' : ''}`}
+                  onClick={() => handleProAction(() => {
+                    setTrendRange('last365')
+                  })}
+                >
+                  365 days
+                </button>
+              )
+            : (
+                <Tooltip label={`Log ${DAILY_HISTORY_THRESHOLD_365}+ nights to see 365-day history.`}>
+                  <span className="ghost toggle-group__btn--disabled">
+                    365 days
+                  </span>
+                </Tooltip>
+              )}
         </div>
       </div>
       {!isPro
@@ -145,7 +192,7 @@ export const InsightsDailyHistory = ({
               <div className="premium-preview__blur">
                 <div className="chart-wrapper">
                   <ResponsiveContainer width="100%" height={180}>
-                    <LineChart data={previewTrendDisplayPoints} margin={trendChartMargin}>
+                    <LineChart data={trimmedPreviewPoints.length ? trimmedPreviewPoints : previewTrendDisplayPoints} margin={trendChartMargin}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
                       <XAxis
                         dataKey="date"
@@ -174,7 +221,7 @@ export const InsightsDailyHistory = ({
                           formatLongDate(new Date(`${value}T00:00:00`))}
                         formatter={formatTooltipValue}
                       />
-                      <Legend wrapperStyle={legendWrapperStyle} />
+                      <Legend content={<DailyHistoryLegend wrapperStyle={legendWrapperStyle} />} />
                       <Line
                         type="monotone"
                         dataKey="sleep"
@@ -205,10 +252,16 @@ export const InsightsDailyHistory = ({
               </div>
             </div>
           )
-        : (
+        : trimmedTrendPoints.length === 0
+          ? (
+              <div className="chart-empty">
+                <p className="muted">Not enough data in this range. Log sleep and mood to see daily history.</p>
+              </div>
+            )
+          : (
             <div className="chart-wrapper">
               <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={trendDisplayPoints} margin={trendChartMargin}>
+                <LineChart data={trimmedTrendPoints} margin={trendChartMargin}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis
                     dataKey="date"
@@ -237,7 +290,7 @@ export const InsightsDailyHistory = ({
                       formatLongDate(new Date(`${value}T00:00:00`))}
                     formatter={formatTooltipValue}
                   />
-                  <Legend wrapperStyle={legendWrapperStyle} />
+                  <Legend content={<DailyHistoryLegend wrapperStyle={legendWrapperStyle} />} />
                   <Line
                     type="monotone"
                     dataKey="sleep"
@@ -257,7 +310,7 @@ export const InsightsDailyHistory = ({
                 </LineChart>
               </ResponsiveContainer>
             </div>
-          )}
+            )}
     </section>
   )
 }
