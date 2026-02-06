@@ -22,7 +22,8 @@ import { useLogForm } from './hooks/useLogForm'
 import { CreditCard, LogOut, Mail, Settings } from 'lucide-react'
 import logo from './assets/rythm-logo.png'
 import { StripeLanding } from './billing/stripe/StripeLanding'
-import { ROUTES, isPrivacyPage, isStripeReturn } from './billing/stripe/routes'
+import { DeleteAccountPage } from './billing/stripe/DeleteAccountPage'
+import { ROUTES, isPrivacyPage, isDeleteAccountPage, isStripeReturn } from './billing/stripe/routes'
 import { PRICING } from './billing/shared/pricing'
 import { moodColors } from './lib/colors'
 import {
@@ -54,6 +55,7 @@ type InsightsSection = Tabs.Summary | Tabs.Charts | Tabs.Data
 
 function App() {
   const showPrivacyPage = isPrivacyPage()
+  const showDeleteAccountPage = isDeleteAccountPage()
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
   const [authEmail, setAuthEmail] = useState('')
   const [authPassword, setAuthPassword] = useState('')
@@ -377,6 +379,9 @@ function App() {
     setIsSettingsOpen(false)
   }
 
+  if (showDeleteAccountPage) {
+    return <DeleteAccountPage logo={logo} />
+  }
   if (showPrivacyPage) {
     return <StripeLanding logo={logo} />
   }
