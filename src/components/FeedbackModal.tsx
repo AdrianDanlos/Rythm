@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { toast } from 'sonner'
 import { createFeedback } from '../lib/feedback.ts'
 
 type FeedbackModalProps = {
@@ -7,24 +8,17 @@ type FeedbackModalProps = {
   userEmail: string | null
 }
 
-type FeedbackStatus = {
-  type: 'success' | 'error'
-  message: string
-}
-
 export const FeedbackModal = ({
   isOpen,
   onClose,
   userEmail,
 }: FeedbackModalProps) => {
   const [message, setMessage] = useState('')
-  const [status, setStatus] = useState<FeedbackStatus | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (!isOpen) {
       setMessage('')
-      setStatus(null)
       setIsLoading(false)
     }
   }, [isOpen])
@@ -37,37 +31,28 @@ export const FeedbackModal = ({
 
     const trimmedMessage = message.trim()
     if (!userEmail) {
-      setStatus({
-        type: 'error',
-        message: 'Sign in to send feedback.',
-      })
+      toast.error('Sign in to send feedback.')
+      onClose()
       return
     }
     if (!trimmedMessage) {
-      setStatus({
-        type: 'error',
-        message: 'Please enter your feedback.',
-      })
+      toast.error('Please enter your feedback.')
+      onClose()
       return
     }
 
     setIsLoading(true)
-    setStatus(null)
     try {
       await createFeedback({
         message: trimmedMessage,
       })
-      setStatus({
-        type: 'success',
-        message: 'Thanks for the feedback!',
-      })
+      toast.success('Thanks for the feedback!')
       setMessage('')
+      onClose()
     }
     catch {
-      setStatus({
-        type: 'error',
-        message: 'Unable to send feedback. Please try again.',
-      })
+      toast.error('Unable to send feedback. Please try again.')
+      onClose()
     }
     finally {
       setIsLoading(false)
@@ -114,15 +99,6 @@ export const FeedbackModal = ({
             rows={5}
             disabled={!userEmail || isLoading}
           />
-          <p
-            className={
-              status
-                ? `feedback-status ${status.type === 'error' ? 'error' : 'success'}`
-                : 'feedback-status is-empty'
-            }
-          >
-            {status?.message ?? ''}
-          </p>
           <div className="modal-actions">
             <button
               type="submit"
