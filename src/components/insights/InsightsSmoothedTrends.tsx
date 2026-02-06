@@ -298,200 +298,205 @@ export const InsightsSmoothedTrends = ({
               </div>
             )
           : (
-            <>
-              <div className="chart-wrapper full-bleed">
-                <ResponsiveContainer width="100%" height={220}>
-                  <LineChart
-                    data={trimmedRollingSeries}
-                    margin={smoothedChartMargin}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis
-                      dataKey="date"
-                      tickFormatter={formatShortDate}
-                      interval={isMobile ? Math.max(rollingTickInterval, 1) : rollingTickInterval}
-                      tick={isMobile ? mobileTickProps : baseTickProps}
-                      height={isMobile ? 36 : 30}
-                    />
-                    <YAxis
-                      tickFormatter={
-                        rollingMetric === 'sleep'
-                          ? formatSleepAxisValue
-                          : formatAxisValue
-                      }
-                      domain={
-                        rollingMetric === 'sleep' ? [4, 10] : [1, 5]
-                      }
-                      ticks={
-                        rollingMetric === 'sleep' ? [4, 6, 8, 10] : [1, 2, 3, 4, 5]
-                      }
-                      tick={baseTickProps}
-                    />
-                    <RechartsTooltip
-                      labelFormatter={value =>
-                        formatLongDate(new Date(`${value}T00:00:00`))}
-                      formatter={(value) => {
-                        const normalized = Array.isArray(value) ? value[0] : value
-                        if (rollingMetric === 'sleep') {
-                          const numeric = typeof normalized === 'number'
-                            ? normalized
-                            : Number(normalized)
-                          return Number.isFinite(numeric) ? formatSleepHours(numeric) : '—'
-                        }
-                        return formatLineValue(normalized ?? '')
-                      }}
-                      itemSorter={(item) => {
-                        const name = String(item.name ?? '')
-                        if (name.includes('7')) return 1
-                        if (name.includes('30')) return 2
-                        if (name.includes('90')) return 3
-                        return 99
-                      }}
-                    />
-                    <Legend content={<RollingLegend show30={show30} show90={show90} wrapperStyle={legendWrapperStyle} />} />
-                    {rollingMetric === 'sleep'
-                      ? (
-                          <>
-                            <Line
-                              type="monotone"
-                              dataKey="sleep7"
-                              name="Last 7 days"
-                              stroke={rollingTrendColors.long}
-                              dot={false}
-                              strokeWidth={2}
-                            />
-                            {show30 && (
-                              <Line
-                                type="monotone"
-                                dataKey="sleep30"
-                                name="Last 30 days"
-                                stroke={rollingTrendColors.mid}
-                                dot={false}
-                                strokeWidth={2}
-                              />
-                            )}
-                            {show90 && (
-                              <Line
-                                type="monotone"
-                                dataKey="sleep90"
-                                name="Last 90 days"
-                                stroke="var(--chart-sleep)"
-                                dot={false}
-                                strokeWidth={2}
-                              />
-                            )}
-                          </>
-                        )
-                      : (
-                          <>
-                            <Line
-                              type="monotone"
-                              dataKey="mood7"
-                              name="Last 7 days"
-                              stroke={rollingTrendColors.long}
-                              dot={false}
-                              strokeWidth={2}
-                            />
-                            {show30 && (
-                              <Line
-                                type="monotone"
-                                dataKey="mood30"
-                                name="Last 30 days"
-                                stroke={rollingTrendColors.mid}
-                                dot={false}
-                                strokeWidth={2}
-                              />
-                            )}
-                            {show90 && (
-                              <Line
-                                type="monotone"
-                                dataKey="mood90"
-                                name="Last 90 days"
-                                stroke="var(--chart-sleep)"
-                                dot={false}
-                                strokeWidth={2}
-                              />
-                            )}
-                          </>
-                        )}
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="trend-summary">
-                {rollingSummaries.map(summary => {
-                  const is30Disabled = summary.days === 30 && !show30
-                  const is90Disabled = summary.days === 90 && !show90
-                  const isDisabled = is30Disabled || is90Disabled
-                  return (
-                    <div
-                      className={`stat-block ${isDisabled ? 'stat-block--disabled' : ''}`}
-                      key={summary.days}
+              <>
+                <div className="chart-wrapper full-bleed">
+                  <ResponsiveContainer width="100%" height={220}>
+                    <LineChart
+                      data={trimmedRollingSeries}
+                      margin={smoothedChartMargin}
                     >
-                      <p className="label">
-                        {summary.days === 7
-                          ? 'Last 7 days'
-                          : summary.days === 30
-                            ? 'Last 30 days'
-                            : 'Last 90 days'}
-                      </p>
-                      <p className="value">
-                        {summary.sleep !== null
-                          ? formatSleepHours(summary.sleep)
-                          : '—'}{' '}
-                        / {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
-                      </p>
-                      <p className="helper">
-                        {is30Disabled
-                          ? (
-                              <Tooltip label={`Log ${ENTRY_THRESHOLD_30}+ nights to see 30-day trend.`}>
-                                <span className="tooltip-trigger muted">
-                                  Need {ENTRY_THRESHOLD_30}+ entries for 30-day line
-                                </span>
-                              </Tooltip>
-                            )
-                          : is90Disabled
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis
+                        dataKey="date"
+                        tickFormatter={formatShortDate}
+                        interval={isMobile ? Math.max(rollingTickInterval, 1) : rollingTickInterval}
+                        tick={isMobile ? mobileTickProps : baseTickProps}
+                        height={isMobile ? 36 : 30}
+                      />
+                      <YAxis
+                        tickFormatter={
+                          rollingMetric === 'sleep'
+                            ? formatSleepAxisValue
+                            : formatAxisValue
+                        }
+                        domain={
+                          rollingMetric === 'sleep' ? [4, 10] : [1, 5]
+                        }
+                        ticks={
+                          rollingMetric === 'sleep' ? [4, 6, 8, 10] : [1, 2, 3, 4, 5]
+                        }
+                        tick={baseTickProps}
+                      />
+                      <RechartsTooltip
+                        labelFormatter={value =>
+                          formatLongDate(new Date(`${value}T00:00:00`))}
+                        formatter={(value) => {
+                          const normalized = Array.isArray(value) ? value[0] : value
+                          if (rollingMetric === 'sleep') {
+                            const numeric = typeof normalized === 'number'
+                              ? normalized
+                              : Number(normalized)
+                            return Number.isFinite(numeric) ? formatSleepHours(numeric) : '—'
+                          }
+                          return formatLineValue(normalized ?? '')
+                        }}
+                        itemSorter={(item) => {
+                          const name = String(item.name ?? '')
+                          if (name.includes('7')) return 1
+                          if (name.includes('30')) return 2
+                          if (name.includes('90')) return 3
+                          return 99
+                        }}
+                      />
+                      <Legend content={<RollingLegend show30={show30} show90={show90} wrapperStyle={legendWrapperStyle} />} />
+                      {rollingMetric === 'sleep'
+                        ? (
+                            <>
+                              <Line
+                                type="monotone"
+                                dataKey="sleep7"
+                                name="Last 7 days"
+                                stroke={rollingTrendColors.long}
+                                dot={false}
+                                strokeWidth={2}
+                              />
+                              {show30 && (
+                                <Line
+                                  type="monotone"
+                                  dataKey="sleep30"
+                                  name="Last 30 days"
+                                  stroke={rollingTrendColors.mid}
+                                  dot={false}
+                                  strokeWidth={2}
+                                />
+                              )}
+                              {show90 && (
+                                <Line
+                                  type="monotone"
+                                  dataKey="sleep90"
+                                  name="Last 90 days"
+                                  stroke="var(--chart-sleep)"
+                                  dot={false}
+                                  strokeWidth={2}
+                                />
+                              )}
+                            </>
+                          )
+                        : (
+                            <>
+                              <Line
+                                type="monotone"
+                                dataKey="mood7"
+                                name="Last 7 days"
+                                stroke={rollingTrendColors.long}
+                                dot={false}
+                                strokeWidth={2}
+                              />
+                              {show30 && (
+                                <Line
+                                  type="monotone"
+                                  dataKey="mood30"
+                                  name="Last 30 days"
+                                  stroke={rollingTrendColors.mid}
+                                  dot={false}
+                                  strokeWidth={2}
+                                />
+                              )}
+                              {show90 && (
+                                <Line
+                                  type="monotone"
+                                  dataKey="mood90"
+                                  name="Last 90 days"
+                                  stroke="var(--chart-sleep)"
+                                  dot={false}
+                                  strokeWidth={2}
+                                />
+                              )}
+                            </>
+                          )}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="trend-summary">
+                  {rollingSummaries.map((summary) => {
+                    const is30Disabled = summary.days === 30 && !show30
+                    const is90Disabled = summary.days === 90 && !show90
+                    const isDisabled = is30Disabled || is90Disabled
+                    return (
+                      <div
+                        className={`stat-block ${isDisabled ? 'stat-block--disabled' : ''}`}
+                        key={summary.days}
+                      >
+                        <p className="label">
+                          {summary.days === 7
+                            ? 'Last 7 days'
+                            : summary.days === 30
+                              ? 'Last 30 days'
+                              : 'Last 90 days'}
+                        </p>
+                        <p className="value">
+                          {summary.sleep !== null
+                            ? formatSleepHours(summary.sleep)
+                            : '—'}{' '}
+                          / {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
+                        </p>
+                        <p className="helper">
+                          {is30Disabled
                             ? (
-                                <Tooltip label={`Log ${ENTRY_THRESHOLD_90}+ nights to see 90-day trend.`}>
+                                <Tooltip label={`Log ${ENTRY_THRESHOLD_30}+ nights to see 30-day trend.`}>
                                   <span className="tooltip-trigger muted">
-                                    Need {ENTRY_THRESHOLD_90}+ entries for 90-day line
+                                    Need {ENTRY_THRESHOLD_30}+ entries for 30-day line
                                   </span>
                                 </Tooltip>
                               )
-                            : (() => {
-                                const noDelta = summary.sleepDelta === null && summary.moodDelta === null
-                                const deltaNote = summary.days === 7
-                                  ? '~14 days'
-                                  : summary.days === 30
-                                    ? '~30 days'
-                                    : '~90 days'
-                                return noDelta
-                                  ? (
-                                      <Tooltip
-                                        label={`Delta compares to the previous ${summary.days}-day window; need about ${deltaNote} of history.`}
-                                      >
-                                        <span className="tooltip-trigger muted">
-                                          Delta after {deltaNote} of data
-                                        </span>
-                                      </Tooltip>
-                                    )
-                                  : (
-                                      <Tooltip
-                                        label={`Change vs prior ${summary.days}-day window.`}
-                                      >
-                                        <span className="tooltip-trigger">
-                                          Delta: {formatSleepDeltaValue(summary.sleepDelta)} ·{' '}
-                                          {formatDeltaValue(summary.moodDelta)}
-                                        </span>
-                                      </Tooltip>
-                                    )
-                              })()}
-                      </p>
-                    </div>
-                  )
-                })}
-              </div>
-            </>
-          )}
+                            : is90Disabled
+                              ? (
+                                  <Tooltip label={`Log ${ENTRY_THRESHOLD_90}+ nights to see 90-day trend.`}>
+                                    <span className="tooltip-trigger muted">
+                                      Need {ENTRY_THRESHOLD_90}+ entries for 90-day line
+                                    </span>
+                                  </Tooltip>
+                                )
+                              : (() => {
+                                  const noDelta = summary.sleepDelta === null && summary.moodDelta === null
+                                  const deltaNote = summary.days === 7
+                                    ? '~14 days'
+                                    : summary.days === 30
+                                      ? '~30 days'
+                                      : '~90 days'
+                                  return noDelta
+                                    ? (
+                                        <Tooltip
+                                          label={`Delta compares to the previous ${summary.days}-day window; need about ${deltaNote} of history.`}
+                                        >
+                                          <span className="tooltip-trigger muted">
+                                            Delta after {deltaNote} of data
+                                          </span>
+                                        </Tooltip>
+                                      )
+                                    : (
+                                        <Tooltip
+                                          label={`Change vs prior ${summary.days}-day window.`}
+                                        >
+                                          <span className="tooltip-trigger delta-block muted">
+                                            <span className="delta-block__label">
+                                              VS prior {summary.days} days
+                                            </span>
+                                            <span className="delta-stacked">
+                                              <span>Sleep: {formatSleepDeltaValue(summary.sleepDelta)}</span>
+                                              <span>Mood: {formatDeltaValue(summary.moodDelta)}</span>
+                                            </span>
+                                          </span>
+                                        </Tooltip>
+                                      )
+                                })()}
+                        </p>
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
     </section>
   )
 }
