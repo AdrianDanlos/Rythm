@@ -682,6 +682,13 @@
   border: 1px solid var(--selected-border);
 }
 
+/* Disabled (future) days: greyed out only, no circular border or different bg */
+.date-picker .rdp-day_button:disabled,
+.date-picker .rdp-disabled .rdp-day_button {
+  background: transparent;
+  border-color: transparent;
+}
+
 .mood-row {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
