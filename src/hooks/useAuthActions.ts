@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
+import { toast } from 'sonner'
 import { supabase } from '../lib/supabaseClient'
 
 type UseAuthActionsParams = {
@@ -34,7 +35,7 @@ export const useAuthActions = ({
       }
     }
     catch {
-      setAuthError('Unable to authenticate. Check your details.')
+      setAuthError(null)
     }
   }
 
@@ -50,7 +51,8 @@ export const useAuthActions = ({
       },
     })
     if (error) {
-      setAuthError('Unable to start Google sign-in.')
+      toast.error('Unable to start Google sign-in.')
+      setAuthError(null)
     }
   }
 

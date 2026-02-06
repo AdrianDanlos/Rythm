@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { toast } from 'sonner'
 import { supabase } from '../lib/supabaseClient'
 
 export const useAuth = () => {
@@ -48,7 +49,8 @@ export const useAuth = () => {
       password,
     })
     if (error) {
-      setAuthError('Unable to authenticate. Check your details.')
+      toast.error('Unable to authenticate. Check your details.')
+      setAuthError(null)
     }
     setAuthLoading(false)
     return { error }
@@ -62,7 +64,8 @@ export const useAuth = () => {
       password,
     })
     if (error) {
-      setAuthError('Unable to authenticate. Check your details.')
+      toast.error('Unable to authenticate. Check your details.')
+      setAuthError(null)
     }
     setAuthLoading(false)
     return { error }

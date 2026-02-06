@@ -57,7 +57,6 @@ export const AuthForm = ({
             </h2>
           )
         : null}
-      {authError ? <p className="error">{authError}</p> : null}
       {showEmailPassword
         ? (
             <form onSubmit={onSubmit} className="stack">
