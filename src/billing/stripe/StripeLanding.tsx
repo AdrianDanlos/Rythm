@@ -74,7 +74,8 @@ export function StripeLanding({ logo }: StripeLandingProps) {
           <h4>Your rights</h4>
           <p>
             You can access and export your data from within the app. You may
-            request deletion of your account and data by contacting us at{' '}
+            request deletion of your account and data via our{' '}
+            <a href="/delete-account">delete account page</a> or by emailing{' '}
             <a href="mailto:danlosadrian@gmail.com">danlosadrian@gmail.com</a>.
           </p>
           <h4>Updates</h4>
