@@ -15,10 +15,10 @@ export const IdeaSleepTarget = ({
   onOpenPaywall,
 }: IdeaSleepTargetProps) => {
   const hasThreshold = typeof personalSleepThreshold === 'number'
-  const hasMoodData =
-    moodByPersonalThreshold.high !== null || moodByPersonalThreshold.low !== null
-  const moodDelta =
-    hasMoodData && moodByPersonalThreshold.high != null && moodByPersonalThreshold.low != null
+  const hasMoodData
+    = moodByPersonalThreshold.high !== null || moodByPersonalThreshold.low !== null
+  const moodDelta
+    = hasMoodData && moodByPersonalThreshold.high != null && moodByPersonalThreshold.low != null
       ? moodByPersonalThreshold.high - moodByPersonalThreshold.low
       : null
 
