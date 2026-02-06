@@ -1513,8 +1513,8 @@
 }
 
 .premium-preview__blur {
-  filter: blur(4px);
-  opacity: 0.55;
+  filter: blur(3px);
+  opacity: 0.8;
   pointer-events: none;
 }
 
@@ -1526,6 +1526,7 @@
   padding: 16px;
   text-align: center;
   background: var(--premium-overlay-bg);
+  border-radius: 5px;
 }
 
 .premium-preview__overlay .locked-message {
