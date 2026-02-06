@@ -1175,6 +1175,11 @@
   opacity: 0.7;
 }
 
+/* Tooltip triggers (e.g. greyed 90/365 day buttons) should show help cursor */
+.app-tooltip .toggle-group__btn--disabled {
+  cursor: help;
+}
+
 .trend-summary {
   display: flex;
   justify-content: center;
@@ -1821,6 +1826,11 @@
   box-shadow: none;
 }
 
+/* Help cursor for any element that shows a tooltip (custom or native title) */
+[title]:not([title='']) {
+  cursor: help;
+}
+
 .app-tooltip {
   position: relative;
   display: inline-flex;
@@ -1839,6 +1849,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  cursor: help;
 }
 
 .tooltip-trigger.delta-block {
