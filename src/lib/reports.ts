@@ -68,6 +68,8 @@ export const exportMonthlyReport = async (
     allTimeAvgSleep: reportData.allTimeAvgSleep,
     allTimeAvgMood: reportData.allTimeAvgMood,
     allTimeTags: reportData.allTimeTags,
+    allTimeTagDrivers: reportData.allTimeTagDrivers,
+    allTimeTagSleepDrivers: reportData.allTimeTagSleepDrivers,
   })
 
   const pdfBuffer = doc.output('arraybuffer') as ArrayBuffer

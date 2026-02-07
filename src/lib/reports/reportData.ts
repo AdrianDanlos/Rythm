@@ -2,7 +2,7 @@ import type { Entry } from '../entries'
 import { calculateAverages } from '../utils/averages'
 import { getCorrelationInsight } from '../utils/correlation'
 import { getSleepConsistencyLabel } from '../utils/sleepConsistency'
-import { buildTagInsights } from '../utils/tagInsights'
+import { buildTagDrivers, buildTagInsights, buildTagSleepDrivers } from '../utils/tagInsights'
 import { formatLongDate } from '../utils/dateFormatters'
 
 export type ReportRange = {
@@ -32,6 +32,8 @@ export type ReportData = {
   monthlyCorrelation: string | null
   monthlyTags: ReturnType<typeof buildTagInsights>
   allTimeTags: ReturnType<typeof buildTagInsights>
+  allTimeTagDrivers: ReturnType<typeof buildTagDrivers>
+  allTimeTagSleepDrivers: ReturnType<typeof buildTagSleepDrivers>
   avgSleep: number | null
   avgMood: number | null
   priorAvgSleep: number | null
@@ -177,6 +179,8 @@ export const buildReportData = (
 
   const monthlyTags = buildTagInsights(recentEntries, 5)
   const allTimeTags = buildTagInsights(entries, 5)
+  const allTimeTagDrivers = buildTagDrivers(entries, 3)
+  const allTimeTagSleepDrivers = buildTagSleepDrivers(entries, 3)
 
   const { sleep: avgSleep, mood: avgMood } = calculateAverages(recentEntries)
   const { sleep: priorAvgSleep, mood: priorAvgMood } = calculateAverages(priorEntries)
@@ -205,6 +209,8 @@ export const buildReportData = (
     monthlyCorrelation,
     monthlyTags,
     allTimeTags,
+    allTimeTagDrivers,
+    allTimeTagSleepDrivers,
     avgSleep,
     avgMood,
     priorAvgSleep,

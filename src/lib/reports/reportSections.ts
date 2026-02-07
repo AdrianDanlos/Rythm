@@ -85,7 +85,6 @@ export const renderLast30DaysSection = ({
     recentEntries,
     monthlyConsistency,
     monthlyCorrelation,
-    monthlyTags,
     avgSleep,
     avgMood,
     sleepDelta,
@@ -152,22 +151,6 @@ export const renderLast30DaysSection = ({
         `Tags: ${bestTags}`,
       ],
       22,
-    )
-  }
-
-  if (monthlyTags.length) {
-    yRef.value += 4
-    doc.setFontSize(12)
-    doc.text('Top tags', 16, yRef.value)
-    yRef.value += 6
-    drawBullets(
-      doc,
-      yRef,
-      monthlyTags.map(
-        tag =>
-          `${tag.tag} · ${tag.count} entries · ${tag.mood?.toFixed(1) ?? '—'} mood`,
-      ),
-      18,
     )
   }
 
@@ -252,6 +235,8 @@ type AllTimeParams = {
   allTimeAvgSleep: number | null
   allTimeAvgMood: number | null
   allTimeTags: ReportData['allTimeTags']
+  allTimeTagDrivers: ReportData['allTimeTagDrivers']
+  allTimeTagSleepDrivers: ReportData['allTimeTagSleepDrivers']
 }
 
 export const renderAllTimeSection = ({
@@ -262,6 +247,8 @@ export const renderAllTimeSection = ({
   allTimeAvgSleep,
   allTimeAvgMood,
   allTimeTags,
+  allTimeTagDrivers,
+  allTimeTagSleepDrivers,
 }: AllTimeParams) => {
   startNewPage(doc, yRef)
   doc.setFontSize(12)
@@ -278,18 +265,92 @@ export const renderAllTimeSection = ({
 
   drawBullets(doc, yRef, [`Streak: ${stats.streak} days`])
 
+  const moodPos = allTimeTagDrivers.filter(d => (d.delta ?? 0) > 0).sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0)).slice(0, 4)
+  const moodNeg = allTimeTagDrivers.filter(d => (d.delta ?? 0) < 0).sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)).slice(0, 4)
+  const sleepPos = allTimeTagSleepDrivers.filter(d => (d.delta ?? 0) > 0).sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0)).slice(0, 4)
+  const sleepNeg = allTimeTagSleepDrivers.filter(d => (d.delta ?? 0) < 0).sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)).slice(0, 4)
+
+  if (moodPos.length > 0 || moodNeg.length > 0) {
+    yRef.value += 4
+    doc.setFontSize(12)
+    doc.text('Tags that predict mood', 16, yRef.value)
+    yRef.value += 6
+    if (moodPos.length > 0) {
+      doc.setFontSize(10)
+      doc.setTextColor(60)
+      doc.text('Top 4 positive', 18, yRef.value)
+      yRef.value += 5
+      doc.setTextColor(20)
+      drawBullets(
+        doc,
+        yRef,
+        moodPos.map(d => `${d.tag} · +${(d.delta ?? 0).toFixed(1)} mood`),
+        20,
+      )
+      yRef.value += 2
+    }
+    if (moodNeg.length > 0) {
+      doc.setFontSize(10)
+      doc.setTextColor(60)
+      doc.text('Top 4 negative', 18, yRef.value)
+      yRef.value += 5
+      doc.setTextColor(20)
+      drawBullets(
+        doc,
+        yRef,
+        moodNeg.map(d => `${d.tag} · ${(d.delta ?? 0).toFixed(1)} mood`),
+        20,
+      )
+      yRef.value += 2
+    }
+    doc.setFontSize(12)
+  }
+
+  if (sleepPos.length > 0 || sleepNeg.length > 0) {
+    yRef.value += 4
+    doc.setFontSize(12)
+    doc.text('Tags that predict sleep', 16, yRef.value)
+    yRef.value += 6
+    if (sleepPos.length > 0) {
+      doc.setFontSize(10)
+      doc.setTextColor(60)
+      doc.text('Top 4 positive', 18, yRef.value)
+      yRef.value += 5
+      doc.setTextColor(20)
+      drawBullets(
+        doc,
+        yRef,
+        sleepPos.map(d => `${d.tag} · +${(d.delta ?? 0).toFixed(1)}h`),
+        20,
+      )
+      yRef.value += 2
+    }
+    if (sleepNeg.length > 0) {
+      doc.setFontSize(10)
+      doc.setTextColor(60)
+      doc.text('Top 4 negative', 18, yRef.value)
+      yRef.value += 5
+      doc.setTextColor(20)
+      drawBullets(
+        doc,
+        yRef,
+        sleepNeg.map(d => `${d.tag} · ${(d.delta ?? 0).toFixed(1)}h`),
+        20,
+      )
+      yRef.value += 2
+    }
+    doc.setFontSize(12)
+  }
+
   if (allTimeTags.length) {
     yRef.value += 4
     doc.setFontSize(12)
-    doc.text('Top tags', 16, yRef.value)
+    doc.text('Most used tags', 16, yRef.value)
     yRef.value += 6
     drawBullets(
       doc,
       yRef,
-      allTimeTags.map(
-        tag =>
-          `${tag.tag} · ${tag.count} entries · ${tag.mood?.toFixed(1) ?? '—'} mood`,
-      ),
+      allTimeTags.slice(0, 5).map(tag => `${tag.tag} · ${tag.count} entries`),
       18,
     )
   }

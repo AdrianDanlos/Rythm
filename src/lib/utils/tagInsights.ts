@@ -1,7 +1,14 @@
 import type { Entry } from '../entries'
-import type { TagDriver, TagInsight } from '../types/stats'
+import type { TagDriver, TagInsight, TagSleepDriver } from '../types/stats'
 
 export const DEFAULT_TAG_DRIVER_MIN_COUNT = 3
+
+/** Returns YYYY-MM-DD for the calendar day before entryDate. */
+function getPrevDateString(entryDate: string): string {
+  const d = new Date(`${entryDate}T12:00:00`)
+  d.setDate(d.getDate() - 1)
+  return d.toISOString().slice(0, 10)
+}
 
 export const buildTagInsights = (entries: Entry[], limit?: number) => {
   const aggregates = new Map<
@@ -87,4 +94,60 @@ export const buildTagDrivers = (
     .sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0))
 
   return drivers
+}
+
+/**
+ * Tag → sleep impact using previous day's tags (D-1).
+ * For each entry D with sleep, uses tags from the entry for D-1.
+ * Positive delta = more sleep when that tag was on the previous day.
+ */
+export const buildTagSleepDrivers = (
+  entries: Entry[],
+  minCount: number = DEFAULT_TAG_DRIVER_MIN_COUNT,
+): TagSleepDriver[] => {
+  if (!entries.length) return []
+  const byDate = new Map(entries.map(e => [e.entry_date, e]))
+  let totalSleepSum = 0
+  let totalCount = 0
+  const tagData = new Map<string, { sleepSum: number, count: number }>()
+
+  entries.forEach((entry) => {
+    const sleep = Number(entry.sleep_hours)
+    if (!Number.isFinite(sleep)) return
+    const prevDate = getPrevDateString(entry.entry_date)
+    const prevEntry = byDate.get(prevDate)
+    if (!prevEntry?.tags?.length) return
+    totalSleepSum += sleep
+    totalCount += 1
+    const tags = new Set((prevEntry.tags ?? []).map(t => t.trim()).filter(Boolean))
+    tags.forEach((tag) => {
+      const current = tagData.get(tag) ?? { sleepSum: 0, count: 0 }
+      current.sleepSum += sleep
+      current.count += 1
+      tagData.set(tag, current)
+    })
+  })
+
+  if (!totalCount) return []
+
+  return Array.from(tagData.entries())
+    .map(([tag, data]) => {
+      const sleepWith = data.count ? data.sleepSum / data.count : null
+      const withoutCount = totalCount - data.count
+      const sleepWithout = withoutCount > 0
+        ? (totalSleepSum - data.sleepSum) / withoutCount
+        : null
+      const delta = sleepWith !== null && sleepWithout !== null
+        ? sleepWith - sleepWithout
+        : null
+      return {
+        tag,
+        count: data.count,
+        sleepWith,
+        sleepWithout,
+        delta,
+      }
+    })
+    .filter(d => d.count >= minCount && d.delta !== null)
+    .sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0))
 }

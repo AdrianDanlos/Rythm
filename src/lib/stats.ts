@@ -4,6 +4,7 @@ import type {
   RollingSummary,
   SleepConsistencyBadge,
   TagDriver,
+  TagSleepDriver,
   TrendPoint,
   WindowStats,
 } from './types/stats'
@@ -13,7 +14,7 @@ import {
   getSleepConsistencyBadges,
   getSleepConsistencyLabel,
 } from './utils/sleepConsistency'
-import { buildTagDrivers } from './utils/tagInsights'
+import { buildTagDrivers, buildTagSleepDrivers } from './utils/tagInsights'
 
 export type StatsResult = {
   windowAverages: {
@@ -39,6 +40,7 @@ export type StatsResult = {
   rollingSeries: RollingPoint[]
   rollingSummaries: RollingSummary[]
   tagDrivers: TagDriver[]
+  tagSleepDrivers: TagSleepDriver[]
 }
 
 export const buildWeeklyTrendSeries = (points: TrendPoint[]): TrendPoint[] => {
@@ -290,6 +292,7 @@ export const buildStats = (
   })()
 
   const tagDrivers = buildTagDrivers(entries)
+  const tagSleepDrivers = buildTagSleepDrivers(entries)
 
   return {
     windowAverages,
@@ -306,5 +309,6 @@ export const buildStats = (
     rollingSeries,
     rollingSummaries,
     tagDrivers,
+    tagSleepDrivers,
   }
 }

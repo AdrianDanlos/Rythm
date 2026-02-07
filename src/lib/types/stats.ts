@@ -46,6 +46,14 @@ export type TagDriver = {
   delta: number | null
 }
 
+export type TagSleepDriver = {
+  tag: string
+  count: number
+  sleepWith: number | null
+  sleepWithout: number | null
+  delta: number | null
+}
+
 export type SleepConsistencyBadge = {
   id: string
   title: string

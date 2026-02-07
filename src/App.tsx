@@ -593,6 +593,7 @@ function App() {
                           personalSleepThreshold={stats.personalSleepThreshold}
                           moodByPersonalThreshold={stats.moodByPersonalThreshold}
                           tagDrivers={stats.tagDrivers}
+                          tagSleepDrivers={stats.tagSleepDrivers}
                           isPro={isPro}
                           exportError={exportError}
                           onExportCsv={handleExportCsv}

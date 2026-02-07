@@ -6,6 +6,7 @@ import type {
   SleepMoodAverages,
   SleepConsistencyBadge,
   TagDriver,
+  TagSleepDriver,
   TrendPoint,
   WindowStats,
 } from '../lib/types/stats'
@@ -50,6 +51,7 @@ type InsightsProps = {
   personalSleepThreshold: number | null
   moodByPersonalThreshold: { high: number | null, low: number | null }
   tagDrivers: TagDriver[]
+  tagSleepDrivers: TagSleepDriver[]
   isPro: boolean
   exportError: string | null
   onExportCsv: () => void
@@ -80,6 +82,7 @@ export const Insights = ({
   personalSleepThreshold,
   moodByPersonalThreshold,
   tagDrivers,
+  tagSleepDrivers,
   isPro,
   exportError,
   onExportCsv,
@@ -160,6 +163,7 @@ export const Insights = ({
               <InsightsTagInsights
                 isPro={isPro}
                 tagDrivers={tagDrivers}
+                tagSleepDrivers={tagSleepDrivers}
                 onOpenPaywall={onOpenPaywall}
               />
               <section className="card">
