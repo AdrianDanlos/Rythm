@@ -1473,11 +1473,11 @@
 .badge-progress-fill {
   height: 100%;
   display: block;
-  background: #8052ab;
+  background: var(--chart-ideal-sleep, #A78BFA);
 }
 
 .badge-row.locked .badge-progress-fill {
-  background: #8052ab;
+  background: var(--chart-ideal-sleep, #A78BFA);
 }
 
 .badge-progress-text {
