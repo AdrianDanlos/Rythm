@@ -582,57 +582,6 @@
   cursor: not-allowed;
 }
 
-.tag-add-popover {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  z-index: 6;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: var(--tag-suggestions-shadow);
-  padding: 8px;
-  min-width: 200px;
-}
-
-.tag-add-popover form {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.tag-add-input {
-  flex: 1;
-  min-width: 0;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 0.9375rem;
-  background: var(--card);
-  color: var(--text);
-}
-
-.tag-add-input:focus {
-  outline: none;
-  border-color: var(--input-focus-border);
-  box-shadow: var(--input-focus-shadow);
-}
-
-.tag-add-submit {
-  flex-shrink: 0;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 0.9375rem;
-  background: var(--selected-bg);
-  color: var(--selected-text);
-  cursor: pointer;
-}
-
-.tag-add-submit:hover {
-  opacity: 0.9;
-}
-
 /* Pills row below dropdown */
 .tag-pills-row {
   display: flex;
@@ -1707,42 +1656,6 @@
   color: var(--muted);
 }
 
-.helper.helper-inline {
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-
-.helper-inline .helper-tag {
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 2px 8px;
-  font-size: 0.7rem;
-  background: var(--card);
-  color: var(--text);
-}
-
-.helper-inline .helper-pill-value {
-  font-weight: 600;
-  color: var(--text);
-}
-
-.helper-inline .helper-sep {
-  opacity: 0.7;
-  margin: 0px 5px 4px 5px;
-}
-
-.helper-inline .helper-arrow {
-  color: var(--muted);
-  font-size: 0.8rem;
-  margin: 0 2px 4px;
-}
-
-.helper-inline .helper-break {
-  flex-basis: 100%;
-  height: 0;
-}
-
 .insights-intro {
   display: grid;
   gap: 16px;
@@ -2175,10 +2088,6 @@
 
   .mood-legend-row {
     grid-template-columns: 12px 1fr auto;
-  }
-
-  .helper-sep--desktop {
-    display: none;
   }
 
   .app {
