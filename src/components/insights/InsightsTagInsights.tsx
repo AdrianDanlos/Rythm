@@ -111,9 +111,10 @@ export const InsightsTagInsights = ({
                                     <div className="tag-bar-item positive" key={tag.tag}>
                                       <div className="tag-bar-header">
                                         <p className="tag-title">{tag.tag}</p>
+                                        <p className="tag-delta tag-delta--pc">{formatDelta(tag.delta)} mood</p>
                                       </div>
                                       <div className="tag-bar-delta-and-track">
-                                        <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
+                                        <p className="tag-delta tag-delta--mobile">{formatDelta(tag.delta)} mood</p>
                                         <div className="tag-bar-track" aria-hidden="true">
                                           <span
                                             className="tag-bar-fill"
@@ -135,9 +136,10 @@ export const InsightsTagInsights = ({
                                     <div className="tag-bar-item negative" key={tag.tag}>
                                       <div className="tag-bar-header">
                                         <p className="tag-title">{tag.tag}</p>
+                                        <p className="tag-delta tag-delta--pc">{formatDelta(tag.delta)} mood</p>
                                       </div>
                                       <div className="tag-bar-delta-and-track">
-                                        <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
+                                        <p className="tag-delta tag-delta--mobile">{formatDelta(tag.delta)} mood</p>
                                         <div className="tag-bar-track" aria-hidden="true">
                                           <span
                                             className="tag-bar-fill"
@@ -177,9 +179,10 @@ export const InsightsTagInsights = ({
                                     <div className="tag-bar-item positive" key={d.tag}>
                                       <div className="tag-bar-header">
                                         <p className="tag-title">{d.tag}</p>
+                                        <p className="tag-delta tag-delta--pc">{formatSleepDelta(d.delta)}</p>
                                       </div>
                                       <div className="tag-bar-delta-and-track">
-                                        <p className="tag-delta">{formatSleepDelta(d.delta)}</p>
+                                        <p className="tag-delta tag-delta--mobile">{formatSleepDelta(d.delta)}</p>
                                         <div className="tag-bar-track" aria-hidden="true">
                                           <span
                                             className="tag-bar-fill"
@@ -201,9 +204,10 @@ export const InsightsTagInsights = ({
                                     <div className="tag-bar-item negative" key={d.tag}>
                                       <div className="tag-bar-header">
                                         <p className="tag-title">{d.tag}</p>
+                                        <p className="tag-delta tag-delta--pc">{formatSleepDelta(d.delta)}</p>
                                       </div>
                                       <div className="tag-bar-delta-and-track">
-                                        <p className="tag-delta">{formatSleepDelta(d.delta)}</p>
+                                        <p className="tag-delta tag-delta--mobile">{formatSleepDelta(d.delta)}</p>
                                         <div className="tag-bar-track" aria-hidden="true">
                                           <span
                                             className="tag-bar-fill"

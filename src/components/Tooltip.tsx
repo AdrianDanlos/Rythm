@@ -13,6 +13,7 @@ type TooltipProps = {
 
 export const Tooltip = ({ label, children, className }: TooltipProps) => {
   const [isVisible, setIsVisible] = useState(false)
+  const [isTouch, setIsTouch] = useState(false)
   const [bubbleStyle, setBubbleStyle] = useState<React.CSSProperties>({
     position: 'fixed',
     left: 0,
@@ -22,15 +23,25 @@ export const Tooltip = ({ label, children, className }: TooltipProps) => {
   const triggerRef = useRef<HTMLSpanElement>(null)
   const bubbleRef = useRef<HTMLSpanElement>(null)
 
+  useEffect(() => {
+    setIsTouch(isTouchDevice())
+  }, [])
+
   const hide = useCallback(() => setIsVisible(false), [])
 
   // On mobile, dismiss tooltip when the user scrolls
   useEffect(() => {
-    if (!isVisible || !isTouchDevice()) return
+    if (!isVisible || !isTouch) return
     const onScroll = () => hide()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [isVisible, hide])
+  }, [isVisible, isTouch, hide])
+
+  // On mobile, open/close by tap; after scroll-hide we don't get mouseEnter again so click must reopen
+  const handleTriggerClick = useCallback(() => {
+    if (!isTouch) return
+    setIsVisible(v => !v)
+  }, [isTouch])
 
   const updatePosition = useCallback(() => {
     const trigger = triggerRef.current
@@ -84,10 +95,11 @@ export const Tooltip = ({ label, children, className }: TooltipProps) => {
     <span
       ref={triggerRef}
       className={['app-tooltip', 'app-tooltip--positioned', className].filter(Boolean).join(' ')}
-      onMouseEnter={show}
-      onMouseLeave={hide}
-      onFocusCapture={show}
-      onBlurCapture={hide}
+      onMouseEnter={!isTouch ? show : undefined}
+      onMouseLeave={!isTouch ? hide : undefined}
+      onFocusCapture={!isTouch ? show : undefined}
+      onBlurCapture={!isTouch ? hide : undefined}
+      onClick={handleTriggerClick}
     >
       {children}
       {isVisible && (
