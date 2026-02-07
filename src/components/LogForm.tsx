@@ -263,19 +263,20 @@ export const LogForm = ({
                 : 'Upgrade to Pro to add tags'}
             </span>
           </div>
-          {isPro && (
-            <>
-              <div className="tag-control-row">
-                <div className="tag-dropdown-wrap">
-                  <input
-                    type="text"
-                    className="tag-dropdown-trigger"
-                    aria-haspopup="listbox"
-                    aria-expanded={tagDropdownOpen}
-                    aria-label="Type or select tags"
-                    placeholder="Type or select tags"
-                    value={tagInputValue}
-                    disabled={atMaxTags}
+          <div
+            className={`tag-control-row${!isPro ? ' tag-control-row--disabled' : ''}`}
+            aria-disabled={!isPro}
+          >
+            <div className="tag-dropdown-wrap">
+              <input
+                type="text"
+                className="tag-dropdown-trigger"
+                aria-haspopup="listbox"
+                aria-expanded={isPro ? tagDropdownOpen : false}
+                aria-label="Type or select tags"
+                placeholder="Type or select tags"
+                value={tagInputValue}
+                disabled={atMaxTags || !isPro}
                     onChange={e => {
                       setTagInputValue(e.target.value)
                       setTagDropdownOpen(true)
@@ -288,7 +289,7 @@ export const LogForm = ({
                       }
                     }}
                   />
-                  {tagDropdownOpen && (matchingSuggestions.length > 0 || !isMobile) && (
+                  {isPro && tagDropdownOpen && (matchingSuggestions.length > 0 || !isMobile) && (
                     <div className="tag-suggestions" role="listbox">
                       {matchingSuggestions.length > 0
                         ? matchingSuggestions.map(suggestion => (
@@ -316,35 +317,33 @@ export const LogForm = ({
                   <button
                     type="button"
                     className="tag-add-button"
-                    disabled={atMaxTags}
+                    disabled={atMaxTags || !isPro}
                     onClick={submitTagInput}
                   >
                     + Add
                   </button>
                 </div>
-              </div>
-              <div className="tag-pills-row">
-                {usedTags.map((tag, index) => (
-                  <span
-                    key={tag}
-                    className="tag-pill"
-                    data-color-index={index}
-                  >
-                    {tag}
-                    <button
-                      type="button"
-                      className="tag-badge-remove"
-                      aria-label={`Remove ${tag}`}
-                      onMouseDown={e => e.preventDefault()}
-                      onClick={() => removeTag(tag)}
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
-            </>
-          )}
+          </div>
+          <div className="tag-pills-row">
+            {usedTags.map((tag, index) => (
+              <span
+                key={tag}
+                className="tag-pill"
+                data-color-index={index}
+              >
+                {tag}
+                <button
+                  type="button"
+                  className="tag-badge-remove"
+                  aria-label={`Remove ${tag}`}
+                  onMouseDown={e => e.preventDefault()}
+                  onClick={() => removeTag(tag)}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
         </div>
         <label className="field">
           Note (optional)
