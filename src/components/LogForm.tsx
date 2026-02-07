@@ -85,33 +85,53 @@ export const LogForm = ({
     document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
-  const [isTagInputFocused, setIsTagInputFocused] = useState(false)
+  const tagAreaRef = useRef<HTMLDivElement | null>(null)
+  const [tagDropdownOpen, setTagDropdownOpen] = useState(false)
+  const [tagInputValue, setTagInputValue] = useState('')
+
   const usedTags = parseTags(tags)
   const usedTagSet = new Set(usedTags)
   const sortedTagSuggestions = [...tagSuggestions].sort((a, b) =>
     a.localeCompare(b),
   )
-  const lastCommaIndex = tags.lastIndexOf(',')
-  const rawToken = lastCommaIndex === -1 ? tags : tags.slice(lastCommaIndex + 1)
-  const token = rawToken.trim()
-  const tokenLower = token.toLowerCase()
-  const matchingSuggestions = tokenLower.length
-    ? sortedTagSuggestions.filter(tag =>
-        tag.startsWith(tokenLower) && !usedTagSet.has(tag),
-      )
-    : isTagInputFocused
-      ? sortedTagSuggestions.filter(tag => !usedTagSet.has(tag))
-      : []
+  const availableSuggestions = sortedTagSuggestions.filter(
+    tag => !usedTagSet.has(tag),
+  )
+  const token = tagInputValue.trim().toLowerCase()
+  const matchingSuggestions = token
+    ? availableSuggestions.filter(s => s.startsWith(token))
+    : availableSuggestions
+  const atMaxTags = usedTags.length >= maxTagsPerEntry
 
-  const handleSuggestionSelect = (suggestion: string) => {
-    const prefix = lastCommaIndex === -1 ? '' : tags.slice(0, lastCommaIndex + 1)
-    const spacer = rawToken.startsWith(' ') ? ' ' : ''
-    const baseValue = `${prefix}${spacer}${suggestion}`
-    const nextTagList = parseTags(baseValue)
-    const shouldAppendComma = nextTagList.length < maxTagsPerEntry
-      && !baseValue.trim().endsWith(',')
-    const nextValue = shouldAppendComma ? `${baseValue}, ` : baseValue
-    onTagsChange(nextValue)
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (!tagAreaRef.current) return
+      if (event.target instanceof Node && tagAreaRef.current.contains(event.target)) {
+        return
+      }
+      setTagDropdownOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  const addTag = (tag: string) => {
+    const normalized = tag.trim().toLowerCase()
+    if (!normalized || usedTagSet.has(normalized) || atMaxTags) return
+    const nextList = [...usedTags, normalized]
+    onTagsChange(nextList.join(', '))
+    setTagInputValue('')
+    setTagDropdownOpen(false)
+  }
+
+  const removeTag = (tag: string) => {
+    const nextList = usedTags.filter(t => t !== tag)
+    onTagsChange(nextList.join(', '))
+  }
+
+  const submitTagInput = () => {
+    if (!tagInputValue.trim() || atMaxTags) return
+    addTag(tagInputValue)
   }
 
   return (
@@ -224,8 +244,9 @@ export const LogForm = ({
             ))}
           </div>
         </div>
-        <label
+        <div
           className="field"
+          ref={tagAreaRef}
           onClick={() => {
             if (!isPro) {
               onOpenPaywall()
@@ -236,39 +257,93 @@ export const LogForm = ({
             <span>Tags (Pro)</span>
             <span className="field-hint">
               {isPro
-                ? 'Separate tags with commas'
+                ? `Up to ${maxTagsPerEntry} tags`
                 : 'Upgrade to Pro to add tags'}
             </span>
           </div>
-          <div className="tag-input">
-            <input
-              type="text"
-              value={tags}
-              onChange={event => onTagsChange(event.target.value)}
-              placeholder="Suggested: exercise, late screens, caffeine, insomnia..."
-              disabled={!isPro}
-              onFocus={() => setIsTagInputFocused(true)}
-              onBlur={() => setIsTagInputFocused(false)}
-            />
-            {isPro && matchingSuggestions.length > 0
-              ? (
-                  <div className="tag-suggestions" role="listbox">
-                    {matchingSuggestions.map(suggestion => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        className="tag-suggestion"
-                        onMouseDown={event => event.preventDefault()}
-                        onClick={() => handleSuggestionSelect(suggestion)}
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                )
-              : null}
-          </div>
-        </label>
+          {isPro && (
+            <>
+              <div className="tag-control-row">
+                <div className="tag-dropdown-wrap">
+                  <input
+                    type="text"
+                    className="tag-dropdown-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded={tagDropdownOpen}
+                    aria-label="Type or select tags"
+                    placeholder="Type or select tags"
+                    value={tagInputValue}
+                    disabled={atMaxTags}
+                    onChange={e => {
+                      setTagInputValue(e.target.value)
+                      setTagDropdownOpen(true)
+                    }}
+                    onFocus={() => setTagDropdownOpen(true)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        submitTagInput()
+                      }
+                    }}
+                  />
+                  {tagDropdownOpen && (
+                    <div className="tag-suggestions" role="listbox">
+                      {matchingSuggestions.length > 0
+                        ? matchingSuggestions.map(suggestion => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              className="tag-suggestion"
+                              onMouseDown={e => e.preventDefault()}
+                              onClick={() => addTag(suggestion)}
+                            >
+                              {suggestion}
+                            </button>
+                          ))
+                        : (
+                            <span className="tag-suggestions-empty">
+                              {token
+                                ? "Press Enter to add as new tag"
+                                : 'No suggestions'}
+                            </span>
+                          )}
+                    </div>
+                  )}
+                </div>
+                <div className="tag-add-wrap">
+                  <button
+                    type="button"
+                    className="tag-add-button"
+                    disabled={atMaxTags}
+                    onClick={submitTagInput}
+                  >
+                    + Add
+                  </button>
+                </div>
+              </div>
+              <div className="tag-pills-row">
+                {usedTags.map((tag, index) => (
+                  <span
+                    key={tag}
+                    className="tag-pill"
+                    data-color-index={index}
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      className="tag-badge-remove"
+                      aria-label={`Remove ${tag}`}
+                      onMouseDown={e => e.preventDefault()}
+                      onClick={() => removeTag(tag)}
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
         <label className="field">
           Note (optional)
           <input

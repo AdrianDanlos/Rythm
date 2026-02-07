@@ -106,7 +106,7 @@ function App() {
   }, [])
 
   const sleepThreshold = sleepTarget
-  const maxTagsPerEntry = 10
+  const maxTagsPerEntry = 5
   const isPro = Boolean(session?.user?.app_metadata?.is_pro)
   const subscriptionSource = session?.user?.app_metadata?.subscription_source === 'play'
     ? 'play'

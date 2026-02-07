@@ -507,37 +507,172 @@
   box-shadow: var(--input-focus-shadow);
 }
 
-.tag-input {
-  position: relative;
-}
-
-.tag-input > input {
-  width: 100%;
-}
-
-.tag-badges-container {
+/* Tag control row: dropdown + Add button */
+.tag-control-row {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
+  align-items: stretch;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.tag-dropdown-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.tag-dropdown-trigger {
   width: 100%;
+  box-sizing: border-box;
+  text-align: left;
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 8px 10px;
+  padding: 10px 12px;
+  font-size: 1rem;
   background: var(--card);
-  min-height: 42px;
-  box-sizing: border-box;
+  color: var(--text);
+  cursor: text;
 }
 
-.tag-badge {
+.tag-dropdown-trigger:hover:not(:disabled) {
+  border-color: var(--input-focus-border);
+}
+
+.tag-dropdown-trigger:disabled {
+  background: var(--bg);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.tag-dropdown-trigger:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
+}
+
+.tag-add-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.tag-add-button {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  background: var(--card);
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tag-add-button:hover:not(:disabled) {
+  background: var(--button-hover-surface);
+  border-color: var(--input-focus-border);
+}
+
+.tag-add-button:disabled {
+  background: var(--bg);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.tag-add-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 6;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--tag-suggestions-shadow);
+  padding: 8px;
+  min-width: 200px;
+}
+
+.tag-add-popover form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tag-add-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.9375rem;
+  background: var(--card);
+  color: var(--text);
+}
+
+.tag-add-input:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
+}
+
+.tag-add-submit {
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.9375rem;
+  background: var(--selected-bg);
+  color: var(--selected-text);
+  cursor: pointer;
+}
+
+.tag-add-submit:hover {
+  opacity: 0.9;
+}
+
+/* Pills row below dropdown */
+.tag-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.tag-pill {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   border-radius: 9999px;
   padding: 4px 8px 4px 10px;
   font-size: 0.875rem;
-  background: var(--button-hover-surface);
-  color: var(--text);
+  color: #fff;
+  font-weight: 500;
+}
+
+.tag-pill[data-color-index="0"] {
+  background: var(--tag-pill-0);
+}
+
+.tag-pill[data-color-index="1"] {
+  background: var(--tag-pill-1);
+}
+
+.tag-pill[data-color-index="2"] {
+  background: var(--tag-pill-2);
+}
+
+.tag-pill[data-color-index="3"] {
+  background: var(--tag-pill-3);
+}
+
+.tag-pill[data-color-index="4"] {
+  background: var(--tag-pill-4);
+}
+
+.tag-pill .tag-badge-remove {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.tag-pill .tag-badge-remove:hover {
+  color: #fff;
 }
 
 .tag-badge-remove {
@@ -561,28 +696,10 @@
   outline-offset: 2px;
 }
 
-.tag-badges-input {
-  flex: 1 1 0;
-  min-width: 80px;
-  width: 0;
-  border: none;
-  background: transparent;
-  padding: 6px 4px;
-  font-size: 1rem;
-  color: var(--text);
-  box-sizing: border-box;
-}
-
-.tag-badges-input:focus {
-  outline: none;
-}
-
-.tag-badges-container:focus-within {
-  border-color: var(--input-focus-border);
-  box-shadow: var(--input-focus-shadow);
-}
-
-.tag-badges-input::placeholder {
+.tag-suggestions-empty {
+  display: block;
+  padding: 8px 10px;
+  font-size: 0.875rem;
   color: var(--muted);
 }
 
