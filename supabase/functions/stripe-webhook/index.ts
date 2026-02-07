@@ -110,7 +110,9 @@ Deno.serve(async (req) => {
 
   const updateUserMetadata = async (
     userId: string,
-    updates: Record<string, unknown>,
+    updatesOrFn:
+      | Record<string, unknown>
+      | ((current: Record<string, unknown>) => Record<string, unknown>),
   ) => {
     const adminHeaders = {
       Authorization: `Bearer ${supabaseServiceRoleKey}`,
@@ -126,6 +128,10 @@ Deno.serve(async (req) => {
 
     const userPayload = await userResponse.json()
     const currentMetadata = userPayload?.app_metadata ?? {}
+    const updates =
+      typeof updatesOrFn === 'function'
+        ? updatesOrFn(currentMetadata)
+        : updatesOrFn
     const updateResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {
       method: 'PUT',
       headers: adminHeaders,
@@ -188,21 +194,28 @@ Deno.serve(async (req) => {
       ? isActive
       : false
 
-    const updates: Record<string, unknown> = {
-      is_pro: shouldEnable,
-      ...(shouldEnable
-        ? { subscription_source: 'stripe' as const }
-        : { subscription_source: null }),
-    }
-
-    if (typeof subscription.customer === 'string') {
-      updates.stripe_customer_id = subscription.customer
-    }
-    if (typeof subscription.id === 'string') {
-      updates.stripe_subscription_id = subscription.id
-    }
-
-    const { error } = await updateUserMetadata(userId, updates)
+    const { error } = await updateUserMetadata(userId, (current) => {
+      const updates: Record<string, unknown> = {
+        is_pro: shouldEnable,
+      }
+      if (shouldEnable) {
+        updates.subscription_source = 'stripe'
+      }
+      else {
+        // Users are Stripe OR Play, but a delayed/replayed Stripe webhook could
+        // run after they subscribed on Play; avoid overwriting subscription_source.
+        if (current.subscription_source !== 'play') {
+          updates.subscription_source = null
+        }
+      }
+      if (typeof subscription.customer === 'string') {
+        updates.stripe_customer_id = subscription.customer
+      }
+      if (typeof subscription.id === 'string') {
+        updates.stripe_subscription_id = subscription.id
+      }
+      return updates
+    })
     if (error) {
       return new Response(error, { status: 500 })
     }
