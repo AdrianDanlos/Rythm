@@ -145,11 +145,12 @@ export const buildStats = (
     direction: correlationDirection,
   } = getCorrelationInsight(entries)
 
+  const minNightsForMoodBySleep = 5
   let moodBySleepThreshold = { high: null, low: null } as {
     high: number | null
     low: number | null
   }
-  if (entries.length) {
+  if (entries.length >= minNightsForMoodBySleep) {
     const buckets = entries.reduce(
       (acc, entry) => {
         const target = Number(entry.sleep_hours) >= sleepThreshold ? 'high' : 'low'

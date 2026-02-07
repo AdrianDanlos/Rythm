@@ -354,7 +354,7 @@ export const LogForm = ({
             ))}
           </div>
         </div>
-        <label className="field">
+        <label className="field field-notes">
           Note (optional)
           <input
             type="text"
