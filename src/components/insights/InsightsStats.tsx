@@ -111,9 +111,12 @@ export const InsightsStats = ({
       <section className="card stats-stack">
         {hasMissingStats
           ? (
-              <button type="button" className="muted link-button" onClick={goToLog}>
-                Log a few more nights to unlock all stats
-              </button>
+              <p className="muted">
+                <button type="button" className="link-button link-button--text" onClick={goToLog}>
+                  Log a few more days
+                </button>
+                {' '}to unlock all stats
+              </p>
             )
           : null}
         <div className="stats-stack-grid">

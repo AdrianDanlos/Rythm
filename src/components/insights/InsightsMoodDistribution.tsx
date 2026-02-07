@@ -84,9 +84,12 @@ export const InsightsMoodDistribution = ({
             </div>
           )
         : (
-            <button type="button" className="muted link-button" onClick={goToLog}>
-              Log more nights to see your mood distribution.
-            </button>
+            <p className="muted">
+              <button type="button" className="link-button link-button--text" onClick={goToLog}>
+                Log a day
+              </button>
+              {' '}to see your mood distribution.
+            </p>
           )}
     </section>
   )

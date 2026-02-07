@@ -6,6 +6,7 @@ type IdeaSleepTargetProps = {
   personalSleepThreshold: number | null
   moodByPersonalThreshold: { high: number | null, low: number | null }
   onOpenPaywall: () => void
+  goToLog: () => void
 }
 
 export const IdeaSleepTarget = ({
@@ -13,6 +14,7 @@ export const IdeaSleepTarget = ({
   personalSleepThreshold,
   moodByPersonalThreshold,
   onOpenPaywall,
+  goToLog,
 }: IdeaSleepTargetProps) => {
   const hasThreshold = typeof personalSleepThreshold === 'number'
   const hasMoodData
@@ -80,7 +82,7 @@ export const IdeaSleepTarget = ({
                 )}
                 {!hasMoodData && (
                   <p className="helper">
-                    Log more entries to see average mood above vs below {formatSleepHours(personalSleepThreshold)}
+                    Log more days to see average mood above vs below {formatSleepHours(personalSleepThreshold)}
                   </p>
                 )}
               </div>
@@ -88,8 +90,11 @@ export const IdeaSleepTarget = ({
           : (
               <div className="stat-block">
                 <p className="muted">
-                  Not enough data yet. Log more sleep entries to estimate your
-                  personal threshold.
+                  Not enough data yet.{' '}
+                  <button type="button" className="link-button link-button--text" onClick={goToLog}>
+                    Log more days
+                  </button>
+                  {' '}to estimate your personal threshold.
                 </p>
               </div>
             )}

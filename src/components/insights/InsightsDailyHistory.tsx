@@ -26,6 +26,7 @@ type InsightsDailyHistoryProps = {
   entryCount: number
   trendSeries: { last30: TrendPoint[], last90: TrendPoint[], last365: TrendPoint[] }
   onOpenPaywall: () => void
+  goToLog: () => void
 }
 
 const formatLineValue = (value: number | string) => {
@@ -73,6 +74,7 @@ export const InsightsDailyHistory = ({
   entryCount,
   trendSeries,
   onOpenPaywall,
+  goToLog,
 }: InsightsDailyHistoryProps) => {
   const [trendRange, setTrendRange] = useState<'last30' | 'last90' | 'last365'>('last30')
   const show90 = entryCount >= DAILY_HISTORY_THRESHOLD_90
@@ -255,7 +257,13 @@ export const InsightsDailyHistory = ({
         : trimmedTrendPoints.length === 0
           ? (
               <div className="chart-empty">
-                <p className="muted">Not enough data in this range. Log sleep and mood to see daily history.</p>
+                <p className="muted">
+                  Not enough data in this range.{' '}
+                  <button type="button" className="link-button link-button--text" onClick={goToLog}>
+                    Log a day
+                  </button>
+                  {' '}to see daily history.
+                </p>
               </div>
             )
           : (

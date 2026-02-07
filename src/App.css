@@ -1976,6 +1976,10 @@
   box-shadow: none;
 }
 
+.link-button--text {
+  color: var(--text);
+}
+
 /* Help cursor for any element that shows a tooltip (custom or native title) */
 [title]:not([title=""]) {
   cursor: help;
@@ -2068,6 +2072,15 @@
   z-index: 5;
 }
 
+/* JS-positioned tooltips: stay within .app, no default positioning */
+.app-tooltip--positioned .app-tooltip-bubble {
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+  transform: none;
+}
+
 @media (min-width: 720px) {
   .app-tooltip-bubble {
     max-width: min(420px, 60vw);
@@ -2077,10 +2090,15 @@
     top: calc(100% + 8px);
     bottom: auto;
   }
+
+  .header-actions .app-tooltip--positioned .app-tooltip-bubble {
+    top: auto;
+    bottom: auto;
+  }
 }
 
-.app-tooltip:hover .app-tooltip-bubble,
-.app-tooltip:focus-within .app-tooltip-bubble {
+.app-tooltip:not(.app-tooltip--positioned):hover .app-tooltip-bubble,
+.app-tooltip:not(.app-tooltip--positioned):focus-within .app-tooltip-bubble {
   opacity: 1;
   visibility: visible;
 }

@@ -27,6 +27,7 @@ type InsightsSmoothedTrendsProps = {
   rollingSeries: RollingPoint[]
   rollingSummaries: RollingSummary[]
   onOpenPaywall: () => void
+  goToLog: () => void
 }
 
 const formatLineValue = (value: number | string) => {
@@ -105,6 +106,7 @@ export const InsightsSmoothedTrends = ({
   rollingSeries,
   rollingSummaries,
   onOpenPaywall,
+  goToLog,
 }: InsightsSmoothedTrendsProps) => {
   const [rollingMetric, setRollingMetric] = useState<'sleep' | 'mood'>('mood')
   const show30 = entryCount >= ENTRY_THRESHOLD_30
@@ -294,7 +296,13 @@ export const InsightsSmoothedTrends = ({
         : trimmedRollingSeries.length === 0
           ? (
               <div className="chart-empty">
-                <p className="muted">Not enough data for rolling trends. Log more nights to see smoothed direction.</p>
+                <p className="muted">
+                  Not enough data for rolling trends.{' '}
+                  <button type="button" className="link-button link-button--text" onClick={goToLog}>
+                    Log a day
+                  </button>
+                  {' '}to see smoothed direction.
+                </p>
               </div>
             )
           : (

@@ -7,6 +7,7 @@ type InsightsTagInsightsProps = {
   tagDrivers: TagDriver[]
   tagSleepDrivers: TagSleepDriver[]
   onOpenPaywall: () => void
+  goToLog: () => void
 }
 
 export const InsightsTagInsights = ({
@@ -14,6 +15,7 @@ export const InsightsTagInsights = ({
   tagDrivers,
   tagSleepDrivers,
   onOpenPaywall,
+  goToLog,
 }: InsightsTagInsightsProps) => {
   const positiveDrivers = [...tagDrivers]
     .filter(driver => typeof driver.delta === 'number' && driver.delta > 0)
@@ -217,7 +219,8 @@ export const InsightsTagInsights = ({
               )
             : (
                 <p className="muted">
-                  {`Add tags to see how each one changes your mood and sleep (at least ${DEFAULT_TAG_DRIVER_MIN_COUNT} entries per tag).`}
+                  <button type="button" className="link-button link-button--text" onClick={goToLog}>Add tags</button>
+                  {' '}to see how each one changes your mood and sleep <strong>(at least {DEFAULT_TAG_DRIVER_MIN_COUNT} entries per tag).</strong>
                 </p>
               )}
     </section>

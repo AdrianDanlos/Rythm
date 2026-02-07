@@ -159,12 +159,14 @@ export const Insights = ({
                 personalSleepThreshold={personalSleepThreshold}
                 moodByPersonalThreshold={moodByPersonalThreshold}
                 onOpenPaywall={onOpenPaywall}
+                goToLog={goToLog}
               />
               <InsightsTagInsights
                 isPro={isPro}
                 tagDrivers={tagDrivers}
                 tagSleepDrivers={tagSleepDrivers}
                 onOpenPaywall={onOpenPaywall}
+                goToLog={goToLog}
               />
               <section className="card">
                 <div className="card-header">
@@ -229,9 +231,12 @@ export const Insights = ({
                       </div>
                     )
                   : (
-                      <button type="button" className="muted link-button" onClick={goToLog}>
-                        Log more nights to unlock badges.
-                      </button>
+                      <p className="muted">
+                        <button type="button" className="link-button link-button--text" onClick={goToLog}>
+                          Log more days
+                        </button>
+                        {' '}to unlock badges.
+                      </p>
                     )}
               </section>
             </div>
@@ -266,6 +271,7 @@ export const Insights = ({
                 rollingSeries={rollingSeries}
                 rollingSummaries={rollingSummaries}
                 onOpenPaywall={onOpenPaywall}
+                goToLog={goToLog}
               />
               <InsightsDailyHistory
                 isPro={isPro}
@@ -273,6 +279,7 @@ export const Insights = ({
                 entryCount={entries.length}
                 trendSeries={trendSeries}
                 onOpenPaywall={onOpenPaywall}
+                goToLog={goToLog}
               />
             </div>
           )

@@ -111,9 +111,12 @@ export const InsightsScatter = ({
         : isEmpty
           ? (
               <div className="chart-empty">
-                <button type="button" className="muted link-button" onClick={goToLog}>
-                  Log a night to see insights.
-                </button>
+                <p className="muted">
+                  <button type="button" className="link-button link-button--text" onClick={goToLog}>
+                    Log a day
+                  </button>
+                  {' '}to see insights.
+                </p>
               </div>
             )
           : (
