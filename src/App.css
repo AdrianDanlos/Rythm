@@ -113,6 +113,12 @@
   animation: modalBackdropFadeIn 200ms ease-out;
 }
 
+@media (max-width: 540px) {
+  .modal-backdrop {
+    padding-top: 48px;
+  }
+}
+
 .modal-card {
   width: min(520px, 100%);
   background: var(--card);
