@@ -49,7 +49,7 @@ export const useAuth = () => {
       password,
     })
     if (error) {
-      toast.error('Unable to authenticate. Check your details.')
+      toast.error(error.message ?? 'Unable to authenticate.')
       setAuthError(null)
     }
     setAuthLoading(false)
@@ -64,7 +64,7 @@ export const useAuth = () => {
       password,
     })
     if (error) {
-      toast.error('Unable to authenticate. Check your details.')
+      toast.error(error.message ?? 'Unable to authenticate.')
       setAuthError(null)
     }
     setAuthLoading(false)

@@ -76,7 +76,16 @@ export const AuthForm = ({
                   onChange={event => onPasswordChange(event.target.value)}
                   placeholder="••••••••"
                   required
+                  minLength={authMode === 'signup' ? 6 : undefined}
+                  title={authMode === 'signup' ? 'At least 6 characters' : undefined}
                 />
+                {authMode === 'signup'
+                  ? (
+                      <span className="field-hint" aria-live="polite">
+                        At least 6 characters
+                      </span>
+                    )
+                  : null}
               </label>
               <button type="submit" disabled={authLoading}>
                 {authLoading
