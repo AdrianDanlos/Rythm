@@ -1195,12 +1195,28 @@
 }
 
 .trend-summary .stat-block--disabled {
+  position: relative;
+}
+
+.trend-summary .stat-block__content--dimmed {
   opacity: 0.65;
   color: var(--muted);
 }
 
-.trend-summary .stat-block--disabled .value {
+.trend-summary .stat-block__content--dimmed .value {
   color: var(--muted);
+}
+
+.trend-summary .stat-block--disabled .app-tooltip.tooltip-wrap-card {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.trend-summary .stat-block--disabled .stat-block-tooltip-overlay {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .rolling-trend-legend {

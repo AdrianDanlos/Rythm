@@ -427,70 +427,78 @@ export const InsightsSmoothedTrends = ({
                         className={`stat-block ${isDisabled ? 'stat-block--disabled' : ''}`}
                         key={summary.days}
                       >
-                        <p className="label">
-                          {summary.days === 7
-                            ? 'Last 7 days'
-                            : summary.days === 30
-                              ? 'Last 30 days'
-                              : 'Last 90 days'}
-                        </p>
-                        <p className="value">
-                          {summary.sleep !== null
-                            ? formatSleepHours(summary.sleep)
-                            : '—'}{' '}
-                          / {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
-                        </p>
-                        <p className="helper">
-                          {is30Disabled
-                            ? (
-                                <Tooltip label={`Log ${ENTRY_THRESHOLD_30}+ nights to see 30-day trend.`}>
-                                  <span className="tooltip-trigger muted">
+                        {isDisabled && (
+                          <Tooltip
+                            label={is30Disabled
+                              ? `Log ${ENTRY_THRESHOLD_30}+ nights to see 30-day trend.`
+                              : `Log ${ENTRY_THRESHOLD_90}+ nights to see 90-day trend.`}
+                            className="tooltip-wrap-card"
+                          >
+                            <span className="tooltip-trigger stat-block-tooltip-overlay" aria-hidden />
+                          </Tooltip>
+                        )}
+                        <div className={isDisabled ? 'stat-block__content stat-block__content--dimmed' : 'stat-block__content'}>
+                          <p className="label">
+                            {summary.days === 7
+                              ? 'Last 7 days'
+                              : summary.days === 30
+                                ? 'Last 30 days'
+                                : 'Last 90 days'}
+                          </p>
+                          <p className="value">
+                            {summary.sleep !== null
+                              ? formatSleepHours(summary.sleep)
+                              : '—'}{' '}
+                            / {summary.mood !== null ? summary.mood.toFixed(1) : '—'}
+                          </p>
+                          <p className="helper">
+                            {is30Disabled
+                              ? (
+                                  <span className="muted">
                                     Need {ENTRY_THRESHOLD_30}+ entries for 30-day line
                                   </span>
-                                </Tooltip>
-                              )
-                            : is90Disabled
-                              ? (
-                                  <Tooltip label={`Log ${ENTRY_THRESHOLD_90}+ nights to see 90-day trend.`}>
-                                    <span className="tooltip-trigger muted">
+                                )
+                              : is90Disabled
+                                ? (
+                                    <span className="muted">
                                       Need {ENTRY_THRESHOLD_90}+ entries for 90-day line
                                     </span>
-                                  </Tooltip>
-                                )
-                              : (() => {
-                                  const noDelta = summary.sleepDelta === null && summary.moodDelta === null
-                                  const deltaNote = summary.days === 7
-                                    ? '~14 days'
-                                    : summary.days === 30
-                                      ? '~30 days'
-                                      : '~90 days'
-                                  return noDelta
-                                    ? (
-                                        <Tooltip
-                                          label={`Delta compares to the previous ${summary.days}-day window; need about ${deltaNote} of history.`}
-                                        >
-                                          <span className="tooltip-trigger muted">
-                                            Delta after {deltaNote} of data
-                                          </span>
-                                        </Tooltip>
-                                      )
-                                    : (
-                                        <Tooltip
-                                          label={`Change vs prior ${summary.days}-day window.`}
-                                        >
-                                          <span className="tooltip-trigger delta-block muted">
-                                            <span className="delta-block__label">
-                                              VS prior {summary.days} days
+                                  )
+                                : (() => {
+                                    const noDelta = summary.sleepDelta === null && summary.moodDelta === null
+                                    const deltaNote = summary.days === 7
+                                      ? '~14 days'
+                                      : summary.days === 30
+                                        ? '~30 days'
+                                        : '~90 days'
+                                    return noDelta
+                                      ? (
+                                          <Tooltip
+                                            label={`Delta compares to the previous ${summary.days}-day window; need about ${deltaNote} of history.`}
+                                          >
+                                            <span className="tooltip-trigger muted">
+                                              Delta after {deltaNote} of data
                                             </span>
-                                            <span className="delta-stacked">
-                                              <span>Sleep: {formatSleepDeltaValue(summary.sleepDelta)}</span>
-                                              <span>Mood: {formatDeltaValue(summary.moodDelta)}</span>
+                                          </Tooltip>
+                                        )
+                                      : (
+                                          <Tooltip
+                                            label={`Change vs prior ${summary.days}-day window.`}
+                                          >
+                                            <span className="tooltip-trigger delta-block muted">
+                                              <span className="delta-block__label">
+                                                VS prior {summary.days} days
+                                              </span>
+                                              <span className="delta-stacked">
+                                                <span>Sleep: {formatSleepDeltaValue(summary.sleepDelta)}</span>
+                                                <span>Mood: {formatDeltaValue(summary.moodDelta)}</span>
+                                              </span>
                                             </span>
-                                          </span>
-                                        </Tooltip>
-                                      )
-                                })()}
-                        </p>
+                                          </Tooltip>
+                                        )
+                                  })()}
+                          </p>
+                        </div>
                       </div>
                     )
                   })}
