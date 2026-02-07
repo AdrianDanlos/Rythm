@@ -239,7 +239,6 @@ export const LogForm = ({
                   } as CSSProperties
                 }
                 aria-pressed={mood === value}
-                title={`Mood: ${value}`}
               >
                 {value}
               </button>

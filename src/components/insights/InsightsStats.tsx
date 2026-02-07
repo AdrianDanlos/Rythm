@@ -174,24 +174,15 @@ export const InsightsStats = ({
                     {moodBySleepThreshold.high !== null
                       || moodBySleepThreshold.low !== null
                       ? (
-                          <p className="helper helper-inline">
-                            <span className="helper-break" aria-hidden="true" />
-                            <span className="helper-tag">
-                              ≥{formatSleepHours(sleepThreshold)}
+                          <div className="ideal-sleep-mood-delta">
+                            <span className="ideal-sleep-mood-delta__pill ideal-sleep-mood-delta__pill--high">
+                              ≥{formatSleepHours(sleepThreshold)} → {moodBySleepThreshold.high?.toFixed(1) ?? '—'}
                             </span>
-                            <span className="helper-arrow" aria-hidden="true">→</span>
-                            <span className="helper-tag helper-pill-value">
-                              {moodBySleepThreshold.high?.toFixed(1) ?? '—'}
+                            <span className="ideal-sleep-mood-delta__arrow" aria-hidden="true">-</span>
+                            <span className="ideal-sleep-mood-delta__pill ideal-sleep-mood-delta__pill--low">
+                              &lt;{formatSleepHours(sleepThreshold)} → {moodBySleepThreshold.low?.toFixed(1) ?? '—'}
                             </span>
-                            <span className="helper-sep helper-sep--desktop">vs</span>
-                            <span className="helper-tag">
-                              &lt;{formatSleepHours(sleepThreshold)}
-                            </span>
-                            <span className="helper-arrow" aria-hidden="true">→</span>
-                            <span className="helper-tag helper-pill-value">
-                              {moodBySleepThreshold.low?.toFixed(1) ?? '—'}
-                            </span>
-                          </p>
+                          </div>
                         )
                       : <p className="value">—</p>}
                     {moodBySleepThreshold.high !== null
