@@ -103,7 +103,7 @@ export const InsightsDailyHistory = ({
     : undefined
   const legendWrapperStyle = isMobile ? { paddingTop: 12 } : undefined
   const trendChartMargin = isMobile
-    ? { top: 12, right: -42, bottom: 0, left: -36 }
+    ? { top: 12, right: -42, bottom: 0, left: -33 }
     : { top: 12, right: -32, bottom: 0, left: -24 }
   const formatTooltipValue = (value?: number | string, name?: string) => {
     if (value === null || value === undefined) return '—'

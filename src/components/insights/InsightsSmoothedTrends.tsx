@@ -113,7 +113,7 @@ export const InsightsSmoothedTrends = ({
   const trimmedRollingSeries = trimToDataExtentRolling(rollingSeries)
   const trimmedPreviewRolling = trimToDataExtentRolling(previewRollingSeries)
   const smoothedChartMargin = isMobile
-    ? { top: 12, right: 0, bottom: 0, left: -36 }
+    ? { top: 12, right: 0, bottom: 0, left: -34 }
     : { top: 12, right: 28, bottom: 0, left: -12 }
   const rollingTickInterval = getDateTickInterval(trimmedRollingSeries.length)
   const previewRollingTickInterval = getDateTickInterval(trimmedPreviewRolling.length)
