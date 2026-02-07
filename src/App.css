@@ -1789,6 +1789,10 @@
   margin: 0 auto;
 }
 
+.ideal-sleep-target-ring .stat-ring {
+  --stat-ring-color: var(--chart-ideal-sleep);
+}
+
 .ideal-sleep-mood-delta {
   display: flex;
   flex-wrap: wrap;
