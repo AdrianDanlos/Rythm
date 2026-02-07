@@ -56,7 +56,7 @@ export const LogForm = ({
   onOpenPaywall,
 }: LogFormProps) => {
   const sleepHourOptions = Array.from({ length: 13 }, (_, index) => index)
-  const sleepMinuteOptions = [0, 15, 30, 45]
+  const sleepMinuteOptions = [0, 30]
   const parsedSleepHours = Number(sleepHours)
   const hasSleepValue = sleepHours.trim().length > 0 && Number.isFinite(parsedSleepHours)
   const totalSleepMinutes = hasSleepValue ? Math.round(parsedSleepHours * 60) : 0
