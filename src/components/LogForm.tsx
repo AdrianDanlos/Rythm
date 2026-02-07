@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 import { parseTags } from '../lib/utils/stringUtils'
+import { Tooltip } from './Tooltip'
 
 export type LogFormProps = {
   selectedDate: Date
@@ -255,7 +256,16 @@ export const LogForm = ({
           }}
         >
           <div className="field-title">
-            <span>{isPro ? 'Tags' : 'Tags (Pro)'}</span>
+            <span>
+              {isPro ? 'Tags' : 'Tags (Pro)'}
+              {isPro && (
+                <Tooltip label="We suggest to add tags in the evening, as they help identify today's mood and tonight's sleep.">
+                  <span className="tooltip-trigger" style={{ marginLeft: '0.25em' }}>
+                    <span className="tooltip-icon" aria-hidden="true">i</span>
+                  </span>
+                </Tooltip>
+              )}
+            </span>
             <span className="field-hint">
               {isPro
                 ? `Up to ${maxTagsPerEntry} tags`

@@ -130,6 +130,10 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 
 The app and Edge Functions talk to local Supabase in development and the remote Supabase project in production. Stripe webhooks point at `https://mdruanwmwapdaecrayyi.functions.supabase.co/stripe-webhook` for production.
 
+### Tags correlation for mood and sleep
+
+Same-day tags correlate with mood; previous-day tags correlate with sleep.
+
 ### Android (Capacitor)
 
 - **Build web assets for native**:
