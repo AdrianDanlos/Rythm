@@ -74,7 +74,8 @@ export const InsightsTagInsights = ({
       <div className="card-header">
         <div>
           <h2>Tag Insights</h2>
-          <p className="muted">Tags that predict mood (same day) and sleep (day before).</p>
+          <p className="muted">Discover which tags are linked to better mood and sleep so you can do more of what helps and less of what doesn’t.
+          </p>
         </div>
       </div>
       {!isPro
@@ -86,139 +87,139 @@ export const InsightsTagInsights = ({
             </div>
           )
         : (hasDrivers || hasSleepDrivers)
-          ? (
-              <>
-                <div className="tag-insights-block">
-                  <div className="tag-insights-block-header">
-                    <h3 className="tag-insights-block-title">Tags that predict mood</h3>
-                    <Tooltip label="Compares mood on days with a tag vs without it (same day).">
-                      <span className="tooltip-trigger">
-                        <span className="tooltip-icon" aria-hidden="true">i</span>
-                      </span>
-                    </Tooltip>
+            ? (
+                <>
+                  <div className="tag-insights-block">
+                    <div className="tag-insights-block-header">
+                      <h3 className="tag-insights-block-title">Tags that predict mood</h3>
+                      <Tooltip label="Compares mood on days with a tag vs without it.">
+                        <span className="tooltip-trigger">
+                          <span className="tooltip-icon" aria-hidden="true">i</span>
+                        </span>
+                      </Tooltip>
+                    </div>
+                    {(positiveDrivers.length > 0 || negativeDrivers.length > 0)
+                      ? (
+                          <>
+                            {positiveDrivers.length > 0 && (
+                              <div className="tag-driver-section">
+                                <p className="label">Positive</p>
+                                <div className="tag-bar-list">
+                                  {positiveDrivers.map(tag => (
+                                    <div className="tag-bar-item positive" key={tag.tag}>
+                                      <div className="tag-bar-header">
+                                        <p className="tag-title">{tag.tag}</p>
+                                        <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
+                                      </div>
+                                      <div className="tag-bar-track" aria-hidden="true">
+                                        <span
+                                          className="tag-bar-fill"
+                                          style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
+                                        />
+                                      </div>
+                                      <p className="helper">{tag.count} entries</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            {negativeDrivers.length > 0 && (
+                              <div className="tag-driver-section">
+                                <p className="label">Negative</p>
+                                <div className="tag-bar-list">
+                                  {negativeDrivers.map(tag => (
+                                    <div className="tag-bar-item negative" key={tag.tag}>
+                                      <div className="tag-bar-header">
+                                        <p className="tag-title">{tag.tag}</p>
+                                        <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
+                                      </div>
+                                      <div className="tag-bar-track" aria-hidden="true">
+                                        <span
+                                          className="tag-bar-fill"
+                                          style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
+                                        />
+                                      </div>
+                                      <p className="helper">{tag.count} entries</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </>
+                        )
+                      : (
+                          <p className="muted">Add tags to see mood impact (min 3 entries per tag).</p>
+                        )}
                   </div>
-                  {(positiveDrivers.length > 0 || negativeDrivers.length > 0)
-                    ? (
-                        <>
-                          {positiveDrivers.length > 0 && (
-                            <div className="tag-driver-section">
-                              <p className="label">Positive</p>
-                              <div className="tag-bar-list">
-                                {positiveDrivers.map(tag => (
-                                  <div className="tag-bar-item positive" key={tag.tag}>
-                                    <div className="tag-bar-header">
-                                      <p className="tag-title">{tag.tag}</p>
-                                      <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
+                  <div className="tag-insights-block">
+                    <div className="tag-insights-block-header">
+                      <h3 className="tag-insights-block-title">Tags that predict sleep</h3>
+                      <Tooltip label="Predict how much these tags will affect your sleep tonight.">
+                        <span className="tooltip-trigger">
+                          <span className="tooltip-icon" aria-hidden="true">i</span>
+                        </span>
+                      </Tooltip>
+                    </div>
+                    {(positiveSleepDrivers.length > 0 || negativeSleepDrivers.length > 0)
+                      ? (
+                          <>
+                            {positiveSleepDrivers.length > 0 && (
+                              <div className="tag-driver-section">
+                                <p className="label">More sleep after</p>
+                                <div className="tag-bar-list">
+                                  {positiveSleepDrivers.map(d => (
+                                    <div className="tag-bar-item positive" key={d.tag}>
+                                      <div className="tag-bar-header">
+                                        <p className="tag-title">{d.tag}</p>
+                                        <p className="tag-delta">{formatSleepDelta(d.delta)}</p>
+                                      </div>
+                                      <div className="tag-bar-track" aria-hidden="true">
+                                        <span
+                                          className="tag-bar-fill"
+                                          style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
+                                        />
+                                      </div>
+                                      <p className="helper">{d.count} nights</p>
                                     </div>
-                                    <div className="tag-bar-track" aria-hidden="true">
-                                      <span
-                                        className="tag-bar-fill"
-                                        style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
-                                      />
-                                    </div>
-                                    <p className="helper">{tag.count} entries</p>
-                                  </div>
-                                ))}
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                          )}
-                          {negativeDrivers.length > 0 && (
-                            <div className="tag-driver-section">
-                              <p className="label">Negative</p>
-                              <div className="tag-bar-list">
-                                {negativeDrivers.map(tag => (
-                                  <div className="tag-bar-item negative" key={tag.tag}>
-                                    <div className="tag-bar-header">
-                                      <p className="tag-title">{tag.tag}</p>
-                                      <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
+                            )}
+                            {negativeSleepDrivers.length > 0 && (
+                              <div className="tag-driver-section">
+                                <p className="label">Less sleep after</p>
+                                <div className="tag-bar-list">
+                                  {negativeSleepDrivers.map(d => (
+                                    <div className="tag-bar-item negative" key={d.tag}>
+                                      <div className="tag-bar-header">
+                                        <p className="tag-title">{d.tag}</p>
+                                        <p className="tag-delta">{formatSleepDelta(d.delta)}</p>
+                                      </div>
+                                      <div className="tag-bar-track" aria-hidden="true">
+                                        <span
+                                          className="tag-bar-fill"
+                                          style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
+                                        />
+                                      </div>
+                                      <p className="helper">{d.count} nights</p>
                                     </div>
-                                    <div className="tag-bar-track" aria-hidden="true">
-                                      <span
-                                        className="tag-bar-fill"
-                                        style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
-                                      />
-                                    </div>
-                                    <p className="helper">{tag.count} entries</p>
-                                  </div>
-                                ))}
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                          )}
-                        </>
-                      )
-                    : (
-                        <p className="muted">Add tags to see mood impact (min 3 entries per tag).</p>
-                      )}
-                </div>
-                <div className="tag-insights-block">
-                  <div className="tag-insights-block-header">
-                    <h3 className="tag-insights-block-title">Tags that predict sleep</h3>
-                    <Tooltip label="Tags from the day before: how they relate to that night's sleep.">
-                      <span className="tooltip-trigger">
-                        <span className="tooltip-icon" aria-hidden="true">i</span>
-                      </span>
-                    </Tooltip>
+                            )}
+                          </>
+                        )
+                      : (
+                          <p className="muted">Add tags to see sleep impact (min 3 nights per tag).</p>
+                        )}
                   </div>
-                  {(positiveSleepDrivers.length > 0 || negativeSleepDrivers.length > 0)
-                    ? (
-                        <>
-                          {positiveSleepDrivers.length > 0 && (
-                            <div className="tag-driver-section">
-                              <p className="label">More sleep after</p>
-                              <div className="tag-bar-list">
-                                {positiveSleepDrivers.map(d => (
-                                  <div className="tag-bar-item positive" key={d.tag}>
-                                    <div className="tag-bar-header">
-                                      <p className="tag-title">{d.tag}</p>
-                                      <p className="tag-delta">{formatSleepDelta(d.delta)}</p>
-                                    </div>
-                                    <div className="tag-bar-track" aria-hidden="true">
-                                      <span
-                                        className="tag-bar-fill"
-                                        style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
-                                      />
-                                    </div>
-                                    <p className="helper">{d.count} nights</p>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                          {negativeSleepDrivers.length > 0 && (
-                            <div className="tag-driver-section">
-                              <p className="label">Less sleep after</p>
-                              <div className="tag-bar-list">
-                                {negativeSleepDrivers.map(d => (
-                                  <div className="tag-bar-item negative" key={d.tag}>
-                                    <div className="tag-bar-header">
-                                      <p className="tag-title">{d.tag}</p>
-                                      <p className="tag-delta">{formatSleepDelta(d.delta)}</p>
-                                    </div>
-                                    <div className="tag-bar-track" aria-hidden="true">
-                                      <span
-                                        className="tag-bar-fill"
-                                        style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
-                                      />
-                                    </div>
-                                    <p className="helper">{d.count} nights</p>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </>
-                      )
-                    : (
-                        <p className="muted">Add tags to see sleep impact (min 3 nights per tag).</p>
-                      )}
-                </div>
-              </>
-            )
-          : (
-              <p className="muted">
-                {`Add tags to see how each one changes your mood and sleep (at least ${DEFAULT_TAG_DRIVER_MIN_COUNT} entries per tag).`}
-              </p>
-            )}
+                </>
+              )
+            : (
+                <p className="muted">
+                  {`Add tags to see how each one changes your mood and sleep (at least ${DEFAULT_TAG_DRIVER_MIN_COUNT} entries per tag).`}
+                </p>
+              )}
     </section>
   )
 }

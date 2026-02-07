@@ -15,7 +15,7 @@ const premiumFeatures = [
   'Personalized sleep target based on your history',
   'Weekly and monthly trends',
   '30/90/365 day history',
-  'Export Rythm report',
+  'Export Rythm\'s custom PDF reports',
 ]
 
 export const PaywallModal = ({

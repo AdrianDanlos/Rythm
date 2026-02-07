@@ -276,52 +276,52 @@ export const LogForm = ({
                 placeholder="Type or select tags"
                 value={tagInputValue}
                 disabled={atMaxTags || !isPro}
-                    onChange={e => {
-                      setTagInputValue(e.target.value)
-                      setTagDropdownOpen(true)
-                    }}
-                    onFocus={() => setTagDropdownOpen(true)}
-                    onKeyDown={e => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault()
-                        submitTagInput()
-                      }
-                    }}
-                  />
-                  {isPro && tagDropdownOpen && (matchingSuggestions.length > 0 || !isMobile) && (
-                    <div className="tag-suggestions" role="listbox">
-                      {matchingSuggestions.length > 0
-                        ? matchingSuggestions.map(suggestion => (
-                            <button
-                              key={suggestion}
-                              type="button"
-                              className="tag-suggestion"
-                              onMouseDown={e => e.preventDefault()}
-                              onClick={() => addTag(suggestion)}
-                            >
-                              {suggestion}
-                            </button>
-                          ))
-                        : (
-                            <span className="tag-suggestions-empty">
-                              {token
-                                ? "Press Enter to add as new tag"
-                                : 'No suggestions'}
-                            </span>
-                          )}
-                    </div>
-                  )}
+                onChange={(e) => {
+                  setTagInputValue(e.target.value)
+                  setTagDropdownOpen(true)
+                }}
+                onFocus={() => setTagDropdownOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    submitTagInput()
+                  }
+                }}
+              />
+              {isPro && tagDropdownOpen && (matchingSuggestions.length > 0 || !isMobile) && (
+                <div className="tag-suggestions" role="listbox">
+                  {matchingSuggestions.length > 0
+                    ? matchingSuggestions.map(suggestion => (
+                        <button
+                          key={suggestion}
+                          type="button"
+                          className="tag-suggestion"
+                          onMouseDown={e => e.preventDefault()}
+                          onClick={() => addTag(suggestion)}
+                        >
+                          {suggestion}
+                        </button>
+                      ))
+                    : (
+                        <span className="tag-suggestions-empty">
+                          {token
+                            ? 'Press Enter to add as new tag'
+                            : 'No suggestions'}
+                        </span>
+                      )}
                 </div>
-                <div className="tag-add-wrap">
-                  <button
-                    type="button"
-                    className="tag-add-button"
-                    disabled={atMaxTags || !isPro}
-                    onClick={submitTagInput}
-                  >
-                    + Add
-                  </button>
-                </div>
+              )}
+            </div>
+            <div className="tag-add-wrap">
+              <button
+                type="button"
+                className="tag-add-button"
+                disabled={atMaxTags || !isPro}
+                onClick={submitTagInput}
+              >
+                + Add
+              </button>
+            </div>
           </div>
           <div className="tag-pills-row">
             {usedTags.map((tag, index) => (

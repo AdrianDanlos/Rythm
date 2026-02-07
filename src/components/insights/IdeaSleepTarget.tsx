@@ -28,7 +28,7 @@ export const IdeaSleepTarget = ({
         <div>
           <h2>
             Your ideal sleep target
-            <Tooltip label="What is this? An estimated sleep goal tied to your best mood days.">
+            <Tooltip label="What is this? An estimated sleep target tied to your best mood days.">
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
