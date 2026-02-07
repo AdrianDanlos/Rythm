@@ -184,12 +184,23 @@ export const Insights = ({
                             <div className="badge-row-header">
                               <div className="badge-title-row">
                                 <p className="badge-title">{badge.title}</p>
-                                <img
-                                  className="badge-status-icon"
-                                  src={badgeIcon}
-                                  alt=""
-                                  aria-hidden
-                                />
+                                {badge.unlocked
+                                  ? (
+                                      <img
+                                        className="badge-status-icon"
+                                        src={badgeIcon}
+                                        alt=""
+                                        aria-hidden
+                                      />
+                                    )
+                                  : (
+                                      <span className="badge-status-icon badge-status-icon--lock" aria-hidden>
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg>
+                                      </span>
+                                    )}
                               </div>
                               <p className="badge-helper">{badge.description}</p>
                             </div>

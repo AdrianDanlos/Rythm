@@ -136,7 +136,7 @@ export const InsightsStats = ({
                   <div className="stat-tile">
                     <p className="label label--with-tooltip">
                       Rhythm score
-                      <Tooltip label="What is this? Based on how steady your sleep hours are in the last 30 days. Higher = more consistent.">
+                      <Tooltip label="Score based on how steady your sleep hours are in the last 30 days. Higher score = more consistent.">
                         <span className="tooltip-trigger">
                           <span className="tooltip-icon" aria-hidden="true">i</span>
                         </span>
