@@ -512,7 +512,6 @@
   display: flex;
   align-items: stretch;
   gap: 10px;
-  margin-bottom: 10px;
 }
 
 .tag-control-row--disabled {
@@ -588,6 +587,7 @@
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+  margin-top: 10px;
 }
 
 .tag-pill {
