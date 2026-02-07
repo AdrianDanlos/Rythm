@@ -157,7 +157,9 @@ export const renderLast30DaysSection = ({
   if (weeklySummaries.length) {
     yRef.value += 6
     doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
     doc.text('Weekly averages', 16, yRef.value)
+    doc.setFont('helvetica', 'normal')
     yRef.value += 7
     drawLines(
       doc,
@@ -197,7 +199,9 @@ export const renderLast30DaysSection = ({
   if (highlightLines.length) {
     yRef.value += 6
     doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
     doc.text('Highlights', 16, yRef.value)
+    doc.setFont('helvetica', 'normal')
     yRef.value += 7
     drawBullets(doc, yRef, highlightLines.slice(0, 4), 18)
   }
@@ -221,7 +225,9 @@ export const renderLast30DaysSection = ({
   if (summaryLines.length) {
     yRef.value += 4
     doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
     doc.text('Summary', 16, yRef.value)
+    doc.setFont('helvetica', 'normal')
     yRef.value += 7
     drawBullets(doc, yRef, summaryLines.slice(0, 4), 18)
   }
@@ -273,7 +279,9 @@ export const renderAllTimeSection = ({
   if (moodPos.length > 0 || moodNeg.length > 0) {
     yRef.value += 4
     doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
     doc.text('Tags that predict mood', 16, yRef.value)
+    doc.setFont('helvetica', 'normal')
     yRef.value += 6
     if (moodPos.length > 0) {
       doc.setFontSize(10)
@@ -309,7 +317,9 @@ export const renderAllTimeSection = ({
   if (sleepPos.length > 0 || sleepNeg.length > 0) {
     yRef.value += 4
     doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
     doc.text('Tags that predict sleep', 16, yRef.value)
+    doc.setFont('helvetica', 'normal')
     yRef.value += 6
     if (sleepPos.length > 0) {
       doc.setFontSize(10)
@@ -345,7 +355,9 @@ export const renderAllTimeSection = ({
   if (allTimeTags.length) {
     yRef.value += 4
     doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
     doc.text('Most used tags', 16, yRef.value)
+    doc.setFont('helvetica', 'normal')
     yRef.value += 6
     drawBullets(
       doc,
