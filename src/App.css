@@ -2014,10 +2014,7 @@
   color: var(--text);
 }
 
-/* Help cursor for any element that shows a tooltip (custom or native title) */
-[title]:not([title=""]) {
-  cursor: help;
-}
+/* Help cursor only for custom tooltip triggers (.app-tooltip, .tooltip-trigger), not native title */
 
 .app-tooltip {
   position: relative;
