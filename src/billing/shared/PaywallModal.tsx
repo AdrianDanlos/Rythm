@@ -11,11 +11,11 @@ type PaywallModalProps = {
 }
 
 const premiumFeatures = [
-  'Tag insights',
+  'Tag insights to predict mood and sleep',
   'Personalized sleep target based on your history',
-  'Weekly and Monthly trends',
+  'Weekly and monthly trends',
   '30/90/365 day history',
-  'Export Rythm Report',
+  'Export Rythm report',
 ]
 
 export const PaywallModal = ({
@@ -60,7 +60,8 @@ export const PaywallModal = ({
       if (restored) {
         onClose()
       }
-    } finally {
+    }
+    finally {
       setIsRestoring(false)
     }
   }
