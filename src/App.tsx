@@ -63,7 +63,6 @@ function App() {
   const {
     session,
     authLoading,
-    authError,
     authInitialized,
     signIn,
     signUp,
@@ -506,7 +505,6 @@ function App() {
                   authEmail={authEmail}
                   authPassword={authPassword}
                   authLoading={authLoading}
-                  authError={authError}
                   showEmailPassword={!isNativeApp}
                   onEmailChange={setAuthEmail}
                   onPasswordChange={setAuthPassword}

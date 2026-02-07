@@ -6,7 +6,6 @@ type AuthFormProps = {
   authEmail: string
   authPassword: string
   authLoading: boolean
-  authError: string | null
   showEmailPassword?: boolean
   onEmailChange: (value: string) => void
   onPasswordChange: (value: string) => void
@@ -20,7 +19,6 @@ export const AuthForm = ({
   authEmail,
   authPassword,
   authLoading,
-  authError,
   showEmailPassword = true,
   onEmailChange,
   onPasswordChange,
