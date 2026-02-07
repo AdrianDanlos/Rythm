@@ -18,6 +18,7 @@ export type LogFormProps = {
   entriesError: string | null
   moodColors: string[]
   isPro: boolean
+  isMobile?: boolean
   formatLocalDate: (date: Date) => string
   onEntryDateChange: (value: string) => void
   onSleepHoursChange: (value: string) => void
@@ -43,6 +44,7 @@ export const LogForm = ({
   entriesError,
   moodColors,
   isPro,
+  isMobile = false,
   formatLocalDate,
   onEntryDateChange,
   onSleepHoursChange,
@@ -254,7 +256,7 @@ export const LogForm = ({
           }}
         >
           <div className="field-title">
-            <span>Tags (Pro)</span>
+            <span>{isPro ? 'Tags' : 'Tags (Pro)'}</span>
             <span className="field-hint">
               {isPro
                 ? `Up to ${maxTagsPerEntry} tags`
@@ -286,7 +288,7 @@ export const LogForm = ({
                       }
                     }}
                   />
-                  {tagDropdownOpen && (
+                  {tagDropdownOpen && (matchingSuggestions.length > 0 || !isMobile) && (
                     <div className="tag-suggestions" role="listbox">
                       {matchingSuggestions.length > 0
                         ? matchingSuggestions.map(suggestion => (

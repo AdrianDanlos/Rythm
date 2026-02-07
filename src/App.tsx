@@ -560,6 +560,7 @@ function App() {
                           entriesError={entriesError}
                           moodColors={moodColors}
                           isPro={isPro}
+                          isMobile={isMobile}
                           formatLocalDate={formatLocalDate}
                           onEntryDateChange={setEntryDate}
                           onSleepHoursChange={setSleepHours}
