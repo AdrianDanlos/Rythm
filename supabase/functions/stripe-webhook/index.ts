@@ -190,7 +190,9 @@ Deno.serve(async (req) => {
 
     const updates: Record<string, unknown> = {
       is_pro: shouldEnable,
-      ...(shouldEnable ? { subscription_source: 'stripe' as const } : {}),
+      ...(shouldEnable
+        ? { subscription_source: 'stripe' as const }
+        : { subscription_source: null }),
     }
 
     if (typeof subscription.customer === 'string') {
