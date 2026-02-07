@@ -259,57 +259,57 @@ export const InsightsDailyHistory = ({
               </div>
             )
           : (
-            <div className="chart-wrapper">
-              <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={trimmedTrendPoints} margin={trendChartMargin}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={formatShortDate}
-                    interval={isMobile ? Math.max(trendTickInterval, 1) : trendTickInterval}
-                    tick={isMobile ? mobileTickProps : baseTickProps}
-                    height={isMobile ? 36 : 30}
-                  />
-                  <YAxis
-                    yAxisId="left"
-                    domain={[4, 10]}
-                    ticks={[4, 6, 8, 10]}
-                    tickFormatter={formatSleepAxisValue}
-                    tick={baseTickProps}
-                  />
-                  <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    domain={[1, 5]}
-                    ticks={[1, 2, 3, 4, 5]}
-                    tickFormatter={formatAxisValue}
-                    tick={baseTickProps}
-                  />
-                  <RechartsTooltip
-                    labelFormatter={value =>
-                      formatLongDate(new Date(`${value}T00:00:00`))}
-                    formatter={formatTooltipValue}
-                  />
-                  <Legend content={<DailyHistoryLegend wrapperStyle={legendWrapperStyle} />} />
-                  <Line
-                    type="monotone"
-                    dataKey="sleep"
-                    name="Sleep"
-                    stroke="var(--chart-sleep)"
-                    dot={false}
-                    yAxisId="left"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="mood"
-                    name="Mood"
-                    stroke="var(--chart-mood)"
-                    dot={false}
-                    yAxisId="right"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+              <div className="chart-wrapper">
+                <ResponsiveContainer width="100%" height={220}>
+                  <LineChart data={trimmedTrendPoints} margin={trendChartMargin}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={formatShortDate}
+                      interval={isMobile ? Math.max(trendTickInterval, 1) : trendTickInterval}
+                      tick={isMobile ? mobileTickProps : baseTickProps}
+                      height={isMobile ? 36 : 30}
+                    />
+                    <YAxis
+                      yAxisId="left"
+                      domain={[4, 10]}
+                      ticks={[4, 6, 8, 10]}
+                      tickFormatter={formatSleepAxisValue}
+                      tick={baseTickProps}
+                    />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      domain={[1, 5]}
+                      ticks={[1, 2, 3, 4, 5]}
+                      tickFormatter={formatAxisValue}
+                      tick={baseTickProps}
+                    />
+                    <RechartsTooltip
+                      labelFormatter={value =>
+                        formatLongDate(new Date(`${value}T00:00:00`))}
+                      formatter={formatTooltipValue}
+                    />
+                    <Legend content={<DailyHistoryLegend wrapperStyle={legendWrapperStyle} />} />
+                    <Line
+                      type="monotone"
+                      dataKey="sleep"
+                      name="Sleep"
+                      stroke="var(--chart-sleep)"
+                      dot={false}
+                      yAxisId="left"
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="mood"
+                      name="Mood"
+                      stroke="var(--chart-mood)"
+                      dot={false}
+                      yAxisId="right"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             )}
     </section>
   )

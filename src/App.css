@@ -1479,11 +1479,11 @@
 .badge-progress-fill {
   height: 100%;
   display: block;
-  background: var(--chart-ideal-sleep, #A78BFA);
+  background: var(--chart-ideal-sleep, #a78bfa);
 }
 
 .badge-row.locked .badge-progress-fill {
-  background: var(--chart-ideal-sleep, #A78BFA);
+  background: var(--chart-ideal-sleep, #a78bfa);
 }
 
 .badge-progress-text {
