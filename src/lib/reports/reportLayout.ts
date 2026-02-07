@@ -11,6 +11,11 @@ const ensurePageSpace = (doc: jsPDF, yRef: YRef) => {
   }
 }
 
+export const startNewPage = (doc: jsPDF, yRef: YRef) => {
+  doc.addPage()
+  yRef.value = 18
+}
+
 export const drawSectionHeader = (doc: jsPDF, yRef: YRef, label: string) => {
   doc.setFillColor(15, 23, 42)
   doc.rect(14, yRef.value - 5, 182, 9, 'F')
@@ -53,10 +58,10 @@ export const drawLines = (
 
 /** Catmull-Rom to cubic Bezier: segment from p1 to p2 with neighbors p0, p3 */
 const smoothSegment = (
-  p0: { x: number; y: number },
-  p1: { x: number; y: number },
-  p2: { x: number; y: number },
-  p3: { x: number; y: number },
+  p0: { x: number, y: number },
+  p1: { x: number, y: number },
+  p2: { x: number, y: number },
+  p3: { x: number, y: number },
   tension = 6,
 ) => {
   const cp1x = p1.x + (p2.x - p0.x) / tension
@@ -87,7 +92,7 @@ export const drawSparkline = (
       const py = yStart + height - ((value - min) / span) * height
       return { x: px, y: py }
     })
-    .filter((point): point is { x: number; y: number } => point !== null)
+    .filter((point): point is { x: number, y: number } => point !== null)
   if (points.length < 2) return
   doc.setDrawColor(...color)
   doc.setLineWidth(0.6)

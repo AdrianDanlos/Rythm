@@ -9,6 +9,7 @@ import {
   drawLines,
   drawSectionHeader,
   drawSparkline,
+  startNewPage,
 } from './reportLayout'
 
 type YRef = {
@@ -35,9 +36,9 @@ export const renderReportHeader = ({
   brandImage,
 }: ReportHeaderParams) => {
   const pageWidth = doc.internal.pageSize.getWidth()
-  const bannerHeight = 20
+  const bannerHeight = 30
   const bannerY = 0
-  const logoSize = 12
+  const logoSize = 16
   const logoX = 14
   const logoY = bannerY + (bannerHeight - logoSize) / 2
 
@@ -46,14 +47,14 @@ export const renderReportHeader = ({
   if (brandImage) {
     doc.addImage(brandImage, 'PNG', logoX, logoY, logoSize, logoSize)
   }
-  const textX = logoX + logoSize + 6
-  doc.setFontSize(9)
+  const textX = logoX + logoSize + 8
+  doc.setFontSize(11)
   doc.setTextColor(203, 213, 225)
-  doc.text('Sleep & Mood', textX, bannerY + 7)
-  doc.setFontSize(16)
+  doc.text('Sleep & Mood', textX, bannerY + 11)
+  doc.setFontSize(20)
   doc.setTextColor(255)
-  doc.text(title, textX, bannerY + 15)
-  yRef.value = bannerY + bannerHeight + 10
+  doc.text(title, textX, bannerY + 23)
+  yRef.value = bannerY + bannerHeight + 12
 
   if (welcomeName) {
     doc.setFontSize(12)
@@ -262,7 +263,7 @@ export const renderAllTimeSection = ({
   allTimeAvgMood,
   allTimeTags,
 }: AllTimeParams) => {
-  yRef.value += 10
+  startNewPage(doc, yRef)
   doc.setFontSize(12)
 
   drawSectionHeader(doc, yRef, 'All time')
