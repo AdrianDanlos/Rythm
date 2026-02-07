@@ -111,13 +111,15 @@ export const InsightsTagInsights = ({
                                     <div className="tag-bar-item positive" key={tag.tag}>
                                       <div className="tag-bar-header">
                                         <p className="tag-title">{tag.tag}</p>
-                                        <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
                                       </div>
-                                      <div className="tag-bar-track" aria-hidden="true">
-                                        <span
-                                          className="tag-bar-fill"
-                                          style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
-                                        />
+                                      <div className="tag-bar-delta-and-track">
+                                        <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
+                                        <div className="tag-bar-track" aria-hidden="true">
+                                          <span
+                                            className="tag-bar-fill"
+                                            style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
+                                          />
+                                        </div>
                                       </div>
                                       <p className="helper">{tag.count} entries</p>
                                     </div>
@@ -133,13 +135,15 @@ export const InsightsTagInsights = ({
                                     <div className="tag-bar-item negative" key={tag.tag}>
                                       <div className="tag-bar-header">
                                         <p className="tag-title">{tag.tag}</p>
-                                        <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
                                       </div>
-                                      <div className="tag-bar-track" aria-hidden="true">
-                                        <span
-                                          className="tag-bar-fill"
-                                          style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
-                                        />
+                                      <div className="tag-bar-delta-and-track">
+                                        <p className="tag-delta">{formatDelta(tag.delta)} mood</p>
+                                        <div className="tag-bar-track" aria-hidden="true">
+                                          <span
+                                            className="tag-bar-fill"
+                                            style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
+                                          />
+                                        </div>
                                       </div>
                                       <p className="helper">{tag.count} entries</p>
                                     </div>
@@ -173,13 +177,15 @@ export const InsightsTagInsights = ({
                                     <div className="tag-bar-item positive" key={d.tag}>
                                       <div className="tag-bar-header">
                                         <p className="tag-title">{d.tag}</p>
-                                        <p className="tag-delta">{formatSleepDelta(d.delta)}</p>
                                       </div>
-                                      <div className="tag-bar-track" aria-hidden="true">
-                                        <span
-                                          className="tag-bar-fill"
-                                          style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
-                                        />
+                                      <div className="tag-bar-delta-and-track">
+                                        <p className="tag-delta">{formatSleepDelta(d.delta)}</p>
+                                        <div className="tag-bar-track" aria-hidden="true">
+                                          <span
+                                            className="tag-bar-fill"
+                                            style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
+                                          />
+                                        </div>
                                       </div>
                                       <p className="helper">{d.count} nights</p>
                                     </div>
@@ -195,13 +201,15 @@ export const InsightsTagInsights = ({
                                     <div className="tag-bar-item negative" key={d.tag}>
                                       <div className="tag-bar-header">
                                         <p className="tag-title">{d.tag}</p>
-                                        <p className="tag-delta">{formatSleepDelta(d.delta)}</p>
                                       </div>
-                                      <div className="tag-bar-track" aria-hidden="true">
-                                        <span
-                                          className="tag-bar-fill"
-                                          style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
-                                        />
+                                      <div className="tag-bar-delta-and-track">
+                                        <p className="tag-delta">{formatSleepDelta(d.delta)}</p>
+                                        <div className="tag-bar-track" aria-hidden="true">
+                                          <span
+                                            className="tag-bar-fill"
+                                            style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
+                                          />
+                                        </div>
                                       </div>
                                       <p className="helper">{d.count} nights</p>
                                     </div>

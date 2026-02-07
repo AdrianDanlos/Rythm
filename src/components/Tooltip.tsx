@@ -1,6 +1,9 @@
-import { useRef, useState, useLayoutEffect, useCallback, type ReactNode } from 'react'
+import { useRef, useState, useLayoutEffect, useCallback, useEffect, type ReactNode } from 'react'
 
 const PADDING = 8
+
+const isTouchDevice = () =>
+  typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
 
 type TooltipProps = {
   label: string
@@ -18,6 +21,16 @@ export const Tooltip = ({ label, children, className }: TooltipProps) => {
   })
   const triggerRef = useRef<HTMLSpanElement>(null)
   const bubbleRef = useRef<HTMLSpanElement>(null)
+
+  const hide = useCallback(() => setIsVisible(false), [])
+
+  // On mobile, dismiss tooltip when the user scrolls
+  useEffect(() => {
+    if (!isVisible || !isTouchDevice()) return
+    const onScroll = () => hide()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [isVisible, hide])
 
   const updatePosition = useCallback(() => {
     const trigger = triggerRef.current
@@ -66,7 +79,6 @@ export const Tooltip = ({ label, children, className }: TooltipProps) => {
   }, [isVisible, updatePosition])
 
   const show = useCallback(() => setIsVisible(true), [])
-  const hide = useCallback(() => setIsVisible(false), [])
 
   return (
     <span
