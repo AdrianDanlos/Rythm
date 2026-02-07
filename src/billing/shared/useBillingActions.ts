@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { NativePurchases, PURCHASE_TYPE } from '@capgo/native-purchases'
 import { Browser } from '@capacitor/browser'
@@ -25,7 +26,7 @@ export const useBillingActions = ({
   subscriptionSource,
   refreshSession,
 }: UseBillingActionsParams) => {
-  const handleStartCheckout = async (): Promise<boolean> => {
+  const handleStartCheckout = useCallback(async (): Promise<boolean> => {
     if (isAndroid()) {
       try {
         const supported = await NativePurchases.isBillingSupported()
@@ -91,9 +92,9 @@ export const useBillingActions = ({
       return true
     }
     return false
-  }
+  }, [trimmedUpgradeUrl, refreshSession])
 
-  const handleRestorePurchases = async (): Promise<boolean> => {
+  const handleRestorePurchases = useCallback(async (): Promise<boolean> => {
     if (!isAndroid() || !refreshSession) return false
     try {
       const { purchases } = await NativePurchases.getPurchases({
@@ -116,9 +117,9 @@ export const useBillingActions = ({
       // ignore
     }
     return false
-  }
+  }, [refreshSession])
 
-  const handleManageSubscription = async () => {
+  const handleManageSubscription = useCallback(async () => {
     if (isPortalLoading) return
     setIsPortalLoading(true)
     try {
@@ -146,7 +147,7 @@ export const useBillingActions = ({
     finally {
       setIsPortalLoading(false)
     }
-  }
+  }, [isPortalLoading, setIsPortalLoading, subscriptionSource])
 
   return {
     handleStartCheckout,
