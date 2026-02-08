@@ -94,6 +94,7 @@ export const Insights = ({
   const reviewUrl = 'https://play.google.com/store/apps/details?id=com.rythm.app'
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
+  const showGatedInsights = isPro || entries.length >= 3
   const jitterFromId = (id: string, scale = 0.18) => {
     let hash = 0
     for (let i = 0; i < id.length; i += 1) {
@@ -154,20 +155,24 @@ export const Insights = ({
                 sleepThreshold={sleepThreshold}
                 goToLog={goToLog}
               />
-              <IdeaSleepTarget
-                isPro={isPro}
-                personalSleepThreshold={personalSleepThreshold}
-                moodByPersonalThreshold={moodByPersonalThreshold}
-                onOpenPaywall={onOpenPaywall}
-                goToLog={goToLog}
-              />
-              <InsightsTagInsights
-                isPro={isPro}
-                tagDrivers={tagDrivers}
-                tagSleepDrivers={tagSleepDrivers}
-                onOpenPaywall={onOpenPaywall}
-                goToLog={goToLog}
-              />
+              {showGatedInsights && (
+                <>
+                  <IdeaSleepTarget
+                    isPro={isPro}
+                    personalSleepThreshold={personalSleepThreshold}
+                    moodByPersonalThreshold={moodByPersonalThreshold}
+                    onOpenPaywall={onOpenPaywall}
+                    goToLog={goToLog}
+                  />
+                  <InsightsTagInsights
+                    isPro={isPro}
+                    tagDrivers={tagDrivers}
+                    tagSleepDrivers={tagSleepDrivers}
+                    onOpenPaywall={onOpenPaywall}
+                    goToLog={goToLog}
+                  />
+                </>
+              )}
               <section className="card">
                 <div className="card-header">
                   <div>
@@ -264,23 +269,27 @@ export const Insights = ({
                 moodColors={moodColors}
                 isMobile={isMobile}
               />
-              <InsightsSmoothedTrends
-                isPro={isPro}
-                isMobile={isMobile}
-                entryCount={entries.length}
-                rollingSeries={rollingSeries}
-                rollingSummaries={rollingSummaries}
-                onOpenPaywall={onOpenPaywall}
-                goToLog={goToLog}
-              />
-              <InsightsDailyHistory
-                isPro={isPro}
-                isMobile={isMobile}
-                entryCount={entries.length}
-                trendSeries={trendSeries}
-                onOpenPaywall={onOpenPaywall}
-                goToLog={goToLog}
-              />
+              {showGatedInsights && (
+                <>
+                  <InsightsSmoothedTrends
+                    isPro={isPro}
+                    isMobile={isMobile}
+                    entryCount={entries.length}
+                    rollingSeries={rollingSeries}
+                    rollingSummaries={rollingSummaries}
+                    onOpenPaywall={onOpenPaywall}
+                    goToLog={goToLog}
+                  />
+                  <InsightsDailyHistory
+                    isPro={isPro}
+                    isMobile={isMobile}
+                    entryCount={entries.length}
+                    trendSeries={trendSeries}
+                    onOpenPaywall={onOpenPaywall}
+                    goToLog={goToLog}
+                  />
+                </>
+              )}
             </div>
           )
         : null}
