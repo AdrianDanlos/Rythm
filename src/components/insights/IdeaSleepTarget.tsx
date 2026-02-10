@@ -1,5 +1,6 @@
-import { Tooltip } from '../Tooltip'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
+import { Tooltip } from '../Tooltip'
+import { IdeaSleepTargetTeaser } from './IdeaSleepTargetTeaser'
 
 type IdeaSleepTargetProps = {
   isPro: boolean
@@ -36,20 +37,13 @@ export const IdeaSleepTarget = ({
               </span>
             </Tooltip>
           </h2>
-          <p className="muted">Personalized target based on your sleep history.</p>
+          <p className="muted">
+            Finds your ideal target sleep time based on your sleep history.
+          </p>
         </div>
       </div>
       {!isPro
-        ? (
-            <div className="locked-message">
-              <p className="muted">
-                Instead of using the default 8h estimate, finds your ideal target sleep time.
-              </p>
-              <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
-                Upgrade to Pro
-              </button>
-            </div>
-          )
+        ? <IdeaSleepTargetTeaser onOpenPaywall={onOpenPaywall} />
         : hasThreshold
           ? (
               <div className="ideal-sleep-target-content">

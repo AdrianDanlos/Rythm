@@ -1,4 +1,4 @@
-import type { RollingPoint, TrendPoint } from './types/stats'
+import type { RollingPoint, TagDriver, TagSleepDriver, TrendPoint } from './types/stats'
 
 const clampValue = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 
@@ -61,3 +61,17 @@ export const buildMockTrendSeries = () => ({
   last90: buildMockTrendPoints(90),
   last365: buildMockTrendPoints(365),
 })
+
+export const buildMockTagDrivers = (): TagDriver[] => [
+  { tag: 'Exercise', count: 12, moodWith: 3.8, moodWithout: 3.2, delta: 0.6 },
+  { tag: 'Meditation', count: 8, moodWith: 3.9, moodWithout: 3.3, delta: 0.5 },
+  { tag: 'Late night', count: 10, moodWith: 2.9, moodWithout: 3.4, delta: -0.5 },
+  { tag: 'Skipped meal', count: 6, moodWith: 2.8, moodWithout: 3.3, delta: -0.4 },
+]
+
+export const buildMockTagSleepDrivers = (): TagSleepDriver[] => [
+  { tag: 'No caffeine', count: 14, sleepWith: 7.4, sleepWithout: 6.9, delta: 0.5 },
+  { tag: 'Wind down', count: 9, sleepWith: 7.2, sleepWithout: 6.7, delta: 0.4 },
+  { tag: 'Screen time', count: 11, sleepWith: 6.2, sleepWithout: 6.8, delta: -0.5 },
+  { tag: 'Stress', count: 7, sleepWith: 6.1, sleepWithout: 6.6, delta: -0.4 },
+]

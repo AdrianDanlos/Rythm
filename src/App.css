@@ -1530,11 +1530,11 @@
 .badge-progress-fill {
   height: 100%;
   display: block;
-  background: var(--chart-ideal-sleep, #DADFD8);
+  background: var(--chart-ideal-sleep, #dadfd8);
 }
 
 .badge-row.locked .badge-progress-fill {
-  background: var(--chart-ideal-sleep, #DADFD8);
+  background: var(--chart-ideal-sleep, #dadfd8);
 }
 
 .badge-progress-text {
@@ -1731,6 +1731,18 @@
   filter: blur(3px);
   opacity: 0.8;
   pointer-events: none;
+}
+
+.tag-insights-teaser .premium-preview__blur {
+  max-height: 160px;
+  padding: 15px;
+  overflow: hidden;
+}
+
+.ideal-sleep-target-teaser .premium-preview__blur {
+  max-height: 90px;
+  overflow: hidden;
+  padding: 15px;
 }
 
 .premium-preview__overlay {

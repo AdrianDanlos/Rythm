@@ -146,7 +146,7 @@ export const InsightsSmoothedTrends = ({
             </Tooltip>
           </h2>
           <p className="muted">
-            Rolling averages over 7/30/90 days to show direction
+            See how your week, month, or 3-month trend is moving
           </p>
         </div>
         <div className="toggle-group">
@@ -285,7 +285,6 @@ export const InsightsSmoothedTrends = ({
               </div>
               <div className="premium-preview__overlay">
                 <div className="locked-message">
-                  <p className="muted">Explore 7/30/90-day rolling trends for clearer sleep and mood direction.</p>
                   <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
                     Upgrade to Pro
                   </button>

@@ -1,6 +1,7 @@
 import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
 import { DEFAULT_TAG_DRIVER_MIN_COUNT } from '../../lib/utils/tagInsights'
 import { Tooltip } from '../Tooltip'
+import { InsightsTagInsightsTeaser } from './InsightsTagInsightsTeaser'
 
 type InsightsTagInsightsProps = {
   isPro: boolean
@@ -80,13 +81,7 @@ export const InsightsTagInsights = ({
         </div>
       </div>
       {!isPro
-        ? (
-            <div className="locked-message">
-              <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
-                Upgrade to Pro
-              </button>
-            </div>
-          )
+        ? <InsightsTagInsightsTeaser onOpenPaywall={onOpenPaywall} />
         : (hasDrivers || hasSleepDrivers)
             ? (
                 <>
