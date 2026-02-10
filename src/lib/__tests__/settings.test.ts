@@ -1,4 +1,5 @@
 import { describe, expect, it, beforeEach, vi } from 'vitest'
+import { STORAGE_KEYS } from '../storageKeys'
 import {
   getStoredDateFormat,
   getStoredProfileName,
@@ -30,8 +31,8 @@ describe('settings storage helpers', () => {
   })
 
   it('ignores invalid stored values', () => {
-    window.localStorage.setItem('preferredDateFormat', 'invalid')
-    window.localStorage.setItem('themePreference', 'invalid')
+    window.localStorage.setItem(STORAGE_KEYS.DATE_FORMAT, 'invalid')
+    window.localStorage.setItem(STORAGE_KEYS.THEME, 'invalid')
 
     expect(getStoredDateFormat()).toBe('dmy')
     expect(getStoredTheme()).toBe('dark')

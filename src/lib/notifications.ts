@@ -1,26 +1,25 @@
 import { Capacitor } from '@capacitor/core'
 import { LocalNotifications } from '@capacitor/local-notifications'
+import { STORAGE_KEYS } from './storageKeys'
 
 const DAILY_REMINDER_ID = 1001
 const DAILY_REMINDER_CHANNEL_ID = 'daily-reminder'
-const DAILY_REMINDER_STORAGE_KEY = 'dailyReminderEnabled'
-const DAILY_REMINDER_TIME_STORAGE_KEY = 'dailyReminderTime'
 
 export const getStoredDailyReminderEnabled = () =>
-  localStorage.getItem(DAILY_REMINDER_STORAGE_KEY) === 'true'
+  localStorage.getItem(STORAGE_KEYS.DAILY_REMINDER_ENABLED) === 'true'
 
 export const setStoredDailyReminderEnabled = (enabled: boolean) => {
-  localStorage.setItem(DAILY_REMINDER_STORAGE_KEY, String(enabled))
+  localStorage.setItem(STORAGE_KEYS.DAILY_REMINDER_ENABLED, String(enabled))
 }
 
 export const getStoredDailyReminderTime = () => {
-  const stored = localStorage.getItem(DAILY_REMINDER_TIME_STORAGE_KEY)
+  const stored = localStorage.getItem(STORAGE_KEYS.DAILY_REMINDER_TIME)
   return stored && /^\d{2}:\d{2}$/.test(stored) ? stored : '20:00'
 }
 
 export const setStoredDailyReminderTime = (value: string) => {
   if (!/^\d{2}:\d{2}$/.test(value)) return
-  localStorage.setItem(DAILY_REMINDER_TIME_STORAGE_KEY, value)
+  localStorage.setItem(STORAGE_KEYS.DAILY_REMINDER_TIME, value)
 }
 
 const parseReminderTime = (value?: string) => {

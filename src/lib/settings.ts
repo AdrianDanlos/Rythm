@@ -1,10 +1,7 @@
+import { STORAGE_KEYS } from './storageKeys'
+
 export type DateFormatPreference = 'mdy' | 'dmy' | 'ymd'
 export type ThemePreference = 'light' | 'dark'
-
-const DATE_FORMAT_STORAGE_KEY = 'preferredDateFormat'
-const THEME_STORAGE_KEY = 'themePreference'
-const PROFILE_NAME_STORAGE_KEY = 'profileName'
-const PERSONAL_SLEEP_TARGET_KEY = 'personalSleepTarget'
 
 const DEFAULT_SLEEP_TARGET = 8
 const MIN_SLEEP_TARGET = 4
@@ -33,7 +30,7 @@ const writeStorage = (key: string, value: string) => {
 }
 
 export const getStoredDateFormat = (): DateFormatPreference => {
-  const value = readStorage(DATE_FORMAT_STORAGE_KEY)
+  const value = readStorage(STORAGE_KEYS.DATE_FORMAT)
   if (value === 'dmy' || value === 'ymd' || value === 'mdy') {
     return value
   }
@@ -41,11 +38,11 @@ export const getStoredDateFormat = (): DateFormatPreference => {
 }
 
 export const setStoredDateFormat = (value: DateFormatPreference) => {
-  writeStorage(DATE_FORMAT_STORAGE_KEY, value)
+  writeStorage(STORAGE_KEYS.DATE_FORMAT, value)
 }
 
 export const getStoredTheme = (): ThemePreference => {
-  const value = readStorage(THEME_STORAGE_KEY)
+  const value = readStorage(STORAGE_KEYS.THEME)
   if (value === 'dark' || value === 'light') {
     return value
   }
@@ -53,15 +50,15 @@ export const getStoredTheme = (): ThemePreference => {
 }
 
 export const setStoredTheme = (value: ThemePreference) => {
-  writeStorage(THEME_STORAGE_KEY, value)
+  writeStorage(STORAGE_KEYS.THEME, value)
 }
 
 export const getStoredProfileName = () => {
-  return readStorage(PROFILE_NAME_STORAGE_KEY) ?? ''
+  return readStorage(STORAGE_KEYS.PROFILE_NAME) ?? ''
 }
 
 export const setStoredProfileName = (value: string) => {
-  writeStorage(PROFILE_NAME_STORAGE_KEY, value)
+  writeStorage(STORAGE_KEYS.PROFILE_NAME, value)
 }
 
 export const normalizeSleepTarget = (value: number) => {
@@ -71,7 +68,7 @@ export const normalizeSleepTarget = (value: number) => {
 }
 
 export const getStoredPersonalSleepTarget = () => {
-  const value = readStorage(PERSONAL_SLEEP_TARGET_KEY)
+  const value = readStorage(STORAGE_KEYS.PERSONAL_SLEEP_TARGET)
   if (value === null || value.trim() === '') {
     return DEFAULT_SLEEP_TARGET
   }
@@ -79,5 +76,5 @@ export const getStoredPersonalSleepTarget = () => {
 }
 
 export const setStoredPersonalSleepTarget = (value: number) => {
-  writeStorage(PERSONAL_SLEEP_TARGET_KEY, String(normalizeSleepTarget(value)))
+  writeStorage(STORAGE_KEYS.PERSONAL_SLEEP_TARGET, String(normalizeSleepTarget(value)))
 }

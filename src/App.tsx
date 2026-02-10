@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
-import type { Entry } from './lib/entries'
 import { exportMonthlyReport } from './lib/reports'
 import { exportEntriesCsv } from './lib/utils/csvExport'
 import { formatLocalDate } from './lib/utils/dateFormatters'
 import { AuthForm } from './components/AuthForm'
+import { InsightsQuickStart } from './components/InsightsQuickStart'
 import { LogForm } from './components/LogForm'
 import { Insights } from './components/Insights'
 import { PaywallModal } from './billing/shared/PaywallModal'
@@ -39,6 +39,7 @@ import {
   type DateFormatPreference,
   type ThemePreference,
 } from './lib/settings'
+import { STORAGE_KEYS } from './lib/storageKeys'
 import { Toaster } from 'sonner'
 import './App.css'
 
@@ -79,7 +80,13 @@ function App() {
     return date
   }, [])
   const today = useMemo(() => formatLocalDate(todayDate), [todayDate])
-  const [activeTab, setActiveTab] = useState<TabKey>(Tabs.Insights)
+
+  const [activeTab, setActiveTab] = useState<TabKey>(() =>
+    typeof window !== 'undefined'
+    && window.localStorage.getItem(STORAGE_KEYS.RETURNING_USER) === 'true'
+      ? Tabs.Insights
+      : Tabs.Log,
+  )
   const [activeInsightsTab, setActiveInsightsTab] = useState<InsightsSection>(Tabs.Summary)
   const [isStreakOpen, setIsStreakOpen] = useState(false)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
@@ -121,12 +128,6 @@ function App() {
   const trimmedUpgradeUrl = upgradeUrl?.trim()
   const priceLabel = PRICING.pro.priceLabel
 
-  const handleEntriesLoaded = useCallback((data: Entry[]) => {
-    if (data.length) {
-      setActiveTab(Tabs.Insights)
-    }
-  }, [])
-
   const {
     entries,
     setEntries,
@@ -141,7 +142,6 @@ function App() {
     userId: session?.user?.id,
     sleepThreshold,
     formatLocalDate,
-    onEntriesLoaded: handleEntriesLoaded,
   })
 
   const {
@@ -281,6 +281,16 @@ function App() {
     }
   }, [entries.length, exportError])
 
+  useEffect(() => {
+    if (entriesLoading || entries.length === 0) return
+    try {
+      window.localStorage.setItem(STORAGE_KEYS.RETURNING_USER, 'true')
+    }
+    catch {
+      // Ignore storage write failures.
+    }
+  }, [entriesLoading, entries.length])
+
   const handleSignOut = async () => {
     if (isSignOutLoading) return
     setIsSignOutLoading(true)
@@ -391,7 +401,7 @@ function App() {
         <a className="app-brand" href={playStoreUrl} target="_blank" rel="noreferrer">
           <img className="app-logo" src={logo} alt="Rythm logo" />
           <div>
-            <p className="eyebrow">Sleep &amp; Mood</p>
+            <p className="eyebrow">Sleep, life events &amp; mood</p>
             <h1>Rythm</h1>
           </div>
         </a>
@@ -535,39 +545,40 @@ function App() {
 
                   {activeTab === Tabs.Log
                     ? (
-                        <p className="helper">
-                          Log your sleep hours, mood, and other variables in the tags section to spot patterns over time.
-                        </p>
-                      )
-                    : null}
-
-                  {activeTab === Tabs.Log
-                    ? (
-                        <LogForm
-                          selectedDate={selectedDate}
-                          todayDate={todayDate}
-                          highlightedDates={highlightedDates}
-                          sleepHours={sleepHours}
-                          mood={mood}
-                          note={note}
-                          tags={tags}
-                          tagSuggestions={tagSuggestions}
-                          maxTagsPerEntry={maxTagsPerEntry}
-                          saving={saving}
-                          saved={saved}
-                          entriesError={entriesError}
-                          moodColors={moodColors}
-                          isPro={isPro}
-                          isMobile={isMobile}
-                          formatLocalDate={formatLocalDate}
-                          onEntryDateChange={setEntryDate}
-                          onSleepHoursChange={setSleepHours}
-                          onMoodChange={setMood}
-                          onNoteChange={setNote}
-                          onTagsChange={setTags}
-                          onSave={handleSave}
-                          onOpenPaywall={handleOpenPaywall}
-                        />
+                        <>
+                          {!entriesLoading && (
+                            <InsightsQuickStart
+                              hasNoEntries={entries.length === 0}
+                              goToLog={() => document.getElementById('log-calendar')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                            />
+                          )}
+                          <p className="log-form-tip" role="status">
+                            Tip: Best time to log is in the <strong>evening or before bed</strong> so you can log events from the day. The more you log, the clearer the picture of what helps you feel better.
+                          </p>
+                          <LogForm
+                            selectedDate={selectedDate}
+                            todayDate={todayDate}
+                            highlightedDates={highlightedDates}
+                            sleepHours={sleepHours}
+                            mood={mood}
+                            note={note}
+                            tags={tags}
+                            tagSuggestions={tagSuggestions}
+                            maxTagsPerEntry={maxTagsPerEntry}
+                            saving={saving}
+                            saved={saved}
+                            entriesError={entriesError}
+                            moodColors={moodColors}
+                            isMobile={isMobile}
+                            formatLocalDate={formatLocalDate}
+                            onEntryDateChange={setEntryDate}
+                            onSleepHoursChange={setSleepHours}
+                            onMoodChange={setMood}
+                            onNoteChange={setNote}
+                            onTagsChange={setTags}
+                            onSave={handleSave}
+                          />
+                        </>
                       )
                     : (
                         <Insights
@@ -611,7 +622,7 @@ function App() {
               <a className="app-brand nav-brand" href={playStoreUrl} target="_blank" rel="noreferrer">
                 <img className="app-logo" src={logo} alt="Rythm logo" />
                 <div>
-                  <p className="eyebrow">Sleep &amp; Mood</p>
+                  <p className="eyebrow">Sleep, life events &amp; mood</p>
                   <h1>Rythm</h1>
                 </div>
               </a>

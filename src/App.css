@@ -42,9 +42,14 @@
   cursor: pointer;
 }
 
+.app-brand .eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.09em;
+}
+
 .app-logo {
-  width: 48px;
-  height: 48px;
+  width: 54px;
+  height: 54px;
   border-radius: 14px;
   object-fit: cover;
   box-shadow: var(--app-logo-shadow);
@@ -389,8 +394,20 @@
   gap: 12px;
 }
 
+.log-form-tip {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0 0 4px 0;
+  line-height: 1.4;
+}
+
+.log-form-tip strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .log-form-stack {
-  gap: 28px;
+  gap: 32px;
 }
 
 .auth-title {
@@ -451,7 +468,7 @@
 }
 
 /* Pull notes closer to tags; log-form-stack gap + this = desired 10px from tags */
-.field-notes {
+.field-mood {
   margin-top: -10px;
 }
 
@@ -603,7 +620,8 @@
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .tag-pill {
@@ -1803,6 +1821,13 @@
   flex-basis: 100%;
 }
 
+.insights-summary-intro__copy {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
 .field-title {
   display: flex;
   align-items: center;
@@ -2463,7 +2488,8 @@
   }
 
   .nav-brand .eyebrow {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.09em;
   }
 
   .nav-center {

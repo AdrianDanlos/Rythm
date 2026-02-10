@@ -75,8 +75,8 @@ export const InsightsTagInsights = ({
     <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
       <div className="card-header">
         <div>
-          <h2>Tag Insights</h2>
-          <p className="muted">Discover which tags are linked to better mood and sleep so you can do more of what helps and less of what doesn’t.
+          <h2>Event Insights</h2>
+          <p className="muted">Discover which events are linked to better mood and sleep so you can do more of what helps and less of what doesn’t.
           </p>
         </div>
       </div>
@@ -93,8 +93,8 @@ export const InsightsTagInsights = ({
                 <>
                   <div className="tag-insights-block">
                     <div className="tag-insights-block-header">
-                      <h3 className="tag-insights-block-title">Tags that predict mood</h3>
-                      <Tooltip label="Compares mood on days with a tag vs without it.">
+                      <h3 className="tag-insights-block-title">Events that predict mood</h3>
+                      <Tooltip label="Compares mood on days with an event vs without it.">
                         <span className="tooltip-trigger">
                           <span className="tooltip-icon" aria-hidden="true">i</span>
                         </span>
@@ -156,13 +156,13 @@ export const InsightsTagInsights = ({
                           </>
                         )
                       : (
-                          <p className="muted">Add tags to see mood impact (min 3 entries per tag).</p>
+                          <p className="muted">Add events to see mood impact (min 3 entries per event).</p>
                         )}
                   </div>
                   <div className="tag-insights-block">
                     <div className="tag-insights-block-header">
-                      <h3 className="tag-insights-block-title">Tags that predict sleep</h3>
-                      <Tooltip label="Predict how much these tags will affect your sleep tonight.">
+                      <h3 className="tag-insights-block-title">Events that predict sleep</h3>
+                      <Tooltip label="Predict how much these events will affect your sleep tonight.">
                         <span className="tooltip-trigger">
                           <span className="tooltip-icon" aria-hidden="true">i</span>
                         </span>
@@ -224,15 +224,15 @@ export const InsightsTagInsights = ({
                           </>
                         )
                       : (
-                          <p className="muted">Add tags to see sleep impact (min 3 nights per tag).</p>
+                          <p className="muted">Add events to see sleep impact (min 3 nights per event).</p>
                         )}
                   </div>
                 </>
               )
             : (
                 <p className="muted">
-                  <button type="button" className="link-button link-button--text" onClick={goToLog}>Add tags</button>
-                  {' '}to see how each one changes your mood and sleep <strong>(at least {DEFAULT_TAG_DRIVER_MIN_COUNT} entries per tag).</strong>
+                  <button type="button" className="link-button link-button--text" onClick={goToLog}>Add events</button>
+                  {' '}to see how each one changes your mood and sleep <strong>(at least {DEFAULT_TAG_DRIVER_MIN_COUNT} entries per event).</strong>
                 </p>
               )}
     </section>

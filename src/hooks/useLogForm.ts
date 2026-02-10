@@ -5,6 +5,20 @@ import { getSupportMessage } from '../lib/supportMessage'
 import { buildStats, type StatsResult } from '../lib/stats'
 import { parseTags } from '../lib/utils/stringUtils'
 
+const DEFAULT_TAG_SUGGESTIONS = [
+  'Caffeine',
+  'Stress',
+  'Late intake',
+  'Evening screens',
+  'Late bedtime',
+  'Excercise',
+  'Fragmented sleep',
+  'Alcohol intake',
+  'Progress',
+  'Social',
+  'Sunlight',
+]
+
 type UseLogFormParams = {
   userId?: string
   entries: Entry[]
@@ -48,11 +62,12 @@ export const useLogForm = ({
   )
 
   const tagSuggestions = useMemo(() => {
+    const defaultsLower = DEFAULT_TAG_SUGGESTIONS.map(t => t.trim().toLowerCase())
+    const seen = new Set<string>(defaultsLower)
+    const suggestions = [...defaultsLower]
     const sorted = [...entries].sort((a, b) =>
       b.entry_date.localeCompare(a.entry_date),
     )
-    const seen = new Set<string>()
-    const suggestions: string[] = []
     sorted.forEach((entry) => {
       entry.tags?.forEach((tag) => {
         const normalized = tag.trim().toLowerCase()
@@ -140,9 +155,9 @@ export const useLogForm = ({
       return
     }
 
-    const tagList = isPro ? parseTags(tags) : []
-    if (isPro && tagList.length > maxTagsPerEntry) {
-      setEntriesError(`Limit ${maxTagsPerEntry} tags per entry.`)
+    const tagList = parseTags(tags)
+    if (tagList.length > maxTagsPerEntry) {
+      setEntriesError(`Limit ${maxTagsPerEntry} events per entry.`)
       setSaved(false)
       return
     }
@@ -156,7 +171,7 @@ export const useLogForm = ({
         sleep_hours: parsedSleep,
         mood,
         note: note.trim() ? note.trim() : null,
-        ...(isPro ? { tags: tagList.length ? tagList : null } : {}),
+        ...(tagList.length ? { tags: tagList } : { tags: null }),
       })
 
       const nextEntries = (() => {

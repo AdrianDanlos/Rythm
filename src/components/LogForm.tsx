@@ -18,7 +18,6 @@ export type LogFormProps = {
   saved: boolean
   entriesError: string | null
   moodColors: string[]
-  isPro: boolean
   isMobile?: boolean
   formatLocalDate: (date: Date) => string
   onEntryDateChange: (value: string) => void
@@ -27,7 +26,6 @@ export type LogFormProps = {
   onNoteChange: (value: string) => void
   onTagsChange: (value: string) => void
   onSave: (event: FormEvent<HTMLFormElement>) => void
-  onOpenPaywall: () => void
 }
 
 export const LogForm = ({
@@ -44,7 +42,6 @@ export const LogForm = ({
   saved,
   entriesError,
   moodColors,
-  isPro,
   isMobile = false,
   formatLocalDate,
   onEntryDateChange,
@@ -53,7 +50,6 @@ export const LogForm = ({
   onNoteChange,
   onTagsChange,
   onSave,
-  onOpenPaywall,
 }: LogFormProps) => {
   const sleepHourOptions = Array.from({ length: 13 }, (_, index) => index)
   const sleepMinuteOptions = [0, 30]
@@ -141,7 +137,7 @@ export const LogForm = ({
     <section className="card">
       <form onSubmit={onSave} className="stack log-form-stack">
         <div className="field">
-          <div className="date-picker">
+          <div id="log-calendar" className="date-picker">
             <DayPicker
               mode="single"
               selected={selectedDate}
@@ -156,7 +152,7 @@ export const LogForm = ({
           </div>
         </div>
         <label className="field">
-          Sleep hours
+          How much did you sleep?
           <div className="sleep-hours-row" ref={sleepMenuRef}>
             <div className="sleep-select">
               <button
@@ -225,72 +221,37 @@ export const LogForm = ({
             </div>
           </div>
         </label>
-        <div className="field">
-          Mood today
-          <div className="mood-row">
-            {([1, 2, 3, 4, 5] as const).map(value => (
-              <button
-                key={value}
-                type="button"
-                className={`mood-button ${mood === value ? 'active' : ''}`}
-                onClick={() => onMoodChange(value)}
-                style={
-                  {
-                    '--mood-color': moodColors[value - 1],
-                  } as CSSProperties
-                }
-                aria-pressed={mood === value}
-              >
-                {value}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div
-          className="field"
-          ref={tagAreaRef}
-          onClick={() => {
-            if (!isPro) {
-              onOpenPaywall()
-            }
-          }}
-        >
+        <div className="field" ref={tagAreaRef}>
           <div className="field-title">
             <span>
-              {isPro ? 'Tags' : 'Tags (Pro)'}
-              {isPro && (
-                <Tooltip label="We suggest to add tags in the evening, as they help identify today's mood and tonight's sleep.">
-                  <span className="tooltip-trigger" style={{ marginLeft: '0.25em' }}>
-                    <span className="tooltip-icon" aria-hidden="true">i</span>
-                  </span>
-                </Tooltip>
-              )}
+              What happened during your day?
+              <Tooltip label="Log events from your day (e.g. stress, caffeine, exercise). Use the default ones or add your own.">
+                <span className="tooltip-trigger" style={{ marginLeft: '0.25em' }}>
+                  <span className="tooltip-icon" aria-hidden="true">i</span>
+                </span>
+              </Tooltip>
             </span>
             <span className="field-hint">
-              {isPro
-                ? `Up to ${maxTagsPerEntry} tags`
-                : 'Upgrade to Pro to add tags'}
+              Up to {maxTagsPerEntry} events
             </span>
           </div>
-          <div
-            className={`tag-control-row${!isPro ? ' tag-control-row--disabled' : ''}`}
-            aria-disabled={!isPro}
-          >
+          <div className="tag-control-row">
             <div className="tag-dropdown-wrap">
               <input
                 type="text"
                 className="tag-dropdown-trigger"
                 aria-haspopup="listbox"
-                aria-expanded={isPro ? tagDropdownOpen : false}
-                aria-label="Type or select tags"
-                placeholder="Type or select tags"
+                aria-expanded={tagDropdownOpen}
+                aria-label="Add events (e.g. stress, caffeine, exercise)"
+                placeholder="e.g. stress, caffeine, exercise"
                 value={tagInputValue}
-                disabled={atMaxTags || !isPro}
+                disabled={atMaxTags}
                 onChange={(e) => {
                   setTagInputValue(e.target.value)
                   setTagDropdownOpen(true)
                 }}
                 onFocus={() => setTagDropdownOpen(true)}
+                onClick={() => setTagDropdownOpen(true)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault()
@@ -298,7 +259,7 @@ export const LogForm = ({
                   }
                 }}
               />
-              {isPro && tagDropdownOpen && (matchingSuggestions.length > 0 || !isMobile) && (
+              {tagDropdownOpen && (matchingSuggestions.length > 0 || !isMobile) && (
                 <div className="tag-suggestions" role="listbox">
                   {matchingSuggestions.length > 0
                     ? matchingSuggestions.map(suggestion => (
@@ -315,7 +276,7 @@ export const LogForm = ({
                     : (
                         <span className="tag-suggestions-empty">
                           {token
-                            ? 'Press Enter to add as new tag'
+                            ? 'Press Enter to add as new event'
                             : 'No suggestions'}
                         </span>
                       )}
@@ -326,10 +287,10 @@ export const LogForm = ({
               <button
                 type="button"
                 className="tag-add-button"
-                disabled={atMaxTags || !isPro}
+                disabled={atMaxTags}
                 onClick={submitTagInput}
               >
-                + Add
+                + Add New
               </button>
             </div>
           </div>
@@ -354,7 +315,28 @@ export const LogForm = ({
             ))}
           </div>
         </div>
-        <label className="field field-notes">
+        <div className="field field-mood">
+          How did you feel today?
+          <div className="mood-row">
+            {([1, 2, 3, 4, 5] as const).map(value => (
+              <button
+                key={value}
+                type="button"
+                className={`mood-button ${mood === value ? 'active' : ''}`}
+                onClick={() => onMoodChange(value)}
+                style={
+                  {
+                    '--mood-color': moodColors[value - 1],
+                  } as CSSProperties
+                }
+                aria-pressed={mood === value}
+              >
+                {value}
+              </button>
+            ))}
+          </div>
+        </div>
+        <label className="field">
           Note (optional)
           <input
             type="text"

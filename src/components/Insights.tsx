@@ -12,6 +12,7 @@ import type {
 } from '../lib/types/stats'
 import { InsightsDailyHistory } from './insights/InsightsDailyHistory'
 import { InsightsExport } from './insights/InsightsExport'
+import { InsightsSummaryIntro } from './InsightsSummaryIntro'
 import { InsightsCalendarHeatmap } from './insights/InsightsCalendarHeatmap'
 import { IdeaSleepTarget } from './insights/IdeaSleepTarget'
 import { InsightsScatter } from './insights/InsightsScatter'
@@ -19,9 +20,9 @@ import { InsightsSmoothedTrends } from './insights/InsightsSmoothedTrends'
 import { InsightsStats } from './insights/InsightsStats'
 import { InsightsTagInsights } from './insights/InsightsTagInsights'
 import { InsightsMoodDistribution } from './insights/InsightsMoodDistribution'
-import { InsightsQuickStart } from './InsightsQuickStart'
 import badgeIcon from '../assets/badge.png'
 import googleLogo from '../assets/playstore.png'
+import { STORAGE_KEYS } from '../lib/storageKeys'
 
 type InsightsTab = 'summary' | 'charts' | 'data'
 
@@ -91,7 +92,20 @@ export const Insights = ({
   activeTab,
   goToLog,
 }: InsightsProps) => {
+  const [hasRatedOnPlay, setHasRatedOnPlay] = useState(
+    () => typeof window !== 'undefined'
+      && localStorage.getItem(STORAGE_KEYS.RATED_GOOGLE_PLAY) === 'true',
+  )
   const reviewUrl = 'https://play.google.com/store/apps/details?id=com.rythm.app'
+  const onRateClick = () => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.RATED_GOOGLE_PLAY, 'true')
+    }
+    catch {
+      // ignore
+    }
+    setHasRatedOnPlay(true)
+  }
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
   const showGatedInsights = isPro || entries.length >= 3
@@ -141,7 +155,9 @@ export const Insights = ({
       {activeTab === 'summary'
         ? (
             <div className="insights-panel">
-              <InsightsQuickStart goToLog={goToLog} />
+              <InsightsSummaryIntro
+                entryCount={entries.length}
+              />
               <InsightsStats
                 isLoading={isLoading}
                 averages={averages}
@@ -304,20 +320,22 @@ export const Insights = ({
                 onExportMonthlyReport={onExportMonthlyReport}
                 onOpenPaywall={onOpenPaywall}
               />
-              <div className="review-cta review-cta--standalone">
-                <div className="review-cta__content">
-                  <div className="review-cta__icon-wrap" aria-hidden="true">
-                    <img className="review-cta__icon" src={googleLogo} alt="" />
+              {!hasRatedOnPlay && (
+                <div className="review-cta review-cta--standalone">
+                  <div className="review-cta__content">
+                    <div className="review-cta__icon-wrap" aria-hidden="true">
+                      <img className="review-cta__icon" src={googleLogo} alt="" />
+                    </div>
+                    <div className="review-cta__text">
+                      <p className="label">Enjoying Rythm?</p>
+                      <p className="muted">A quick review helps a ton.</p>
+                    </div>
                   </div>
-                  <div className="review-cta__text">
-                    <p className="label">Enjoying Rythm?</p>
-                    <p className="muted">A quick review helps a ton.</p>
-                  </div>
+                  <a className="review-cta__link" href={reviewUrl} target="_blank" rel="noreferrer" onClick={onRateClick}>
+                    Rate on Google Play
+                  </a>
                 </div>
-                <a className="review-cta__link" href={reviewUrl} target="_blank" rel="noreferrer">
-                  Rate on Google Play
-                </a>
-              </div>
+              )}
             </div>
           )
         : null}

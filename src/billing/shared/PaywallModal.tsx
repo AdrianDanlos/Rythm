@@ -11,7 +11,7 @@ type PaywallModalProps = {
 }
 
 const premiumFeatures = [
-  'Tag insights to predict mood and sleep',
+  'Event insights to predict mood and sleep',
   'Personalized sleep target based on your history',
   'Weekly and monthly trends',
   '30/90/365 day history',

@@ -37,6 +37,18 @@ export const Tooltip = ({ label, children, className }: TooltipProps) => {
     return () => window.removeEventListener('scroll', onScroll)
   }, [isVisible, isTouch, hide])
 
+  // On mobile, dismiss tooltip when the user clicks outside (trigger or bubble)
+  useEffect(() => {
+    if (!isVisible || !isTouch) return
+    const onDocClick = (e: MouseEvent) => {
+      const target = e.target as Node
+      if (triggerRef.current?.contains(target) || bubbleRef.current?.contains(target)) return
+      hide()
+    }
+    document.addEventListener('click', onDocClick)
+    return () => document.removeEventListener('click', onDocClick)
+  }, [isVisible, isTouch, hide])
+
   // On mobile, open/close by tap; after scroll-hide we don't get mouseEnter again so click must reopen
   const handleTriggerClick = useCallback(() => {
     if (!isTouch) return
