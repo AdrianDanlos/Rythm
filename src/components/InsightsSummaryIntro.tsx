@@ -1,9 +1,10 @@
 type InsightsSummaryIntroProps = {
   entryCount: number
+  entriesLoading: boolean
 }
 
-export const InsightsSummaryIntro = ({ entryCount }: InsightsSummaryIntroProps) => {
-  if (entryCount > 1) return null
+export const InsightsSummaryIntro = ({ entryCount, entriesLoading }: InsightsSummaryIntroProps) => {
+  if (entriesLoading || entryCount > 1) return null
 
   return (
     <section className="card insights-intro insights-summary-intro">

@@ -43,7 +43,7 @@
 }
 
 .app-brand .eyebrow {
-  font-size: 0.6rem;
+  font-size: 0.5rem;
 }
 
 .app-logo {
@@ -1530,11 +1530,11 @@
 .badge-progress-fill {
   height: 100%;
   display: block;
-  background: var(--chart-ideal-sleep, #a78bfa);
+  background: var(--chart-ideal-sleep, #DADFD8);
 }
 
 .badge-row.locked .badge-progress-fill {
-  background: var(--chart-ideal-sleep, #a78bfa);
+  background: var(--chart-ideal-sleep, #DADFD8);
 }
 
 .badge-progress-text {

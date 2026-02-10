@@ -39,7 +39,7 @@
   --modal-backdrop: rgba(15, 23, 42, 0.55);
   --chart-sleep: #7dd3fc;
   --chart-mood: #22c55e;
-  --chart-ideal-sleep: #8b5cf6;
+  --chart-ideal-sleep: #DADFD8;
   --tooltip-bg: var(--white);
   --tooltip-border: var(--neutral-200);
   --tooltip-shadow: 0 12px 22px rgba(15, 23, 42, 0.12);
@@ -153,7 +153,7 @@
   --modal-backdrop: rgba(2, 6, 23, 0.78);
   --chart-sleep: #7dd3fc;
   --chart-mood: #4ade80;
-  --chart-ideal-sleep: #a78bfa;
+  --chart-ideal-sleep: #DADFD8;
   --tooltip-bg: #111827;
   --tooltip-border: rgba(56, 189, 248, 0.45);
   --tooltip-shadow: 0 16px 28px rgba(2, 6, 23, 0.6);

@@ -157,6 +157,7 @@ export const Insights = ({
             <div className="insights-panel">
               <InsightsSummaryIntro
                 entryCount={entries.length}
+                entriesLoading={entriesLoading}
               />
               <InsightsStats
                 isLoading={isLoading}
