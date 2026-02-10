@@ -22,6 +22,7 @@ import { InsightsTagInsights } from './insights/InsightsTagInsights'
 import { InsightsMoodDistribution } from './insights/InsightsMoodDistribution'
 import badgeIcon from '../assets/badge.png'
 import googleLogo from '../assets/playstore.png'
+import { PLAY_STORE_APP_URL } from '../lib/constants'
 import { STORAGE_KEYS } from '../lib/storageKeys'
 
 type InsightsTab = 'summary' | 'charts' | 'data'
@@ -96,7 +97,7 @@ export const Insights = ({
     () => typeof window !== 'undefined'
       && localStorage.getItem(STORAGE_KEYS.RATED_GOOGLE_PLAY) === 'true',
   )
-  const reviewUrl = 'https://play.google.com/store/apps/details?id=com.rythm.app'
+  const reviewUrl = PLAY_STORE_APP_URL
   const onRateClick = () => {
     try {
       localStorage.setItem(STORAGE_KEYS.RATED_GOOGLE_PLAY, 'true')

@@ -225,7 +225,7 @@ export const LogForm = ({
           <div className="field-title">
             <span>
               What did you do today?
-              <Tooltip label="Log events from your day (e.g. stress, excercise...). Use the default events or add your own.">
+              <Tooltip label="Log events from your day (e.g. stress, caffeine, excercise...). Use the default events or add your own.">
                 <span className="tooltip-trigger" style={{ marginLeft: '0.25em' }}>
                   <span className="tooltip-icon" aria-hidden="true">i</span>
                 </span>
@@ -243,7 +243,7 @@ export const LogForm = ({
                 aria-haspopup="listbox"
                 aria-expanded={tagDropdownOpen}
                 aria-label="Add events (e.g. stress, caffeine, exercise)"
-                placeholder="e.g. stress, caffeine, exercise"
+                placeholder="e.g. stress, exercise..."
                 value={tagInputValue}
                 disabled={atMaxTags}
                 onChange={(e) => {

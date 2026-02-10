@@ -39,6 +39,7 @@ import {
   type DateFormatPreference,
   type ThemePreference,
 } from './lib/settings'
+import { PLAY_STORE_APP_URL } from './lib/constants'
 import { STORAGE_KEYS } from './lib/storageKeys'
 import { Toaster } from 'sonner'
 import './App.css'
@@ -53,6 +54,18 @@ enum Tabs {
 
 type TabKey = Tabs.Insights | Tabs.Log
 type InsightsSection = Tabs.Summary | Tabs.Charts | Tabs.Data
+
+function AppBrand({ className }: { className?: string }) {
+  return (
+    <a className={`app-brand ${className ?? ''}`.trim()} href={PLAY_STORE_APP_URL} target="_blank" rel="noreferrer">
+      <img className="app-logo" src={logo} alt="Rythm logo" />
+      <div>
+        <p className="eyebrow">Sleep, life &amp; mood</p>
+        <h1>Rythm</h1>
+      </div>
+    </a>
+  )
+}
 
 function App() {
   const showPrivacyPage = isPrivacyPage()
@@ -371,7 +384,6 @@ function App() {
     setIsPaywallOpen(false)
   }
 
-  const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.rythm.app'
   const handleOpenFeedback = () => {
     setIsFeedbackOpen(true)
   }
@@ -398,13 +410,7 @@ function App() {
   return (
     <div className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}`}>
       <header className="app-header">
-        <a className="app-brand" href={playStoreUrl} target="_blank" rel="noreferrer">
-          <img className="app-logo" src={logo} alt="Rythm logo" />
-          <div>
-            <p className="eyebrow">Sleep, life events &amp; mood</p>
-            <h1>Rythm</h1>
-          </div>
-        </a>
+        <AppBrand />
         <div className="header-actions">
           {session
             ? (
@@ -619,13 +625,7 @@ function App() {
       {authInitialized
         ? (
             <div className="insights-bottom-nav">
-              <a className="app-brand nav-brand" href={playStoreUrl} target="_blank" rel="noreferrer">
-                <img className="app-logo" src={logo} alt="Rythm logo" />
-                <div>
-                  <p className="eyebrow">Sleep, life events &amp; mood</p>
-                  <h1>Rythm</h1>
-                </div>
-              </a>
+              <AppBrand className="nav-brand" />
               {session
                 ? (
                     <div className="nav-center">
