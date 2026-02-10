@@ -1293,6 +1293,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
   padding: 8px 14px;
   border-radius: 8px;
   min-height: 38px;
@@ -1309,6 +1310,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
   padding: 8px 14px;
   min-height: 38px;
   box-sizing: border-box;
