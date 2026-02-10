@@ -76,8 +76,7 @@ export const InsightsTagInsights = ({
       <div className="card-header">
         <div>
           <h2>Event Insights</h2>
-          <p className="muted">Discover which events are linked to better mood and sleep so you can do more of what helps and less of what doesn’t.
-          </p>
+          <p className="muted">See which events improve or worsen your mood and sleep.</p>
         </div>
       </div>
       {!isPro

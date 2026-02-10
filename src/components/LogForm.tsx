@@ -224,7 +224,7 @@ export const LogForm = ({
         <div className="field" ref={tagAreaRef}>
           <div className="field-title">
             <span>
-              What happened during your day?
+              What did you do today?
               <Tooltip label="Log events from your day (e.g. stress, caffeine, exercise). Use the default ones or add your own.">
                 <span className="tooltip-trigger" style={{ marginLeft: '0.25em' }}>
                   <span className="tooltip-icon" aria-hidden="true">i</span>
@@ -232,7 +232,7 @@ export const LogForm = ({
               </Tooltip>
             </span>
             <span className="field-hint">
-              Up to {maxTagsPerEntry} events
+              Max {maxTagsPerEntry}
             </span>
           </div>
           <div className="tag-control-row">
