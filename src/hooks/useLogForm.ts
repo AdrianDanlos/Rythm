@@ -42,7 +42,6 @@ export const useLogForm = ({
   today,
   formatLocalDate,
   sleepThreshold,
-  isPro,
   maxTagsPerEntry,
   setEntriesError,
   onStreakReached,
