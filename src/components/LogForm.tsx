@@ -140,6 +140,7 @@ export const LogForm = ({
           <div id="log-calendar" className="date-picker">
             <DayPicker
               mode="single"
+              weekStartsOn={1}
               selected={selectedDate}
               onSelect={(date: Date | undefined) => {
                 if (!date) return
