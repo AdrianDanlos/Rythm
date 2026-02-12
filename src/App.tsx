@@ -703,9 +703,8 @@ function App() {
                         </button>
                         <button
                           type="button"
-                          className={`tab-button tab-button--log ${activeTab === Tabs.Log ? 'active' : ''}`}
+                          className={`tab-button ${activeTab === Tabs.Log ? 'active' : ''}`}
                           onClick={() => setActiveTab(Tabs.Log)}
-                          aria-label="Log"
                         >
                           <span className="tab-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -718,7 +717,7 @@ function App() {
                               <path d="M8 9h8M8 13h8M8 17h5" fill="none" stroke="currentColor" strokeWidth="2" />
                             </svg>
                           </span>
-                          <span className="tab-text">Log</span>
+                          <span>Log</span>
                         </button>
                       </div>
                       <div className="nav-actions" aria-label="Account actions">
