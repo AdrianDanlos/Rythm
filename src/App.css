@@ -2065,6 +2065,10 @@
   gap: 6px;
 }
 
+.label-nowrap {
+  white-space: nowrap;
+}
+
 .value {
   margin: 3px 0 0;
   font-size: 1.4rem;

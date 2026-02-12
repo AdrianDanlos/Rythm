@@ -175,6 +175,7 @@ export const Insights = ({
                 correlationDirection={correlationDirection}
                 moodBySleepThreshold={moodBySleepThreshold}
                 sleepThreshold={sleepThreshold}
+                isPro={isPro}
                 goToLog={goToLog}
               />
               {showGatedInsights && (

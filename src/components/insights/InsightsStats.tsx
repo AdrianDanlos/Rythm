@@ -20,6 +20,7 @@ type InsightsStatsProps = {
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
   sleepThreshold: number
+  isPro: boolean
   goToLog: () => void
 }
 
@@ -34,6 +35,7 @@ export const InsightsStats = ({
   correlationDirection,
   moodBySleepThreshold,
   sleepThreshold,
+  isPro,
   goToLog,
 }: InsightsStatsProps) => {
   const moodBySleepHigh = moodBySleepThreshold.high
@@ -96,6 +98,9 @@ export const InsightsStats = ({
     || correlationLabel === null
     || (moodBySleepThreshold.high === null && moodBySleepThreshold.low === null)
   )
+  const shouldShowIdealSleepTooltip = !isLoading
+    && !isPro
+    && moodBySleepDeltaPercent !== null
 
   return (
     <>
@@ -187,7 +192,18 @@ export const InsightsStats = ({
                         )}
                   </div>
                   <div className="stat-tile">
-                    <p className="label">Mood with {formatSleepHours(sleepThreshold)} sleep</p>
+                    <p className="label label--with-tooltip">
+                      <span className="label-nowrap">Mood · {formatSleepHours(sleepThreshold)} sleep</span>
+                      {shouldShowIdealSleepTooltip && (
+                        <Tooltip
+                          label={`${formatSleepHours(sleepThreshold)} is a general benchmark. Upgrade to Pro to get your personal ideal sleep target.`}
+                        >
+                          <span className="tooltip-trigger">
+                            <span className="tooltip-icon" aria-hidden="true">i</span>
+                          </span>
+                        </Tooltip>
+                      )}
+                    </p>
                     {moodBySleepDeltaPercent !== null
                       ? (
                           <p className="value mood-by-sleep-value">

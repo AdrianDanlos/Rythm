@@ -6,7 +6,7 @@ const isTouchDevice = () =>
   typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
 
 type TooltipProps = {
-  label: string
+  label: ReactNode
   children: ReactNode
   className?: string
 }
