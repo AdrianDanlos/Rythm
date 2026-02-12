@@ -777,7 +777,9 @@
   border-radius: 0;
 }
 
-.date-picker .rdp-day-incomplete:not(.rdp-day_selected):not(.rdp-day-logged) .rdp-day_button {
+.date-picker
+  .rdp-day-incomplete:not(.rdp-day_selected):not(.rdp-day-logged)
+  .rdp-day_button {
   background: var(--day-incomplete-bg);
   color: var(--day-incomplete-text);
   border-radius: 0;
@@ -2430,6 +2432,67 @@
   .insights-bottom-nav .tab-icon {
     width: 20px;
     height: 20px;
+  }
+
+  .insights-bottom-nav .tab-button--log {
+    position: relative;
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    min-height: 54px;
+    padding: 0;
+    margin-top: 0;
+    justify-self: center;
+    align-self: center;
+    border-radius: 999px;
+    border: 1px solid
+      color-mix(in srgb, var(--selected-border) 32%, transparent);
+    background: var(--cta-button-bg);
+    color: var(--button-text);
+    box-shadow: var(--button-hover-shadow), var(--cta-button-shadow);
+    transition:
+      transform 160ms ease,
+      box-shadow 160ms ease,
+      filter 160ms ease;
+  }
+
+  .insights-bottom-nav .tab-button--log::before {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    border: 1px solid
+      color-mix(in srgb, var(--selected-border) 14%, transparent);
+    pointer-events: none;
+  }
+
+  .insights-bottom-nav .tab-button--log .tab-icon,
+  .insights-bottom-nav .tab-button--log .tab-text {
+    display: none;
+  }
+
+  .insights-bottom-nav .tab-button--log::after {
+    content: "+";
+    font-size: 2.1rem;
+    line-height: 1;
+    font-weight: 600;
+    transform: translateY(-1px);
+  }
+
+  .insights-bottom-nav .tab-button--log.active {
+    background: var(--cta-button-bg);
+    border-color: color-mix(in srgb, var(--selected-border) 52%, transparent);
+    filter: brightness(1.02);
+  }
+
+  .insights-bottom-nav .tab-button--log:hover,
+  .insights-bottom-nav .tab-button--log:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: var(--button-hover-shadow), var(--cta-button-shadow-hover);
+  }
+
+  .insights-bottom-nav .tab-button--log:active {
+    transform: translateY(0);
   }
 
   .chart-wrapper .recharts-legend-wrapper {
