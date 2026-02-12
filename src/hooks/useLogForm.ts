@@ -164,6 +164,7 @@ export const useLogForm = ({
     setSaving(true)
     setEntriesError(null)
     try {
+      const isFirstSaveForDate = !entries.some(item => item.entry_date === entryDate)
       const savedEntry = await upsertEntry({
         user_id: userId,
         entry_date: entryDate,
@@ -185,7 +186,9 @@ export const useLogForm = ({
         onStreakReached?.()
       }
       setSaved(true)
-      toast.success(getSupportMessage(parsedSleep, mood, sleepThreshold, tagList))
+      if (isFirstSaveForDate) {
+        toast.success(getSupportMessage(parsedSleep, mood, sleepThreshold, tagList))
+      }
       window.setTimeout(() => setSaved(false), 2000)
       if (entryDate === today) {
         window.setTimeout(() => onEntrySavedForToday?.(), 500)
