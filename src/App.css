@@ -1811,7 +1811,7 @@
 }
 
 .monthly-calendar-day {
-  min-height: 70px;
+  aspect-ratio: 1 / 1;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--card);
@@ -1847,7 +1847,6 @@
 
 .monthly-calendar-day__meta {
   display: flex;
-  align-items: flex-end;
   min-height: 16px;
 }
 
@@ -2295,6 +2294,22 @@
   color: var(--muted);
 }
 
+.tooltip-events {
+  margin-top: 2px;
+}
+
+.tooltip-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.tooltip-tags .tag-pill {
+  padding: 2px 8px;
+  font-size: 0.75rem;
+}
+
 .error {
   color: var(--status-error);
   margin: 0;
@@ -2621,7 +2636,7 @@
   }
 
   .monthly-calendar-day {
-    min-height: 56px;
+    aspect-ratio: 1 / 1;
     padding: 6px 5px;
     gap: 2px;
   }

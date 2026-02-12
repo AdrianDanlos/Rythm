@@ -90,11 +90,26 @@ export const InsightsScatter = ({
     const entry = payload[0]?.payload as Entry | undefined
     if (!entry) return null
     const labelDate = formatLongDate(new Date(`${entry.entry_date}T00:00:00`))
+    const tags = entry.tags?.filter(Boolean) ?? []
     return (
       <div className="tooltip">
         <p>{labelDate}</p>
         <p>Sleep: {entry.sleep_hours == null ? 'N/A' : formatSleepHours(entry.sleep_hours)}</p>
         <p>Mood: {entry.mood} / 5</p>
+        <div className="tooltip-events">
+          <p>Events:</p>
+          {tags.length
+            ? (
+                <div className="tooltip-tags">
+                  {tags.map((tag, index) => (
+                    <span className="tag-pill" data-color-index={index % 5} key={tag}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )
+            : <p>None</p>}
+        </div>
         {entry.note ? <p className="tooltip-note">{entry.note}</p> : null}
       </div>
     )

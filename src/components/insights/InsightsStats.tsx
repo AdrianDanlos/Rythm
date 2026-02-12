@@ -216,8 +216,8 @@ export const InsightsStats = ({
                               role="img"
                             >
                               {isMoodBySleepPositive
-                                ? <TrendingUp size={16} aria-hidden="true" />
-                                : <TrendingDown size={16} aria-hidden="true" />}
+                                ? <TrendingUp size={20} aria-hidden="true" />
+                                : <TrendingDown size={20} aria-hidden="true" />}
                             </span>
                           </p>
                         )
