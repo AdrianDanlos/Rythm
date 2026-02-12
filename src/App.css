@@ -1709,6 +1709,150 @@
   border-color: var(--border);
 }
 
+.monthly-calendar-card .card-header {
+  margin-bottom: 8px;
+}
+
+.monthly-calendar-nav {
+  display: inline-flex;
+}
+
+.monthly-calendar-title {
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+
+.monthly-calendar-loading {
+  display: grid;
+  gap: 8px;
+  min-height: 48px;
+}
+
+.monthly-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.monthly-calendar-weekday {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+  padding: 2px 0 4px;
+}
+
+.monthly-calendar-day {
+  min-height: 70px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  padding: 8px 6px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-content: start;
+  gap: 4px;
+  text-align: left;
+}
+
+.monthly-calendar-day:hover {
+  background: var(--button-hover-surface);
+}
+
+.monthly-calendar-day.today {
+  border-color: var(--selected-border);
+  box-shadow: inset 0 0 0 1px var(--selected-border);
+}
+
+.monthly-calendar-day.outside-month {
+  opacity: 0.55;
+}
+
+.monthly-calendar-day.future {
+  opacity: 0.7;
+}
+
+.monthly-calendar-day__number {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.monthly-calendar-day__meta {
+  display: flex;
+  align-items: flex-end;
+  min-height: 16px;
+}
+
+.monthly-calendar-day__logged {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--text);
+}
+
+.monthly-calendar-day__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--selected-bg);
+  flex-shrink: 0;
+}
+
+.monthly-calendar-day__empty {
+  font-size: 0.72rem;
+}
+
+.monthly-calendar-empty {
+  margin-top: 10px;
+}
+
+.insights-day-modal {
+  width: min(460px, 100%);
+}
+
+.insights-day-modal__content {
+  margin-top: 8px;
+  display: grid;
+  gap: 12px;
+}
+
+.insights-day-modal__row {
+  display: grid;
+  gap: 6px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.insights-day-modal__row:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.insights-day-modal__row .value {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.insights-day-modal__mood-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.insights-day-modal__mood-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.insights-day-modal__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .pro-pill {
   display: inline-flex;
   margin-left: 6px;
@@ -2339,6 +2483,28 @@
   .chart-wrapper.full-bleed {
     width: 100%;
     margin: 0;
+  }
+
+  .monthly-calendar-grid {
+    gap: 4px;
+  }
+
+  .monthly-calendar-day {
+    min-height: 56px;
+    padding: 6px 5px;
+    gap: 2px;
+  }
+
+  .monthly-calendar-day__number {
+    font-size: 0.9rem;
+  }
+
+  .monthly-calendar-day__logged {
+    font-size: 0.68rem;
+  }
+
+  .monthly-calendar-day__empty {
+    display: none;
   }
 
   .trend-summary {

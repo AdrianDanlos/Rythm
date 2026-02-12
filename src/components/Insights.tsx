@@ -14,6 +14,7 @@ import { InsightsDailyHistory } from './insights/InsightsDailyHistory'
 import { InsightsExport } from './insights/InsightsExport'
 import { InsightsSummaryIntro } from './InsightsSummaryIntro'
 import { InsightsCalendarHeatmap } from './insights/InsightsCalendarHeatmap'
+import { InsightsMonthlyCalendar } from './insights/InsightsMonthlyCalendar'
 import { IdeaSleepTarget } from './insights/IdeaSleepTarget'
 import { InsightsScatter } from './insights/InsightsScatter'
 import { InsightsSmoothedTrends } from './insights/InsightsSmoothedTrends'
@@ -288,6 +289,12 @@ export const Insights = ({
                 entries={entries}
                 moodColors={moodColors}
                 isMobile={isMobile}
+              />
+              <InsightsMonthlyCalendar
+                entries={entries}
+                moodColors={moodColors}
+                isMobile={isMobile}
+                entriesLoading={entriesLoading}
               />
               {showGatedInsights && (
                 <>
