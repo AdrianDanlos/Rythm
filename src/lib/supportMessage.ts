@@ -8,7 +8,7 @@ export function getSupportMessage(
   sleepThreshold: number,
   tags: string[] = [],
 ): string {
-  const shortSleep = sleepHours < sleepThreshold
+  const shortSleep = sleepHours < (sleepThreshold - 1)
   const goodMood = mood >= 4
   const lowMood = mood <= 2
   const tagSet = new Set(tags.map(t => t.trim().toLowerCase()))
