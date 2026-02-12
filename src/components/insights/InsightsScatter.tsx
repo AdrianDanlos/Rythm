@@ -120,8 +120,8 @@ export const InsightsScatter = ({
       <div className="card-header">
         <div>
           <h2>
-            Sleep & Mood
-            <Tooltip label="What is this? A scatter plot of daily sleep vs mood; hover dots for details.">
+            Sleep & Mood relationship
+            <Tooltip label="What is this? An advanced scatter plot of daily sleep vs mood; hover dots for details.">
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>

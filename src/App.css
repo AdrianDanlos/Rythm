@@ -2090,6 +2090,31 @@
   padding-bottom: 8px;
 }
 
+.advanced-analysis-card {
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.advanced-analysis-card__header {
+  margin-bottom: 0;
+}
+
+.advanced-analysis-card__header .ghost {
+  min-width: 82px;
+}
+
+.advanced-analysis-card__locked {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.advanced-analysis-card__locked .muted {
+  margin: 0;
+}
+
 /* Ideal sleep target: ring + mood comparison */
 .ideal-sleep-target-content {
   display: flex;
@@ -2629,6 +2654,19 @@
   .chart-wrapper.full-bleed {
     width: 100%;
     margin: 0;
+  }
+
+  .advanced-analysis-card__header .ghost {
+    width: 100%;
+  }
+
+  .advanced-analysis-card__locked {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .advanced-analysis-card__locked .ghost {
+    width: 100%;
   }
 
   .monthly-calendar-grid {

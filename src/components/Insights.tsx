@@ -126,6 +126,7 @@ export const Insights = ({
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
   const showGatedInsights = isPro || entries.length >= 3
+  const [showAdvancedAnalysis, setShowAdvancedAnalysis] = useState(() => isPro)
   const [scatterRange, setScatterRange] = useState<ScatterRange>('last30')
   const showScatter90 = entries.length >= 30
   const showScatterAll = entries.length >= 90
@@ -140,6 +141,7 @@ export const Insights = ({
   }
 
   const scatterEntries = useMemo(() => {
+    if (!isPro) return []
     if (scatterRange === 'all') return chartData
     const end = new Date()
     end.setHours(0, 0, 0, 0)
@@ -150,7 +152,7 @@ export const Insights = ({
       entryDate.setHours(0, 0, 0, 0)
       return entryDate >= start && entryDate <= end
     })
-  }, [chartData, scatterRange])
+  }, [chartData, scatterRange, isPro])
 
   useEffect(() => {
     if (scatterRange === 'all' && !showScatterAll) {
@@ -161,6 +163,12 @@ export const Insights = ({
       setScatterRange('last30')
     }
   }, [scatterRange, showScatter90, showScatterAll])
+
+  useEffect(() => {
+    if (isPro) {
+      setShowAdvancedAnalysis(true)
+    }
+  }, [isPro])
 
   const plottedData = useMemo(() => {
     return scatterEntries.flatMap((entry) => {
@@ -348,20 +356,6 @@ export const Insights = ({
       {activeTab === 'charts'
         ? (
             <div className="insights-panel">
-              <InsightsScatter
-                isLoading={isLoading}
-                hasAnyEntries={!isEmpty}
-                isRangeEmpty={!isLoading && plottedData.length === 0}
-                isMobile={isMobile}
-                plottedData={plottedData}
-                moodColors={moodColors}
-                scatterRange={scatterRange}
-                onScatterRangeChange={setScatterRange}
-                show90Range={showScatter90}
-                showAllRange={showScatterAll}
-                bestSleepBand={bestSleepBand}
-                goToLog={goToLog}
-              />
               <InsightsMoodDistribution
                 entries={entries}
                 moodColors={moodColors}
@@ -383,25 +377,75 @@ export const Insights = ({
                 isMobile={isMobile}
                 goToLog={goToLog}
               />
-              {showGatedInsights && (
+              <section className="card advanced-analysis-card">
+                <div className="card-header advanced-analysis-card__header">
+                  <div>
+                    <h2>Advanced analysis</h2>
+                    <p className="muted">
+                      {isPro
+                        ? 'Deeper relationship charts for power users'
+                        : 'Pro unlocks deeper relationship charts'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className={`ghost ${showAdvancedAnalysis ? 'active' : ''}`}
+                    onClick={() => setShowAdvancedAnalysis(current => !current)}
+                    aria-expanded={showAdvancedAnalysis}
+                  >
+                    {showAdvancedAnalysis ? 'Hide' : 'Show'}
+                  </button>
+                </div>
+                {showAdvancedAnalysis && !isPro
+                  ? (
+                      <div className="advanced-analysis-card__locked">
+                        <p className="muted">
+                          Advanced analysis is available on Pro.
+                        </p>
+                        <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
+                          Upgrade to Pro
+                        </button>
+                      </div>
+                    )
+                  : null}
+              </section>
+              {showAdvancedAnalysis && isPro && (
                 <>
-                  <InsightsSmoothedTrends
-                    isPro={isPro}
+                  <InsightsScatter
+                    isLoading={isLoading}
+                    hasAnyEntries={!isEmpty}
+                    isRangeEmpty={!isLoading && plottedData.length === 0}
                     isMobile={isMobile}
-                    entryCount={entries.length}
-                    rollingSeries={rollingSeries}
-                    rollingSummaries={rollingSummaries}
-                    onOpenPaywall={onOpenPaywall}
+                    plottedData={plottedData}
+                    moodColors={moodColors}
+                    scatterRange={scatterRange}
+                    onScatterRangeChange={setScatterRange}
+                    show90Range={showScatter90}
+                    showAllRange={showScatterAll}
+                    bestSleepBand={bestSleepBand}
                     goToLog={goToLog}
                   />
-                  <InsightsDailyHistory
-                    isPro={isPro}
-                    isMobile={isMobile}
-                    entryCount={entries.length}
-                    trendSeries={trendSeries}
-                    onOpenPaywall={onOpenPaywall}
-                    goToLog={goToLog}
-                  />
+                  {showGatedInsights && (
+                    <>
+                      <InsightsSmoothedTrends
+                        isPro={isPro}
+                        isMobile={isMobile}
+                        entryCount={entries.length}
+                        rollingSeries={rollingSeries}
+                        rollingSummaries={rollingSummaries}
+                        onOpenPaywall={onOpenPaywall}
+                        goToLog={goToLog}
+                      />
+                      <InsightsDailyHistory
+                        isPro={isPro}
+                        isMobile={isMobile}
+                        entryCount={entries.length}
+                        trendSeries={trendSeries}
+                        onOpenPaywall={onOpenPaywall}
+                        goToLog={goToLog}
+                      />
+                    </>
+                  )}
                 </>
               )}
             </div>

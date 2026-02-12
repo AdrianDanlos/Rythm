@@ -85,12 +85,11 @@ const getMoodColor = (mood: number | null, palette: string[]) => {
 
 const getSleepColor = (sleep: number | null) => {
   if (sleep === null) return null
-  const normalized = Math.min(1, Math.max(0, (sleep - 4) / 6))
-  const index = Math.min(
-    sleepHeatmapColors.length - 1,
-    Math.floor(normalized * sleepHeatmapColors.length),
-  )
-  return sleepHeatmapColors[index] ?? null
+  if (sleep <= 4) return sleepHeatmapColors[0] ?? null
+  if (sleep < 5.5) return sleepHeatmapColors[1] ?? null
+  if (sleep < 6.9) return sleepHeatmapColors[2] ?? null
+  if (sleep >= 7 && sleep < 8.9) return sleepHeatmapColors[3] ?? null
+  return sleepHeatmapColors[4] ?? null
 }
 
 export const InsightsCalendarHeatmap = ({
