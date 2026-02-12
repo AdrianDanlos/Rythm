@@ -89,7 +89,7 @@ export const InsightsStats = ({
         <img className="streak-card__image" src={flame} alt="flame" />
         <div className="streak-card__content">
           <p className="label">Streak</p>
-          {isLoading ? <div className="skeleton-line" /> : <p className="value">{streak} days</p>}
+          {isLoading ? <div className="skeleton-line" /> : <p className="value">{streak} {streak === 1 ? 'day' : 'days'}</p>}
           <p className="helper">Consecutive logged days</p>
         </div>
       </section>

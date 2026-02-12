@@ -271,7 +271,7 @@ export const renderAllTimeSection = ({
     `Sleep-mood link: ${stats.correlationLabel ?? '—'}`,
   ])
 
-  drawBullets(doc, yRef, [`Streak: ${stats.streak} days`])
+  drawBullets(doc, yRef, [`Streak: ${stats.streak} ${stats.streak === 1 ? 'day' : 'days'}`])
 
   const moodPos = allTimeTagDrivers.filter(d => (d.delta ?? 0) > 0).sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0)).slice(0, 4)
   const moodNeg = allTimeTagDrivers.filter(d => (d.delta ?? 0) < 0).sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)).slice(0, 4)
