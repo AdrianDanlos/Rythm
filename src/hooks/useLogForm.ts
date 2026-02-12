@@ -178,7 +178,6 @@ export const useLogForm = ({
     }
 
     const existing = entries.find(item => item.entry_date === entryDate)
-    const isUpdate = Boolean(existing)
     const isComplete = parsedSleep !== null && mood !== null
     const completedAt = isComplete
       ? (existing?.is_complete && existing.completed_at
@@ -218,7 +217,6 @@ export const useLogForm = ({
         sleepThreshold,
         tags: tagList,
         isComplete,
-        isUpdate,
       }))
       window.setTimeout(() => setSaved(false), 2000)
       if (entryDate === today && isComplete) {
