@@ -75,7 +75,7 @@ export const InsightsScatter = ({
     return (
       <div className="tooltip">
         <p>{labelDate}</p>
-        <p>Sleep: {formatSleepHours(entry.sleep_hours)}</p>
+        <p>Sleep: {entry.sleep_hours == null ? 'N/A' : formatSleepHours(entry.sleep_hours)}</p>
         <p>Mood: {entry.mood} / 5</p>
         {entry.note ? <p className="tooltip-note">{entry.note}</p> : null}
       </div>
