@@ -1,3 +1,5 @@
+export const MAX_TAG_LENGTH = 20
+
 export const parseTags = (value: string) =>
   value
     .split(',')

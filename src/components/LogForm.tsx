@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
-import { parseTags } from '../lib/utils/stringUtils'
+import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import { Tooltip } from './Tooltip'
 
 export type LogFormProps = {
@@ -96,7 +96,7 @@ export const LogForm = ({
     a.localeCompare(b),
   )
   const availableSuggestions = sortedTagSuggestions.filter(
-    tag => !usedTagSet.has(tag),
+    tag => tag.length <= MAX_TAG_LENGTH && !usedTagSet.has(tag),
   )
   const token = tagInputValue.trim().toLowerCase()
   const matchingSuggestions = token
@@ -118,7 +118,12 @@ export const LogForm = ({
 
   const addTag = (tag: string) => {
     const normalized = tag.trim().toLowerCase()
-    if (!normalized || usedTagSet.has(normalized) || atMaxTags) return
+    if (
+      !normalized
+      || normalized.length > MAX_TAG_LENGTH
+      || usedTagSet.has(normalized)
+      || atMaxTags
+    ) return
     const nextList = [...usedTags, normalized]
     onTagsChange(nextList.join(', '))
     setTagInputValue('')
@@ -256,9 +261,10 @@ export const LogForm = ({
                 value={tagInputValue}
                 disabled={atMaxTags}
                 onChange={(e) => {
-                  setTagInputValue(e.target.value)
+                  setTagInputValue(e.target.value.slice(0, MAX_TAG_LENGTH))
                   setTagDropdownOpen(true)
                 }}
+                maxLength={MAX_TAG_LENGTH}
                 onFocus={() => setTagDropdownOpen(true)}
                 onClick={() => setTagDropdownOpen(true)}
                 onKeyDown={(e) => {

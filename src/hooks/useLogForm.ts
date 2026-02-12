@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 import { upsertEntry, type Entry } from '../lib/entries'
 import { getSupportMessage } from '../lib/supportMessage'
 import { buildStats, type StatsResult } from '../lib/stats'
-import { parseTags } from '../lib/utils/stringUtils'
+import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 
 const DEFAULT_TAG_SUGGESTIONS = [
   'Caffeine',
@@ -161,6 +161,10 @@ export const useLogForm = ({
     }
 
     const tagList = parseTags(tags)
+    if (tagList.some(tag => tag.length > MAX_TAG_LENGTH)) {
+      showEntriesError(`Each event must be ${MAX_TAG_LENGTH} characters or less.`)
+      return
+    }
     if (tagList.length > maxTagsPerEntry) {
       showEntriesError(`Limit ${maxTagsPerEntry} events per entry.`)
       return
