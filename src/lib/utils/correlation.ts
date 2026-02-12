@@ -43,7 +43,7 @@ export const getCorrelationInsight = (entries: Entry[]): CorrelationInsight => {
   const magnitude = Math.abs(correlation)
   const label
     = magnitude < 0.2
-      ? 'No clear'
+      ? 'Not clear'
       : magnitude < 0.4
         ? 'Weak'
         : magnitude < 0.7

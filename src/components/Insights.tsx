@@ -181,6 +181,7 @@ export const Insights = ({
                 <>
                   <IdeaSleepTarget
                     isPro={isPro}
+                    entryCount={entries.length}
                     personalSleepThreshold={personalSleepThreshold}
                     moodByPersonalThreshold={moodByPersonalThreshold}
                     onOpenPaywall={onOpenPaywall}

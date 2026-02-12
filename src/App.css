@@ -1004,6 +1004,39 @@
   font-size: 1.1rem;
 }
 
+.mood-by-sleep-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mood-by-sleep-percent--up {
+  color: var(--chart-mood);
+}
+
+.mood-by-sleep-percent--down {
+  color: color-mix(in srgb, var(--status-error) 75%, var(--text));
+}
+
+.mood-by-sleep-trend {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+}
+
+.mood-by-sleep-trend--up {
+  color: var(--chart-mood);
+}
+
+.mood-by-sleep-trend--down {
+  color: color-mix(in srgb, var(--status-error) 75%, var(--text));
+}
+
+.mood-by-sleep-trend svg {
+  width: 100%;
+  height: 100%;
+}
+
 .stat-tile--skeleton {
   gap: 8px;
 }
@@ -2042,7 +2075,7 @@
   padding-bottom: 8px;
 }
 
-/* Ideal sleep target: ring + mood delta */
+/* Ideal sleep target: ring + mood comparison */
 .ideal-sleep-target-content {
   display: flex;
   flex-direction: column;
@@ -2058,64 +2091,98 @@
   --stat-ring-color: var(--chart-ideal-sleep);
 }
 
-.ideal-sleep-mood-delta {
+.ideal-sleep-mood-comparison {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  width: 100%;
+  max-width: 360px;
+  align-items: stretch;
   justify-content: center;
-  gap: 10px 14px;
+  gap: 14px;
 }
 
-.ideal-sleep-mood-delta__pill {
+.ideal-sleep-mood-comparison__item {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.ideal-sleep-mood-comparison__circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 0.9rem;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
-.ideal-sleep-mood-delta__pill--high {
-  background: color-mix(in srgb, var(--chart-mood) 25%, transparent);
+.ideal-sleep-mood-comparison__item--high .ideal-sleep-mood-comparison__circle {
+  background: color-mix(in srgb, var(--chart-mood) 35%, transparent);
   color: var(--text);
 }
 
-.ideal-sleep-mood-delta__pill--low {
-  background: color-mix(in srgb, var(--border) 60%, transparent);
+.ideal-sleep-mood-comparison__item--low .ideal-sleep-mood-comparison__circle {
+  background: color-mix(in srgb, var(--border) 70%, transparent);
   color: var(--muted);
 }
 
-.ideal-sleep-mood-delta__arrow {
+.ideal-sleep-mood-comparison__label {
+  font-size: 0.78rem;
+  line-height: 1.3;
   color: var(--muted);
-  font-size: 1rem;
 }
 
-.ideal-sleep-mood-delta__badge {
-  width: 100%;
+.ideal-sleep-mood-comparison__divider {
+  width: 1px;
+  background: var(--border);
+}
+
+.ideal-sleep-mood-delta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ideal-sleep-mood-delta__value {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.ideal-sleep-mood-delta__helper {
+  margin: 0;
   text-align: center;
-  font-size: 0.85rem;
-  color: var(--muted);
 }
 
-.stat-tile .ideal-sleep-mood-delta {
-  justify-content: flex-start;
-  gap: 6px 10px;
+.ideal-sleep-mood-delta__helper--advice {
+  margin-top: 6px;
 }
 
-.stat-tile .ideal-sleep-mood-delta__pill {
-  padding: 4px 10px;
-  font-size: 0.8rem;
-}
-
-.stat-tile .ideal-sleep-mood-delta__arrow {
-  font-size: 0.9rem;
+.ideal-sleep-mood-delta .mood-by-sleep-trend {
+  width: 18px;
+  height: 18px;
 }
 
 @media (max-width: 540px) {
-  .stat-tile .ideal-sleep-mood-delta {
-    margin-top: 5px;
+  .ideal-sleep-mood-comparison {
+    gap: 10px;
   }
-  .stat-tile .ideal-sleep-mood-delta__arrow {
-    display: none;
+  .ideal-sleep-mood-comparison__circle {
+    width: 42px;
+    height: 42px;
+    font-size: 0.95rem;
+  }
+  .ideal-sleep-mood-comparison__label {
+    font-size: 0.74rem;
+  }
+  .ideal-sleep-mood-delta__value {
+    font-size: 1rem;
   }
 }
 

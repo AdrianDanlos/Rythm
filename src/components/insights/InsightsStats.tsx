@@ -1,6 +1,7 @@
 import type { SleepMoodAverages, WindowStats } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
+import { TrendingDown, TrendingUp } from 'lucide-react'
 import flame from '../../assets/flame.png'
 
 type InsightsStatsProps = {
@@ -35,6 +36,19 @@ export const InsightsStats = ({
   sleepThreshold,
   goToLog,
 }: InsightsStatsProps) => {
+  const moodBySleepHigh = moodBySleepThreshold.high
+  const moodBySleepLow = moodBySleepThreshold.low
+  const moodBySleepDeltaPercent = moodBySleepHigh !== null && moodBySleepLow !== null && moodBySleepLow > 0
+    ? ((moodBySleepHigh - moodBySleepLow) / moodBySleepLow) * 100
+    : null
+  const isMoodBySleepPositive = moodBySleepDeltaPercent !== null && moodBySleepDeltaPercent >= 0
+  const moodBySleepDirection = moodBySleepDeltaPercent !== null && moodBySleepDeltaPercent < 0
+    ? 'lower'
+    : 'better'
+  const moodBySleepMessage = moodBySleepDeltaPercent !== null
+    ? `When you sleep ${formatSleepHours(sleepThreshold)} or more, your average mood tends to be ${moodBySleepDirection} by ${Math.abs(moodBySleepDeltaPercent).toFixed(0)}%.`
+    : null
+
   const renderTopStat = (
     label: string,
     value: string,
@@ -173,31 +187,28 @@ export const InsightsStats = ({
                         )}
                   </div>
                   <div className="stat-tile">
-                    <p className="label">Mood by sleep</p>
-                    {moodBySleepThreshold.high !== null
-                      || moodBySleepThreshold.low !== null
+                    <p className="label">Mood with {formatSleepHours(sleepThreshold)} sleep</p>
+                    {moodBySleepDeltaPercent !== null
                       ? (
-                          <div className="ideal-sleep-mood-delta">
-                            <span className="ideal-sleep-mood-delta__pill ideal-sleep-mood-delta__pill--high">
-                              ≥{formatSleepHours(sleepThreshold)} → {moodBySleepThreshold.high?.toFixed(1) ?? '—'}
+                          <p className="value mood-by-sleep-value">
+                            <span className={isMoodBySleepPositive ? 'mood-by-sleep-percent mood-by-sleep-percent--up' : 'mood-by-sleep-percent mood-by-sleep-percent--down'}>
+                              {Math.abs(moodBySleepDeltaPercent).toFixed(0)}%
                             </span>
-                            <span className="ideal-sleep-mood-delta__arrow" aria-hidden="true">-</span>
-                            <span className="ideal-sleep-mood-delta__pill ideal-sleep-mood-delta__pill--low">
-                              &lt;{formatSleepHours(sleepThreshold)} → {moodBySleepThreshold.low?.toFixed(1) ?? '—'}
+                            <span
+                              className={`mood-by-sleep-trend ${isMoodBySleepPositive ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
+                              aria-label={isMoodBySleepPositive ? 'Mood trend up' : 'Mood trend down'}
+                              role="img"
+                            >
+                              {isMoodBySleepPositive
+                                ? <TrendingUp size={16} aria-hidden="true" />
+                                : <TrendingDown size={16} aria-hidden="true" />}
                             </span>
-                          </div>
-                        )
-                      : <p className="value">—</p>}
-                    {moodBySleepThreshold.high !== null
-                      || moodBySleepThreshold.low !== null
-                      ? (
-                          <p className="helper">
-                            Average mood for days above vs below {formatSleepHours(sleepThreshold)}
                           </p>
                         )
-                      : (
-                          <p className="helper">Needs 5 nights</p>
-                        )}
+                      : <p className="value">—</p>}
+                    <p className="helper">
+                      {moodBySleepMessage ?? `Needs 5 nights with sleep and mood to compare around ${formatSleepHours(sleepThreshold)}.`}
+                    </p>
                   </div>
                 </>
               )}
