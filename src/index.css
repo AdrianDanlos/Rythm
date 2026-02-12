@@ -45,6 +45,8 @@
   --tooltip-shadow: 0 12px 22px rgba(15, 23, 42, 0.12);
   --day-logged-bg: #e2eafd;
   --day-logged-text: var(--neutral-900);
+  --day-incomplete-bg: #fef3c7;
+  --day-incomplete-text: #92400e;
   --app-logo-shadow: 0 6px 18px rgba(15, 23, 42, 0.18);
   --card-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
   --modal-shadow: 0 20px 35px rgba(15, 23, 42, 0.18);
@@ -159,6 +161,8 @@
   --tooltip-shadow: 0 16px 28px rgba(2, 6, 23, 0.6);
   --day-logged-bg: rgba(56, 189, 248, 0.18);
   --day-logged-text: #e2e8f0;
+  --day-incomplete-bg: rgba(245, 158, 11, 0.24);
+  --day-incomplete-text: #fde68a;
   --premium-overlay-bg: linear-gradient(
     180deg,
     rgba(2, 6, 23, 0.6),

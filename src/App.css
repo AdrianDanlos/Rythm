@@ -771,19 +771,29 @@
   color: var(--text);
 }
 
-.date-picker .rdp-day-logged:not(.rdp-day_selected) {
+.date-picker .rdp-day-logged:not(.rdp-day_selected) .rdp-day_button {
   background: var(--day-logged-bg);
   color: var(--day-logged-text);
-  border-radius: 999px;
+  border-radius: 0;
 }
 
-.date-picker .rdp-day_selected {
+.date-picker .rdp-day-incomplete:not(.rdp-day_selected):not(.rdp-day-logged) .rdp-day_button {
+  background: var(--day-incomplete-bg);
+  color: var(--day-incomplete-text);
+  border-radius: 0;
+}
+
+.date-picker .rdp-day_selected .rdp-day_button {
   background: var(--selected-bg);
   color: var(--selected-text);
 }
 
 .date-picker .rdp-selected .rdp-day_button {
   border: 1px solid var(--selected-border);
+}
+
+.date-picker .rdp-day_button {
+  border-radius: 0;
 }
 
 /* Disabled (future) days: greyed out only, no circular border or different bg */

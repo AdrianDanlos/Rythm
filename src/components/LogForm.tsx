@@ -8,6 +8,7 @@ export type LogFormProps = {
   selectedDate: Date
   todayDate: Date
   highlightedDates: Date[]
+  incompleteHighlightedDates: Date[]
   sleepHours: string
   mood: number | null
   note: string
@@ -32,6 +33,7 @@ export const LogForm = ({
   selectedDate,
   todayDate,
   highlightedDates,
+  incompleteHighlightedDates,
   sleepHours,
   mood,
   note,
@@ -147,8 +149,14 @@ export const LogForm = ({
                 onEntryDateChange(formatLocalDate(date))
               }}
               disabled={{ after: todayDate }}
-              modifiers={{ logged: highlightedDates }}
-              modifiersClassNames={{ logged: 'rdp-day-logged' }}
+              modifiers={{
+                logged: highlightedDates,
+                incomplete: incompleteHighlightedDates,
+              }}
+              modifiersClassNames={{
+                logged: 'rdp-day-logged',
+                incomplete: 'rdp-day-incomplete',
+              }}
             />
           </div>
         </div>

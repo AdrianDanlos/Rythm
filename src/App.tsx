@@ -150,6 +150,7 @@ function App() {
     chartData,
     averages,
     highlightedDates,
+    incompleteHighlightedDates,
     stats,
   } = useEntries({
     userId: session?.user?.id,
@@ -565,6 +566,7 @@ function App() {
                             selectedDate={selectedDate}
                             todayDate={todayDate}
                             highlightedDates={highlightedDates}
+                            incompleteHighlightedDates={incompleteHighlightedDates}
                             sleepHours={sleepHours}
                             mood={mood}
                             note={note}

@@ -70,6 +70,17 @@ export const useEntries = ({
     return Array.from(uniqueDates.values())
   }, [entries])
 
+  const incompleteHighlightedDates = useMemo(() => {
+    const uniqueDates = new Map<string, Date>()
+    entries.forEach((entry) => {
+      if (entry.is_complete) return
+      const date = new Date(`${entry.entry_date}T00:00:00`)
+      date.setHours(0, 0, 0, 0)
+      uniqueDates.set(entry.entry_date, date)
+    })
+    return Array.from(uniqueDates.values())
+  }, [entries])
+
   const stats = useMemo(
     () => buildStats(entries, sleepThreshold, formatLocalDate),
     [entries, sleepThreshold, formatLocalDate],
@@ -84,6 +95,7 @@ export const useEntries = ({
     chartData,
     averages,
     highlightedDates,
+    incompleteHighlightedDates,
     stats,
   }
 }
