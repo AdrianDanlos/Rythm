@@ -182,7 +182,7 @@ export const InsightsScatter = ({
               : (
                   <div className="chart-wrapper">
                     <ResponsiveContainer width="100%" height={260}>
-                      <ScatterChart margin={{ top: 12, right: 12, bottom: 12, left: 5 }}>
+                      <ScatterChart margin={{ top: 12, right: 12, bottom: 12, left: 2 }}>
                         <XAxis
                           type="number"
                           dataKey="sleep_hours_jittered"
@@ -212,7 +212,9 @@ export const InsightsScatter = ({
                             value: 'Mood',
                             angle: -90,
                             position: 'insideLeft',
-                            offset: 0,
+                            offset: -4,
+                            dy: 20,
+                            dx: 10,
                           }}
                           width={35}
                           tickMargin={2}
