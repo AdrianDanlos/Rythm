@@ -111,6 +111,11 @@ export const useLogForm = ({
     return rounded.toFixed(2).replace(/\.?0+$/, '')
   }
 
+  const showEntriesError = (message: string) => {
+    toast.error(message)
+    setSaved(false)
+  }
+
   useEffect(() => {
     const existing = entries.find(item => item.entry_date === entryDate)
     if (existing) {
@@ -136,33 +141,28 @@ export const useLogForm = ({
     if (!userId) return
 
     if (entryDate > today) {
-      setEntriesError('You cannot log entries in the future.')
-      setSaved(false)
+      showEntriesError('You cannot log entries in the future.')
       return
     }
 
     const hasSleepInput = sleepHours.trim().length > 0
     const parsedSleep = parseSleepHours(sleepHours)
     if (hasSleepInput && parsedSleep === null) {
-      setEntriesError('Sleep hours are invalid.')
-      setSaved(false)
+      showEntriesError('Sleep hours are invalid.')
       return
     }
     if (parsedSleep !== null && (parsedSleep < 0 || parsedSleep > 12)) {
-      setEntriesError('Sleep hours must be between 0 and 12.')
-      setSaved(false)
+      showEntriesError('Sleep hours must be between 0 and 12.')
       return
     }
     if (mood !== null && (mood < 1 || mood > 5)) {
-      setEntriesError('Mood rating must be between 1 and 5.')
-      setSaved(false)
+      showEntriesError('Mood rating must be between 1 and 5.')
       return
     }
 
     const tagList = parseTags(tags)
     if (tagList.length > maxTagsPerEntry) {
-      setEntriesError(`Limit ${maxTagsPerEntry} events per entry.`)
-      setSaved(false)
+      showEntriesError(`Limit ${maxTagsPerEntry} events per entry.`)
       return
     }
 
@@ -172,8 +172,7 @@ export const useLogForm = ({
       || normalizedNote !== null
       || tagList.length > 0
     if (!hasAnyValue) {
-      setEntriesError('Add at least one value before saving.')
-      setSaved(false)
+      showEntriesError('Add at least one value before saving.')
       return
     }
 
@@ -224,8 +223,7 @@ export const useLogForm = ({
       }
     }
     catch {
-      setEntriesError('Unable to save entry.')
-      setSaved(false)
+      showEntriesError('Unable to save entry.')
     }
     finally {
       setSaving(false)
