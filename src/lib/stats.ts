@@ -6,6 +6,7 @@ import type {
   TagDriver,
   TagSleepDriver,
   TrendPoint,
+  WeekdayAveragePoint,
   WindowStats,
 } from './types/stats'
 import { calculateAverages } from './utils/averages'
@@ -39,6 +40,7 @@ export type StatsResult = {
   }
   rollingSeries: RollingPoint[]
   rollingSummaries: RollingSummary[]
+  weekdayAverages: WeekdayAveragePoint[]
   tagDrivers: TagDriver[]
   tagSleepDrivers: TagSleepDriver[]
 }
@@ -276,6 +278,49 @@ export const buildStats = (
     }
   })
 
+  const weekdayAverages: WeekdayAveragePoint[] = (() => {
+    const weekdayConfig: Array<{ dayIndex: number, dayKey: WeekdayAveragePoint['dayKey'], label: string }> = [
+      { dayIndex: 1, dayKey: 'mon', label: 'Mon' },
+      { dayIndex: 2, dayKey: 'tue', label: 'Tue' },
+      { dayIndex: 3, dayKey: 'wed', label: 'Wed' },
+      { dayIndex: 4, dayKey: 'thu', label: 'Thu' },
+      { dayIndex: 5, dayKey: 'fri', label: 'Fri' },
+      { dayIndex: 6, dayKey: 'sat', label: 'Sat' },
+      { dayIndex: 0, dayKey: 'sun', label: 'Sun' },
+    ]
+    const buckets = new Map(
+      weekdayConfig.map(({ dayIndex }) => [
+        dayIndex,
+        { sleepSum: 0, moodSum: 0, count: 0 },
+      ]),
+    )
+
+    entriesWithDate.forEach((entry) => {
+      const sleep = toFiniteSleep(entry)
+      const mood = toFiniteMood(entry)
+      if (sleep === null || mood === null) return
+      const bucket = buckets.get(entry.date.getDay())
+      if (!bucket) return
+      bucket.sleepSum += sleep
+      bucket.moodSum += mood
+      bucket.count += 1
+    })
+
+    return weekdayConfig.map(({ dayIndex, dayKey, label }) => {
+      const bucket = buckets.get(dayIndex)
+      const count = bucket?.count ?? 0
+      const avgSleep = bucket && count ? bucket.sleepSum / count : null
+      const avgMood = bucket && count ? bucket.moodSum / count : null
+      return {
+        dayKey,
+        label,
+        avgSleep,
+        avgMood,
+        observationCount: count,
+      }
+    })
+  })()
+
   const personalSleepThreshold = (() => {
     if (completeEntries.length < 5) return null
     const sorted = [...completeEntries].sort((a, b) =>
@@ -333,6 +378,7 @@ export const buildStats = (
     trendSeries,
     rollingSeries,
     rollingSummaries,
+    weekdayAverages,
     tagDrivers,
     tagSleepDrivers,
   }

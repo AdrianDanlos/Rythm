@@ -2212,6 +2212,18 @@
   font-size: 0.95rem;
 }
 
+.chart-empty--compact {
+  height: 190px;
+}
+
+.chart-wrapper--compact {
+  max-width: 720px;
+}
+
+.weekday-legend {
+  padding-top: 6px;
+}
+
 .skeleton-line {
   height: 16px;
   border-radius: 999px;

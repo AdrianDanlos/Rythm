@@ -607,6 +607,7 @@ function App() {
                           trendSeries={stats.trendSeries}
                           rollingSeries={stats.rollingSeries}
                           rollingSummaries={stats.rollingSummaries}
+                          weekdayAverages={stats.weekdayAverages}
                           personalSleepThreshold={stats.personalSleepThreshold}
                           moodByPersonalThreshold={stats.moodByPersonalThreshold}
                           tagDrivers={stats.tagDrivers}

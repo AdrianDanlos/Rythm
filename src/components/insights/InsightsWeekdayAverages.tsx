@@ -1,0 +1,206 @@
+import {
+  Bar,
+  ComposedChart,
+  Legend,
+  Line,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from 'recharts'
+import type { WeekdayAveragePoint } from '../../lib/types/stats'
+import { formatSleepHours } from '../../lib/utils/sleepHours'
+
+const MIN_WEEKDAY_OBSERVATIONS = 4
+
+type InsightsWeekdayAveragesProps = {
+  weekdayAverages: WeekdayAveragePoint[]
+  isMobile: boolean
+  goToLog: () => void
+}
+
+type WeekdayLegendProps = {
+  wrapperStyle?: React.CSSProperties
+}
+
+const buildAxisScale = (
+  values: number[],
+  {
+    fallback,
+    step,
+    padSteps,
+    minSpan,
+    minLimit,
+    maxLimit,
+  }: {
+    fallback: { min: number, max: number, ticks: number[] }
+    step: number
+    padSteps: number
+    minSpan: number
+    minLimit: number
+    maxLimit: number
+  },
+) => {
+  if (!values.length) return fallback
+
+  let min = Math.min(...values)
+  let max = Math.max(...values)
+  if (min === max) {
+    min -= step
+    max += step
+  }
+  min = Math.floor((min - padSteps * step) / step) * step
+  max = Math.ceil((max + padSteps * step) / step) * step
+  min = Math.max(minLimit, min)
+  max = Math.min(maxLimit, max)
+
+  if (max - min < minSpan) {
+    const midpoint = (min + max) / 2
+    min = Math.max(minLimit, midpoint - minSpan / 2)
+    max = Math.min(maxLimit, midpoint + minSpan / 2)
+    min = Math.floor(min / step) * step
+    max = Math.ceil(max / step) * step
+  }
+
+  if (max <= min) return fallback
+
+  const ticks: number[] = []
+  for (let value = min; value <= max + step / 100; value += step) {
+    ticks.push(Number(value.toFixed(3)))
+  }
+  return { min, max, ticks }
+}
+
+const WeekdayLegend = ({ wrapperStyle }: WeekdayLegendProps) => (
+  <div className="rolling-trend-legend weekday-legend" style={wrapperStyle}>
+    <span className="rolling-trend-legend__item">
+      <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-sleep)' }} aria-hidden />
+      Avg sleep
+    </span>
+    <span className="rolling-trend-legend__item">
+      <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-mood)' }} aria-hidden />
+      Avg mood
+    </span>
+  </div>
+)
+
+export const InsightsWeekdayAverages = ({
+  weekdayAverages,
+  isMobile,
+  goToLog,
+}: InsightsWeekdayAveragesProps) => {
+  const hasAnyData = weekdayAverages.some(point => point.observationCount > 0)
+  const hasThresholdCoverage = weekdayAverages.length === 7
+    && weekdayAverages.every(point => point.observationCount >= MIN_WEEKDAY_OBSERVATIONS)
+  const chartMargin = isMobile
+    ? { top: 8, right: 4, bottom: 0, left: 10 }
+    : { top: 8, right: 8, bottom: 0, left: 14 }
+  const baseTickProps = { fontSize: isMobile ? 12 : 13 }
+  const legendWrapperStyle = isMobile ? { paddingTop: 10 } : undefined
+  const sleepValues = weekdayAverages
+    .map(point => point.avgSleep)
+    .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
+  const moodValues = weekdayAverages
+    .map(point => point.avgMood)
+    .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
+  const sleepAxis = buildAxisScale(sleepValues, {
+    fallback: { min: 4, max: 10, ticks: [4, 6, 8, 10] },
+    step: 0.25,
+    padSteps: 0.5,
+    minSpan: 0.75,
+    minLimit: 0,
+    maxLimit: 12,
+  })
+  const moodAxis = buildAxisScale(moodValues, {
+    fallback: { min: 1, max: 5, ticks: [1, 2, 3, 4, 5] },
+    step: 0.1,
+    padSteps: 0.5,
+    minSpan: 0.4,
+    minLimit: 1,
+    maxLimit: 5,
+  })
+
+  return (
+    <section className="card chart-card chart-card--compact">
+      <div className="card-header">
+        <div>
+          <h2>
+            Weekday pattern
+          </h2>
+          <p className="muted">This is how much you sleep and how you feel on average every day of the week</p>
+        </div>
+      </div>
+      {!hasAnyData
+        ? (
+            <div className="chart-empty chart-empty--compact">
+              <p className="muted">
+                <button type="button" className="link-button link-button--text" onClick={goToLog}>
+                  Log more days
+                </button>
+                {' '}to unlock weekday patterns.
+              </p>
+            </div>
+          )
+        : !hasThresholdCoverage
+          ? (
+              <div className="chart-empty chart-empty--compact">
+                <p className="muted">
+                  Needs
+                  {' '}
+                  {MIN_WEEKDAY_OBSERVATIONS}
+                  +
+                  {' '}
+                  logs for each weekday to reduce noise.
+                </p>
+              </div>
+            )
+          : (
+              <div className="chart-wrapper chart-wrapper--compact">
+                <ResponsiveContainer width="100%" height={190}>
+                  <ComposedChart data={weekdayAverages} margin={chartMargin}>
+                    <XAxis
+                      dataKey="label"
+                      tick={baseTickProps}
+                      height={28}
+                      tickMargin={4}
+                    />
+                    <YAxis
+                      yAxisId="left"
+                      domain={[sleepAxis.min, sleepAxis.max]}
+                      ticks={sleepAxis.ticks}
+                      tickFormatter={(value) => formatSleepHours(Number(value))}
+                      tick={baseTickProps}
+                      width={isMobile ? 50 : 56}
+                    />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      domain={[moodAxis.min, moodAxis.max]}
+                      ticks={moodAxis.ticks}
+                      tick={baseTickProps}
+                      width={isMobile ? 24 : 28}
+                    />
+                    <Legend content={<WeekdayLegend wrapperStyle={legendWrapperStyle} />} />
+                    <Bar
+                      yAxisId="left"
+                      dataKey="avgSleep"
+                      name="Avg sleep"
+                      fill="var(--chart-sleep)"
+                      radius={[4, 4, 0, 0]}
+                      maxBarSize={isMobile ? 16 : 18}
+                    />
+                    <Line
+                      yAxisId="right"
+                      dataKey="avgMood"
+                      name="Avg mood"
+                      stroke="var(--chart-mood)"
+                      strokeWidth={2}
+                      dot={{ r: 2 }}
+                      activeDot={{ r: 4 }}
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+    </section>
+  )
+}

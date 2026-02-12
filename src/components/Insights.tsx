@@ -8,6 +8,7 @@ import type {
   TagDriver,
   TagSleepDriver,
   TrendPoint,
+  WeekdayAveragePoint,
   WindowStats,
 } from '../lib/types/stats'
 import { InsightsDailyHistory } from './insights/InsightsDailyHistory'
@@ -21,6 +22,7 @@ import { InsightsSmoothedTrends } from './insights/InsightsSmoothedTrends'
 import { InsightsStats } from './insights/InsightsStats'
 import { InsightsTagInsights } from './insights/InsightsTagInsights'
 import { InsightsMoodDistribution } from './insights/InsightsMoodDistribution'
+import { InsightsWeekdayAverages } from './insights/InsightsWeekdayAverages'
 import badgeIcon from '../assets/badge.png'
 import googleLogo from '../assets/playstore.png'
 import { PLAY_STORE_APP_URL } from '../lib/constants'
@@ -51,6 +53,7 @@ type InsightsProps = {
   trendSeries: { last30: TrendPoint[], last90: TrendPoint[], last365: TrendPoint[] }
   rollingSeries: RollingPoint[]
   rollingSummaries: RollingSummary[]
+  weekdayAverages: WeekdayAveragePoint[]
   personalSleepThreshold: number | null
   moodByPersonalThreshold: { high: number | null, low: number | null }
   tagDrivers: TagDriver[]
@@ -82,6 +85,7 @@ export const Insights = ({
   trendSeries,
   rollingSeries,
   rollingSummaries,
+  weekdayAverages,
   personalSleepThreshold,
   moodByPersonalThreshold,
   tagDrivers,
@@ -297,6 +301,11 @@ export const Insights = ({
                 moodColors={moodColors}
                 isMobile={isMobile}
                 entriesLoading={entriesLoading}
+              />
+              <InsightsWeekdayAverages
+                weekdayAverages={weekdayAverages}
+                isMobile={isMobile}
+                goToLog={goToLog}
               />
               {showGatedInsights && (
                 <>

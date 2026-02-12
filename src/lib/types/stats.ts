@@ -31,6 +31,16 @@ export type RollingSummary = {
   moodDelta: number | null
 }
 
+export type WeekdayKey = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'
+
+export type WeekdayAveragePoint = {
+  dayKey: WeekdayKey
+  label: string
+  avgSleep: number | null
+  avgMood: number | null
+  observationCount: number
+}
+
 export type TagInsight = {
   tag: string
   sleep: number | null
