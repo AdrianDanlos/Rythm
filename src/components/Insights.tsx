@@ -165,9 +165,7 @@ export const Insights = ({
   }, [scatterRange, showScatter90, showScatterAll])
 
   useEffect(() => {
-    if (isPro) {
-      setShowAdvancedAnalysis(true)
-    }
+    setShowAdvancedAnalysis(isPro)
   }, [isPro])
 
   const plottedData = useMemo(() => {
@@ -390,10 +388,16 @@ export const Insights = ({
                   <button
                     type="button"
                     className={`ghost ${showAdvancedAnalysis ? 'active' : ''}`}
-                    onClick={() => setShowAdvancedAnalysis(current => !current)}
-                    aria-expanded={showAdvancedAnalysis}
+                    onClick={() => {
+                      if (!isPro) {
+                        onOpenPaywall()
+                        return
+                      }
+                      setShowAdvancedAnalysis(current => !current)
+                    }}
+                    aria-expanded={isPro ? showAdvancedAnalysis : undefined}
                   >
-                    {showAdvancedAnalysis ? 'Hide' : 'Show'}
+                    {isPro ? (showAdvancedAnalysis ? 'Hide' : 'Show') : 'Show'}
                   </button>
                 </div>
                 {showAdvancedAnalysis && !isPro
