@@ -51,12 +51,18 @@ const buildHeatmapWeeks = (entries: Entry[], days: number): HeatmapDay[][] => {
       const isFuture = currentMs > endMs
       const key = formatLocalDate(current)
       const entry = entriesByDate.get(key) ?? null
+      const moodValue = entry?.mood === null || entry?.mood === undefined
+        ? Number.NaN
+        : Number(entry.mood)
+      const sleepValue = entry?.sleep_hours === null || entry?.sleep_hours === undefined
+        ? Number.NaN
+        : Number(entry.sleep_hours)
       week.push({
         date: key,
         inRange,
         isFuture,
-        mood: entry ? Number(entry.mood) : null,
-        sleep: entry ? Number(entry.sleep_hours) : null,
+        mood: Number.isFinite(moodValue) ? moodValue : null,
+        sleep: Number.isFinite(sleepValue) ? sleepValue : null,
       })
       cursor.setDate(cursor.getDate() + 1)
     }
@@ -72,13 +78,13 @@ const clampIndex = (value: number, maxIndex: number) => {
 }
 
 const getMoodColor = (mood: number | null, palette: string[]) => {
-  if (!mood) return null
+  if (mood === null) return null
   const index = clampIndex(mood - 1, palette.length - 1)
   return palette[index] ?? null
 }
 
 const getSleepColor = (sleep: number | null) => {
-  if (!sleep) return null
+  if (sleep === null) return null
   const normalized = Math.min(1, Math.max(0, (sleep - 4) / 6))
   const index = Math.min(
     sleepHeatmapColors.length - 1,
@@ -257,10 +263,10 @@ export const InsightsCalendarHeatmap = ({
                     : getSleepColor(day.sleep)
                   const labelDate = formatLongDate(new Date(`${day.date}T00:00:00`))
                   const valueLabel = metric === 'mood'
-                    ? day.mood
+                    ? day.mood !== null
                       ? `${day.mood.toFixed(0)} / 5`
                       : 'No entry'
-                    : day.sleep
+                    : day.sleep !== null
                       ? formatSleepHours(day.sleep)
                       : 'No entry'
                   if (day.isFuture) {

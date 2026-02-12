@@ -22,7 +22,6 @@ type InsightsScatterProps = {
   isLoading: boolean
   isEmpty: boolean
   isMobile: boolean
-  entries: Entry[]
   plottedData: PlottedEntry[]
   moodColors: string[]
   goToLog: () => void
@@ -32,7 +31,6 @@ export const InsightsScatter = ({
   isLoading,
   isEmpty,
   isMobile,
-  entries,
   plottedData,
   moodColors,
   goToLog,
@@ -99,7 +97,7 @@ export const InsightsScatter = ({
           <p className="muted">Each dot is one day: more sleep is right, better mood is higher.</p>
         </div>
         <p className="muted">
-          {isLoading ? 'Loading entries...' : `${entries.length} entries`}
+          {isLoading ? 'Loading entries...' : `${plottedData.length} entries`}
         </p>
       </div>
       {isLoading
@@ -162,7 +160,7 @@ export const InsightsScatter = ({
                       {plottedData.map(entry => (
                         <Cell
                           key={entry.id}
-                          fill={moodColors[entry.mood - 1]}
+                          fill={moodColors[Math.max(0, Math.min(moodColors.length - 1, Number(entry.mood) - 1))]}
                           fillOpacity={0.7}
                         />
                       ))}

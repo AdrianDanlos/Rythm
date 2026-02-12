@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Entry } from '../../entries'
 import { getCorrelationInsight } from '../correlation'
 
-const makeEntry = (sleep: number, mood: number): Entry => ({
+const makeEntry = (sleep: number | null, mood: number | null): Entry => ({
   id: `entry-${sleep}-${mood}`,
   user_id: 'user',
   entry_date: '2026-01-01',
@@ -10,6 +10,8 @@ const makeEntry = (sleep: number, mood: number): Entry => ({
   mood,
   note: null,
   tags: null,
+  is_complete: sleep !== null && mood !== null,
+  completed_at: sleep !== null && mood !== null ? '2026-01-01T00:00:00Z' : null,
   created_at: '2026-01-01T00:00:00Z',
 })
 
@@ -54,6 +56,20 @@ describe('getCorrelationInsight', () => {
     expect(getCorrelationInsight(entries)).toEqual({
       label: 'Strong',
       direction: 'Higher sleep, lower mood',
+    })
+  })
+
+  it('ignores incomplete rows when computing correlation', () => {
+    const entries = [
+      makeEntry(6, 3),
+      makeEntry(7, 4),
+      makeEntry(8, null),
+      makeEntry(null, 5),
+      makeEntry(9, 6),
+    ]
+    expect(getCorrelationInsight(entries)).toEqual({
+      label: 'Strong',
+      direction: 'Higher sleep, better mood',
     })
   })
 })

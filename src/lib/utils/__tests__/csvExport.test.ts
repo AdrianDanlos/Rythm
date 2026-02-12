@@ -21,6 +21,8 @@ const makeEntry = (overrides: Partial<Entry>): Entry => ({
   mood: 5,
   note: null,
   tags: null,
+  is_complete: true,
+  completed_at: '2026-01-31T00:00:00Z',
   created_at: '2026-01-31T00:00:00Z',
   ...overrides,
 })
@@ -44,6 +46,30 @@ describe('exportEntriesCsv', () => {
       data: [
         'date,sleep_hours,mood,note',
         '01/31/2026,8h,5,"Note, with ""quotes"""',
+      ].join('\n'),
+      encoding: Encoding.UTF8,
+    })
+  })
+
+  it('exports empty cells for missing sleep or mood', async () => {
+    exportFileMock.mockClear()
+    const entries = [
+      makeEntry({
+        sleep_hours: null,
+        mood: null,
+        is_complete: false,
+        completed_at: null,
+      }),
+    ]
+
+    await exportEntriesCsv(entries)
+
+    expect(exportFileMock).toHaveBeenCalledWith({
+      filename: 'rythm-entries.csv',
+      mimeType: 'text/csv;charset=utf-8;',
+      data: [
+        'date,sleep_hours,mood,note',
+        '01/31/2026,,,',
       ].join('\n'),
       encoding: Encoding.UTF8,
     })

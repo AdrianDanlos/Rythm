@@ -121,18 +121,21 @@ export const Insights = ({
   }
 
   const plottedData = useMemo(() => {
-    return chartData.map((entry) => {
+    return chartData.flatMap((entry) => {
       const sleep = Number(entry.sleep_hours)
       const mood = Number(entry.mood)
+      if (!Number.isFinite(sleep) || !Number.isFinite(mood)) {
+        return []
+      }
       const sleepClamped = Math.min(10, Math.max(4, sleep))
       const moodClamped = Math.min(5, Math.max(1, mood))
       const jitter = jitterFromId(entry.id)
-      return {
+      return [{
         ...entry,
         sleep_hours_clamped: sleepClamped,
         sleep_hours_jittered: Math.min(10, Math.max(4, sleepClamped + jitter)),
         mood_jittered: Math.min(5, Math.max(1, moodClamped + jitter / 2)),
-      }
+      }]
     })
   }, [chartData])
   const [isMobile, setIsMobile] = useState(false)
@@ -270,9 +273,8 @@ export const Insights = ({
             <div className="insights-panel">
               <InsightsScatter
                 isLoading={isLoading}
-                isEmpty={isEmpty}
+                isEmpty={isEmpty || plottedData.length === 0}
                 isMobile={isMobile}
-                entries={entries}
                 plottedData={plottedData}
                 moodColors={moodColors}
                 goToLog={goToLog}

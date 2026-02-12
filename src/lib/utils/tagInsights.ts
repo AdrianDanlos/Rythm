@@ -13,20 +13,38 @@ function getPrevDateString(entryDate: string): string {
 export const buildTagInsights = (entries: Entry[], limit?: number) => {
   const aggregates = new Map<
     string,
-    { sleepSum: number, moodSum: number, count: number }
+    {
+      sleepSum: number
+      sleepCount: number
+      moodSum: number
+      moodCount: number
+      count: number
+    }
   >()
   entries.forEach((entry) => {
+    const sleep = entry.sleep_hours === null ? Number.NaN : Number(entry.sleep_hours)
+    const mood = entry.mood === null ? Number.NaN : Number(entry.mood)
+    const hasSleep = Number.isFinite(sleep)
+    const hasMood = Number.isFinite(mood)
     const tags = entry.tags ?? []
     tags.forEach((tag) => {
       const key = tag.trim()
       if (!key) return
       const current = aggregates.get(key) ?? {
         sleepSum: 0,
+        sleepCount: 0,
         moodSum: 0,
+        moodCount: 0,
         count: 0,
       }
-      current.sleepSum += Number(entry.sleep_hours)
-      current.moodSum += Number(entry.mood)
+      if (hasSleep) {
+        current.sleepSum += sleep
+        current.sleepCount += 1
+      }
+      if (hasMood) {
+        current.moodSum += mood
+        current.moodCount += 1
+      }
       current.count += 1
       aggregates.set(key, current)
     })
@@ -35,8 +53,8 @@ export const buildTagInsights = (entries: Entry[], limit?: number) => {
   const insights: TagInsight[] = Array.from(aggregates.entries())
     .map(([tag, data]) => ({
       tag,
-      sleep: data.count ? data.sleepSum / data.count : null,
-      mood: data.count ? data.moodSum / data.count : null,
+      sleep: data.sleepCount ? data.sleepSum / data.sleepCount : null,
+      mood: data.moodCount ? data.moodSum / data.moodCount : null,
       count: data.count,
     }))
     .sort((a, b) => b.count - a.count)
@@ -54,8 +72,8 @@ export const buildTagDrivers = (
   let overallCount = 0
 
   entries.forEach((entry) => {
-    const mood = Number(entry.mood)
-    if (Number.isNaN(mood)) return
+    const mood = entry.mood === null ? Number.NaN : Number(entry.mood)
+    if (!Number.isFinite(mood)) return
     overallMoodSum += mood
     overallCount += 1
 
@@ -112,7 +130,7 @@ export const buildTagSleepDrivers = (
   const tagData = new Map<string, { sleepSum: number, count: number }>()
 
   entries.forEach((entry) => {
-    const sleep = Number(entry.sleep_hours)
+    const sleep = entry.sleep_hours === null ? Number.NaN : Number(entry.sleep_hours)
     if (!Number.isFinite(sleep)) return
     const prevDate = getPrevDateString(entry.entry_date)
     const prevEntry = byDate.get(prevDate)

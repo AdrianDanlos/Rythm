@@ -114,7 +114,11 @@ export const useLogForm = ({
   useEffect(() => {
     const existing = entries.find(item => item.entry_date === entryDate)
     if (existing) {
-      setSleepHours(formatSleepHoursOption(existing.sleep_hours))
+      setSleepHours(
+        existing.sleep_hours === null
+          ? ''
+          : formatSleepHoursOption(existing.sleep_hours),
+      )
       setMood(existing.mood)
       setNote(existing.note ?? '')
       setTags(existing.tags?.join(', ') ?? '')
@@ -137,19 +141,20 @@ export const useLogForm = ({
       return
     }
 
+    const hasSleepInput = sleepHours.trim().length > 0
     const parsedSleep = parseSleepHours(sleepHours)
-    if (parsedSleep === null) {
-      setEntriesError('Select sleep hours.')
+    if (hasSleepInput && parsedSleep === null) {
+      setEntriesError('Sleep hours are invalid.')
       setSaved(false)
       return
     }
-    if (parsedSleep < 0 || parsedSleep > 12) {
+    if (parsedSleep !== null && (parsedSleep < 0 || parsedSleep > 12)) {
       setEntriesError('Sleep hours must be between 0 and 12.')
       setSaved(false)
       return
     }
-    if (!mood) {
-      setEntriesError('Select a mood rating.')
+    if (mood !== null && (mood < 1 || mood > 5)) {
+      setEntriesError('Mood rating must be between 1 and 5.')
       setSaved(false)
       return
     }
@@ -161,17 +166,38 @@ export const useLogForm = ({
       return
     }
 
+    const normalizedNote = note.trim() ? note.trim() : null
+    const hasAnyValue = parsedSleep !== null
+      || mood !== null
+      || normalizedNote !== null
+      || tagList.length > 0
+    if (!hasAnyValue) {
+      setEntriesError('Add at least one value before saving.')
+      setSaved(false)
+      return
+    }
+
+    const existing = entries.find(item => item.entry_date === entryDate)
+    const isUpdate = Boolean(existing)
+    const isComplete = parsedSleep !== null && mood !== null
+    const completedAt = isComplete
+      ? (existing?.is_complete && existing.completed_at
+          ? existing.completed_at
+          : new Date().toISOString())
+      : null
+
     setSaving(true)
     setEntriesError(null)
     try {
-      const isFirstSaveForDate = !entries.some(item => item.entry_date === entryDate)
       const savedEntry = await upsertEntry({
         user_id: userId,
         entry_date: entryDate,
         sleep_hours: parsedSleep,
         mood,
-        note: note.trim() ? note.trim() : null,
+        note: normalizedNote,
         ...(tagList.length ? { tags: tagList } : { tags: null }),
+        is_complete: isComplete,
+        completed_at: completedAt,
       })
 
       const nextEntries = (() => {
@@ -186,11 +212,16 @@ export const useLogForm = ({
         onStreakReached?.()
       }
       setSaved(true)
-      if (isFirstSaveForDate) {
-        toast.success(getSupportMessage(parsedSleep, mood, sleepThreshold, tagList))
-      }
+      toast.success(getSupportMessage({
+        sleepHours: parsedSleep,
+        mood,
+        sleepThreshold,
+        tags: tagList,
+        isComplete,
+        isUpdate,
+      }))
       window.setTimeout(() => setSaved(false), 2000)
-      if (entryDate === today) {
+      if (entryDate === today && isComplete) {
         window.setTimeout(() => onEntrySavedForToday?.(), 500)
       }
     }

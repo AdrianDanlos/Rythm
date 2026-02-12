@@ -6,21 +6,27 @@ type CorrelationInsight = {
 }
 
 export const getCorrelationInsight = (entries: Entry[]): CorrelationInsight => {
-  if (entries.length < 2) {
+  const pairedEntries = entries.filter((entry) => {
+    const sleep = entry.sleep_hours === null ? Number.NaN : Number(entry.sleep_hours)
+    const mood = entry.mood === null ? Number.NaN : Number(entry.mood)
+    return Number.isFinite(sleep) && Number.isFinite(mood)
+  })
+
+  if (pairedEntries.length < 2) {
     return { label: null, direction: null }
   }
 
   const meanSleep
-    = entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
-      / entries.length
+    = pairedEntries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
+      / pairedEntries.length
   const meanMood
-    = entries.reduce((sum, entry) => sum + Number(entry.mood), 0) / entries.length
+    = pairedEntries.reduce((sum, entry) => sum + Number(entry.mood), 0) / pairedEntries.length
 
   let numerator = 0
   let sumSleep = 0
   let sumMood = 0
 
-  entries.forEach((entry) => {
+  pairedEntries.forEach((entry) => {
     const sleepDelta = Number(entry.sleep_hours) - meanSleep
     const moodDelta = Number(entry.mood) - meanMood
     numerator += sleepDelta * moodDelta

@@ -6,18 +6,33 @@ export const calculateAverages = (entries: Entry[]): WindowStats => {
     return { sleep: null, mood: null, count: 0 }
   }
 
-  const totals = entries.reduce(
-    (acc, entry) => {
-      acc.sleep += Number(entry.sleep_hours)
-      acc.mood += Number(entry.mood)
-      return acc
-    },
-    { sleep: 0, mood: 0 },
-  )
+  let sleepSum = 0
+  let sleepCount = 0
+  let moodSum = 0
+  let moodCount = 0
+  let completeCount = 0
+
+  entries.forEach((entry) => {
+    const sleep = entry.sleep_hours === null ? Number.NaN : Number(entry.sleep_hours)
+    const mood = entry.mood === null ? Number.NaN : Number(entry.mood)
+    const hasSleep = Number.isFinite(sleep)
+    const hasMood = Number.isFinite(mood)
+    if (hasSleep) {
+      sleepSum += sleep
+      sleepCount += 1
+    }
+    if (hasMood) {
+      moodSum += mood
+      moodCount += 1
+    }
+    if (hasSleep && hasMood) {
+      completeCount += 1
+    }
+  })
 
   return {
-    sleep: totals.sleep / entries.length,
-    mood: totals.mood / entries.length,
-    count: entries.length,
+    sleep: sleepCount ? sleepSum / sleepCount : null,
+    mood: moodCount ? moodSum / moodCount : null,
+    count: completeCount,
   }
 }

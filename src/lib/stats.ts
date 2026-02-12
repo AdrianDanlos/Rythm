@@ -75,6 +75,19 @@ export const buildStats = (
   sleepThreshold: number,
   formatLocalDate: (date: Date) => string,
 ): StatsResult => {
+  const toFiniteSleep = (entry: Entry) => {
+    const value = entry.sleep_hours === null ? Number.NaN : Number(entry.sleep_hours)
+    return Number.isFinite(value) ? value : null
+  }
+  const toFiniteMood = (entry: Entry) => {
+    const value = entry.mood === null ? Number.NaN : Number(entry.mood)
+    return Number.isFinite(value) ? value : null
+  }
+  const completeEntries = entries.filter((entry) => {
+    const sleep = toFiniteSleep(entry)
+    const mood = toFiniteMood(entry)
+    return sleep !== null && mood !== null
+  })
   const entriesWithDate = entries.map((entry) => {
     const date = new Date(`${entry.entry_date}T00:00:00`)
     date.setHours(0, 0, 0, 0)
@@ -122,11 +135,12 @@ export const buildStats = (
   })()
 
   let streak = 0
-  if (entriesWithDate.length) {
-    const dateSet = new Set(entriesWithDate.map(entry => entry.entry_date))
-    const latestDate = entriesWithDate.reduce(
+  const completeEntriesWithDate = entriesWithDate.filter(entry => entry.is_complete)
+  if (completeEntriesWithDate.length) {
+    const dateSet = new Set(completeEntriesWithDate.map(entry => entry.entry_date))
+    const latestDate = completeEntriesWithDate.reduce(
       (max, entry) => (entry.entry_date > max ? entry.entry_date : max),
-      entriesWithDate[0].entry_date,
+      completeEntriesWithDate[0].entry_date,
     )
 
     const current = new Date(`${latestDate}T00:00:00`)
@@ -150,11 +164,14 @@ export const buildStats = (
     high: number | null
     low: number | null
   }
-  if (entries.length >= minNightsForMoodBySleep) {
-    const buckets = entries.reduce(
+  if (completeEntries.length >= minNightsForMoodBySleep) {
+    const buckets = completeEntries.reduce(
       (acc, entry) => {
-        const target = Number(entry.sleep_hours) >= sleepThreshold ? 'high' : 'low'
-        acc[target].sum += Number(entry.mood)
+        const sleep = toFiniteSleep(entry)
+        const mood = toFiniteMood(entry)
+        if (sleep === null || mood === null) return acc
+        const target = sleep >= sleepThreshold ? 'high' : 'low'
+        acc[target].sum += mood
         acc[target].count += 1
         return acc
       },
@@ -183,10 +200,12 @@ export const buildStats = (
     while (cursor <= end) {
       const key = formatLocalDate(cursor)
       const entry = map.get(key)
+      const sleep = entry ? toFiniteSleep(entry) : null
+      const mood = entry ? toFiniteMood(entry) : null
       points.push({
         date: key,
-        sleep: entry ? Number(entry.sleep_hours) : null,
-        mood: entry ? Number(entry.mood) : null,
+        sleep,
+        mood,
       })
       cursor.setDate(cursor.getDate() + 1)
     }
@@ -258,9 +277,11 @@ export const buildStats = (
   })
 
   const personalSleepThreshold = (() => {
-    if (entries.length < 5) return null
-    const sorted = [...entries].sort((a, b) => b.mood - a.mood)
-    const topCount = Math.max(3, Math.ceil(entries.length * 0.3))
+    if (completeEntries.length < 5) return null
+    const sorted = [...completeEntries].sort((a, b) =>
+      Number(b.mood) - Number(a.mood),
+    )
+    const topCount = Math.max(3, Math.ceil(completeEntries.length * 0.3))
     const topEntries = sorted.slice(0, topCount)
     const avgSleep
       = topEntries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
@@ -273,11 +294,14 @@ export const buildStats = (
     if (!personalSleepThreshold) {
       return { high: null, low: null }
     }
-    const buckets = entries.reduce(
+    const buckets = completeEntries.reduce(
       (acc, entry) => {
+        const sleep = toFiniteSleep(entry)
+        const mood = toFiniteMood(entry)
+        if (sleep === null || mood === null) return acc
         const target
-          = Number(entry.sleep_hours) >= personalSleepThreshold ? 'high' : 'low'
-        acc[target].sum += Number(entry.mood)
+          = sleep >= personalSleepThreshold ? 'high' : 'low'
+        acc[target].sum += mood
         acc[target].count += 1
         return acc
       },

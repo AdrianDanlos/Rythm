@@ -108,10 +108,10 @@ export const renderLast30DaysSection = ({
       a.entry_date.localeCompare(b.entry_date),
     )
     const sleepSeries = sorted.map(entry =>
-      entry.sleep_hours ? Number(entry.sleep_hours) : null,
+      entry.sleep_hours === null ? null : Number(entry.sleep_hours),
     )
     const moodSeries = sorted.map(entry =>
-      entry.mood ? Number(entry.mood) : null,
+      entry.mood === null ? null : Number(entry.mood),
     )
     drawSparkline(doc, sleepSeries, 14, yRef.value, chartWidth, chartHeight, [79, 70, 229])
     drawSparkline(doc, moodSeries, 14, yRef.value, chartWidth, chartHeight, [14, 165, 233])
@@ -146,8 +146,10 @@ export const renderLast30DaysSection = ({
       doc,
       yRef,
       [
-        `Mood: ${bestDay.mood}`,
-        `Sleep: ${formatSleepHours(Number(bestDay.sleep_hours))}`,
+        `Mood: ${bestDay.mood !== null ? bestDay.mood : '—'}`,
+        `Sleep: ${
+          bestDay.sleep_hours !== null ? formatSleepHours(Number(bestDay.sleep_hours)) : '—'
+        }`,
         `Events: ${bestTags}`,
       ],
       22,

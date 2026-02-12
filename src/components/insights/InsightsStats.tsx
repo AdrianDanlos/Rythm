@@ -90,7 +90,7 @@ export const InsightsStats = ({
         <div className="streak-card__content">
           <p className="label">Streak</p>
           {isLoading ? <div className="skeleton-line" /> : <p className="value">{streak} days</p>}
-          <p className="helper">Consecutive days logged</p>
+          <p className="helper">Consecutive completed days</p>
         </div>
       </section>
       <section className="card stats">

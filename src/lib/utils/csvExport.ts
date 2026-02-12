@@ -12,8 +12,8 @@ export const exportEntriesCsv = async (entries: Entry[]) => {
     ['date', 'sleep_hours', 'mood', 'note'],
     ...entries.map(entry => [
       formatLongDate(new Date(`${entry.entry_date}T00:00:00`)),
-      formatSleepHours(entry.sleep_hours),
-      entry.mood,
+      entry.sleep_hours === null ? '' : formatSleepHours(entry.sleep_hours),
+      entry.mood ?? '',
       entry.note ?? '',
     ]),
   ]

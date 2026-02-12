@@ -92,8 +92,9 @@ const buildWeeklySummaries = (recentEntries: Entry[]): WeeklySummary[] => {
     a.entry_date.localeCompare(b.entry_date),
   )
   const weekBuckets: Record<string, {
-    count: number
+    sleepCount: number
     sleep: number
+    moodCount: number
     mood: number
     sleeps: number[]
   }> = {}
@@ -104,15 +105,19 @@ const buildWeeklySummaries = (recentEntries: Entry[]): WeeklySummary[] => {
     weekStart.setHours(0, 0, 0, 0)
     const key = weekStart.toISOString().slice(0, 10)
     if (!weekBuckets[key]) {
-      weekBuckets[key] = { count: 0, sleep: 0, mood: 0, sleeps: [] }
+      weekBuckets[key] = { sleepCount: 0, sleep: 0, moodCount: 0, mood: 0, sleeps: [] }
     }
     const sleepValue = Number(entry.sleep_hours)
+    const moodValue = Number(entry.mood)
     if (Number.isFinite(sleepValue)) {
       weekBuckets[key].sleeps.push(sleepValue)
+      weekBuckets[key].sleep += sleepValue
+      weekBuckets[key].sleepCount += 1
     }
-    weekBuckets[key].count += 1
-    weekBuckets[key].sleep += Number(entry.sleep_hours) || 0
-    weekBuckets[key].mood += Number(entry.mood) || 0
+    if (Number.isFinite(moodValue)) {
+      weekBuckets[key].mood += moodValue
+      weekBuckets[key].moodCount += 1
+    }
   })
   return Object.entries(weekBuckets)
     .sort(([a], [b]) => a.localeCompare(b))
@@ -120,8 +125,8 @@ const buildWeeklySummaries = (recentEntries: Entry[]): WeeklySummary[] => {
       const weekStart = new Date(`${startKey}T00:00:00`)
       const weekEnd = new Date(weekStart)
       weekEnd.setDate(weekStart.getDate() + 6)
-      const avgSleep = totals.count ? totals.sleep / totals.count : null
-      const avgMood = totals.count ? totals.mood / totals.count : null
+      const avgSleep = totals.sleepCount ? totals.sleep / totals.sleepCount : null
+      const avgMood = totals.moodCount ? totals.mood / totals.moodCount : null
       const sleepStdDev = calculateStdDev(totals.sleeps)
       return {
         label: `${formatLongDate(weekStart)} - ${formatLongDate(weekEnd)}`,
@@ -135,7 +140,12 @@ const buildWeeklySummaries = (recentEntries: Entry[]): WeeklySummary[] => {
 
 const findBestDay = (recentEntries: Entry[]) =>
   recentEntries.reduce<Entry | null>((best, entry) => {
-    if (!best || Number(entry.mood) > Number(best.mood)) return entry
+    const moodValue = Number(entry.mood)
+    if (!Number.isFinite(moodValue)) return best
+    if (!best) return entry
+    const bestMoodValue = Number(best.mood)
+    if (!Number.isFinite(bestMoodValue)) return entry
+    if (moodValue > bestMoodValue) return entry
     return best
   }, null)
 

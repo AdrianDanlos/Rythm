@@ -13,15 +13,19 @@ const daysBetween = (from: Date, to: Date) =>
   Math.round((to.getTime() - from.getTime()) / MS_PER_DAY)
 
 const getSleepConsistencyStdDev = (entries: Entry[]) => {
-  if (entries.length < 2) return null
+  const sleepEntries = entries.filter((entry) => {
+    const value = Number(entry.sleep_hours)
+    return Number.isFinite(value)
+  })
+  if (sleepEntries.length < 2) return null
   const mean
-    = entries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
-      / entries.length
+    = sleepEntries.reduce((sum, entry) => sum + Number(entry.sleep_hours), 0)
+      / sleepEntries.length
   const variance
-    = entries.reduce((sum, entry) => {
+    = sleepEntries.reduce((sum, entry) => {
       const diff = Number(entry.sleep_hours) - mean
       return sum + diff * diff
-    }, 0) / entries.length
+    }, 0) / sleepEntries.length
   return Math.sqrt(variance)
 }
 
@@ -37,8 +41,12 @@ export const getSleepConsistencyLabel = (entries: Entry[]) => {
 export const getSleepConsistencyBadges = (
   entries: Entry[],
 ): SleepConsistencyBadge[] => {
-  if (!entries.length) return []
-  const sorted = [...entries].sort((a, b) =>
+  const sleepEntries = entries.filter((entry) => {
+    const value = Number(entry.sleep_hours)
+    return Number.isFinite(value)
+  })
+  if (!sleepEntries.length) return []
+  const sorted = [...sleepEntries].sort((a, b) =>
     a.entry_date.localeCompare(b.entry_date),
   )
 

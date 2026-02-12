@@ -1,13 +1,45 @@
+type SupportMessageInput = {
+  sleepHours: number | null
+  mood: number | null
+  sleepThreshold: number
+  tags?: string[]
+  isComplete: boolean
+  isUpdate: boolean
+}
+
 /**
- * Returns a short, supportive message after logging based on sleep, mood, and optional tags.
- * Used for post-save toast to make the app feel more personal.
+ * Returns a short, supportive message after logging based on completion state.
  */
-export function getSupportMessage(
-  sleepHours: number,
-  mood: number,
-  sleepThreshold: number,
-  tags: string[] = [],
-): string {
+export function getSupportMessage({
+  sleepHours,
+  mood,
+  sleepThreshold,
+  tags = [],
+  isComplete,
+  isUpdate,
+}: SupportMessageInput): string {
+  if (!isComplete) {
+    if (sleepHours !== null && mood === null) {
+      return isUpdate
+        ? 'Sleep updated. Add mood later to complete the entry.'
+        : 'Sleep saved. Add mood later to complete this day.'
+    }
+    if (sleepHours === null && mood !== null) {
+      return isUpdate
+        ? 'Mood updated. Add sleep later to complete the entry.'
+        : 'Mood saved. Add sleep later to complete this day.'
+    }
+    return isUpdate
+      ? 'Draft updated. You can complete this entry later.'
+      : 'Draft saved. You can complete this entry later.'
+  }
+
+  if (sleepHours === null || mood === null) {
+    return isUpdate
+      ? 'Entry updated. Every log helps you see your patterns over time.'
+      : 'Entry saved. Every log helps you see your patterns over time.'
+  }
+
   const shortSleep = sleepHours < (sleepThreshold - 1)
   const goodMood = mood >= 4
   const lowMood = mood <= 2
@@ -35,5 +67,7 @@ export function getSupportMessage(
     return 'Noted. Caffeine and sleep can be tricky — worth watching in your insights.'
   }
 
-  return 'Entry saved. Every log helps you see your patterns over time.'
+  return isUpdate
+    ? 'Entry updated. Every log helps you see your patterns over time.'
+    : 'Entry saved. Every log helps you see your patterns over time.'
 }
