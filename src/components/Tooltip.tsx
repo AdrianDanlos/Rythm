@@ -14,6 +14,7 @@ type TooltipProps = {
 export const Tooltip = ({ label, children, className }: TooltipProps) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isTouch, setIsTouch] = useState(false)
+  const isPositioned = isTouch
   const [bubbleStyle, setBubbleStyle] = useState<React.CSSProperties>({
     position: 'fixed',
     left: 0,
@@ -97,16 +98,16 @@ export const Tooltip = ({ label, children, className }: TooltipProps) => {
   }, [])
 
   useLayoutEffect(() => {
-    if (!isVisible) return
+    if (!isVisible || !isPositioned) return
     updatePosition()
-  }, [isVisible, updatePosition])
+  }, [isVisible, isPositioned, updatePosition])
 
   const show = useCallback(() => setIsVisible(true), [])
 
   return (
     <span
       ref={triggerRef}
-      className={['app-tooltip', 'app-tooltip--positioned', className].filter(Boolean).join(' ')}
+      className={['app-tooltip', isPositioned ? 'app-tooltip--positioned' : '', className].filter(Boolean).join(' ')}
       onMouseEnter={!isTouch ? show : undefined}
       onMouseLeave={!isTouch ? hide : undefined}
       onFocusCapture={!isTouch ? show : undefined}
@@ -119,7 +120,7 @@ export const Tooltip = ({ label, children, className }: TooltipProps) => {
           ref={bubbleRef}
           className="app-tooltip-bubble"
           role="tooltip"
-          style={bubbleStyle}
+          style={isPositioned ? bubbleStyle : undefined}
         >
           {label}
         </span>
