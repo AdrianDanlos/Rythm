@@ -29,6 +29,17 @@ import { PLAY_STORE_APP_URL } from '../lib/constants'
 import { STORAGE_KEYS } from '../lib/storageKeys'
 
 type InsightsTab = 'summary' | 'charts' | 'data'
+type ScatterRange = 'all' | 'last30' | 'last90'
+const SCATTER_RANGE_DAYS: Record<Exclude<ScatterRange, 'all'>, number> = {
+  last30: 30,
+  last90: 90,
+}
+type BestSleepBand = {
+  x1: number
+  x2: number
+  samples: number
+  avgMood: number
+}
 
 type InsightsProps = {
   entries: Entry[]
@@ -115,6 +126,9 @@ export const Insights = ({
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
   const showGatedInsights = isPro || entries.length >= 3
+  const [scatterRange, setScatterRange] = useState<ScatterRange>('last30')
+  const showScatter90 = entries.length >= 30
+  const showScatterAll = entries.length >= 90
   const jitterFromId = (id: string, scale = 0.18) => {
     let hash = 0
     for (let i = 0; i < id.length; i += 1) {
@@ -125,8 +139,31 @@ export const Insights = ({
     return (normalized - 0.5) * scale
   }
 
+  const scatterEntries = useMemo(() => {
+    if (scatterRange === 'all') return chartData
+    const end = new Date()
+    end.setHours(0, 0, 0, 0)
+    const start = new Date(end)
+    start.setDate(end.getDate() - (SCATTER_RANGE_DAYS[scatterRange] - 1))
+    return chartData.filter((entry) => {
+      const entryDate = new Date(`${entry.entry_date}T00:00:00`)
+      entryDate.setHours(0, 0, 0, 0)
+      return entryDate >= start && entryDate <= end
+    })
+  }, [chartData, scatterRange])
+
+  useEffect(() => {
+    if (scatterRange === 'all' && !showScatterAll) {
+      setScatterRange(showScatter90 ? 'last90' : 'last30')
+      return
+    }
+    if (scatterRange === 'last90' && !showScatter90) {
+      setScatterRange('last30')
+    }
+  }, [scatterRange, showScatter90, showScatterAll])
+
   const plottedData = useMemo(() => {
-    return chartData.flatMap((entry) => {
+    return scatterEntries.flatMap((entry) => {
       const sleep = Number(entry.sleep_hours)
       const mood = Number(entry.mood)
       if (!Number.isFinite(sleep) || !Number.isFinite(mood)) {
@@ -142,7 +179,40 @@ export const Insights = ({
         mood_jittered: Math.min(5, Math.max(1, moodClamped + jitter / 2)),
       }]
     })
-  }, [chartData])
+  }, [scatterEntries])
+
+  const bestSleepBand = useMemo<BestSleepBand | null>(() => {
+    const buckets = new Map<number, { moodSum: number, count: number }>()
+    scatterEntries.forEach((entry) => {
+      const sleepRaw = Number(entry.sleep_hours)
+      const mood = Number(entry.mood)
+      if (!Number.isFinite(sleepRaw) || !Number.isFinite(mood)) return
+      const sleep = Math.min(10, Math.max(4, sleepRaw))
+      const bucketStart = sleep >= 10 ? 9 : Math.floor(sleep)
+      const bucket = buckets.get(bucketStart) ?? { moodSum: 0, count: 0 }
+      bucket.moodSum += mood
+      bucket.count += 1
+      buckets.set(bucketStart, bucket)
+    })
+    let best: BestSleepBand | null = null
+    buckets.forEach((bucket, start) => {
+      if (bucket.count < 2) return
+      const avgMood = bucket.moodSum / bucket.count
+      if (
+        !best
+        || avgMood > best.avgMood
+        || (avgMood === best.avgMood && bucket.count > best.samples)
+      ) {
+        best = {
+          x1: start,
+          x2: start + 1,
+          samples: bucket.count,
+          avgMood,
+        }
+      }
+    })
+    return best
+  }, [scatterEntries])
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -280,10 +350,16 @@ export const Insights = ({
             <div className="insights-panel">
               <InsightsScatter
                 isLoading={isLoading}
-                isEmpty={isEmpty || plottedData.length === 0}
+                hasAnyEntries={!isEmpty}
+                isRangeEmpty={!isLoading && plottedData.length === 0}
                 isMobile={isMobile}
                 plottedData={plottedData}
                 moodColors={moodColors}
+                scatterRange={scatterRange}
+                onScatterRangeChange={setScatterRange}
+                show90Range={showScatter90}
+                showAllRange={showScatterAll}
+                bestSleepBand={bestSleepBand}
                 goToLog={goToLog}
               />
               <InsightsMoodDistribution

@@ -1,5 +1,6 @@
 import {
   Cell,
+  ReferenceArea,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -20,19 +21,36 @@ type PlottedEntry = Entry & {
 
 type InsightsScatterProps = {
   isLoading: boolean
-  isEmpty: boolean
+  hasAnyEntries: boolean
+  isRangeEmpty: boolean
   isMobile: boolean
   plottedData: PlottedEntry[]
   moodColors: string[]
+  scatterRange: 'all' | 'last30' | 'last90'
+  onScatterRangeChange: (value: 'all' | 'last30' | 'last90') => void
+  show90Range: boolean
+  showAllRange: boolean
+  bestSleepBand: {
+    x1: number
+    x2: number
+    samples: number
+    avgMood: number
+  } | null
   goToLog: () => void
 }
 
 export const InsightsScatter = ({
   isLoading,
-  isEmpty,
+  hasAnyEntries,
+  isRangeEmpty,
   isMobile,
   plottedData,
   moodColors,
+  scatterRange,
+  onScatterRangeChange,
+  show90Range,
+  showAllRange,
+  bestSleepBand,
   goToLog,
 }: InsightsScatterProps) => {
   const baseTickProps = { fontSize: 13 }
@@ -94,11 +112,49 @@ export const InsightsScatter = ({
               </span>
             </Tooltip>
           </h2>
-          <p className="muted">Each dot is one day: more sleep is right, better mood is higher.</p>
+          <p className="muted">
+            Each dot is one day: more sleep is right, better mood is higher.
+            {bestSleepBand
+              ? ` Best sleep range in timeframe: ${formatSleepHours(bestSleepBand.x1)}-${formatSleepHours(bestSleepBand.x2)}.`
+              : ''}
+          </p>
         </div>
-        <p className="muted">
-          {isLoading ? 'Loading entries...' : `${plottedData.length} entries`}
-        </p>
+        <div style={{ display: 'grid', gap: 8, width: '100%', justifyItems: 'stretch' }}>
+          <div className="toggle-group toggle-group--thirds" aria-label="Sleep and mood timeframe">
+            <button
+              type="button"
+              className={`ghost ${scatterRange === 'last30' ? 'active' : ''}`}
+              onClick={() => onScatterRangeChange('last30')}
+            >
+              30d
+            </button>
+            {show90Range
+              ? (
+                  <button
+                    type="button"
+                    className={`ghost ${scatterRange === 'last90' ? 'active' : ''}`}
+                    onClick={() => onScatterRangeChange('last90')}
+                  >
+                    90d
+                  </button>
+                )
+              : null}
+            {showAllRange
+              ? (
+                  <button
+                    type="button"
+                    className={`ghost ${scatterRange === 'all' ? 'active' : ''}`}
+                    onClick={() => onScatterRangeChange('all')}
+                  >
+                    All
+                  </button>
+                )
+              : null}
+          </div>
+          <p className="muted" style={{ justifySelf: 'end' }}>
+            {isLoading ? 'Loading entries...' : `${plottedData.length} entries`}
+          </p>
+        </div>
       </div>
       {isLoading
         ? (
@@ -106,69 +162,88 @@ export const InsightsScatter = ({
               <div className="skeleton-block" />
             </div>
           )
-        : isEmpty
-          ? (
-              <div className="chart-empty">
-                <p className="muted">
-                  <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                    Log a day
-                  </button>
-                  {' '}to see insights.
-                </p>
-              </div>
-            )
-          : (
-              <div className="chart-wrapper">
-                <ResponsiveContainer width="100%" height={260}>
-                  <ScatterChart margin={{ top: 12, right: 12, bottom: 12, left: 5 }}>
-                    <XAxis
-                      type="number"
-                      dataKey="sleep_hours_jittered"
-                      domain={[4, 10]}
-                      ticks={[4, 5, 6, 7, 8, 9, 10]}
-                      tick={isMobile ? mobileTickProps : baseTickProps}
-                      tickFormatter={(value) => {
-                        if (value === 4) return '≤4h'
-                        if (value === 10) return '≥10h'
-                        return formatSleepHours(Number(value))
-                      }}
-                      label={{
-                        value: 'Sleep hours',
-                        position: 'insideBottom',
-                        offset: -5,
-                      }}
-                      height={35}
-                      tickMargin={2}
-                    />
-                    <YAxis
-                      type="number"
-                      dataKey="mood_jittered"
-                      domain={[1, 5]}
-                      ticks={[1, 2, 3, 4, 5]}
-                      tick={isMobile ? mobileTickProps : baseTickProps}
-                      label={{
-                        value: 'Mood',
-                        angle: -90,
-                        position: 'insideLeft',
-                        offset: 0,
-                      }}
-                      width={35}
-                      tickMargin={2}
-                    />
-                    <RechartsTooltip content={renderTooltip} />
-                    <Scatter data={plottedData} shape={renderDot}>
-                      {plottedData.map(entry => (
-                        <Cell
-                          key={entry.id}
-                          fill={moodColors[Math.max(0, Math.min(moodColors.length - 1, Number(entry.mood) - 1))]}
-                          fillOpacity={0.7}
+        : !hasAnyEntries
+            ? (
+                <div className="chart-empty">
+                  <p className="muted">
+                    <button type="button" className="link-button link-button--text" onClick={goToLog}>
+                      Log a day
+                    </button>
+                    {' '}to see insights.
+                  </p>
+                </div>
+              )
+            : isRangeEmpty
+              ? (
+                  <div className="chart-empty">
+                    <p className="muted">No complete sleep and mood logs in this time frame yet.</p>
+                  </div>
+                )
+              : (
+                  <div className="chart-wrapper">
+                    <ResponsiveContainer width="100%" height={260}>
+                      <ScatterChart margin={{ top: 12, right: 12, bottom: 12, left: 5 }}>
+                        <XAxis
+                          type="number"
+                          dataKey="sleep_hours_jittered"
+                          domain={[4, 10]}
+                          ticks={[4, 5, 6, 7, 8, 9, 10]}
+                          tick={isMobile ? mobileTickProps : baseTickProps}
+                          tickFormatter={(value) => {
+                            if (value === 4) return '≤4h'
+                            if (value === 10) return '≥10h'
+                            return formatSleepHours(Number(value))
+                          }}
+                          label={{
+                            value: 'Sleep hours',
+                            position: 'insideBottom',
+                            offset: -5,
+                          }}
+                          height={35}
+                          tickMargin={2}
                         />
-                      ))}
-                    </Scatter>
-                  </ScatterChart>
-                </ResponsiveContainer>
-              </div>
-            )}
+                        <YAxis
+                          type="number"
+                          dataKey="mood_jittered"
+                          domain={[1, 5]}
+                          ticks={[1, 2, 3, 4, 5]}
+                          tick={isMobile ? mobileTickProps : baseTickProps}
+                          label={{
+                            value: 'Mood',
+                            angle: -90,
+                            position: 'insideLeft',
+                            offset: 0,
+                          }}
+                          width={35}
+                          tickMargin={2}
+                        />
+                        {bestSleepBand
+                          ? (
+                              <ReferenceArea
+                                x1={bestSleepBand.x1}
+                                x2={bestSleepBand.x2}
+                                y1={1}
+                                y2={5}
+                                fill="var(--chart-sleep)"
+                                fillOpacity={0.12}
+                                ifOverflow="extendDomain"
+                              />
+                            )
+                          : null}
+                        <RechartsTooltip content={renderTooltip} />
+                        <Scatter data={plottedData} shape={renderDot}>
+                          {plottedData.map(entry => (
+                            <Cell
+                              key={entry.id}
+                              fill={moodColors[Math.max(0, Math.min(moodColors.length - 1, Number(entry.mood) - 1))]}
+                              fillOpacity={0.7}
+                            />
+                          ))}
+                        </Scatter>
+                      </ScatterChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
     </section>
   )
 }

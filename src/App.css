@@ -774,7 +774,7 @@
 .date-picker .rdp-day-logged:not(.rdp-day_selected) .rdp-day_button {
   background: var(--day-logged-bg);
   color: var(--day-logged-text);
-  border-radius: 0;
+  border-radius: 6px;
 }
 
 .date-picker
@@ -782,7 +782,7 @@
   .rdp-day_button {
   background: var(--day-incomplete-bg);
   color: var(--day-incomplete-text);
-  border-radius: 0;
+  border-radius: 6px;
 }
 
 .date-picker .rdp-day_selected .rdp-day_button {
@@ -795,7 +795,7 @@
 }
 
 .date-picker .rdp-day_button {
-  border-radius: 0;
+  border-radius: 6px;
 }
 
 /* Disabled (future) days: greyed out only, no circular border or different bg */
@@ -1360,6 +1360,18 @@
   background: var(--selected-bg);
   color: var(--selected-text);
   border-color: var(--selected-border);
+}
+
+.toggle-group--thirds {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.toggle-group--thirds .ghost {
+  min-width: 0;
+  width: 100%;
 }
 
 .toggle-group__btn--disabled {
