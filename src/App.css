@@ -2138,8 +2138,13 @@
 }
 
 .ideal-sleep-mood-comparison__item--high .ideal-sleep-mood-comparison__circle {
-  background: color-mix(in srgb, var(--chart-mood) 35%, transparent);
-  color: var(--text);
+  background: var(--chart-mood);
+  color: var(--bg);
+}
+
+.ideal-sleep-mood-comparison__item--down .ideal-sleep-mood-comparison__circle {
+  background: color-mix(in srgb, var(--status-error) 75%, var(--text));
+  color: var(--bg);
 }
 
 .ideal-sleep-mood-comparison__item--low .ideal-sleep-mood-comparison__circle {
@@ -2181,8 +2186,22 @@
 }
 
 .ideal-sleep-mood-delta .mood-by-sleep-trend {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translate(2px, -50%);
   width: 18px;
   height: 18px;
+}
+
+.ideal-sleep-mood-delta .mood-by-sleep-value {
+  position: relative;
+  display: inline-block;
+}
+
+.ideal-sleep-mood-delta .mood-by-sleep-value > span:first-child {
+  display: block;
+  text-align: center;
 }
 
 @media (max-width: 540px) {

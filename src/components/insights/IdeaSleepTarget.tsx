@@ -24,13 +24,11 @@ export const IdeaSleepTarget = ({
   const lowMood = moodByPersonalThreshold.low
   const highMood = moodByPersonalThreshold.high
   const hasMoodAverages = lowMood !== null && highMood !== null
-  const isAboveMoodHigher = hasMoodAverages ? highMood >= lowMood : true
+  const isAboveMoodHigher = hasMoodAverages ? highMood >= lowMood : false
   const aboveMoodToneClass = isAboveMoodHigher
     ? 'ideal-sleep-mood-comparison__item--high'
-    : 'ideal-sleep-mood-comparison__item--low'
-  const belowMoodToneClass = isAboveMoodHigher
-    ? 'ideal-sleep-mood-comparison__item--low'
-    : 'ideal-sleep-mood-comparison__item--high'
+    : 'ideal-sleep-mood-comparison__item--down'
+  const belowMoodToneClass = 'ideal-sleep-mood-comparison__item--low'
   const moodDeltaPercent = hasMoodAverages && lowMood > 0
     ? ((highMood - lowMood) / lowMood) * 100
     : null
