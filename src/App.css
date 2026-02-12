@@ -1206,14 +1206,25 @@
   align-items: center;
   gap: 20px;
   flex-wrap: wrap;
-  margin-top: 28px;
+  margin-top: 32px;
 }
 
 .mood-pie {
   --mood-ring-track: color-mix(in srgb, var(--border) 70%, transparent);
-  width: 160px;
-  height: 160px;
   border-radius: 50%;
+  position: relative;
+  width: 180px;
+  height: 180px;
+  align-self: center;
+}
+
+.mood-pie::after {
+  content: "";
+  position: absolute;
+  inset: 50px;
+  border-radius: 50%;
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--border);
 }
 
 .mood-legend {
@@ -2383,12 +2394,6 @@
     align-items: stretch;
   }
 
-  .mood-pie {
-    width: 140px;
-    height: 140px;
-    align-self: center;
-  }
-
   .mood-legend {
     width: 100%;
     min-width: 0;
@@ -2777,11 +2782,6 @@
     justify-content: center;
     gap: 50px;
     margin-bottom: 10px;
-  }
-
-  .mood-pie {
-    width: 180px;
-    height: 180px;
   }
 
   .mood-legend {
