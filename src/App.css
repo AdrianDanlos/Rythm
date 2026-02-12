@@ -1427,7 +1427,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px 20px;
+  gap: 12px 26px;
   padding-top: 12px;
 }
 
@@ -2551,8 +2551,8 @@
     display: grid;
     grid-template-columns: repeat(2, max-content);
     justify-content: center;
-    column-gap: 4px;
-    row-gap: 6px;
+    column-gap: 10px;
+    row-gap: 8px;
     justify-items: center;
   }
 
