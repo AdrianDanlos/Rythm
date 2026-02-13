@@ -16,6 +16,7 @@ import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
 import { rollingTrendColors } from '../../lib/colors'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
+import { TrendingDown, TrendingUp } from 'lucide-react'
 
 const ENTRY_THRESHOLD_30 = 7
 const ENTRY_THRESHOLD_90 = 30
@@ -47,10 +48,12 @@ const formatSleepAxisValue = (value: number | string) => {
   return Number.isFinite(numeric) ? formatSleepHours(numeric) : '—'
 }
 
-const formatDeltaValue = (value: number | null) => {
-  if (value === null || !Number.isFinite(value)) return '—'
-  const formatted = value.toFixed(1)
-  return value > 0 ? `+${formatted}` : formatted
+/** Mood delta as percentage of prior window; null if not computable. */
+const getMoodDeltaPercent = (mood: number | null, moodDelta: number | null): number | null => {
+  if (mood === null || moodDelta === null || !Number.isFinite(mood) || !Number.isFinite(moodDelta)) return null
+  const priorMood = mood - moodDelta
+  if (priorMood === 0) return null
+  return (moodDelta / priorMood) * 100
 }
 
 const formatSleepDeltaValue = (value: number | null) => {
@@ -497,7 +500,28 @@ export const InsightsSmoothedTrends = ({
                                               </span>
                                               <span className="delta-stacked">
                                                 <span>Sleep: {formatSleepDeltaValue(summary.sleepDelta)}</span>
-                                                <span>Mood: {formatDeltaValue(summary.moodDelta)}</span>
+                                                <span className="delta-stacked-mood">
+                                                  Mood:{' '}
+                                                  {(() => {
+                                                    const moodPct = getMoodDeltaPercent(summary.mood, summary.moodDelta)
+                                                    if (moodPct === null) return '—'
+                                                    const isUp = moodPct >= 0
+                                                    return (
+                                                      <>
+                                                        <span className={isUp ? 'mood-by-sleep-percent--up' : 'mood-by-sleep-percent--down'}>
+                                                          {Math.abs(moodPct).toFixed(0)}%
+                                                        </span>
+                                                        <span
+                                                          className={`mood-by-sleep-trend ${isUp ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
+                                                          aria-label={isUp ? 'Mood trend up' : 'Mood trend down'}
+                                                          role="img"
+                                                        >
+                                                          {isUp ? <TrendingUp size={14} aria-hidden="true" /> : <TrendingDown size={14} aria-hidden="true" />}
+                                                        </span>
+                                                      </>
+                                                    )
+                                                  })()}
+                                                </span>
                                               </span>
                                             </span>
                                           </Tooltip>
