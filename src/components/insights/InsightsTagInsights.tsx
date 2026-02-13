@@ -203,7 +203,7 @@ export const InsightsTagInsights = ({
                                           />
                                         </div>
                                       </div>
-                                      <p className="helper">{d.count} nights</p>
+                                      <p className="helper">{d.count} entries</p>
                                     </div>
                                   ))}
                                 </div>
@@ -228,7 +228,7 @@ export const InsightsTagInsights = ({
                                           />
                                         </div>
                                       </div>
-                                      <p className="helper">{d.count} nights</p>
+                                      <p className="helper">{d.count} entries</p>
                                     </div>
                                   ))}
                                 </div>
@@ -237,7 +237,7 @@ export const InsightsTagInsights = ({
                           </>
                         )
                       : (
-                          <p className="muted">Add events to see sleep impact (min 3 nights per event).</p>
+                          <p className="muted">Add events to see sleep impact (min 3 entries per event).</p>
                         )}
                   </div>
                 </>

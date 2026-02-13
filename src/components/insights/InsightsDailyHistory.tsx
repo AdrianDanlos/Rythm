@@ -161,7 +161,7 @@ export const InsightsDailyHistory = ({
                 </button>
               )
             : (
-                <Tooltip label={`Log ${DAILY_HISTORY_THRESHOLD_90}+ nights to see 90-day history.`}>
+                <Tooltip label={`Log ${DAILY_HISTORY_THRESHOLD_90}+ days to see 90-day history.`}>
                   <span className="ghost toggle-group__btn--disabled">
                     90 days
                   </span>
@@ -180,7 +180,7 @@ export const InsightsDailyHistory = ({
                 </button>
               )
             : (
-                <Tooltip label={`Log ${DAILY_HISTORY_THRESHOLD_365}+ nights to see 365-day history.`}>
+                <Tooltip label={`Log ${DAILY_HISTORY_THRESHOLD_365}+ days to see 365-day history.`}>
                   <span className="ghost toggle-group__btn--disabled">
                     365 days
                   </span>

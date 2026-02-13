@@ -200,7 +200,7 @@ export const getSleepConsistencyBadges = (
   addBadge(
     'monthly-milestone',
     'Monthly Milestone',
-    '30 logged nights in a month.',
+    '30 logged days in a month.',
     maxMonthlyCount >= 30,
     `${Math.min(maxMonthlyCount, 30)}/30 nights`,
     Math.min(maxMonthlyCount, 30),
@@ -209,7 +209,7 @@ export const getSleepConsistencyBadges = (
   addBadge(
     'century-club',
     'Century Club',
-    '100 total logged nights.',
+    '100 total logged days.',
     totalNights >= 100,
     `${Math.min(totalNights, 100)}/100 nights`,
     Math.min(totalNights, 100),
@@ -218,7 +218,7 @@ export const getSleepConsistencyBadges = (
   addBadge(
     'half-year-habit',
     'Half-Year Habit',
-    '180 total logged nights.',
+    '180 total logged days.',
     totalNights >= 180,
     `${Math.min(totalNights, 180)}/180 nights`,
     Math.min(totalNights, 180),

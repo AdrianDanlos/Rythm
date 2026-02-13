@@ -168,7 +168,7 @@ export const InsightsStats = ({
                     <p className="helper">
                       {rhythmScore !== null
                         ? 'Sleep stability over the last 30 days'
-                        : 'Needs 5 nights'}
+                        : 'Needs 5 days'}
                     </p>
                   </div>
                   <div className="stat-tile">
@@ -177,7 +177,7 @@ export const InsightsStats = ({
                     <p className="helper">
                       {sleepConsistencyLabel
                         ? 'How steady your sleep hours are'
-                        : 'Needs 2 nights'}
+                        : 'Needs 2 days'}
                     </p>
                   </div>
                   <div className="stat-tile">
@@ -187,7 +187,7 @@ export const InsightsStats = ({
                       ? <p className="helper">{correlationDirection}</p>
                       : (
                           <p className="helper">
-                            {correlationLabel ? 'Correlation strength' : 'Needs 2 nights'}
+                            {correlationLabel ? 'Correlation strength' : 'Needs 2 days'}
                           </p>
                         )}
                   </div>
@@ -223,7 +223,7 @@ export const InsightsStats = ({
                         )
                       : <p className="value">—</p>}
                     <p className="helper">
-                      {moodBySleepMessage ?? `Needs 5 nights with sleep and mood to compare around ${formatSleepHours(sleepThreshold)}.`}
+                      {moodBySleepMessage ?? `Needs 5 days with sleep and mood to compare around ${formatSleepHours(sleepThreshold)}.`}
                     </p>
                   </div>
                 </>

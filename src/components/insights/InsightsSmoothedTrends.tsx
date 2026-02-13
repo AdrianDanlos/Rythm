@@ -80,7 +80,7 @@ const RollingLegend = ({ show30, show90, wrapperStyle }: RollingLegendProps) => 
       <span className="rolling-trend-legend__swatch" style={{ background: rollingTrendColors.mid }} aria-hidden />
       {!show30
         ? (
-            <Tooltip label={`Log ${ENTRY_THRESHOLD_30}+ nights to see 30-day trend.`}>
+            <Tooltip label={`Log ${ENTRY_THRESHOLD_30}+ days to see 30-day trend.`}>
               <span className="tooltip-trigger">Last 30 days</span>
             </Tooltip>
           )
@@ -90,7 +90,7 @@ const RollingLegend = ({ show30, show90, wrapperStyle }: RollingLegendProps) => 
       <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-sleep)' }} aria-hidden />
       {!show90
         ? (
-            <Tooltip label={`Log ${ENTRY_THRESHOLD_90}+ nights to see 90-day trend.`}>
+            <Tooltip label={`Log ${ENTRY_THRESHOLD_90}+ days to see 90-day trend.`}>
               <span className="tooltip-trigger">Last 90 days</span>
             </Tooltip>
           )
@@ -437,8 +437,8 @@ export const InsightsSmoothedTrends = ({
                         {isDisabled && (
                           <Tooltip
                             label={is30Disabled
-                              ? `Log ${ENTRY_THRESHOLD_30}+ nights to see 30-day trend.`
-                              : `Log ${ENTRY_THRESHOLD_90}+ nights to see 90-day trend.`}
+                              ? `Log ${ENTRY_THRESHOLD_30}+ days to see 30-day trend.`
+                              : `Log ${ENTRY_THRESHOLD_90}+ days to see 90-day trend.`}
                             className="tooltip-wrap-card"
                           >
                             <span className="tooltip-trigger stat-block-tooltip-overlay" aria-hidden />

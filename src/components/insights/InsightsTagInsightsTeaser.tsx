@@ -166,7 +166,7 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
                         />
                       </div>
                     </div>
-                    <p className="helper">{d.count} nights</p>
+                    <p className="helper">{d.count} days</p>
                   </div>
                 ))}
               </div>
@@ -191,7 +191,7 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
                         />
                       </div>
                     </div>
-                    <p className="helper">{d.count} nights</p>
+                    <p className="helper">{d.count} days</p>
                   </div>
                 ))}
               </div>

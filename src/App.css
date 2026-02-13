@@ -1951,7 +1951,7 @@
 }
 
 .premium-preview__blur {
-  filter: blur(3px);
+  filter: blur(1px);
   opacity: 0.8;
   pointer-events: none;
 }
