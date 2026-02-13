@@ -102,7 +102,7 @@ export const InsightsScatter = ({
             ? (
                 <div className="tooltip-tags">
                   {tags.map((tag, index) => (
-                    <span className="tag-pill" data-color-index={index % 5} key={tag}>
+                    <span className="tag-pill" data-color-index={index % 6} key={tag}>
                       {tag}
                     </span>
                   ))}
