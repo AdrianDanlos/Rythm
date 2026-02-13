@@ -50,7 +50,7 @@ export const renderReportHeader = ({
   const textX = logoX + logoSize + 8
   doc.setFontSize(11)
   doc.setTextColor(203, 213, 225)
-  doc.text('Sleep & Mood', textX, bannerY + 11)
+  doc.text('Sleep & Mood Tracker', textX, bannerY + 11)
   doc.setFontSize(20)
   doc.setTextColor(255)
   doc.text(title, textX, bannerY + 23)

@@ -11,7 +11,7 @@ export function AppBrand({ className }: { className?: string }) {
     >
       <img className="app-logo" src={logo} alt="Rythm logo" />
       <div>
-        <p className="eyebrow">Sleep, life &amp; mood</p>
+        <p className="eyebrow">Sleep & Mood Tracker</p>
         <h1>Rythm</h1>
       </div>
     </a>
