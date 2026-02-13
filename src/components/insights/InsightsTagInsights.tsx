@@ -91,6 +91,39 @@ export const InsightsTagInsights = ({
     return Math.min(100, Math.max(0, (Math.abs(delta) / maxAbsSleepDelta) * 100))
   }
 
+  const renderSleepDriverSection = (
+    label: string,
+    variant: 'positive' | 'negative',
+    drivers: TagSleepDriver[],
+  ) => {
+    if (drivers.length === 0) return null
+    return (
+      <div className="tag-driver-section">
+        <p className="label">{label}</p>
+        <div className="tag-bar-list">
+          {drivers.map(d => (
+            <div className={`tag-bar-item ${variant}`} key={d.tag}>
+              <div className="tag-bar-header">
+                <p className="tag-title">{d.tag}</p>
+                <p className="tag-delta tag-delta--pc">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
+              </div>
+              <div className="tag-bar-delta-and-track">
+                <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
+                <div className="tag-bar-track" aria-hidden="true">
+                  <span
+                    className="tag-bar-fill"
+                    style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
+                  />
+                </div>
+              </div>
+              <p className="helper">{d.count} entries</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
       <div className="card-header">
@@ -184,56 +217,8 @@ export const InsightsTagInsights = ({
                     {(positiveSleepDrivers.length > 0 || negativeSleepDrivers.length > 0)
                       ? (
                           <>
-                            {positiveSleepDrivers.length > 0 && (
-                              <div className="tag-driver-section">
-                                <p className="label">More sleep after</p>
-                                <div className="tag-bar-list">
-                                  {positiveSleepDrivers.map(d => (
-                                    <div className="tag-bar-item positive" key={d.tag}>
-                                      <div className="tag-bar-header">
-                                        <p className="tag-title">{d.tag}</p>
-                                        <p className="tag-delta tag-delta--pc">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
-                                      </div>
-                                      <div className="tag-bar-delta-and-track">
-                                        <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
-                                        <div className="tag-bar-track" aria-hidden="true">
-                                          <span
-                                            className="tag-bar-fill"
-                                            style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
-                                          />
-                                        </div>
-                                      </div>
-                                      <p className="helper">{d.count} entries</p>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                            {negativeSleepDrivers.length > 0 && (
-                              <div className="tag-driver-section">
-                                <p className="label">Less sleep after</p>
-                                <div className="tag-bar-list">
-                                  {negativeSleepDrivers.map(d => (
-                                    <div className="tag-bar-item negative" key={d.tag}>
-                                      <div className="tag-bar-header">
-                                        <p className="tag-title">{d.tag}</p>
-                                        <p className="tag-delta tag-delta--pc">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
-                                      </div>
-                                      <div className="tag-bar-delta-and-track">
-                                        <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
-                                        <div className="tag-bar-track" aria-hidden="true">
-                                          <span
-                                            className="tag-bar-fill"
-                                            style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
-                                          />
-                                        </div>
-                                      </div>
-                                      <p className="helper">{d.count} entries</p>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
+                            {renderSleepDriverSection('More sleep after', 'positive', positiveSleepDrivers)}
+                            {renderSleepDriverSection('Less sleep after', 'negative', negativeSleepDrivers)}
                           </>
                         )
                       : (
