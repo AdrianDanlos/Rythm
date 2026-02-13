@@ -19,7 +19,7 @@ if (sentryDsn) {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Sentry.ErrorBoundary
-      fallback={({ error, resetError }) => (
+      fallback={({ resetError }) => (
         <div style={{ padding: 24, textAlign: 'center', fontFamily: 'system-ui' }}>
           <p>Something went wrong.</p>
           <button type="button" onClick={resetError} style={{ marginTop: 12 }}>
