@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
 import { exportMonthlyReport } from './lib/reports'
@@ -190,6 +190,22 @@ function App() {
       setActiveInsightsTab(Tabs.Summary)
     },
   })
+
+  const saveLogWhenLeaving = () => {
+    if (activeTab === Tabs.Log) {
+      void handleSave({ preventDefault: () => {} } as FormEvent, { silent: true })
+    }
+  }
+
+  const handleEntryDateChange = (newDateStr: string) => {
+    if (newDateStr !== formatLocalDate(selectedDate)) {
+      void handleSave({ preventDefault: () => {} } as FormEvent, { silent: true }).then(() => {
+        setEntryDate(newDateStr)
+      })
+    } else {
+      setEntryDate(newDateStr)
+    }
+  }
 
   const { handleAuth, handleGoogleSignIn } = useAuthActions({
     authMode,
@@ -537,7 +553,10 @@ function App() {
                     <button
                       type="button"
                       className={`tab-button ${activeTab === Tabs.Insights ? 'active' : ''}`}
-                      onClick={() => setActiveTab(Tabs.Insights)}
+                      onClick={() => {
+                        saveLogWhenLeaving()
+                        setActiveTab(Tabs.Insights)
+                      }}
                     >
                       Insights
                     </button>
@@ -579,7 +598,7 @@ function App() {
                             moodColors={moodColors}
                             isMobile={isMobile}
                             formatLocalDate={formatLocalDate}
-                            onEntryDateChange={setEntryDate}
+                            onEntryDateChange={handleEntryDateChange}
                             onSleepHoursChange={setSleepHours}
                             onMoodChange={setMood}
                             onNoteChange={setNote}
@@ -637,6 +656,7 @@ function App() {
                           type="button"
                           className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Summary ? 'active' : ''}`}
                           onClick={() => {
+                            saveLogWhenLeaving()
                             setActiveTab(Tabs.Insights)
                             setActiveInsightsTab(Tabs.Summary)
                           }}
@@ -653,6 +673,7 @@ function App() {
                           type="button"
                           className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Charts ? 'active' : ''}`}
                           onClick={() => {
+                            saveLogWhenLeaving()
                             setActiveTab(Tabs.Insights)
                             setActiveInsightsTab(Tabs.Charts)
                           }}
@@ -679,6 +700,7 @@ function App() {
                           type="button"
                           className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Data ? 'active' : ''}`}
                           onClick={() => {
+                            saveLogWhenLeaving()
                             setActiveTab(Tabs.Insights)
                             setActiveInsightsTab(Tabs.Data)
                           }}

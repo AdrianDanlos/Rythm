@@ -136,37 +136,37 @@ export const useLogForm = ({
     setTags('')
   }, [entryDate, entries])
 
-  const handleSave = async (event: FormEvent) => {
+  const handleSave = async (event: FormEvent, options?: { silent?: boolean }) => {
     event.preventDefault()
     if (!userId) return
 
     if (entryDate > today) {
-      showEntriesError('You cannot log entries in the future.')
+      if (!options?.silent) showEntriesError('You cannot log entries in the future.')
       return
     }
 
     const hasSleepInput = sleepHours.trim().length > 0
     const parsedSleep = parseSleepHours(sleepHours)
     if (hasSleepInput && parsedSleep === null) {
-      showEntriesError('Sleep hours are invalid.')
+      if (!options?.silent) showEntriesError('Sleep hours are invalid.')
       return
     }
     if (parsedSleep !== null && (parsedSleep < 0 || parsedSleep > 12)) {
-      showEntriesError('Sleep hours must be between 0 and 12.')
+      if (!options?.silent) showEntriesError('Sleep hours must be between 0 and 12.')
       return
     }
     if (mood !== null && (mood < 1 || mood > 5)) {
-      showEntriesError('Mood rating must be between 1 and 5.')
+      if (!options?.silent) showEntriesError('Mood rating must be between 1 and 5.')
       return
     }
 
     const tagList = parseTags(tags)
     if (tagList.some(tag => tag.length > MAX_TAG_LENGTH)) {
-      showEntriesError(`Each event must be ${MAX_TAG_LENGTH} characters or less.`)
+      if (!options?.silent) showEntriesError(`Each event must be ${MAX_TAG_LENGTH} characters or less.`)
       return
     }
     if (tagList.length > maxTagsPerEntry) {
-      showEntriesError(`Limit ${maxTagsPerEntry} events per entry.`)
+      if (!options?.silent) showEntriesError(`Limit ${maxTagsPerEntry} events per entry.`)
       return
     }
 
@@ -176,7 +176,7 @@ export const useLogForm = ({
       || normalizedNote !== null
       || tagList.length > 0
     if (!hasAnyValue) {
-      showEntriesError('Add at least one value before saving.')
+      if (!options?.silent) showEntriesError('Add at least one value before saving.')
       return
     }
 
@@ -214,20 +214,22 @@ export const useLogForm = ({
         onStreakReached?.()
       }
       setSaved(true)
-      toast.success(getSupportMessage({
-        sleepHours: parsedSleep,
-        mood,
-        sleepThreshold,
-        tags: tagList,
-        isComplete,
-      }))
+      if (!options?.silent) {
+        toast.success(getSupportMessage({
+          sleepHours: parsedSleep,
+          mood,
+          sleepThreshold,
+          tags: tagList,
+          isComplete,
+        }))
+      }
       window.setTimeout(() => setSaved(false), 2000)
-      if (entryDate === today && isComplete) {
+      if (entryDate === today && isComplete && !options?.silent) {
         window.setTimeout(() => onEntrySavedForToday?.(), 500)
       }
     }
     catch {
-      showEntriesError('Unable to save entry.')
+      if (!options?.silent) showEntriesError('Unable to save entry.')
     }
     finally {
       setSaving(false)
