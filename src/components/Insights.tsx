@@ -82,6 +82,7 @@ type InsightsProps = {
   onExportCsv: () => void
   onExportMonthlyReport: () => void
   onOpenPaywall: () => void
+  onOpenFeedback: () => void
   activeTab: InsightsTab
   goToLog: () => void
 }
@@ -116,6 +117,7 @@ export const Insights = ({
   onExportCsv,
   onExportMonthlyReport,
   onOpenPaywall,
+  onOpenFeedback,
   activeTab,
   goToLog,
 }: InsightsProps) => {
@@ -466,6 +468,22 @@ export const Insights = ({
                   </a>
                 </div>
               )}
+              <div className="card review-cta review-cta--standalone feedback-cta">
+                <div className="review-cta__content">
+                  <div className="review-cta__text">
+                    <p className="label">Send feedback</p>
+                    <p className="muted">Suggestions, bugs, or ideas—we’d love to hear from you.</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className="review-cta__link"
+                  onClick={onOpenFeedback}
+                  aria-label="Send feedback"
+                >
+                  Send feedback
+                </button>
+              </div>
             </motion.div>
           )
         : null}

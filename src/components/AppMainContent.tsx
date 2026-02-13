@@ -102,6 +102,7 @@ type AppMainContentProps = {
   onExportCsv: () => void
   onExportMonthlyReport: () => void
   onOpenPaywall: () => void
+  onOpenFeedback: () => void
 }
 
 export function AppMainContent({
@@ -172,6 +173,7 @@ export function AppMainContent({
   onExportCsv,
   onExportMonthlyReport,
   onOpenPaywall,
+  onOpenFeedback,
 }: AppMainContentProps) {
   const reduceMotion = useReducedMotion()
   const tabTransition = reduceMotion ? { duration: 0 } : motionTransition
@@ -326,6 +328,7 @@ export function AppMainContent({
               onExportCsv={onExportCsv}
               onExportMonthlyReport={onExportMonthlyReport}
               onOpenPaywall={onOpenPaywall}
+              onOpenFeedback={onOpenFeedback}
               goToLog={() => setActiveTab(Tabs.Log)}
               activeTab={activeInsightsTab}
             />

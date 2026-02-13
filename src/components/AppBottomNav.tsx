@@ -1,4 +1,4 @@
-import { CreditCard, LogOut, Mail, Settings } from 'lucide-react'
+import { CreditCard, LogOut, Settings } from 'lucide-react'
 import { AppBrand } from './AppBrand'
 import { Tooltip } from './Tooltip'
 import { Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
@@ -14,7 +14,6 @@ type AppBottomNavProps = {
   isPortalLoading: boolean
   isSignOutLoading: boolean
   onOpenSettings: () => void
-  onOpenFeedback: () => void
   onManageSubscription: () => void
   onSignOut: () => void
 }
@@ -30,7 +29,6 @@ export function AppBottomNav({
   isPortalLoading,
   isSignOutLoading,
   onOpenSettings,
-  onOpenFeedback,
   onManageSubscription,
   onSignOut,
 }: AppBottomNavProps) {
@@ -172,16 +170,6 @@ export function AppBottomNav({
                 aria-label="Settings"
               >
                 <Settings className="icon" aria-hidden="true" />
-              </button>
-            </Tooltip>
-            <Tooltip label="Send feedback">
-              <button
-                className="ghost icon-button"
-                type="button"
-                onClick={onOpenFeedback}
-                aria-label="Send feedback"
-              >
-                <Mail className="icon" aria-hidden="true" />
               </button>
             </Tooltip>
             {canManageSubscription ? (

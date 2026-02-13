@@ -332,7 +332,6 @@ function App() {
         isPortalLoading={isPortalLoading}
         isSignOutLoading={isSignOutLoading}
         onOpenSettings={openSettings}
-        onOpenFeedback={openFeedback}
         onManageSubscription={handleManageSubscription}
         onSignOut={handleSignOut}
       />
@@ -434,6 +433,7 @@ function App() {
         onExportCsv={handleExportCsv}
         onExportMonthlyReport={handleExportMonthlyReport}
         onOpenPaywall={openPaywall}
+        onOpenFeedback={openFeedback}
       />
 
       {authInitialized
@@ -449,7 +449,6 @@ function App() {
               isPortalLoading={isPortalLoading}
               isSignOutLoading={isSignOutLoading}
               onOpenSettings={openSettings}
-              onOpenFeedback={openFeedback}
               onManageSubscription={handleManageSubscription}
               onSignOut={handleSignOut}
             />
