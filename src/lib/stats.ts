@@ -57,10 +57,12 @@ export type StatsResult = {
   tagSleepDrivers: TagSleepDriver[]
 }
 
-export const buildWeeklyTrendSeries = (points: TrendPoint[]): TrendPoint[] => {
-  if (!points.length) return []
-  const bucketSize = 7
-  const weekly: TrendPoint[] = []
+export const buildBucketedTrendSeries = (
+  points: TrendPoint[],
+  bucketSize: number,
+): TrendPoint[] => {
+  if (!points.length || bucketSize < 1) return []
+  const bucketed: TrendPoint[] = []
   for (let i = 0; i < points.length; i += bucketSize) {
     const slice = points.slice(i, i + bucketSize)
     const sleepValues = slice
@@ -75,14 +77,17 @@ export const buildWeeklyTrendSeries = (points: TrendPoint[]): TrendPoint[] => {
     const moodAvg = moodValues.length
       ? moodValues.reduce((sum, value) => sum + value, 0) / moodValues.length
       : null
-    weekly.push({
+    bucketed.push({
       date: slice[0]?.date ?? '',
       sleep: sleepAvg,
       mood: moodAvg,
     })
   }
-  return weekly
+  return bucketed
 }
+
+export const buildWeeklyTrendSeries = (points: TrendPoint[]): TrendPoint[] =>
+  buildBucketedTrendSeries(points, 7)
 
 export const buildStats = (
   entries: Entry[],

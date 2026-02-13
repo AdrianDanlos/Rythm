@@ -12,7 +12,7 @@ import {
 import type { TrendPoint } from '../../lib/types/stats'
 import { trimToDataExtentTrend } from '../../lib/chartUtils'
 import { buildMockTrendSeries } from '../../lib/insightsMock'
-import { buildWeeklyTrendSeries } from '../../lib/stats'
+import { buildBucketedTrendSeries, buildWeeklyTrendSeries } from '../../lib/stats'
 import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
@@ -83,19 +83,30 @@ export const InsightsDailyHistory = ({
   const weeklyTrendPoints = trendRange === 'last365'
     ? buildWeeklyTrendSeries(trendSeries.last365)
     : []
+  const threeDayTrendPoints = trendRange === 'last90'
+    ? buildBucketedTrendSeries(trendSeries.last90, 3)
+    : []
   const isYearly = trendRange === 'last365'
+  const is90Days = trendRange === 'last90'
   const trendDisplayPoints = isYearly
     ? weeklyTrendPoints
-    : trendPoints
+    : is90Days
+      ? threeDayTrendPoints
+      : trendPoints
   const trimmedTrendPoints = trimToDataExtentTrend(trendDisplayPoints)
   const previewTrendSeries = buildMockTrendSeries()
   const previewTrendPoints = previewTrendSeries[trendRange]
   const previewWeeklyTrendPoints = trendRange === 'last365'
     ? buildWeeklyTrendSeries(previewTrendSeries.last365)
     : []
+  const previewThreeDayTrendPoints = trendRange === 'last90'
+    ? buildBucketedTrendSeries(previewTrendSeries.last90, 3)
+    : []
   const previewTrendDisplayPoints = isYearly
     ? previewWeeklyTrendPoints
-    : previewTrendPoints
+    : is90Days
+      ? previewThreeDayTrendPoints
+      : previewTrendPoints
   const trimmedPreviewPoints = trimToDataExtentTrend(previewTrendDisplayPoints)
   const trendTickInterval = getDateTickInterval(trimmedTrendPoints.length)
   const previewTickInterval = getDateTickInterval(trimmedPreviewPoints.length)
