@@ -142,7 +142,7 @@ export const InsightsSmoothedTrends = ({
         <div>
           <h2>
             Smoothed trends
-            <Tooltip label="What is this? Rolling averages that smooth daily noise to show direction.">
+            <Tooltip label="The lines are the average of the last N days (7, 30, 90). Line going up = trend improving; going down = declining. The 7-day line reacts quickly to recent changes; the 90-day line shows the longer-term direction.">
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>

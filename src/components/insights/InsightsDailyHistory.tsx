@@ -141,7 +141,7 @@ export const InsightsDailyHistory = ({
         <div>
           <h2>
             Daily history
-            <Tooltip label="What is this? Day-by-day mood and sleep values over time.">
+            <Tooltip label="90 days and 365 days are aggregated for visualization purposes.">
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
