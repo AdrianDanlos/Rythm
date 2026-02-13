@@ -58,7 +58,7 @@ type DailyHistoryLegendProps = {
 const DailyHistoryLegend = ({ wrapperStyle }: DailyHistoryLegendProps) => (
   <div className="rolling-trend-legend" style={wrapperStyle}>
     <span className="rolling-trend-legend__item">
-      <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-sleep)' }} aria-hidden />
+      <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-sleep-bar, var(--chart-sleep))' }} aria-hidden />
       Sleep
     </span>
     <span className="rolling-trend-legend__item">
@@ -227,7 +227,7 @@ export const InsightsDailyHistory = ({
                         type="monotone"
                         dataKey="sleep"
                         name="Sleep"
-                        stroke="var(--chart-sleep)"
+                        stroke="var(--chart-sleep-bar, var(--chart-sleep))"
                         dot={false}
                         yAxisId="left"
                       />
@@ -301,7 +301,7 @@ export const InsightsDailyHistory = ({
                       type="monotone"
                       dataKey="sleep"
                       name="Sleep"
-                      stroke="var(--chart-sleep)"
+                      stroke="var(--chart-sleep-bar, var(--chart-sleep))"
                       dot={false}
                       yAxisId="left"
                     />

@@ -2,8 +2,7 @@ import type { StatCounts } from '../../lib/stats'
 import type { SleepMoodAverages, WindowStats } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
-import { TrendingDown, TrendingUp } from 'lucide-react'
-import flame from '../../assets/flame.png'
+import { Flame, TrendingDown, TrendingUp } from 'lucide-react'
 
 const RHYTHM_NEED = 5
 const SLEEP_CONSISTENCY_NEED = 2
@@ -119,7 +118,7 @@ export const InsightsStats = ({
   return (
     <>
       <section className="card streak-card">
-        <img className="streak-card__image" src={flame} alt="flame" />
+        <Flame className="streak-card__image" size={48} aria-hidden />
         <div className="streak-card__content">
           <p className="label">Streak</p>
           {isLoading ? <div className="skeleton-line" /> : <p className="value">{streak} {streak === 1 ? 'day' : 'days'}</p>}

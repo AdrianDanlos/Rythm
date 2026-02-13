@@ -11,7 +11,7 @@ import {
 import type { WeekdayAveragePoint } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 
-const EARLY_SIGNAL_MIN_COMPLETE_LOGS = 12
+const EARLY_SIGNAL_MIN_COMPLETE_LOGS = 14
 const weekdayLabelMap: Record<string, string> = {
   Mon: 'Monday',
   Tue: 'Tuesday',
@@ -35,7 +35,7 @@ type WeekdayLegendProps = {
 const WeekdayLegend = ({ wrapperStyle }: WeekdayLegendProps) => (
   <div className="rolling-trend-legend weekday-legend" style={wrapperStyle}>
     <span className="rolling-trend-legend__item">
-      <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-sleep)' }} aria-hidden />
+      <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-sleep-bar, var(--chart-sleep))' }} aria-hidden />
       Avg sleep
     </span>
     <span className="rolling-trend-legend__item">
@@ -59,7 +59,7 @@ export const InsightsWeekdayAverages = ({
   const baseTickProps = { fontSize: isMobile ? 12 : 13 }
   const legendWrapperStyle = isMobile ? { paddingTop: 10 } : undefined
   return (
-    <section className="card chart-card chart-card--compact">
+    <section className="card chart-card--compact">
       <div className="card-header">
         <div>
           <h2>
@@ -83,7 +83,7 @@ export const InsightsWeekdayAverages = ({
             <>
               {showEarlySignalNote && (
                 <p className="muted" style={{ marginTop: 8 }}>
-                  Early signal: patterns get more reliable after about {EARLY_SIGNAL_MIN_COMPLETE_LOGS} complete logs.
+                  Early signal: patterns get more reliable after about {EARLY_SIGNAL_MIN_COMPLETE_LOGS} days.
                 </p>
               )}
               <div className="chart-wrapper chart-wrapper--compact" style={{ marginTop: 16 }}>
@@ -127,7 +127,7 @@ export const InsightsWeekdayAverages = ({
                       yAxisId="left"
                       dataKey="avgSleep"
                       name="Avg sleep"
-                      fill="var(--chart-sleep)"
+                      fill="var(--chart-sleep-bar, var(--chart-sleep))"
                       radius={[4, 4, 0, 0]}
                       maxBarSize={isMobile ? 16 : 18}
                     />
@@ -136,9 +136,9 @@ export const InsightsWeekdayAverages = ({
                       dataKey="avgMood"
                       name="Avg mood"
                       stroke="var(--chart-mood)"
-                      strokeWidth={2}
-                      dot={{ r: 2 }}
-                      activeDot={{ r: 4 }}
+                      strokeWidth={3}
+                      dot={{ r: 3.5, fill: 'var(--bg)', stroke: 'var(--chart-mood)', strokeWidth: 2 }}
+                      activeDot={{ r: 5, fill: 'var(--bg)', stroke: 'var(--chart-mood)', strokeWidth: 2 }}
                     />
                   </ComposedChart>
                 </ResponsiveContainer>

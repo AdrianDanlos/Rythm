@@ -962,8 +962,8 @@
 .streak-card__image {
   width: 48px;
   height: 48px;
-  object-fit: contain;
   flex-shrink: 0;
+  color: var(--streak-icon);
 }
 
 .streak-card__content {
@@ -1216,6 +1216,10 @@
 
 .stat-block--mood .stat-ring {
   --stat-ring-color: var(--chart-mood);
+}
+
+.stat-block--sleep .stat-ring {
+  --stat-ring-color: var(--chart-sleep-bar, var(--chart-sleep));
 }
 
 .stat-ring::before {
