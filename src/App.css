@@ -1632,11 +1632,13 @@
 .badge-progress-fill {
   height: 100%;
   display: block;
-  background: var(--chart-ideal-sleep, #dadfd8);
+  background: var(--badge-progress-fill);
+  border-radius: 999px;
+  transition: width 0.25s ease-out;
 }
 
 .badge-row.locked .badge-progress-fill {
-  background: var(--chart-ideal-sleep, #dadfd8);
+  background: var(--badge-progress-fill);
 }
 
 .badge-progress-text {

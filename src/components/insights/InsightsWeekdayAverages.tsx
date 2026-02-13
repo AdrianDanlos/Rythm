@@ -59,8 +59,11 @@ export const InsightsWeekdayAverages = ({
     .filter((v): v is number => v != null && Number.isFinite(v))
   const sleepMin = sleepValues.length ? Math.min(...sleepValues) : 4
   const sleepMax = sleepValues.length ? Math.max(...sleepValues) : 10
-  const sleepDomainMin = Math.max(0, Math.floor(sleepMin))
-  const sleepDomainMax = Math.min(10, Math.ceil(sleepMax))
+  const padding = 0.5
+  const rawDomainMin = sleepValues.length ? sleepMin - padding : 0
+  const rawDomainMax = sleepValues.length ? sleepMax + padding : 10
+  const sleepDomainMin = Math.max(0, Math.floor(rawDomainMin))
+  const sleepDomainMax = Math.min(10, Math.ceil(rawDomainMax))
   const sleepDomain: [number, number] = [
     sleepDomainMin === sleepDomainMax ? Math.max(0, sleepDomainMin - 1) : sleepDomainMin,
     sleepDomainMin === sleepDomainMax ? Math.min(10, sleepDomainMax + 1) : sleepDomainMax,
