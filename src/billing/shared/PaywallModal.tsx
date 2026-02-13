@@ -11,7 +11,7 @@ type PaywallModalProps = {
 }
 
 const premiumFeatures = [
-  'Discover how what you did today influences mood and sleep',
+  'Discover how what happens during the day influences your mood and sleep',
   'Your recommended sleep target based on your history',
   'See how sleep and mood connect in one simple chart',
   'Weekly and monthly trends',

@@ -1,20 +1,40 @@
 import { buildMockTagDrivers, buildMockTagSleepDrivers } from '../../lib/insightsMock'
+import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
 import { Tooltip } from '../Tooltip'
+import { TrendingDown, TrendingUp } from 'lucide-react'
 
 type InsightsTagInsightsTeaserProps = {
   onOpenPaywall: () => void
 }
 
-const formatDelta = (delta: number | null) => {
-  if (delta === null) return '—'
-  const sign = delta >= 0 ? '+' : ''
-  return `${sign}${delta.toFixed(1)}`
+const moodDeltaPercent = (tag: TagDriver): number | null => {
+  if (tag.delta === null || tag.moodWithout === null || tag.moodWithout === 0) return null
+  return (tag.delta / tag.moodWithout) * 100
 }
 
-const formatSleepDelta = (delta: number | null) => {
-  if (delta === null) return '—'
-  const sign = delta >= 0 ? '+' : ''
-  return `${sign}${delta.toFixed(1)}h`
+const sleepDeltaPercent = (d: TagSleepDriver): number | null => {
+  if (d.delta === null || d.sleepWithout === null || d.sleepWithout === 0) return null
+  return (d.delta / d.sleepWithout) * 100
+}
+
+const renderDeltaPercent = (percent: number | null) => {
+  if (percent === null) return '—'
+  const isUp = percent >= 0
+  const Icon = isUp ? TrendingUp : TrendingDown
+  return (
+    <span className="tag-delta-value">
+      <span className={isUp ? 'mood-by-sleep-percent--up' : 'mood-by-sleep-percent--down'}>
+        {Math.abs(percent).toFixed(0)}%
+      </span>
+      <span
+        className={`mood-by-sleep-trend ${isUp ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
+        aria-label={isUp ? 'Increase' : 'Decrease'}
+        role="img"
+      >
+        <Icon size={16} aria-hidden="true" />
+      </span>
+    </span>
+  )
 }
 
 export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsightsTeaserProps) => {
@@ -75,10 +95,10 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
                   <div className="tag-bar-item positive" key={tag.tag}>
                     <div className="tag-bar-header">
                       <p className="tag-title">{tag.tag}</p>
-                      <p className="tag-delta tag-delta--pc">{formatDelta(tag.delta)} mood</p>
+                      <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} mood</p>
                     </div>
                     <div className="tag-bar-delta-and-track">
-                      <p className="tag-delta tag-delta--mobile">{formatDelta(tag.delta)} mood</p>
+                      <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} mood</p>
                       <div className="tag-bar-track" aria-hidden="true">
                         <span
                           className="tag-bar-fill"
@@ -100,10 +120,10 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
                   <div className="tag-bar-item negative" key={tag.tag}>
                     <div className="tag-bar-header">
                       <p className="tag-title">{tag.tag}</p>
-                      <p className="tag-delta tag-delta--pc">{formatDelta(tag.delta)} mood</p>
+                      <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} mood</p>
                     </div>
                     <div className="tag-bar-delta-and-track">
-                      <p className="tag-delta tag-delta--mobile">{formatDelta(tag.delta)} mood</p>
+                      <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} mood</p>
                       <div className="tag-bar-track" aria-hidden="true">
                         <span
                           className="tag-bar-fill"
@@ -135,10 +155,10 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
                   <div className="tag-bar-item positive" key={d.tag}>
                     <div className="tag-bar-header">
                       <p className="tag-title">{d.tag}</p>
-                      <p className="tag-delta tag-delta--pc">{formatSleepDelta(d.delta)}</p>
+                      <p className="tag-delta tag-delta--pc">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
                     </div>
                     <div className="tag-bar-delta-and-track">
-                      <p className="tag-delta tag-delta--mobile">{formatSleepDelta(d.delta)}</p>
+                      <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
                       <div className="tag-bar-track" aria-hidden="true">
                         <span
                           className="tag-bar-fill"
@@ -160,10 +180,10 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
                   <div className="tag-bar-item negative" key={d.tag}>
                     <div className="tag-bar-header">
                       <p className="tag-title">{d.tag}</p>
-                      <p className="tag-delta tag-delta--pc">{formatSleepDelta(d.delta)}</p>
+                      <p className="tag-delta tag-delta--pc">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
                     </div>
                     <div className="tag-bar-delta-and-track">
-                      <p className="tag-delta tag-delta--mobile">{formatSleepDelta(d.delta)}</p>
+                      <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
                       <div className="tag-bar-track" aria-hidden="true">
                         <span
                           className="tag-bar-fill"
