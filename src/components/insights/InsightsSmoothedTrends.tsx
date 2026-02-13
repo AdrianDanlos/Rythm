@@ -168,10 +168,10 @@ export const InsightsSmoothedTrends = ({
       </div>
       {!isPro
         ? (
-            <div className="premium-preview">
+            <div className="premium-preview premium-preview--chart-teaser">
               <div className="premium-preview__blur">
-                <div className="chart-wrapper full-bleed">
-                  <ResponsiveContainer width="100%" height={120}>
+                <div className="chart-wrapper chart-wrapper--teaser full-bleed">
+                  <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                       data={trimmedPreviewRolling.length ? trimmedPreviewRolling : previewRollingSeries}
                       margin={smoothedChartMargin}
@@ -221,7 +221,6 @@ export const InsightsSmoothedTrends = ({
                           return 99
                         }}
                       />
-                      <Legend content={<RollingLegend show30 show90 wrapperStyle={legendWrapperStyle} />} />
                       {rollingMetric === 'sleep'
                         ? (
                             <>

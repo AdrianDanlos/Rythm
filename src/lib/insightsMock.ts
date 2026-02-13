@@ -10,19 +10,19 @@ const formatPreviewDate = (offsetDays: number) => {
 
 export const buildMockRollingSeries = (pointCount = 90): RollingPoint[] => {
   return Array.from({ length: pointCount }, (_, index) => {
-    const phase = index / 8
-    const longPhase = index / 22
+    const phase = index / 6
+    const longPhase = index / 16
     const sleepBase = 7.2
     const moodBase = 3.4
-    const sleepWave = Math.sin(phase) * 0.6 + Math.cos(longPhase) * 0.3
-    const moodWave = Math.sin(phase + 0.8) * 0.35 + Math.cos(longPhase + 0.4) * 0.2
+    const sleepWave = Math.sin(phase) * 0.9 + Math.cos(longPhase) * 0.5
+    const moodWave = Math.sin(phase + 0.8) * 0.55 + Math.cos(longPhase + 0.4) * 0.35
 
     const sleep7 = clampValue(sleepBase + sleepWave + 0.1, 4.2, 9.4)
-    const sleep30 = clampValue(sleepBase + sleepWave * 0.7, 4.4, 9.2)
-    const sleep90 = clampValue(sleepBase + sleepWave * 0.45, 4.6, 9.0)
+    const sleep30 = clampValue(sleepBase + sleepWave * 0.75, 4.4, 9.2)
+    const sleep90 = clampValue(sleepBase + sleepWave * 0.5, 4.6, 9.0)
     const mood7 = clampValue(moodBase + moodWave + 0.05, 1.3, 4.8)
-    const mood30 = clampValue(moodBase + moodWave * 0.7, 1.4, 4.6)
-    const mood90 = clampValue(moodBase + moodWave * 0.45, 1.5, 4.4)
+    const mood30 = clampValue(moodBase + moodWave * 0.75, 1.4, 4.6)
+    const mood90 = clampValue(moodBase + moodWave * 0.5, 1.5, 4.4)
 
     return {
       date: formatPreviewDate(pointCount - 1 - index),
@@ -38,12 +38,12 @@ export const buildMockRollingSeries = (pointCount = 90): RollingPoint[] => {
 
 const buildMockTrendPoints = (pointCount: number): TrendPoint[] => {
   return Array.from({ length: pointCount }, (_, index) => {
-    const phase = index / 6
-    const longPhase = index / 18
+    const phase = index / 5
+    const longPhase = index / 14
     const sleepBase = 7.1
     const moodBase = 3.3
-    const sleepWave = Math.sin(phase) * 0.7 + Math.cos(longPhase) * 0.35
-    const moodWave = Math.sin(phase + 0.6) * 0.4 + Math.cos(longPhase + 0.2) * 0.25
+    const sleepWave = Math.sin(phase) * 0.95 + Math.cos(longPhase) * 0.5
+    const moodWave = Math.sin(phase + 0.6) * 0.6 + Math.cos(longPhase + 0.2) * 0.4
 
     const sleep = clampValue(sleepBase + sleepWave, 4.1, 9.5)
     const mood = clampValue(moodBase + moodWave, 1.2, 4.9)
@@ -85,19 +85,24 @@ export type MockScatterPoint = {
   mood: number
 }
 
-export const buildMockScatterPlottedData = (pointCount = 45): MockScatterPoint[] => {
+/** Quasi-random in [0,1] from index to spread points without clustering. */
+const scatterHash = (index: number, prime: number) => ((index * prime) % 101) / 101
+
+export const buildMockScatterPlottedData = (pointCount = 180): MockScatterPoint[] => {
   return Array.from({ length: pointCount }, (_, index) => {
-    const phase = index / 5
-    const sleepBase = 6.8
-    const moodBase = 3.2
-    const sleep = clampValue(sleepBase + Math.sin(phase) * 0.8 + (index / pointCount) * 0.5, 4.5, 9.2)
-    const mood = clampValue(moodBase + Math.sin(phase + 0.7) * 0.6, 1.2, 4.8)
-    const jitter = (Math.sin(index * 1.3) * 0.5 + 0.5) * 0.15
+    // Spread across full chart: sleep 4–10h, mood 1–5 (different primes so points don't line up)
+    const sleepNorm = scatterHash(index, 17) * 0.85 + 0.075
+    const moodNorm = scatterHash(index, 31) * 0.85 + 0.075
+    const sleep = 4 + sleepNorm * 6
+    const mood = 1 + moodNorm * 4
+    const jitter = (scatterHash(index, 7) - 0.5) * 0.25
+    const sleepJittered = clampValue(sleep + jitter, 4, 10)
+    const moodJittered = clampValue(mood + jitter * 0.5, 1, 5)
     return {
       id: `mock-scatter-${index}`,
       sleep_hours_clamped: sleep,
-      sleep_hours_jittered: Math.min(10, Math.max(4, sleep + jitter)),
-      mood_jittered: Math.min(5, Math.max(1, mood + jitter / 2)),
+      sleep_hours_jittered: sleepJittered,
+      mood_jittered: moodJittered,
       mood: Math.round(mood * 10) / 10,
     }
   })

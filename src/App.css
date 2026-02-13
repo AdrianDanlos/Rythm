@@ -1986,6 +1986,12 @@
   padding: 15px;
 }
 
+/* Chart teasers (smoothed trends, daily history): chart fills full width/height, crisp rendering */
+.premium-preview--chart-teaser .chart-wrapper--teaser {
+  height: 120px;
+  min-height: 120px;
+}
+
 .premium-preview__overlay {
   position: absolute;
   inset: 0;

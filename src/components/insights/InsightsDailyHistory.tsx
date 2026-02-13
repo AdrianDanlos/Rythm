@@ -190,10 +190,10 @@ export const InsightsDailyHistory = ({
       </div>
       {!isPro
         ? (
-            <div className="premium-preview">
+            <div className="premium-preview premium-preview--chart-teaser">
               <div className="premium-preview__blur">
-                <div className="chart-wrapper">
-                  <ResponsiveContainer width="100%" height={120}>
+                <div className="chart-wrapper chart-wrapper--teaser">
+                  <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={trimmedPreviewPoints.length ? trimmedPreviewPoints : previewTrendDisplayPoints} margin={trendChartMargin}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
                       <XAxis
@@ -223,7 +223,6 @@ export const InsightsDailyHistory = ({
                           formatLongDate(new Date(`${value}T00:00:00`))}
                         formatter={formatTooltipValue}
                       />
-                      <Legend content={<DailyHistoryLegend wrapperStyle={legendWrapperStyle} />} />
                       <Line
                         type="monotone"
                         dataKey="sleep"
