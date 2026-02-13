@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Entry } from '../lib/entries'
+import type { StatCounts } from '../lib/stats'
 import type {
   RollingPoint,
   RollingSummary,
@@ -52,6 +53,7 @@ type InsightsProps = {
     last90: WindowStats
     last365: WindowStats
   }
+  statCounts: StatCounts
   rhythmScore: number | null
   streak: number
   sleepConsistencyLabel: string | null
@@ -84,6 +86,7 @@ export const Insights = ({
   chartData,
   averages,
   windowAverages,
+  statCounts,
   rhythmScore,
   streak,
   sleepConsistencyLabel,
@@ -241,6 +244,7 @@ export const Insights = ({
                 isLoading={isLoading}
                 averages={averages}
                 windowAverages={windowAverages}
+                statCounts={statCounts}
                 rhythmScore={rhythmScore}
                 streak={streak}
                 sleepConsistencyLabel={sleepConsistencyLabel}

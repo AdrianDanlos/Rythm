@@ -614,6 +614,7 @@ function App() {
                           chartData={chartData}
                           averages={averages}
                           windowAverages={stats.windowAverages}
+                          statCounts={stats.statCounts}
                           rhythmScore={stats.rhythmScore}
                           streak={stats.streak}
                           sleepConsistencyLabel={stats.sleepConsistencyLabel}

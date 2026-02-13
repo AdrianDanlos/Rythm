@@ -17,6 +17,15 @@ import {
 } from './utils/sleepConsistency'
 import { buildTagDrivers, buildTagSleepDrivers } from './utils/tagInsights'
 
+export type StatCounts = {
+  /** Entries in last 30 days with sleep (for rhythm score) */
+  last30WithSleep: number
+  /** All entries with sleep (for sleep consistency) */
+  sleepEntries: number
+  /** All entries with both sleep and mood (for correlation and mood-by-sleep) */
+  completeEntries: number
+}
+
 export type StatsResult = {
   windowAverages: {
     last7: WindowStats
@@ -24,6 +33,7 @@ export type StatsResult = {
     last90: WindowStats
     last365: WindowStats
   }
+  statCounts: StatCounts
   rhythmScore: number | null
   streak: number
   sleepConsistencyLabel: string | null
@@ -364,8 +374,21 @@ export const buildStats = (
   const tagDrivers = buildTagDrivers(entries)
   const tagSleepDrivers = buildTagSleepDrivers(entries)
 
+  const last30WithSleep = getWindowEntries(30).filter(entry =>
+    Number.isFinite(Number(entry.sleep_hours)),
+  ).length
+  const sleepEntries = entries.filter(entry =>
+    Number.isFinite(Number(entry.sleep_hours)),
+  ).length
+  const statCounts: StatCounts = {
+    last30WithSleep,
+    sleepEntries,
+    completeEntries: completeEntries.length,
+  }
+
   return {
     windowAverages,
+    statCounts,
     rhythmScore,
     streak,
     sleepConsistencyLabel,

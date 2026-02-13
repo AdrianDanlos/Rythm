@@ -1,8 +1,14 @@
+import type { StatCounts } from '../../lib/stats'
 import type { SleepMoodAverages, WindowStats } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 import { TrendingDown, TrendingUp } from 'lucide-react'
 import flame from '../../assets/flame.png'
+
+const RHYTHM_NEED = 5
+const SLEEP_CONSISTENCY_NEED = 2
+const CORRELATION_NEED = 2
+const MOOD_BY_SLEEP_NEED = 5
 
 type InsightsStatsProps = {
   isLoading: boolean
@@ -13,6 +19,7 @@ type InsightsStatsProps = {
     last90: WindowStats
     last365: WindowStats
   }
+  statCounts: StatCounts
   rhythmScore: number | null
   streak: number
   sleepConsistencyLabel: string | null
@@ -28,6 +35,7 @@ export const InsightsStats = ({
   isLoading,
   averages,
   windowAverages,
+  statCounts,
   rhythmScore,
   streak,
   sleepConsistencyLabel,
@@ -38,6 +46,10 @@ export const InsightsStats = ({
   isPro,
   goToLog,
 }: InsightsStatsProps) => {
+  const rhythmMore = Math.max(0, RHYTHM_NEED - statCounts.last30WithSleep)
+  const sleepConsistencyMore = Math.max(0, SLEEP_CONSISTENCY_NEED - statCounts.sleepEntries)
+  const correlationMore = Math.max(0, CORRELATION_NEED - statCounts.completeEntries)
+  const moodBySleepMore = Math.max(0, MOOD_BY_SLEEP_NEED - statCounts.completeEntries)
   const moodBySleepHigh = moodBySleepThreshold.high
   const moodBySleepLow = moodBySleepThreshold.low
   const moodBySleepDeltaPercent = moodBySleepHigh !== null && moodBySleepLow !== null && moodBySleepLow > 0
@@ -168,7 +180,7 @@ export const InsightsStats = ({
                     <p className="helper">
                       {rhythmScore !== null
                         ? 'Sleep stability over the last 30 days'
-                        : 'Needs 5 days'}
+                        : `Needs ${rhythmMore} more day${rhythmMore === 1 ? '' : 's'}`}
                     </p>
                   </div>
                   <div className="stat-tile">
@@ -177,7 +189,7 @@ export const InsightsStats = ({
                     <p className="helper">
                       {sleepConsistencyLabel
                         ? 'How steady your sleep hours are'
-                        : 'Needs 2 days'}
+                        : `Needs ${sleepConsistencyMore} more day${sleepConsistencyMore === 1 ? '' : 's'}`}
                     </p>
                   </div>
                   <div className="stat-tile">
@@ -187,7 +199,7 @@ export const InsightsStats = ({
                       ? <p className="helper">{correlationDirection}</p>
                       : (
                           <p className="helper">
-                            {correlationLabel ? 'Correlation strength' : 'Needs 2 days'}
+                            {correlationLabel ? 'Correlation strength' : `Needs ${correlationMore} more day${correlationMore === 1 ? '' : 's'}`}
                           </p>
                         )}
                   </div>
@@ -223,7 +235,7 @@ export const InsightsStats = ({
                         )
                       : <p className="value">—</p>}
                     <p className="helper">
-                      {moodBySleepMessage ?? `Needs 5 days with sleep and mood to compare around ${formatSleepHours(sleepThreshold)}.`}
+                      {moodBySleepMessage ?? `Needs ${moodBySleepMore} more day${moodBySleepMore === 1 ? '' : 's'} with sleep and mood to compare around ${formatSleepHours(sleepThreshold)}.`}
                     </p>
                   </div>
                 </>
