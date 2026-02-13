@@ -1417,6 +1417,16 @@
   opacity: 0.7;
 }
 
+/* Disabled <button> in toggle-group: override global button:disabled so it matches span.toggle-group__btn--disabled */
+button.toggle-group__btn--disabled:disabled {
+  background: var(--ghost-bg);
+  color: var(--muted);
+  border-color: var(--border);
+  box-shadow: none;
+  transform: none;
+  cursor: default;
+}
+
 /* Tooltip triggers (e.g. greyed 90/365 day buttons) should show help cursor */
 .app-tooltip .toggle-group__btn--disabled {
   cursor: help;

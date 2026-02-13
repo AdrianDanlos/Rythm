@@ -257,20 +257,20 @@ export const InsightsScatter = ({
               className={`ghost ${scatterRange === 'last30' ? 'active' : ''}`}
               onClick={() => handleRangeChange('last30')}
             >
-              30d
+              30 days
             </button>
             {show90Range
               ? !isPro
                   ? (
-                      <Tooltip label="Upgrade to Pro to view 90d and All ranges.">
+                      <Tooltip label="Upgrade to Pro to view 90 days and All ranges.">
                         <span className="tooltip-trigger">
                           <button
                             type="button"
-                            className="ghost"
+                            className="ghost toggle-group__btn--disabled"
                             disabled
                             aria-disabled="true"
                           >
-                            90d
+                            90 days
                           </button>
                         </span>
                       </Tooltip>
@@ -281,18 +281,18 @@ export const InsightsScatter = ({
                         className={`ghost ${scatterRange === 'last90' ? 'active' : ''}`}
                         onClick={() => handleRangeChange('last90')}
                       >
-                        90d
+                        90 days
                       </button>
                     )
               : null}
             {showAllRange
               ? !isPro
                   ? (
-                      <Tooltip label="Upgrade to Pro to view 90d and All ranges.">
+                      <Tooltip label="Upgrade to Pro to view 90 days and All ranges.">
                         <span className="tooltip-trigger">
                           <button
                             type="button"
-                            className="ghost"
+                            className="ghost toggle-group__btn--disabled"
                             disabled
                             aria-disabled="true"
                           >

@@ -203,7 +203,8 @@ function App() {
       void handleSave({ preventDefault: () => {} } as FormEvent, { silent: true }).then(() => {
         setEntryDate(newDateStr)
       })
-    } else {
+    }
+    else {
       setEntryDate(newDateStr)
     }
   }
