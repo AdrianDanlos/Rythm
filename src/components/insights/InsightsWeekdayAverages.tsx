@@ -42,7 +42,7 @@ const buildAxisScale = (
     minLimit,
     maxLimit,
   }: {
-    fallback: { min: number, max: number, ticks: number[] }
+    fallback: { min: number, max: number }
     step: number
     padSteps: number
     minSpan: number
@@ -73,11 +73,7 @@ const buildAxisScale = (
 
   if (max <= min) return fallback
 
-  const ticks: number[] = []
-  for (let value = min; value <= max + step / 100; value += step) {
-    ticks.push(Number(value.toFixed(3)))
-  }
-  return { min, max, ticks }
+  return { min, max }
 }
 
 const WeekdayLegend = ({ wrapperStyle }: WeekdayLegendProps) => (
@@ -113,7 +109,7 @@ export const InsightsWeekdayAverages = ({
     .map(point => point.avgMood)
     .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
   const sleepAxis = buildAxisScale(sleepValues, {
-    fallback: { min: 4, max: 10, ticks: [4, 6, 8, 10] },
+    fallback: { min: 4, max: 10 },
     step: 0.25,
     padSteps: 0.5,
     minSpan: 0.75,
@@ -121,7 +117,7 @@ export const InsightsWeekdayAverages = ({
     maxLimit: 12,
   })
   const moodAxis = buildAxisScale(moodValues, {
-    fallback: { min: 1, max: 5, ticks: [1, 2, 3, 4, 5] },
+    fallback: { min: 1, max: 5 },
     step: 0.1,
     padSteps: 0.5,
     minSpan: 0.4,
@@ -169,7 +165,7 @@ export const InsightsWeekdayAverages = ({
                     <YAxis
                       yAxisId="left"
                       domain={[sleepAxis.min, sleepAxis.max]}
-                      ticks={sleepAxis.ticks}
+                      tickCount={5}
                       tickFormatter={value => formatSleepHours(Number(value))}
                       tick={baseTickProps}
                       width={isMobile ? 50 : 56}
@@ -178,7 +174,7 @@ export const InsightsWeekdayAverages = ({
                       yAxisId="right"
                       orientation="right"
                       domain={[moodAxis.min, moodAxis.max]}
-                      ticks={moodAxis.ticks}
+                      tickCount={5}
                       tick={baseTickProps}
                       width={isMobile ? 24 : 28}
                     />
