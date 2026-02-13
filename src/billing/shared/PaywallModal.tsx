@@ -13,6 +13,7 @@ type PaywallModalProps = {
 const premiumFeatures = [
   'Discover how what you did today influences mood and sleep',
   'Your recommended sleep target based on your history',
+  'See how sleep and mood connect in one simple chart',
   'Weekly and monthly trends',
   '30/90/365 day history',
   'Export Rythm\'s custom PDF reports',
