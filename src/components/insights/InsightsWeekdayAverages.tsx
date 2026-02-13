@@ -53,6 +53,27 @@ export const InsightsWeekdayAverages = ({
   const hasAnyData = weekdayAverages.some(point => point.observationCount > 0)
   const totalCompleteLogs = weekdayAverages.reduce((sum, point) => sum + point.observationCount, 0)
   const showEarlySignalNote = hasAnyData && totalCompleteLogs < EARLY_SIGNAL_MIN_COMPLETE_LOGS
+
+  const sleepValues = weekdayAverages
+    .map(p => p.avgSleep)
+    .filter((v): v is number => v != null && Number.isFinite(v))
+  const sleepMin = sleepValues.length ? Math.min(...sleepValues) : 4
+  const sleepMax = sleepValues.length ? Math.max(...sleepValues) : 10
+  const sleepDomainMin = Math.max(0, Math.floor(sleepMin))
+  const sleepDomainMax = Math.min(10, Math.ceil(sleepMax))
+  const sleepDomain: [number, number] = [
+    sleepDomainMin === sleepDomainMax ? Math.max(0, sleepDomainMin - 1) : sleepDomainMin,
+    sleepDomainMin === sleepDomainMax ? Math.min(10, sleepDomainMax + 1) : sleepDomainMax,
+  ]
+  const sleepTicks = (() => {
+    const [lo, hi] = sleepDomain
+    const step = hi - lo <= 4 ? 1 : 2
+    const t: number[] = []
+    for (let v = lo; v <= hi; v += step) t.push(v)
+    if (t[t.length - 1] !== hi) t.push(hi)
+    return t
+  })()
+
   const chartMargin = isMobile
     ? { top: 8, right: 0, bottom: 0, left: -23 }
     : { top: 0, right: 0, bottom: 0, left: 0 }
@@ -97,8 +118,8 @@ export const InsightsWeekdayAverages = ({
                     />
                     <YAxis
                       yAxisId="left"
-                      domain={[4, 10]}
-                      ticks={[4, 5, 6, 7, 8, 9, 10]}
+                      domain={sleepDomain}
+                      ticks={sleepTicks}
                       tickFormatter={value => formatSleepHours(Number(value))}
                       tick={baseTickProps}
                       width={isMobile ? 50 : 56}
