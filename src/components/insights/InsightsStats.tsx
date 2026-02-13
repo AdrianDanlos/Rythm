@@ -7,8 +7,7 @@ import flame from '../../assets/flame.png'
 
 const RHYTHM_NEED = 5
 const SLEEP_CONSISTENCY_NEED = 2
-const CORRELATION_NEED = 2
-const MOOD_BY_SLEEP_NEED = 5
+const CORRELATION_NEED = 5
 
 type InsightsStatsProps = {
   isLoading: boolean
@@ -26,6 +25,7 @@ type InsightsStatsProps = {
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
+  moodBySleepBucketCounts: { high: number, low: number }
   sleepThreshold: number
   isPro: boolean
   goToLog: () => void
@@ -42,6 +42,7 @@ export const InsightsStats = ({
   correlationLabel,
   correlationDirection,
   moodBySleepThreshold,
+  moodBySleepBucketCounts,
   sleepThreshold,
   isPro,
   goToLog,
@@ -49,11 +50,12 @@ export const InsightsStats = ({
   const rhythmMore = Math.max(0, RHYTHM_NEED - statCounts.last30WithSleep)
   const sleepConsistencyMore = Math.max(0, SLEEP_CONSISTENCY_NEED - statCounts.sleepEntries)
   const correlationMore = Math.max(0, CORRELATION_NEED - statCounts.completeEntries)
-  const moodBySleepMore = Math.max(0, MOOD_BY_SLEEP_NEED - statCounts.completeEntries)
   const moodBySleepHigh = moodBySleepThreshold.high
   const moodBySleepLow = moodBySleepThreshold.low
-  const moodBySleepDeltaPercent = moodBySleepHigh !== null && moodBySleepLow !== null && moodBySleepLow > 0
-    ? ((moodBySleepHigh - moodBySleepLow) / moodBySleepLow) * 100
+  const moodBySleepDeltaPercent = moodBySleepHigh !== null && moodBySleepLow !== null
+    ? (moodBySleepLow > 0
+        ? ((moodBySleepHigh - moodBySleepLow) / moodBySleepLow) * 100
+        : 0)
     : null
   const isMoodBySleepPositive = moodBySleepDeltaPercent !== null && moodBySleepDeltaPercent >= 0
   const moodBySleepDirection = moodBySleepDeltaPercent !== null && moodBySleepDeltaPercent < 0
@@ -199,7 +201,11 @@ export const InsightsStats = ({
                       ? <p className="helper">{correlationDirection}</p>
                       : (
                           <p className="helper">
-                            {correlationLabel ? 'Correlation strength' : `Needs ${correlationMore} more day${correlationMore === 1 ? '' : 's'}`}
+                            {correlationLabel
+                              ? 'Correlation strength'
+                              : correlationMore > 0
+                                ? `Needs ${correlationMore} more day${correlationMore === 1 ? '' : 's'}`
+                                : 'Log more days with different sleep or mood to see a link.'}
                           </p>
                         )}
                   </div>
@@ -235,7 +241,11 @@ export const InsightsStats = ({
                         )
                       : <p className="value">—</p>}
                     <p className="helper">
-                      {moodBySleepMessage ?? `Needs ${moodBySleepMore} more day${moodBySleepMore === 1 ? '' : 's'} with sleep and mood to compare around ${formatSleepHours(sleepThreshold)}.`}
+                      {moodBySleepMessage ?? (moodBySleepBucketCounts.high === 0
+                        ? `Needs 1 day with more than ${formatSleepHours(sleepThreshold)} of sleep.`
+                        : moodBySleepBucketCounts.low === 0
+                          ? `Needs 1 day with less than ${formatSleepHours(sleepThreshold)} of sleep.`
+                          : null)}
                     </p>
                   </div>
                 </>

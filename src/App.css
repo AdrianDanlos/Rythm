@@ -2086,6 +2086,72 @@
   line-height: 1.5;
 }
 
+.insights-first-five-card {
+  display: grid;
+  gap: 12px;
+}
+
+.insights-first-five-card__header h2 {
+  margin: 6px 0 0;
+}
+
+.insights-first-five-card__data,
+.insights-first-five-card__unlock {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.insights-first-five-card__data-label {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.insights-first-five-card__data-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin: 0 0 4px;
+}
+
+.insights-first-five-card__data-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.insights-first-five-card__data-item-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.insights-first-five-card__data-item-value {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.insights-first-five-card__data--muted {
+  color: var(--muted);
+}
+
+.first-five-progress {
+  display: grid;
+  gap: 6px;
+}
+
+.first-five-progress__text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.insights-first-five-card__cta {
+  margin: 0;
+  margin-top: 4px;
+}
+
 .field-title {
   display: flex;
   align-items: center;

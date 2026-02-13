@@ -41,6 +41,8 @@ export type StatsResult = {
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
+  /** Count of entries with sleep >= threshold and sleep < threshold (for helper copy) */
+  moodBySleepBucketCounts: { high: number, low: number }
   moodByPersonalThreshold: { high: number | null, low: number | null }
   personalSleepThreshold: number | null
   trendSeries: {
@@ -171,33 +173,34 @@ export const buildStats = (
     direction: correlationDirection,
   } = getCorrelationInsight(entries)
 
-  const minDaysForMoodBySleep = 5
-  let moodBySleepThreshold = { high: null, low: null } as {
-    high: number | null
-    low: number | null
-  }
-  if (completeEntries.length >= minDaysForMoodBySleep) {
-    const buckets = completeEntries.reduce(
-      (acc, entry) => {
-        const sleep = toFiniteSleep(entry)
-        const mood = toFiniteMood(entry)
-        if (sleep === null || mood === null) return acc
-        const target = sleep >= sleepThreshold ? 'high' : 'low'
-        acc[target].sum += mood
-        acc[target].count += 1
-        return acc
-      },
-      {
-        high: { sum: 0, count: 0 },
-        low: { sum: 0, count: 0 },
-      },
-    )
+  const moodBySleepBuckets = completeEntries.reduce(
+    (acc, entry) => {
+      const sleep = toFiniteSleep(entry)
+      const mood = toFiniteMood(entry)
+      if (sleep === null || mood === null) return acc
+      const target = sleep >= sleepThreshold ? 'high' : 'low'
+      acc[target].sum += mood
+      acc[target].count += 1
+      return acc
+    },
+    {
+      high: { sum: 0, count: 0 },
+      low: { sum: 0, count: 0 },
+    },
+  )
 
-    moodBySleepThreshold = {
-      high: buckets.high.count ? buckets.high.sum / buckets.high.count : null,
-      low: buckets.low.count ? buckets.low.sum / buckets.low.count : null,
-    }
+  const moodBySleepBucketCounts = {
+    high: moodBySleepBuckets.high.count,
+    low: moodBySleepBuckets.low.count,
   }
+
+  const hasHighAndLow = moodBySleepBuckets.high.count >= 1 && moodBySleepBuckets.low.count >= 1
+  const moodBySleepThreshold = hasHighAndLow
+    ? {
+        high: moodBySleepBuckets.high.sum / moodBySleepBuckets.high.count,
+        low: moodBySleepBuckets.low.sum / moodBySleepBuckets.low.count,
+      }
+    : { high: null, low: null } as { high: number | null, low: number | null }
 
   const buildTrendSeries = (days: number): TrendPoint[] => {
     const end = new Date()
@@ -396,6 +399,7 @@ export const buildStats = (
     correlationLabel,
     correlationDirection,
     moodBySleepThreshold,
+    moodBySleepBucketCounts,
     moodByPersonalThreshold,
     personalSleepThreshold,
     trendSeries,

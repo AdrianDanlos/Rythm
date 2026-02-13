@@ -14,6 +14,8 @@ import type {
 } from '../lib/types/stats'
 import { InsightsDailyHistory } from './insights/InsightsDailyHistory'
 import { InsightsExport } from './insights/InsightsExport'
+import { InsightsFirstFiveCard } from './insights/InsightsFirstFiveCard'
+import { InsightsFirstTwoCard } from './insights/InsightsFirstTwoCard'
 import { InsightsSummaryIntro } from './InsightsSummaryIntro'
 import { InsightsCalendarHeatmap } from './insights/InsightsCalendarHeatmap'
 import { InsightsMonthlyCalendar } from './insights/InsightsMonthlyCalendar'
@@ -62,6 +64,7 @@ type InsightsProps = {
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
+  moodBySleepBucketCounts: { high: number, low: number }
   sleepThreshold: number
   moodColors: string[]
   trendSeries: { last30: TrendPoint[], last90: TrendPoint[], last365: TrendPoint[] }
@@ -95,6 +98,7 @@ export const Insights = ({
   correlationLabel,
   correlationDirection,
   moodBySleepThreshold,
+  moodBySleepBucketCounts,
   sleepThreshold,
   moodColors,
   trendSeries,
@@ -129,6 +133,7 @@ export const Insights = ({
   }
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
+  const hasEnoughEntries = entries.length >= 3
   const [scatterRange, setScatterRange] = useState<ScatterRange>('last30')
   const showScatter90 = entries.length >= 30
   const showScatterAll = entries.length >= 90
@@ -142,22 +147,18 @@ export const Insights = ({
     return (normalized - 0.5) * scale
   }
 
+  const effectiveScatterRange = useMemo((): ScatterRange => {
+    if (scatterRange === 'all' && !showScatterAll) return showScatter90 ? 'last90' : 'last30'
+    if (scatterRange === 'last90' && !showScatter90) return 'last30'
+    return scatterRange
+  }, [scatterRange, showScatter90, showScatterAll])
+
   const scatterEntries = useMemo(() => {
     if (!isPro) return []
-    if (scatterRange === 'all') return chartData
-    const n = SCATTER_RANGE_DAYS[scatterRange]
+    if (effectiveScatterRange === 'all') return chartData
+    const n = SCATTER_RANGE_DAYS[effectiveScatterRange]
     return chartData.slice(-n)
-  }, [chartData, scatterRange, isPro])
-
-  useEffect(() => {
-    if (scatterRange === 'all' && !showScatterAll) {
-      setScatterRange(showScatter90 ? 'last90' : 'last30')
-      return
-    }
-    if (scatterRange === 'last90' && !showScatter90) {
-      setScatterRange('last30')
-    }
-  }, [scatterRange, showScatter90, showScatterAll])
+  }, [chartData, effectiveScatterRange, isPro])
 
   const plottedData = useMemo(() => {
     return scatterEntries.flatMap((entry) => {
@@ -237,10 +238,19 @@ export const Insights = ({
       {activeTab === 'summary'
         ? (
             <div className="insights-panel">
-              <InsightsSummaryIntro
-                entryCount={entries.length}
-                entriesLoading={entriesLoading}
-              />
+              {!entriesLoading && entries.length === 1 && (
+                <InsightsFirstTwoCard entries={entries} goToLog={goToLog} />
+              )}
+              {!entriesLoading && entries.length >= 2 && entries.length <= 4 && (
+                <InsightsFirstFiveCard entries={entries} goToLog={goToLog} />
+              )}
+              {!entriesLoading && entries.length === 0 && (
+                <InsightsSummaryIntro
+                  entryCount={entries.length}
+                  entriesLoading={entriesLoading}
+                  goToLog={goToLog}
+                />
+              )}
               <InsightsStats
                 isLoading={isLoading}
                 averages={averages}
@@ -252,96 +262,94 @@ export const Insights = ({
                 correlationLabel={correlationLabel}
                 correlationDirection={correlationDirection}
                 moodBySleepThreshold={moodBySleepThreshold}
+                moodBySleepBucketCounts={moodBySleepBucketCounts}
                 sleepThreshold={sleepThreshold}
                 isPro={isPro}
                 goToLog={goToLog}
               />
-              <IdeaSleepTarget
-                isPro={isPro}
-                entryCount={entries.length}
-                personalSleepThreshold={personalSleepThreshold}
-                moodByPersonalThreshold={moodByPersonalThreshold}
-                onOpenPaywall={onOpenPaywall}
-                goToLog={goToLog}
-              />
-              <InsightsTagInsights
-                isPro={isPro}
-                tagDrivers={tagDrivers}
-                tagSleepDrivers={tagSleepDrivers}
-                onOpenPaywall={onOpenPaywall}
-                goToLog={goToLog}
-              />
-              <section className="card">
-                <div className="card-header">
-                  <div>
-                    <h2>Sleep badges</h2>
-                    <p className="muted">Consistency rewards based on your logs</p>
+              {hasEnoughEntries && (
+                <IdeaSleepTarget
+                  isPro={isPro}
+                  entryCount={entries.length}
+                  personalSleepThreshold={personalSleepThreshold}
+                  moodByPersonalThreshold={moodByPersonalThreshold}
+                  onOpenPaywall={onOpenPaywall}
+                  goToLog={goToLog}
+                />
+              )}
+              {hasEnoughEntries && (
+                <InsightsTagInsights
+                  isPro={isPro}
+                  tagDrivers={tagDrivers}
+                  tagSleepDrivers={tagSleepDrivers}
+                  onOpenPaywall={onOpenPaywall}
+                  goToLog={goToLog}
+                />
+              )}
+              {sleepConsistencyBadges.length > 0 && (
+                <section className="card">
+                  <div className="card-header">
+                    <div>
+                      <h2>Sleep badges</h2>
+                      <p className="muted">Consistency rewards based on your logs</p>
+                    </div>
                   </div>
-                </div>
-                {sleepConsistencyBadges.length
-                  ? (
-                      <div className="badge-list">
-                        {sleepConsistencyBadges.map(badge => (
-                          <div
-                            className={`badge-row ${badge.unlocked ? 'unlocked' : 'locked'}`}
-                            key={badge.id}
-                          >
-                            <div className="badge-row-header">
-                              <div className="badge-title-row">
-                                <p className="badge-title">{badge.title}</p>
-                                {badge.unlocked
-                                  ? (
-                                      <img
-                                        className="badge-status-icon"
-                                        src={badgeIcon}
-                                        alt=""
-                                        aria-hidden
-                                      />
-                                    )
-                                  : (
-                                      <span className="badge-status-icon badge-status-icon--lock" aria-hidden>
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                                        </svg>
-                                      </span>
-                                    )}
-                              </div>
-                              <p className="badge-helper">{badge.description}</p>
-                            </div>
-                            {!badge.unlocked
-                              ? (
-                                  <div className="badge-progress-track" aria-hidden="true">
-                                    <span
-                                      className="badge-progress-fill"
-                                      style={{
-                                        width: `${Math.min(
-                                          100,
-                                          Math.max(0, (badge.progressValue / (badge.progressTotal || 1)) * 100),
-                                        )}%`,
-                                      }}
+                  <>
+                    <div className="badge-list">
+                      {(entries.length >= 5 ? sleepConsistencyBadges : sleepConsistencyBadges.slice(0, 4)).map(badge => (
+                        <div
+                          className={`badge-row ${badge.unlocked ? 'unlocked' : 'locked'}`}
+                          key={badge.id}
+                        >
+                          <div className="badge-row-header">
+                            <div className="badge-title-row">
+                              <p className="badge-title">{badge.title}</p>
+                              {badge.unlocked
+                                ? (
+                                    <img
+                                      className="badge-status-icon"
+                                      src={badgeIcon}
+                                      alt=""
+                                      aria-hidden
                                     />
-                                  </div>
-                                )
-                              : null}
-                            {badge.progressText
-                              ? (
-                                  <p className="badge-progress-text">{badge.progressText}</p>
-                                )
-                              : null}
+                                  )
+                                : (
+                                    <span className="badge-status-icon badge-status-icon--lock" aria-hidden>
+                                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                      </svg>
+                                    </span>
+                                  )}
+                            </div>
+                            <p className="badge-helper">{badge.description}</p>
                           </div>
-                        ))}
-                      </div>
-                    )
-                  : (
-                      <p className="muted">
-                        <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                          Log more days
-                        </button>
-                        {' '}to unlock badges.
-                      </p>
-                    )}
-              </section>
+                          {!badge.unlocked
+                            ? (
+                                <div className="badge-progress-track" aria-hidden="true">
+                                  <span
+                                    className="badge-progress-fill"
+                                    style={{
+                                      width: `${Math.min(
+                                        100,
+                                        Math.max(0, (badge.progressValue / (badge.progressTotal || 1)) * 100),
+                                      )}%`,
+                                    }}
+                                  />
+                                </div>
+                              )
+                            : null}
+                          {badge.progressText
+                            ? (
+                                <p className="badge-progress-text">{badge.progressText}</p>
+                              )
+                            : null}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                </section>
+              )}
             </div>
           )
         : null}
@@ -369,39 +377,45 @@ export const Insights = ({
                 isMobile={isMobile}
                 goToLog={goToLog}
               />
-              <InsightsScatter
-                isLoading={isLoading}
-                hasAnyEntries={isPro ? !isEmpty : true}
-                isRangeEmpty={isPro ? !isLoading && plottedData.length === 0 : false}
-                isMobile={isMobile}
-                plottedData={scatterPlottedData}
-                moodColors={moodColors}
-                scatterRange={scatterRange}
-                onScatterRangeChange={setScatterRange}
-                show90Range={isPro ? showScatter90 : true}
-                showAllRange={isPro ? showScatterAll : true}
-                bestSleepBand={bestSleepBand}
-                goToLog={goToLog}
-                isPro={isPro}
-                onOpenPaywall={onOpenPaywall}
-              />
-              <InsightsSmoothedTrends
-                isPro={isPro}
-                isMobile={isMobile}
-                entryCount={entries.length}
-                rollingSeries={rollingSeries}
-                rollingSummaries={rollingSummaries}
-                onOpenPaywall={onOpenPaywall}
-                goToLog={goToLog}
-              />
-              <InsightsDailyHistory
-                isPro={isPro}
-                isMobile={isMobile}
-                entryCount={entries.length}
-                trendSeries={trendSeries}
-                onOpenPaywall={onOpenPaywall}
-                goToLog={goToLog}
-              />
+              {hasEnoughEntries && (
+                <InsightsScatter
+                  isLoading={isLoading}
+                  hasAnyEntries={isPro ? !isEmpty : true}
+                  isRangeEmpty={isPro ? !isLoading && plottedData.length === 0 : false}
+                  isMobile={isMobile}
+                  plottedData={scatterPlottedData}
+                  moodColors={moodColors}
+                  scatterRange={effectiveScatterRange}
+                  onScatterRangeChange={setScatterRange}
+                  show90Range={isPro ? showScatter90 : true}
+                  showAllRange={isPro ? showScatterAll : true}
+                  bestSleepBand={bestSleepBand}
+                  goToLog={goToLog}
+                  isPro={isPro}
+                  onOpenPaywall={onOpenPaywall}
+                />
+              )}
+              {hasEnoughEntries && (
+                <InsightsSmoothedTrends
+                  isPro={isPro}
+                  isMobile={isMobile}
+                  entryCount={entries.length}
+                  rollingSeries={rollingSeries}
+                  rollingSummaries={rollingSummaries}
+                  onOpenPaywall={onOpenPaywall}
+                  goToLog={goToLog}
+                />
+              )}
+              {hasEnoughEntries && (
+                <InsightsDailyHistory
+                  isPro={isPro}
+                  isMobile={isMobile}
+                  entryCount={entries.length}
+                  trendSeries={trendSeries}
+                  onOpenPaywall={onOpenPaywall}
+                  goToLog={goToLog}
+                />
+              )}
             </div>
           )
         : null}

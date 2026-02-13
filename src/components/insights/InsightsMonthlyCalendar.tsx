@@ -99,7 +99,7 @@ export const InsightsMonthlyCalendar = ({
       <div className="card-header">
         <div>
           <h2>Month calendar</h2>
-          <p className="muted">Read-only overview of your daily logs</p>
+          <p className="muted">Overview of your daily logs</p>
         </div>
         <div className="toggle-group monthly-calendar-nav">
           <button

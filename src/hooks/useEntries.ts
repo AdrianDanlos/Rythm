@@ -19,14 +19,19 @@ export const useEntries = ({
   const [entries, setEntries] = useState<Entry[]>([])
   const [entriesLoading, setEntriesLoading] = useState(false)
   const [entriesError, setEntriesError] = useState<string | null>(null)
+  /** False until first fetch for current userId has completed; prevents flicker before we know if quick start should show */
+  const [entriesSettled, setEntriesSettled] = useState(false)
 
   useEffect(() => {
     if (!userId) {
       setEntries([])
       setEntriesLoading(false)
       setEntriesError(null)
+      setEntriesSettled(false)
       return
     }
+
+    setEntriesSettled(false)
 
     const loadEntries = async () => {
       setEntriesLoading(true)
@@ -41,6 +46,7 @@ export const useEntries = ({
       }
       finally {
         setEntriesLoading(false)
+        setEntriesSettled(true)
       }
     }
 
@@ -90,6 +96,7 @@ export const useEntries = ({
     entries,
     setEntries,
     entriesLoading,
+    entriesSettled,
     entriesError,
     setEntriesError,
     chartData,

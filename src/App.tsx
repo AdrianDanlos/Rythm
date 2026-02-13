@@ -145,6 +145,7 @@ function App() {
     entries,
     setEntries,
     entriesLoading,
+    entriesSettled,
     entriesError,
     setEntriesError,
     chartData,
@@ -571,41 +572,50 @@ function App() {
 
                   {activeTab === Tabs.Log
                     ? (
-                        <>
-                          {!entriesLoading && (
-                            <InsightsQuickStart
-                              hasNoEntries={entries.length === 0}
-                              goToLog={() => document.getElementById('log-calendar')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                            />
-                          )}
-                          <p className="log-form-tip" role="status">
-                            Tip: Best time to log is in the <strong>evening or before bed</strong> so you can log events from the day. The more you log, the clearer the picture of what helps you feel better.
-                          </p>
-                          <LogForm
-                            selectedDate={selectedDate}
-                            todayDate={todayDate}
-                            highlightedDates={highlightedDates}
-                            incompleteHighlightedDates={incompleteHighlightedDates}
-                            sleepHours={sleepHours}
-                            mood={mood}
-                            note={note}
-                            tags={tags}
-                            tagSuggestions={tagSuggestions}
-                            maxTagsPerEntry={maxTagsPerEntry}
-                            saving={saving}
-                            saved={saved}
-                            entriesError={entriesError}
-                            moodColors={moodColors}
-                            isMobile={isMobile}
-                            formatLocalDate={formatLocalDate}
-                            onEntryDateChange={handleEntryDateChange}
-                            onSleepHoursChange={setSleepHours}
-                            onMoodChange={setMood}
-                            onNoteChange={setNote}
-                            onTagsChange={setTags}
-                            onSave={handleSave}
-                          />
-                        </>
+                        !entriesSettled
+                          ? (
+                              <div className="card auth-loading" aria-live="polite">
+                                <div className="loading-row">
+                                  <span className="loading-spinner" aria-hidden="true" />
+                                  <span className="muted">Loading your log...</span>
+                                </div>
+                              </div>
+                            )
+                          : (
+                              <>
+                                <InsightsQuickStart
+                                  hasNoEntries={entries.length === 0}
+                                  goToLog={() => document.getElementById('log-calendar')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                                />
+                                <p className="log-form-tip" role="status">
+                                  Tip: Best time to log is in the <strong>evening or before bed</strong> so you can log events from the day. The more you log, the clearer the picture of what helps you feel better.
+                                </p>
+                                <LogForm
+                                  selectedDate={selectedDate}
+                                  todayDate={todayDate}
+                                  highlightedDates={highlightedDates}
+                                  incompleteHighlightedDates={incompleteHighlightedDates}
+                                  sleepHours={sleepHours}
+                                  mood={mood}
+                                  note={note}
+                                  tags={tags}
+                                  tagSuggestions={tagSuggestions}
+                                  maxTagsPerEntry={maxTagsPerEntry}
+                                  saving={saving}
+                                  saved={saved}
+                                  entriesError={entriesError}
+                                  moodColors={moodColors}
+                                  isMobile={isMobile}
+                                  formatLocalDate={formatLocalDate}
+                                  onEntryDateChange={handleEntryDateChange}
+                                  onSleepHoursChange={setSleepHours}
+                                  onMoodChange={setMood}
+                                  onNoteChange={setNote}
+                                  onTagsChange={setTags}
+                                  onSave={handleSave}
+                                />
+                              </>
+                            )
                       )
                     : (
                         <Insights
@@ -622,6 +632,7 @@ function App() {
                           correlationLabel={stats.correlationLabel}
                           correlationDirection={stats.correlationDirection}
                           moodBySleepThreshold={stats.moodBySleepThreshold}
+                          moodBySleepBucketCounts={stats.moodBySleepBucketCounts}
                           sleepThreshold={sleepThreshold}
                           moodColors={moodColors}
                           trendSeries={stats.trendSeries}

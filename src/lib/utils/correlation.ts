@@ -12,7 +12,7 @@ export const getCorrelationInsight = (entries: Entry[]): CorrelationInsight => {
     return Number.isFinite(sleep) && Number.isFinite(mood)
   })
 
-  if (pairedEntries.length < 2) {
+  if (pairedEntries.length < 5) {
     return { label: null, direction: null }
   }
 
