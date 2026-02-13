@@ -15,7 +15,7 @@ export const InsightsSummaryIntro = ({ entryCount, entriesLoading }: InsightsSum
         </div>
       </div>
       <p className="insights-summary-intro__copy">
-        Here you can see your Rhythm score and streak, plus how your sleep, mood, and daily events affect each other. Log more days to get clearer insights and unlock special badges.
+        Here you can see your Rhythm score and streak, plus how your sleep, mood, and what happens during the day affect each other. Log more days to get clearer insights and unlock special badges.
       </p>
     </section>
   )
