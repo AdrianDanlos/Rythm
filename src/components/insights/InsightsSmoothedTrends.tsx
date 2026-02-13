@@ -171,7 +171,7 @@ export const InsightsSmoothedTrends = ({
             <div className="premium-preview premium-preview--chart-teaser">
               <div className="premium-preview__blur">
                 <div className="chart-wrapper chart-wrapper--teaser full-bleed">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" minHeight={120}>
                     <LineChart
                       data={trimmedPreviewRolling.length ? trimmedPreviewRolling : previewRollingSeries}
                       margin={smoothedChartMargin}

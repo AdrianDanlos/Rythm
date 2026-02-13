@@ -135,6 +135,7 @@ export const InsightsWeekdayAverages = ({
                       yAxisId="right"
                       dataKey="avgMood"
                       name="Avg mood"
+                      type="monotone"
                       stroke="var(--chart-mood)"
                       strokeWidth={3}
                       dot={{ r: 3.5, fill: 'var(--bg)', stroke: 'var(--chart-mood)', strokeWidth: 2 }}
