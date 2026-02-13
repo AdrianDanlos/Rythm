@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS public.play_subscription_user (
 );
 CREATE INDEX IF NOT EXISTS play_subscription_user_user_id_idx ON public.play_subscription_user(user_id);
 ALTER TABLE public.play_subscription_user ENABLE ROW LEVEL SECURITY;
--- Only service role (used by Edge Functions) can read/write; anon and authenticated cannot.
+--- Only service role (used by Edge Functions) can read/write; anon and authenticated cannot.
 CREATE POLICY "Service role only for play_subscription_user" ON public.play_subscription_user FOR ALL USING (false) WITH CHECK (false);
 COMMENT ON TABLE public.play_subscription_user IS 'Maps Google Play subscription purchase tokens to Supabase auth users for RTDN revocation handling';
