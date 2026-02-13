@@ -153,7 +153,13 @@ export const InsightsScatter = ({
                     90d
                   </button>
                 )
-              : null}
+              : (
+                  <Tooltip label="Log 30+ entries to see 90-day scatter.">
+                    <span className="ghost toggle-group__btn--disabled">
+                      90d
+                    </span>
+                  </Tooltip>
+                )}
             {showAllRange
               ? (
                   <button
@@ -164,7 +170,13 @@ export const InsightsScatter = ({
                     All
                   </button>
                 )
-              : null}
+              : (
+                  <Tooltip label="Log 90+ entries to see all-time scatter.">
+                    <span className="ghost toggle-group__btn--disabled">
+                      All
+                    </span>
+                  </Tooltip>
+                )}
           </div>
           <p className="muted" style={{ justifySelf: 'end' }}>
             {isLoading ? 'Loading entries...' : `${plottedData.length} entries`}

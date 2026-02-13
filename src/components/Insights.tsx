@@ -143,15 +143,8 @@ export const Insights = ({
   const scatterEntries = useMemo(() => {
     if (!isPro) return []
     if (scatterRange === 'all') return chartData
-    const end = new Date()
-    end.setHours(0, 0, 0, 0)
-    const start = new Date(end)
-    start.setDate(end.getDate() - (SCATTER_RANGE_DAYS[scatterRange] - 1))
-    return chartData.filter((entry) => {
-      const entryDate = new Date(`${entry.entry_date}T00:00:00`)
-      entryDate.setHours(0, 0, 0, 0)
-      return entryDate >= start && entryDate <= end
-    })
+    const n = SCATTER_RANGE_DAYS[scatterRange]
+    return chartData.slice(-n)
   }, [chartData, scatterRange, isPro])
 
   useEffect(() => {
