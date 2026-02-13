@@ -239,6 +239,7 @@ export const InsightsDailyHistory = ({
                         dataKey="sleep"
                         name="Sleep"
                         stroke="var(--chart-sleep-bar, var(--chart-sleep))"
+                        strokeWidth={2}
                         dot={false}
                         yAxisId="left"
                       />
@@ -247,6 +248,7 @@ export const InsightsDailyHistory = ({
                         dataKey="mood"
                         name="Mood"
                         stroke="var(--chart-mood)"
+                        strokeWidth={2}
                         dot={false}
                         yAxisId="right"
                       />
@@ -313,6 +315,7 @@ export const InsightsDailyHistory = ({
                       dataKey="sleep"
                       name="Sleep"
                       stroke="var(--chart-sleep-bar, var(--chart-sleep))"
+                      strokeWidth={2}
                       dot={false}
                       yAxisId="left"
                     />
@@ -321,6 +324,7 @@ export const InsightsDailyHistory = ({
                       dataKey="mood"
                       name="Mood"
                       stroke="var(--chart-mood)"
+                      strokeWidth={2}
                       dot={false}
                       yAxisId="right"
                     />
