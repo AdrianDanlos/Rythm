@@ -1,5 +1,9 @@
 :root {
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -40,7 +44,7 @@
   --chart-sleep: #7dd3fc;
   --chart-mood: #22c55e;
   --chart-sleep-bar: #6366f1;
-  --chart-ideal-sleep: #DADFD8;
+  --chart-ideal-sleep: var(--neutral-500);
   --streak-icon: #d97706;
   --tooltip-bg: var(--white);
   --tooltip-border: var(--neutral-200);
@@ -65,13 +69,14 @@
   --toggle-thumb-bg: var(--white);
   --toggle-thumb-shadow: 0 4px 10px rgba(15, 23, 42, 0.18);
   --toggle-track-checked-bg: linear-gradient(120deg, #1d4ed8, #14b8a6);
-  --toggle-track-checked-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.1),
-    0 6px 14px rgba(20, 184, 166, 0.35);
-  --toggle-track-focus-shadow: 0 0 0 2px rgba(15, 23, 42, 0.18),
-    0 6px 14px rgba(20, 184, 166, 0.28);
+  --toggle-track-checked-shadow:
+    inset 0 0 0 1px rgba(15, 23, 42, 0.1), 0 6px 14px rgba(20, 184, 166, 0.35);
+  --toggle-track-focus-shadow:
+    0 0 0 2px rgba(15, 23, 42, 0.18), 0 6px 14px rgba(20, 184, 166, 0.28);
   --toggle-track-disabled-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.1);
   --cta-button-bg: linear-gradient(135deg, var(--neutral-900), #1e3a8a);
-  --cta-button-shadow: 0 12px 26px rgba(15, 23, 42, 0.22),
+  --cta-button-shadow:
+    0 12px 26px rgba(15, 23, 42, 0.22),
     inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   --cta-button-shadow-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
   --loading-spinner-border: rgba(15, 23, 42, 0.2);
@@ -145,10 +150,11 @@
   --selected-text: var(--white);
   --selected-border: rgba(56, 189, 248, 0.7);
   --selected-surface: rgba(56, 189, 248, 0.18);
-  --button-hover-shadow: 0 10px 20px rgba(15, 23, 42, 0.45),
-    0 0 0 1px rgba(56, 189, 248, 0.45);
-  --button-hover-shadow-strong: 0 18px 36px rgba(15, 23, 42, 0.55),
-    0 0 18px rgba(56, 189, 248, 0.25), 0 0 0 1px rgba(56, 189, 248, 0.5);
+  --button-hover-shadow:
+    0 10px 20px rgba(15, 23, 42, 0.45), 0 0 0 1px rgba(56, 189, 248, 0.45);
+  --button-hover-shadow-strong:
+    0 18px 36px rgba(15, 23, 42, 0.55), 0 0 18px rgba(56, 189, 248, 0.25),
+    0 0 0 1px rgba(56, 189, 248, 0.5);
   --button-hover-surface: rgba(56, 189, 248, 0.14);
   --button-disabled-bg: var(--neutral-50);
   --button-disabled-text: var(--neutral-500);
@@ -160,7 +166,7 @@
   --chart-sleep: #7dd3fc;
   --chart-mood: #4ade80;
   --chart-sleep-bar: #818cf8;
-  --chart-ideal-sleep: #DADFD8;
+  --chart-ideal-sleep: #dadfd8;
   --badge-progress-fill: #818cf8;
   --streak-icon: #f59e0b;
   --tooltip-bg: #111827;
@@ -178,11 +184,12 @@
   --ghost-cta-border: rgba(56, 189, 248, 0.55);
   --ghost-cta-bg: rgba(56, 189, 248, 0.12);
   --ghost-cta-text: #e2e8f0;
-  --ghost-cta-shadow: 0 12px 20px rgba(2, 6, 23, 0.55),
-    0 0 0 1px rgba(56, 189, 248, 0.35);
+  --ghost-cta-shadow:
+    0 12px 20px rgba(2, 6, 23, 0.55), 0 0 0 1px rgba(56, 189, 248, 0.35);
   --ghost-cta-border-hover: rgba(56, 189, 248, 0.85);
   --cta-button-bg: linear-gradient(135deg, #0f172a, #1e3a8a);
-  --cta-button-shadow: 0 12px 26px rgba(15, 23, 42, 0.22),
+  --cta-button-shadow:
+    0 12px 26px rgba(15, 23, 42, 0.22),
     inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   --cta-button-shadow-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
   --heatmap-empty-bg: #64748b;
@@ -249,7 +256,9 @@ button {
   background: var(--button-bg);
   color: var(--button-text);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 button:hover {
