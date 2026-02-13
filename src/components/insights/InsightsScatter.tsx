@@ -19,12 +19,20 @@ type PlottedEntry = Entry & {
   mood_jittered: number
 }
 
+/** Minimal shape for scatter dots (e.g. mock teaser data). */
+type ScatterPoint = {
+  id: string
+  sleep_hours_jittered: number
+  mood_jittered: number
+  mood: number
+}
+
 type InsightsScatterProps = {
   isLoading: boolean
   hasAnyEntries: boolean
   isRangeEmpty: boolean
   isMobile: boolean
-  plottedData: PlottedEntry[]
+  plottedData: PlottedEntry[] | ScatterPoint[]
   moodColors: string[]
   scatterRange: 'all' | 'last30' | 'last90'
   onScatterRangeChange: (value: 'all' | 'last30' | 'last90') => void
@@ -37,6 +45,8 @@ type InsightsScatterProps = {
     avgMood: number
   } | null
   goToLog: () => void
+  isPro?: boolean
+  onOpenPaywall?: () => void
 }
 
 export const InsightsScatter = ({
@@ -52,11 +62,22 @@ export const InsightsScatter = ({
   showAllRange,
   bestSleepBand,
   goToLog,
+  isPro = true,
+  onOpenPaywall,
 }: InsightsScatterProps) => {
   const baseTickProps = { fontSize: 13 }
   const mobileTickProps = { fontSize: 12 }
   const scatterSize = isMobile ? 28 : 36
   const scatterRadius = scatterSize / 6
+
+  const handleRangeChange = (value: 'all' | 'last30' | 'last90') => {
+    if (!isPro && onOpenPaywall) {
+      onOpenPaywall()
+      return
+    }
+    onScatterRangeChange(value)
+  }
+
   const renderDot = ({
     cx,
     cy,
@@ -115,13 +136,106 @@ export const InsightsScatter = ({
     )
   }
 
+  const showTeaser = !isPro && onOpenPaywall && plottedData.length > 0
+  const chartContent
+    = isLoading
+      ? (
+          <div className="chart-empty">
+            <div className="skeleton-block" />
+          </div>
+        )
+      : !hasAnyEntries
+          ? (
+              <div className="chart-empty">
+                <p className="muted">
+                  <button type="button" className="link-button link-button--text" onClick={goToLog}>
+                    Log a day
+                  </button>
+                  {' '}to see insights.
+                </p>
+              </div>
+            )
+          : isRangeEmpty
+            ? (
+                <div className="chart-empty">
+                  <p className="muted">No complete sleep and mood logs in this time frame yet.</p>
+                </div>
+              )
+            : (
+                <div className="chart-wrapper">
+                  <ResponsiveContainer width="100%" height={showTeaser ? 120 : 260}>
+                    <ScatterChart margin={{ top: 12, right: 12, bottom: 12, left: 2 }}>
+                      <XAxis
+                        type="number"
+                        dataKey="sleep_hours_jittered"
+                        domain={[4, 10]}
+                        ticks={[4, 5, 6, 7, 8, 9, 10]}
+                        tick={isMobile ? mobileTickProps : baseTickProps}
+                        tickFormatter={(value) => {
+                          if (value === 4) return '≤4h'
+                          if (value === 10) return '≥10h'
+                          return formatSleepHours(Number(value))
+                        }}
+                        label={{
+                          value: 'Sleep hours',
+                          position: 'insideBottom',
+                          offset: -5,
+                        }}
+                        height={35}
+                        tickMargin={2}
+                      />
+                      <YAxis
+                        type="number"
+                        dataKey="mood_jittered"
+                        domain={[1, 5]}
+                        ticks={[1, 2, 3, 4, 5]}
+                        tick={isMobile ? mobileTickProps : baseTickProps}
+                        label={{
+                          value: 'Mood',
+                          angle: -90,
+                          position: 'insideLeft',
+                          offset: -4,
+                          dy: 20,
+                          dx: 10,
+                        }}
+                        width={35}
+                        tickMargin={2}
+                      />
+                      {bestSleepBand
+                        ? (
+                            <ReferenceArea
+                              x1={bestSleepBand.x1}
+                              x2={bestSleepBand.x2}
+                              y1={1}
+                              y2={5}
+                              fill="var(--chart-sleep)"
+                              fillOpacity={0.12}
+                              ifOverflow="extendDomain"
+                            />
+                          )
+                        : null}
+                      <RechartsTooltip content={isPro ? renderTooltip : undefined} />
+                      <Scatter data={plottedData} shape={renderDot}>
+                        {plottedData.map(entry => (
+                          <Cell
+                            key={entry.id}
+                            fill={moodColors[Math.max(0, Math.min(moodColors.length - 1, Number(entry.mood) - 1))]}
+                            fillOpacity={0.7}
+                          />
+                        ))}
+                      </Scatter>
+                    </ScatterChart>
+                  </ResponsiveContainer>
+                </div>
+              )
+
   return (
-    <section className="card chart-card">
+    <section className={`card chart-card ${!isPro ? 'pro-locked' : ''}`}>
       <div className="card-header">
         <div>
           <h2>
             Sleep & Mood
-            <Tooltip label="What is this? An advanced scatter plot of daily sleep vs mood; hover dots for details.">
+            <Tooltip label="What is this? A scatter plot of daily sleep vs mood; hover dots for details.">
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
@@ -139,128 +253,86 @@ export const InsightsScatter = ({
             <button
               type="button"
               className={`ghost ${scatterRange === 'last30' ? 'active' : ''}`}
-              onClick={() => onScatterRangeChange('last30')}
+              onClick={() => handleRangeChange('last30')}
             >
               30d
             </button>
             {show90Range
-              ? (
-                  <button
-                    type="button"
-                    className={`ghost ${scatterRange === 'last90' ? 'active' : ''}`}
-                    onClick={() => onScatterRangeChange('last90')}
-                  >
-                    90d
-                  </button>
-                )
+              ? !isPro
+                  ? (
+                      <Tooltip label="Upgrade to Pro to view 90d and All ranges.">
+                        <span className="tooltip-trigger">
+                          <button
+                            type="button"
+                            className="ghost"
+                            disabled
+                            aria-disabled="true"
+                          >
+                            90d
+                          </button>
+                        </span>
+                      </Tooltip>
+                    )
+                  : (
+                      <button
+                        type="button"
+                        className={`ghost ${scatterRange === 'last90' ? 'active' : ''}`}
+                        onClick={() => handleRangeChange('last90')}
+                      >
+                        90d
+                      </button>
+                    )
               : null}
             {showAllRange
-              ? (
-                  <button
-                    type="button"
-                    className={`ghost ${scatterRange === 'all' ? 'active' : ''}`}
-                    onClick={() => onScatterRangeChange('all')}
-                  >
-                    All
-                  </button>
-                )
+              ? !isPro
+                  ? (
+                      <Tooltip label="Upgrade to Pro to view 90d and All ranges.">
+                        <span className="tooltip-trigger">
+                          <button
+                            type="button"
+                            className="ghost"
+                            disabled
+                            aria-disabled="true"
+                          >
+                            All
+                          </button>
+                        </span>
+                      </Tooltip>
+                    )
+                  : (
+                      <button
+                        type="button"
+                        className={`ghost ${scatterRange === 'all' ? 'active' : ''}`}
+                        onClick={() => handleRangeChange('all')}
+                      >
+                        All
+                      </button>
+                    )
               : null}
           </div>
-          <p className="muted" style={{ justifySelf: 'end' }}>
-            {isLoading ? 'Loading entries...' : `${plottedData.length} entries`}
-          </p>
+          {!showTeaser && (
+            <p className="muted" style={{ justifySelf: 'end' }}>
+              {isLoading ? 'Loading entries...' : `${plottedData.length} entries`}
+            </p>
+          )}
         </div>
       </div>
-      {isLoading
+      {showTeaser
         ? (
-            <div className="chart-empty">
-              <div className="skeleton-block" />
+            <div className="premium-preview">
+              <div className="premium-preview__blur">
+                {chartContent}
+              </div>
+              <div className="premium-preview__overlay">
+                <div className="locked-message">
+                  <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
+                    Upgrade to Pro
+                  </button>
+                </div>
+              </div>
             </div>
           )
-        : !hasAnyEntries
-            ? (
-                <div className="chart-empty">
-                  <p className="muted">
-                    <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                      Log a day
-                    </button>
-                    {' '}to see insights.
-                  </p>
-                </div>
-              )
-            : isRangeEmpty
-              ? (
-                  <div className="chart-empty">
-                    <p className="muted">No complete sleep and mood logs in this time frame yet.</p>
-                  </div>
-                )
-              : (
-                  <div className="chart-wrapper">
-                    <ResponsiveContainer width="100%" height={260}>
-                      <ScatterChart margin={{ top: 12, right: 12, bottom: 12, left: 2 }}>
-                        <XAxis
-                          type="number"
-                          dataKey="sleep_hours_jittered"
-                          domain={[4, 10]}
-                          ticks={[4, 5, 6, 7, 8, 9, 10]}
-                          tick={isMobile ? mobileTickProps : baseTickProps}
-                          tickFormatter={(value) => {
-                            if (value === 4) return '≤4h'
-                            if (value === 10) return '≥10h'
-                            return formatSleepHours(Number(value))
-                          }}
-                          label={{
-                            value: 'Sleep hours',
-                            position: 'insideBottom',
-                            offset: -5,
-                          }}
-                          height={35}
-                          tickMargin={2}
-                        />
-                        <YAxis
-                          type="number"
-                          dataKey="mood_jittered"
-                          domain={[1, 5]}
-                          ticks={[1, 2, 3, 4, 5]}
-                          tick={isMobile ? mobileTickProps : baseTickProps}
-                          label={{
-                            value: 'Mood',
-                            angle: -90,
-                            position: 'insideLeft',
-                            offset: -4,
-                            dy: 20,
-                            dx: 10,
-                          }}
-                          width={35}
-                          tickMargin={2}
-                        />
-                        {bestSleepBand
-                          ? (
-                              <ReferenceArea
-                                x1={bestSleepBand.x1}
-                                x2={bestSleepBand.x2}
-                                y1={1}
-                                y2={5}
-                                fill="var(--chart-sleep)"
-                                fillOpacity={0.12}
-                                ifOverflow="extendDomain"
-                              />
-                            )
-                          : null}
-                        <RechartsTooltip content={renderTooltip} />
-                        <Scatter data={plottedData} shape={renderDot}>
-                          {plottedData.map(entry => (
-                            <Cell
-                              key={entry.id}
-                              fill={moodColors[Math.max(0, Math.min(moodColors.length - 1, Number(entry.mood) - 1))]}
-                              fillOpacity={0.7}
-                            />
-                          ))}
-                        </Scatter>
-                      </ScatterChart>
-                    </ResponsiveContainer>
-                  </div>
-                )}
+        : chartContent}
     </section>
   )
 }

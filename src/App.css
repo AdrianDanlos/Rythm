@@ -1356,6 +1356,7 @@
   white-space: nowrap;
   padding: 8px 14px;
   border-radius: 8px;
+  height: 38px;
   min-height: 38px;
   box-sizing: border-box;
 }
@@ -1378,12 +1379,29 @@
   width: 100%;
 }
 
+/* Tooltip-wrapped buttons in thirds grid: make wrapper fill cell so all buttons are equal width */
+.toggle-group--thirds .app-tooltip {
+  min-width: 0;
+  width: 100%;
+  display: flex;
+}
+.toggle-group--thirds .app-tooltip .tooltip-trigger {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+.toggle-group--thirds .app-tooltip .tooltip-trigger .ghost {
+  flex: 1;
+  width: 100%;
+}
+
 .toggle-group__btn--disabled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   white-space: nowrap;
   padding: 8px 14px;
+  height: 38px;
   min-height: 38px;
   box-sizing: border-box;
   border: 1px solid var(--border);

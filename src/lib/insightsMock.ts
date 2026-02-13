@@ -75,3 +75,30 @@ export const buildMockTagSleepDrivers = (): TagSleepDriver[] => [
   { tag: 'Screen time', count: 11, sleepWith: 6.2, sleepWithout: 6.8, delta: -0.5 },
   { tag: 'Stress', count: 7, sleepWith: 6.1, sleepWithout: 6.6, delta: -0.4 },
 ]
+
+/** Minimal shape for scatter chart; used for Pro teaser preview. */
+export type MockScatterPoint = {
+  id: string
+  sleep_hours_clamped: number
+  sleep_hours_jittered: number
+  mood_jittered: number
+  mood: number
+}
+
+export const buildMockScatterPlottedData = (pointCount = 45): MockScatterPoint[] => {
+  return Array.from({ length: pointCount }, (_, index) => {
+    const phase = index / 5
+    const sleepBase = 6.8
+    const moodBase = 3.2
+    const sleep = clampValue(sleepBase + Math.sin(phase) * 0.8 + (index / pointCount) * 0.5, 4.5, 9.2)
+    const mood = clampValue(moodBase + Math.sin(phase + 0.7) * 0.6, 1.2, 4.8)
+    const jitter = (Math.sin(index * 1.3) * 0.5 + 0.5) * 0.15
+    return {
+      id: `mock-scatter-${index}`,
+      sleep_hours_clamped: sleep,
+      sleep_hours_jittered: Math.min(10, Math.max(4, sleep + jitter)),
+      mood_jittered: Math.min(5, Math.max(1, mood + jitter / 2)),
+      mood: Math.round(mood * 10) / 10,
+    }
+  })
+}

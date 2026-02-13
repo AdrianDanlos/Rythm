@@ -27,6 +27,7 @@ import { InsightsWeekdayAverages } from './insights/InsightsWeekdayAverages'
 import badgeIcon from '../assets/badge.png'
 import googleLogo from '../assets/playstore.png'
 import { PLAY_STORE_APP_URL } from '../lib/constants'
+import { buildMockScatterPlottedData } from '../lib/insightsMock'
 import { STORAGE_KEYS } from '../lib/storageKeys'
 
 type InsightsTab = 'summary' | 'charts' | 'data'
@@ -128,8 +129,6 @@ export const Insights = ({
   }
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
-  const showGatedInsights = isPro || entries.length >= 3
-  const [showAdvancedAnalysis, setShowAdvancedAnalysis] = useState(() => isPro)
   const [scatterRange, setScatterRange] = useState<ScatterRange>('last30')
   const showScatter90 = entries.length >= 30
   const showScatterAll = entries.length >= 90
@@ -159,10 +158,6 @@ export const Insights = ({
       setScatterRange('last30')
     }
   }, [scatterRange, showScatter90, showScatterAll])
-
-  useEffect(() => {
-    setShowAdvancedAnalysis(isPro)
-  }, [isPro])
 
   const plottedData = useMemo(() => {
     return scatterEntries.flatMap((entry) => {
@@ -215,6 +210,12 @@ export const Insights = ({
     })
     return best
   }, [scatterEntries])
+
+  const scatterPlottedData = useMemo(() => {
+    if (isPro) return plottedData
+    return buildMockScatterPlottedData()
+  }, [isPro, plottedData])
+
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -255,25 +256,21 @@ export const Insights = ({
                 isPro={isPro}
                 goToLog={goToLog}
               />
-              {showGatedInsights && (
-                <>
-                  <IdeaSleepTarget
-                    isPro={isPro}
-                    entryCount={entries.length}
-                    personalSleepThreshold={personalSleepThreshold}
-                    moodByPersonalThreshold={moodByPersonalThreshold}
-                    onOpenPaywall={onOpenPaywall}
-                    goToLog={goToLog}
-                  />
-                  <InsightsTagInsights
-                    isPro={isPro}
-                    tagDrivers={tagDrivers}
-                    tagSleepDrivers={tagSleepDrivers}
-                    onOpenPaywall={onOpenPaywall}
-                    goToLog={goToLog}
-                  />
-                </>
-              )}
+              <IdeaSleepTarget
+                isPro={isPro}
+                entryCount={entries.length}
+                personalSleepThreshold={personalSleepThreshold}
+                moodByPersonalThreshold={moodByPersonalThreshold}
+                onOpenPaywall={onOpenPaywall}
+                goToLog={goToLog}
+              />
+              <InsightsTagInsights
+                isPro={isPro}
+                tagDrivers={tagDrivers}
+                tagSleepDrivers={tagSleepDrivers}
+                onOpenPaywall={onOpenPaywall}
+                goToLog={goToLog}
+              />
               <section className="card">
                 <div className="card-header">
                   <div>
@@ -372,83 +369,39 @@ export const Insights = ({
                 isMobile={isMobile}
                 goToLog={goToLog}
               />
-              <section className="card advanced-analysis-card">
-                <div className="card-header advanced-analysis-card__header">
-                  <div>
-                    <h2>Advanced analysis</h2>
-                    <p className="muted">
-                      {isPro
-                        ? 'Deeper relationship charts for power users'
-                        : 'Pro unlocks deeper relationship charts'}
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    className={`ghost ${showAdvancedAnalysis ? 'active' : ''}`}
-                    onClick={() => {
-                      if (!isPro) {
-                        onOpenPaywall()
-                        return
-                      }
-                      setShowAdvancedAnalysis(current => !current)
-                    }}
-                    aria-expanded={isPro ? showAdvancedAnalysis : undefined}
-                  >
-                    {isPro ? (showAdvancedAnalysis ? 'Hide' : 'Show') : 'Show'}
-                  </button>
-                </div>
-                {showAdvancedAnalysis && !isPro
-                  ? (
-                      <div className="advanced-analysis-card__locked">
-                        <p className="muted">
-                          Advanced analysis is available on Pro.
-                        </p>
-                        <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
-                          Upgrade to Pro
-                        </button>
-                      </div>
-                    )
-                  : null}
-              </section>
-              {showAdvancedAnalysis && isPro && (
-                <>
-                  <InsightsScatter
-                    isLoading={isLoading}
-                    hasAnyEntries={!isEmpty}
-                    isRangeEmpty={!isLoading && plottedData.length === 0}
-                    isMobile={isMobile}
-                    plottedData={plottedData}
-                    moodColors={moodColors}
-                    scatterRange={scatterRange}
-                    onScatterRangeChange={setScatterRange}
-                    show90Range={showScatter90}
-                    showAllRange={showScatterAll}
-                    bestSleepBand={bestSleepBand}
-                    goToLog={goToLog}
-                  />
-                  {showGatedInsights && (
-                    <>
-                      <InsightsSmoothedTrends
-                        isPro={isPro}
-                        isMobile={isMobile}
-                        entryCount={entries.length}
-                        rollingSeries={rollingSeries}
-                        rollingSummaries={rollingSummaries}
-                        onOpenPaywall={onOpenPaywall}
-                        goToLog={goToLog}
-                      />
-                      <InsightsDailyHistory
-                        isPro={isPro}
-                        isMobile={isMobile}
-                        entryCount={entries.length}
-                        trendSeries={trendSeries}
-                        onOpenPaywall={onOpenPaywall}
-                        goToLog={goToLog}
-                      />
-                    </>
-                  )}
-                </>
-              )}
+              <InsightsScatter
+                isLoading={isLoading}
+                hasAnyEntries={isPro ? !isEmpty : true}
+                isRangeEmpty={isPro ? !isLoading && plottedData.length === 0 : false}
+                isMobile={isMobile}
+                plottedData={scatterPlottedData}
+                moodColors={moodColors}
+                scatterRange={scatterRange}
+                onScatterRangeChange={setScatterRange}
+                show90Range={isPro ? showScatter90 : true}
+                showAllRange={isPro ? showScatterAll : true}
+                bestSleepBand={bestSleepBand}
+                goToLog={goToLog}
+                isPro={isPro}
+                onOpenPaywall={onOpenPaywall}
+              />
+              <InsightsSmoothedTrends
+                isPro={isPro}
+                isMobile={isMobile}
+                entryCount={entries.length}
+                rollingSeries={rollingSeries}
+                rollingSummaries={rollingSummaries}
+                onOpenPaywall={onOpenPaywall}
+                goToLog={goToLog}
+              />
+              <InsightsDailyHistory
+                isPro={isPro}
+                isMobile={isMobile}
+                entryCount={entries.length}
+                trendSeries={trendSeries}
+                onOpenPaywall={onOpenPaywall}
+                goToLog={goToLog}
+              />
             </div>
           )
         : null}
