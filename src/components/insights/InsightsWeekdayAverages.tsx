@@ -11,7 +11,7 @@ import {
 import type { WeekdayAveragePoint } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 
-const MIN_WEEKDAY_OBSERVATIONS = 4
+const EARLY_SIGNAL_MIN_COMPLETE_LOGS = 12
 const weekdayLabelMap: Record<string, string> = {
   Mon: 'Monday',
   Tue: 'Tuesday',
@@ -99,8 +99,8 @@ export const InsightsWeekdayAverages = ({
   goToLog,
 }: InsightsWeekdayAveragesProps) => {
   const hasAnyData = weekdayAverages.some(point => point.observationCount > 0)
-  const hasThresholdCoverage = weekdayAverages.length === 7
-    && weekdayAverages.every(point => point.observationCount >= MIN_WEEKDAY_OBSERVATIONS)
+  const totalCompleteLogs = weekdayAverages.reduce((sum, point) => sum + point.observationCount, 0)
+  const showEarlySignalNote = hasAnyData && totalCompleteLogs < EARLY_SIGNAL_MIN_COMPLETE_LOGS
   const chartMargin = isMobile
     ? { top: 0, right: 0, bottom: 0, left: 0 }
     : { top: 0, right: 0, bottom: 0, left: 0 }
@@ -136,7 +136,7 @@ export const InsightsWeekdayAverages = ({
           <h2>
             Weekday pattern
           </h2>
-          <p className="muted">This is how much you sleep and how you feel on average every day of the week</p>
+          <p className="muted">Your average sleep and mood for each day of the week.</p>
         </div>
       </div>
       {!hasAnyData
@@ -150,78 +150,72 @@ export const InsightsWeekdayAverages = ({
               </p>
             </div>
           )
-        : !hasThresholdCoverage
-            ? (
-                <div className="chart-empty chart-empty--compact">
-                  <p className="muted">
-                    Needs
-                    {' '}
-                    {MIN_WEEKDAY_OBSERVATIONS}
-                    +
-                    {' '}
-                    logs for each weekday to reduce noise.
-                  </p>
-                </div>
-              )
-            : (
-                <div className="chart-wrapper chart-wrapper--compact" style={{ marginTop: 16 }}>
-                  <ResponsiveContainer width="100%" height={190}>
-                    <ComposedChart data={weekdayAverages} margin={chartMargin}>
-                      <XAxis
-                        dataKey="label"
-                        tick={baseTickProps}
-                        height={28}
-                        tickMargin={4}
-                      />
-                      <YAxis
-                        yAxisId="left"
-                        domain={[sleepAxis.min, sleepAxis.max]}
-                        ticks={sleepAxis.ticks}
-                        tickFormatter={value => formatSleepHours(Number(value))}
-                        tick={baseTickProps}
-                        width={isMobile ? 50 : 56}
-                      />
-                      <YAxis
-                        yAxisId="right"
-                        orientation="right"
-                        domain={[moodAxis.min, moodAxis.max]}
-                        ticks={moodAxis.ticks}
-                        tick={baseTickProps}
-                        width={isMobile ? 24 : 28}
-                      />
-                      <RechartsTooltip
-                        formatter={(value, name, item) => {
-                          const numeric = typeof value === 'number' ? value : Number(value)
-                          if (!Number.isFinite(numeric)) return ['—', name]
-                          if (name === 'Avg sleep') return [formatSleepHours(numeric), name]
-                          const observations = item?.payload?.observationCount
-                          return [`${numeric.toFixed(1)} / 5 (${observations} logs)`, name]
-                        }}
-                        itemSorter={item => (item.name === 'Avg sleep' ? -1 : 1)}
-                        labelFormatter={label => weekdayLabelMap[String(label)] ?? String(label)}
-                      />
-                      <Legend content={<WeekdayLegend wrapperStyle={legendWrapperStyle} />} />
-                      <Bar
-                        yAxisId="left"
-                        dataKey="avgSleep"
-                        name="Avg sleep"
-                        fill="var(--chart-sleep)"
-                        radius={[4, 4, 0, 0]}
-                        maxBarSize={isMobile ? 16 : 18}
-                      />
-                      <Line
-                        yAxisId="right"
-                        dataKey="avgMood"
-                        name="Avg mood"
-                        stroke="var(--chart-mood)"
-                        strokeWidth={2}
-                        dot={{ r: 2 }}
-                        activeDot={{ r: 4 }}
-                      />
-                    </ComposedChart>
-                  </ResponsiveContainer>
-                </div>
+        : (
+            <>
+              {showEarlySignalNote && (
+                <p className="muted" style={{ marginTop: 8 }}>
+                  Early signal: patterns get more reliable after about {EARLY_SIGNAL_MIN_COMPLETE_LOGS} complete logs.
+                </p>
               )}
+              <div className="chart-wrapper chart-wrapper--compact" style={{ marginTop: 16 }}>
+                <ResponsiveContainer width="100%" height={190}>
+                  <ComposedChart data={weekdayAverages} margin={chartMargin}>
+                    <XAxis
+                      dataKey="label"
+                      tick={baseTickProps}
+                      height={28}
+                      tickMargin={4}
+                    />
+                    <YAxis
+                      yAxisId="left"
+                      domain={[sleepAxis.min, sleepAxis.max]}
+                      ticks={sleepAxis.ticks}
+                      tickFormatter={value => formatSleepHours(Number(value))}
+                      tick={baseTickProps}
+                      width={isMobile ? 50 : 56}
+                    />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      domain={[moodAxis.min, moodAxis.max]}
+                      ticks={moodAxis.ticks}
+                      tick={baseTickProps}
+                      width={isMobile ? 24 : 28}
+                    />
+                    <RechartsTooltip
+                      formatter={(value, name, item) => {
+                        const numeric = typeof value === 'number' ? value : Number(value)
+                        if (!Number.isFinite(numeric)) return ['—', name]
+                        if (name === 'Avg sleep') return [formatSleepHours(numeric), name]
+                        const observations = item?.payload?.observationCount
+                        return [`${numeric.toFixed(1)} / 5 (${observations} logs)`, name]
+                      }}
+                      itemSorter={item => (item.name === 'Avg sleep' ? -1 : 1)}
+                      labelFormatter={label => weekdayLabelMap[String(label)] ?? String(label)}
+                    />
+                    <Legend content={<WeekdayLegend wrapperStyle={legendWrapperStyle} />} />
+                    <Bar
+                      yAxisId="left"
+                      dataKey="avgSleep"
+                      name="Avg sleep"
+                      fill="var(--chart-sleep)"
+                      radius={[4, 4, 0, 0]}
+                      maxBarSize={isMobile ? 16 : 18}
+                    />
+                    <Line
+                      yAxisId="right"
+                      dataKey="avgMood"
+                      name="Avg mood"
+                      stroke="var(--chart-mood)"
+                      strokeWidth={2}
+                      dot={{ r: 2 }}
+                      activeDot={{ r: 4 }}
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+            </>
+          )}
     </section>
   )
 }
