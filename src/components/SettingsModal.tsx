@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react'
 import { useEffect, useState } from 'react'
 import { Capacitor } from '@capacitor/core'
 import {
@@ -294,6 +295,27 @@ export const SettingsModal = ({
               </div>
             </div>
           </section>
+          {import.meta.env.VITE_SENTRY_DSN
+            ? (
+                <section className="settings-section">
+                  <p className="eyebrow">Developer</p>
+                  <div className="settings-grid">
+                    <div className="field">
+                      <span>Test error reporting</span>
+                      <button
+                        type="button"
+                        className="ghost"
+                        onClick={() => {
+                          Sentry.captureException(new Error('Sentry test'))
+                        }}
+                      >
+                        Send test error to Sentry
+                      </button>
+                    </div>
+                  </div>
+                </section>
+              )
+            : null}
           <div className="modal-actions modal-actions-right">
             <button type="button" className="ghost" onClick={onClose}>
               Close
