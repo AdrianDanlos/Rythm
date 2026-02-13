@@ -499,7 +499,25 @@ export const InsightsSmoothedTrends = ({
                                                 VS prior {summary.days} days
                                               </span>
                                               <span className="delta-stacked">
-                                                <span>Sleep: {formatSleepDeltaValue(summary.sleepDelta)}</span>
+                                                <span className="delta-stacked-sleep">
+                                                  Sleep:{' '}
+                                                  {summary.sleepDelta !== null && Number.isFinite(summary.sleepDelta)
+                                                    ? (
+                                                        <>
+                                                          <span className={summary.sleepDelta >= 0 ? 'mood-by-sleep-percent--up' : 'mood-by-sleep-percent--down'}>
+                                                            {formatSleepDeltaValue(summary.sleepDelta)}
+                                                          </span>
+                                                          <span
+                                                            className={`mood-by-sleep-trend ${summary.sleepDelta >= 0 ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
+                                                            aria-label={summary.sleepDelta >= 0 ? 'Sleep trend up' : 'Sleep trend down'}
+                                                            role="img"
+                                                          >
+                                                            {summary.sleepDelta >= 0 ? <TrendingUp size={14} aria-hidden="true" /> : <TrendingDown size={14} aria-hidden="true" />}
+                                                          </span>
+                                                        </>
+                                                      )
+                                                    : '—'}
+                                                </span>
                                                 <span className="delta-stacked-mood">
                                                   Mood:{' '}
                                                   {(() => {

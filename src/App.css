@@ -2533,6 +2533,7 @@ button.toggle-group__btn--disabled:disabled {
   gap: 2px;
 }
 
+.tooltip-trigger.delta-block .delta-stacked-sleep,
 .tooltip-trigger.delta-block .delta-stacked-mood {
   display: inline-flex;
   align-items: center;
