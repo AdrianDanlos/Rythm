@@ -166,10 +166,10 @@ export const LogForm = ({
           </div>
         </div>
         <div className="field">
-          <span>
+          <span className="label--with-tooltip">
             <label htmlFor="log-form-sleep-hours">How much did you sleep?</label>
-            <Tooltip label="You can always log your sleep now and come back later in the day to log your mood and events">
-              <span className="tooltip-trigger" style={{ marginLeft: '0.25em' }}>
+            <Tooltip label="You can always log your sleep now and come back later in the day to log the rest.">
+              <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
             </Tooltip>
@@ -245,10 +245,10 @@ export const LogForm = ({
         </div>
         <div className="field" ref={tagAreaRef}>
           <div className="field-title">
-            <span>
+            <span className="label--with-tooltip">
               What did you do today?
               <Tooltip label="Log events from your day (e.g. stress, caffeine, excercise...). Use the default events or add your own.">
-                <span className="tooltip-trigger" style={{ marginLeft: '0.25em' }}>
+                <span className="tooltip-trigger">
                   <span className="tooltip-icon" aria-hidden="true">i</span>
                 </span>
               </Tooltip>
