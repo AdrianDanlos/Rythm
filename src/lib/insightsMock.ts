@@ -88,7 +88,7 @@ export type MockScatterPoint = {
 /** Quasi-random in [0,1] from index to spread points without clustering. */
 const scatterHash = (index: number, prime: number) => ((index * prime) % 101) / 101
 
-export const buildMockScatterPlottedData = (pointCount = 180): MockScatterPoint[] => {
+export const buildMockScatterPlottedData = (pointCount = 20): MockScatterPoint[] => {
   return Array.from({ length: pointCount }, (_, index) => {
     // Spread across full chart: sleep 4–10h, mood 1–5 (different primes so points don't line up)
     const sleepNorm = scatterHash(index, 17) * 0.85 + 0.075

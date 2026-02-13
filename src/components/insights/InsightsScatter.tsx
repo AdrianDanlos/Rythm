@@ -78,25 +78,27 @@ export const InsightsScatter = ({
     onScatterRangeChange(value)
   }
 
-  const renderDot = ({
-    cx,
-    cy,
-    fill,
-    fillOpacity,
-  }: {
+  const renderDot = (props: {
     cx?: number
     cy?: number
     fill?: string
     fillOpacity?: number
+    payload?: PlottedEntry | ScatterPoint
   }) => {
+    const { cx, cy, payload, fill, fillOpacity } = props
     if (cx == null || cy == null) return null
+    // Cell fill is not applied to Scatter shapes in Recharts, so derive color from payload
+    const moodIndex = payload != null
+      ? Math.max(0, Math.min(moodColors.length - 1, Math.floor(Number(payload.mood)) - 1))
+      : 0
+    const color = fill ?? moodColors[moodIndex]
     return (
       <circle
         cx={cx}
         cy={cy}
         r={scatterRadius}
-        fill={fill}
-        fillOpacity={fillOpacity}
+        fill={color}
+        fillOpacity={fillOpacity ?? 0.7}
       />
     )
   }
