@@ -28,7 +28,7 @@ import { InsightsTagInsights } from './insights/InsightsTagInsights'
 import { InsightsMoodDistribution } from './insights/InsightsMoodDistribution'
 import { InsightsWeekdayAverages } from './insights/InsightsWeekdayAverages'
 import badgeIcon from '../assets/badge.png'
-import googleLogo from '../assets/playstore.png'
+import googleLogo from '../assets/playstore.png?inline'
 import { PLAY_STORE_APP_URL } from '../lib/constants'
 import { buildMockScatterPlottedData } from '../lib/insightsMock'
 import { STORAGE_KEYS } from '../lib/storageKeys'
@@ -456,7 +456,7 @@ export const Insights = ({
                 <div className="review-cta review-cta--standalone">
                   <div className="review-cta__content">
                     <div className="review-cta__icon-wrap" aria-hidden="true">
-                      <img className="review-cta__icon" src={googleLogo} alt="" />
+                      <img className="review-cta__icon" src={googleLogo} alt="" width={24} height={24} />
                     </div>
                     <div className="review-cta__text">
                       <p className="label">Enjoying Rythm?</p>
