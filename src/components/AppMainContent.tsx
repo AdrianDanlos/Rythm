@@ -1,3 +1,4 @@
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import type { Session } from '@supabase/supabase-js'
 import type { Entry } from '../lib/entries'
 import type { SleepMoodAverages } from '../lib/types/stats'
@@ -17,6 +18,7 @@ import { InsightsQuickStart } from './InsightsQuickStart'
 import { LogForm } from './LogForm'
 import { Insights } from './Insights'
 import { Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
+import { motionTransition } from '../lib/motion'
 
 type AppMainContentProps = {
   authInitialized: boolean
@@ -171,6 +173,9 @@ export function AppMainContent({
   onExportMonthlyReport,
   onOpenPaywall,
 }: AppMainContentProps) {
+  const reduceMotion = useReducedMotion()
+  const tabTransition = reduceMotion ? { duration: 0 } : motionTransition
+
   if (!authInitialized) {
     return (
       <div className="card auth-loading" aria-live="polite">
@@ -228,87 +233,105 @@ export function AppMainContent({
         </button>
       </div>
 
-      {activeTab === Tabs.Log ? (
-        !entriesSettled ? (
-          <div className="card auth-loading" aria-live="polite">
-            <div className="loading-row">
-              <span className="loading-spinner" aria-hidden="true" />
-              <span className="muted">Loading your log...</span>
-            </div>
-          </div>
+      <AnimatePresence mode="wait">
+        {activeTab === Tabs.Log ? (
+          <motion.div
+            key="log"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={tabTransition}
+          >
+            {!entriesSettled ? (
+              <div className="card auth-loading" aria-live="polite">
+                <div className="loading-row">
+                  <span className="loading-spinner" aria-hidden="true" />
+                  <span className="muted">Loading your log...</span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <InsightsQuickStart
+                  hasNoEntries={entries.length === 0}
+                  goToLog={() =>
+                    document
+                      .getElementById('log-calendar')
+                      ?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                />
+                <p className="log-form-tip" role="status">
+                  Tip: Best time to log is in the <strong>evening or before bed</strong> so you can log events from the day. The more you log, the clearer the picture of what helps you feel better.
+                </p>
+                <LogForm
+                  selectedDate={selectedDate}
+                  todayDate={todayDate}
+                  highlightedDates={highlightedDates}
+                  incompleteHighlightedDates={incompleteHighlightedDates}
+                  sleepHours={sleepHours}
+                  mood={mood}
+                  note={note}
+                  tags={tags}
+                  tagSuggestions={tagSuggestions}
+                  maxTagsPerEntry={maxTagsPerEntry}
+                  saving={saving}
+                  saved={saved}
+                  entriesError={entriesError}
+                  moodColors={moodColors}
+                  isMobile={isMobile}
+                  formatLocalDate={formatLocalDate}
+                  onEntryDateChange={onEntryDateChange}
+                  onSleepHoursChange={onSleepHoursChange}
+                  onMoodChange={onMoodChange}
+                  onNoteChange={onNoteChange}
+                  onTagsChange={onTagsChange}
+                  onSave={onSave}
+                />
+              </>
+            )}
+          </motion.div>
         ) : (
-          <>
-            <InsightsQuickStart
-              hasNoEntries={entries.length === 0}
-              goToLog={() =>
-                document
-                  .getElementById('log-calendar')
-                  ?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-            />
-            <p className="log-form-tip" role="status">
-              Tip: Best time to log is in the <strong>evening or before bed</strong> so you can log events from the day. The more you log, the clearer the picture of what helps you feel better.
-            </p>
-            <LogForm
-              selectedDate={selectedDate}
-              todayDate={todayDate}
-              highlightedDates={highlightedDates}
-              incompleteHighlightedDates={incompleteHighlightedDates}
-              sleepHours={sleepHours}
-              mood={mood}
-              note={note}
-              tags={tags}
-              tagSuggestions={tagSuggestions}
-              maxTagsPerEntry={maxTagsPerEntry}
-              saving={saving}
-              saved={saved}
-              entriesError={entriesError}
+          <motion.div
+            key="insights"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={tabTransition}
+          >
+            <Insights
+              entries={entries}
+              entriesLoading={entriesLoading}
+              chartData={chartData}
+              averages={averages}
+              windowAverages={windowAverages}
+              statCounts={statCounts}
+              rhythmScore={rhythmScore}
+              streak={streak}
+              sleepConsistencyLabel={sleepConsistencyLabel}
+              sleepConsistencyBadges={sleepConsistencyBadges}
+              correlationLabel={correlationLabel}
+              correlationDirection={correlationDirection}
+              moodBySleepThreshold={moodBySleepThreshold}
+              moodBySleepBucketCounts={moodBySleepBucketCounts}
+              sleepThreshold={sleepThreshold}
               moodColors={moodColors}
-              isMobile={isMobile}
-              formatLocalDate={formatLocalDate}
-              onEntryDateChange={onEntryDateChange}
-              onSleepHoursChange={onSleepHoursChange}
-              onMoodChange={onMoodChange}
-              onNoteChange={onNoteChange}
-              onTagsChange={onTagsChange}
-              onSave={onSave}
+              trendSeries={trendSeries}
+              rollingSeries={rollingSeries}
+              rollingSummaries={rollingSummaries}
+              weekdayAverages={weekdayAverages}
+              personalSleepThreshold={personalSleepThreshold}
+              moodByPersonalThreshold={moodByPersonalThreshold}
+              tagDrivers={tagDrivers}
+              tagSleepDrivers={tagSleepDrivers}
+              isPro={isPro}
+              exportError={exportError}
+              onExportCsv={onExportCsv}
+              onExportMonthlyReport={onExportMonthlyReport}
+              onOpenPaywall={onOpenPaywall}
+              goToLog={() => setActiveTab(Tabs.Log)}
+              activeTab={activeInsightsTab}
             />
-          </>
-        )
-      ) : (
-        <Insights
-          entries={entries}
-          entriesLoading={entriesLoading}
-          chartData={chartData}
-          averages={averages}
-          windowAverages={windowAverages}
-          statCounts={statCounts}
-          rhythmScore={rhythmScore}
-          streak={streak}
-          sleepConsistencyLabel={sleepConsistencyLabel}
-          sleepConsistencyBadges={sleepConsistencyBadges}
-          correlationLabel={correlationLabel}
-          correlationDirection={correlationDirection}
-          moodBySleepThreshold={moodBySleepThreshold}
-          moodBySleepBucketCounts={moodBySleepBucketCounts}
-          sleepThreshold={sleepThreshold}
-          moodColors={moodColors}
-          trendSeries={trendSeries}
-          rollingSeries={rollingSeries}
-          rollingSummaries={rollingSummaries}
-          weekdayAverages={weekdayAverages}
-          personalSleepThreshold={personalSleepThreshold}
-          moodByPersonalThreshold={moodByPersonalThreshold}
-          tagDrivers={tagDrivers}
-          tagSleepDrivers={tagSleepDrivers}
-          isPro={isPro}
-          exportError={exportError}
-          onExportCsv={onExportCsv}
-          onExportMonthlyReport={onExportMonthlyReport}
-          onOpenPaywall={onOpenPaywall}
-          goToLog={() => setActiveTab(Tabs.Log)}
-          activeTab={activeInsightsTab}
-        />
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   )
 }

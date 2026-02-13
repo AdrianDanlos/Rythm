@@ -1,5 +1,7 @@
+import { motion, useReducedMotion } from 'framer-motion'
 import type { Entry } from '../../lib/entries'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
+import { cardEnter, motionTransitionSlow, progressEnter } from '../../lib/motion'
 
 const UNLOCK_DAYS = 5
 
@@ -9,6 +11,7 @@ type InsightsFirstFiveCardProps = {
 }
 
 export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCardProps) => {
+  const reduceMotion = useReducedMotion()
   const sorted = [...entries].sort((a, b) => b.entry_date.localeCompare(a.entry_date))
   const last = sorted[0]
   if (!last) return null
@@ -27,8 +30,14 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
   const hasMood = mood !== null
   const hasAnyData = hasSleep || hasMood
 
+  const transition = reduceMotion ? { duration: 0 } : motionTransitionSlow
+
   return (
-    <section className="card insights-first-five-card">
+    <motion.section
+      className="card insights-first-five-card"
+      {...(reduceMotion ? {} : cardEnter)}
+      transition={reduceMotion ? { duration: 0 } : undefined}
+    >
       <div className="insights-first-five-card__header">
         <p className="eyebrow">Summary</p>
         <h2>You're building your first week</h2>
@@ -58,15 +67,17 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
       </p>
       <div className="first-five-progress">
         <div className="badge-progress-track" aria-hidden="true">
-          <span
+          <motion.span
             className="badge-progress-fill"
-            style={{ width: `${progressPercent}%` }}
+            initial={reduceMotion ? false : progressEnter.initial}
+            animate={{ width: `${progressPercent}%` }}
+            transition={transition}
           />
         </div>
         <p className="first-five-progress__text">
           {progress} / {UNLOCK_DAYS} days
         </p>
       </div>
-    </section>
+    </motion.section>
   )
 }

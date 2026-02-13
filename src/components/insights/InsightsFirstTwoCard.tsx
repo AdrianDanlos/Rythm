@@ -1,5 +1,7 @@
+import { motion, useReducedMotion } from 'framer-motion'
 import type { Entry } from '../../lib/entries'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
+import { cardEnter, motionTransitionSlow, progressEnter } from '../../lib/motion'
 
 const UNLOCK_DAYS = 2
 
@@ -9,6 +11,7 @@ type InsightsFirstTwoCardProps = {
 }
 
 export const InsightsFirstTwoCard = ({ entries, goToLog }: InsightsFirstTwoCardProps) => {
+  const reduceMotion = useReducedMotion()
   const last = entries[0]
   if (!last) return null
 
@@ -25,8 +28,14 @@ export const InsightsFirstTwoCard = ({ entries, goToLog }: InsightsFirstTwoCardP
   const hasMood = mood !== null
   const hasAnyData = hasSleep || hasMood
 
+  const transition = reduceMotion ? { duration: 0 } : motionTransitionSlow
+
   return (
-    <section className="card insights-first-five-card">
+    <motion.section
+      className="card insights-first-five-card"
+      {...(reduceMotion ? {} : cardEnter)}
+      transition={reduceMotion ? { duration: 0 } : undefined}
+    >
       <div className="insights-first-five-card__header">
         <p className="eyebrow">Summary</p>
         <h2>One more day to unlock</h2>
@@ -57,15 +66,17 @@ export const InsightsFirstTwoCard = ({ entries, goToLog }: InsightsFirstTwoCardP
       </p>
       <div className="first-five-progress">
         <div className="badge-progress-track" aria-hidden="true">
-          <span
+          <motion.span
             className="badge-progress-fill"
-            style={{ width: `${progressPercent}%` }}
+            initial={reduceMotion ? false : progressEnter.initial}
+            animate={{ width: `${progressPercent}%` }}
+            transition={transition}
           />
         </div>
         <p className="first-five-progress__text">
           {progress} / {UNLOCK_DAYS} days
         </p>
       </div>
-    </section>
+    </motion.section>
   )
 }

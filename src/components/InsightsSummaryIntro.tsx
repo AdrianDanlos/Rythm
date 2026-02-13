@@ -1,3 +1,6 @@
+import { motion, useReducedMotion } from 'framer-motion'
+import { cardEnter } from '../lib/motion'
+
 type InsightsSummaryIntroProps = {
   entryCount: number
   entriesLoading: boolean
@@ -5,10 +8,15 @@ type InsightsSummaryIntroProps = {
 }
 
 export const InsightsSummaryIntro = ({ entryCount, entriesLoading, goToLog }: InsightsSummaryIntroProps) => {
+  const reduceMotion = useReducedMotion()
   if (entriesLoading || entryCount > 1) return null
 
   return (
-    <section className="card insights-intro insights-summary-intro">
+    <motion.section
+      className="card insights-intro insights-summary-intro"
+      {...(reduceMotion ? {} : cardEnter)}
+      transition={reduceMotion ? { duration: 0 } : undefined}
+    >
       <div className="insights-intro__header">
         <div>
           <p className="eyebrow">Summary</p>
@@ -22,6 +30,6 @@ export const InsightsSummaryIntro = ({ entryCount, entriesLoading, goToLog }: In
         </button>
         {' '}to get started.
       </p>
-    </section>
+    </motion.section>
   )
 }

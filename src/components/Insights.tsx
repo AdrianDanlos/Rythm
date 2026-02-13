@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import type { Entry } from '../lib/entries'
 import type { StatCounts } from '../lib/stats'
 import type {
@@ -31,6 +32,7 @@ import googleLogo from '../assets/playstore.png'
 import { PLAY_STORE_APP_URL } from '../lib/constants'
 import { buildMockScatterPlottedData } from '../lib/insightsMock'
 import { STORAGE_KEYS } from '../lib/storageKeys'
+import { motionTransition } from '../lib/motion'
 
 type InsightsTab = 'summary' | 'charts' | 'data'
 type ScatterRange = 'all' | 'last30' | 'last90'
@@ -233,11 +235,19 @@ export const Insights = ({
     media.addListener(handleChange)
     return () => media.removeListener(handleChange)
   }, [])
+  const reduceMotion = useReducedMotion()
+  const panelTransition = reduceMotion ? { duration: 0 } : motionTransition
+
   return (
     <>
       {activeTab === 'summary'
         ? (
-            <div className="insights-panel">
+            <motion.div
+              className="insights-panel"
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={panelTransition}
+            >
               {!entriesLoading && entries.length === 1 && (
                 <InsightsFirstTwoCard entries={entries} goToLog={goToLog} />
               )}
@@ -350,12 +360,17 @@ export const Insights = ({
                   </>
                 </section>
               )}
-            </div>
+            </motion.div>
           )
         : null}
       {activeTab === 'charts'
         ? (
-            <div className="insights-panel">
+            <motion.div
+              className="insights-panel"
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={panelTransition}
+            >
               <InsightsMoodDistribution
                 entries={entries}
                 moodColors={moodColors}
@@ -416,12 +431,17 @@ export const Insights = ({
                   goToLog={goToLog}
                 />
               )}
-            </div>
+            </motion.div>
           )
         : null}
       {activeTab === 'data'
         ? (
-            <div className="insights-panel">
+            <motion.div
+              className="insights-panel"
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={panelTransition}
+            >
               <InsightsExport
                 hasEntries={entries.length > 0}
                 isPro={isPro}
@@ -446,7 +466,7 @@ export const Insights = ({
                   </a>
                 </div>
               )}
-            </div>
+            </motion.div>
           )
         : null}
     </>
