@@ -259,58 +259,56 @@ export const InsightsScatter = ({
             >
               30 days
             </button>
-            {show90Range
-              ? !isPro
-                  ? (
-                      <Tooltip label="Upgrade to Pro to view 90 days and All ranges.">
-                        <span className="tooltip-trigger">
-                          <button
-                            type="button"
-                            className="ghost toggle-group__btn--disabled"
-                            disabled
-                            aria-disabled="true"
-                          >
-                            90 days
-                          </button>
-                        </span>
-                      </Tooltip>
-                    )
-                  : (
+            {!isPro || !show90Range
+              ? (
+                  <Tooltip label="Log at least 30 days to view 90-day range.">
+                    <span className="tooltip-trigger">
                       <button
                         type="button"
-                        className={`ghost ${scatterRange === 'last90' ? 'active' : ''}`}
-                        onClick={() => handleRangeChange('last90')}
+                        className="ghost toggle-group__btn--disabled"
+                        disabled
+                        aria-disabled="true"
+                        style={{ pointerEvents: 'none' }}
                       >
                         90 days
                       </button>
-                    )
-              : null}
-            {showAllRange
-              ? !isPro
-                  ? (
-                      <Tooltip label="Upgrade to Pro to view 90 days and All ranges.">
-                        <span className="tooltip-trigger">
-                          <button
-                            type="button"
-                            className="ghost toggle-group__btn--disabled"
-                            disabled
-                            aria-disabled="true"
-                          >
-                            All
-                          </button>
-                        </span>
-                      </Tooltip>
-                    )
-                  : (
+                    </span>
+                  </Tooltip>
+                )
+              : (
+                  <button
+                    type="button"
+                    className={`ghost ${scatterRange === 'last90' ? 'active' : ''}`}
+                    onClick={() => handleRangeChange('last90')}
+                  >
+                    90 days
+                  </button>
+                )}
+            {!isPro || !showAllRange
+              ? (
+                  <Tooltip label="Log at least 90 days to view All.">
+                    <span className="tooltip-trigger">
                       <button
                         type="button"
-                        className={`ghost ${scatterRange === 'all' ? 'active' : ''}`}
-                        onClick={() => handleRangeChange('all')}
+                        className="ghost toggle-group__btn--disabled"
+                        disabled
+                        aria-disabled="true"
+                        style={{ pointerEvents: 'none' }}
                       >
                         All
                       </button>
-                    )
-              : null}
+                    </span>
+                  </Tooltip>
+                )
+              : (
+                  <button
+                    type="button"
+                    className={`ghost ${scatterRange === 'all' ? 'active' : ''}`}
+                    onClick={() => handleRangeChange('all')}
+                  >
+                    All
+                  </button>
+                )}
           </div>
           {!showTeaser && (
             <p className="muted" style={{ justifySelf: 'end' }}>
