@@ -189,7 +189,7 @@ export const InsightsStats = ({
                     <p className="value">{sleepConsistencyLabel ?? '—'}</p>
                     <p className="helper">
                       {sleepConsistencyLabel
-                        ? 'How steady your sleep hours are'
+                        ? 'How steady your sleep hours are (all time)'
                         : `Needs ${sleepConsistencyMore} more day${sleepConsistencyMore === 1 ? '' : 's'}`}
                     </p>
                   </div>

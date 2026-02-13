@@ -1,5 +1,6 @@
 import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
 import { DEFAULT_TAG_DRIVER_MIN_COUNT } from '../../lib/utils/tagInsights'
+import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 import { TrendingDown, TrendingUp } from 'lucide-react'
 import { InsightsTagInsightsTeaser } from './InsightsTagInsightsTeaser'
@@ -44,9 +45,26 @@ export const InsightsTagInsights = ({
     return (tag.delta / tag.moodWithout) * 100
   }
 
-  const sleepDeltaPercent = (d: TagSleepDriver): number | null => {
-    if (d.delta === null || d.sleepWithout === null || d.sleepWithout === 0) return null
-    return (d.delta / d.sleepWithout) * 100
+  const renderSleepDelta = (delta: number | null) => {
+    if (delta === null) return '—'
+    const isUp = delta >= 0
+    const Icon = isUp ? TrendingUp : TrendingDown
+    const formatted = formatSleepHours(Math.abs(delta))
+    const sign = delta >= 0 ? '+' : '−'
+    return (
+      <span className="tag-delta-value">
+        <span className={isUp ? 'mood-by-sleep-percent--up' : 'mood-by-sleep-percent--down'}>
+          {sign}{formatted}
+        </span>
+        <span
+          className={`mood-by-sleep-trend ${isUp ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
+          aria-label={isUp ? 'Increase' : 'Decrease'}
+          role="img"
+        >
+          <Icon size={16} aria-hidden="true" />
+        </span>
+      </span>
+    )
   }
 
   const renderDeltaPercent = (percent: number | null) => {
@@ -105,10 +123,10 @@ export const InsightsTagInsights = ({
             <div className={`tag-bar-item ${variant}`} key={d.tag}>
               <div className="tag-bar-header">
                 <p className="tag-title">{d.tag}</p>
-                <p className="tag-delta tag-delta--pc">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
+                <p className="tag-delta tag-delta--pc">{renderSleepDelta(d.delta)}</p>
               </div>
               <div className="tag-bar-delta-and-track">
-                <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(sleepDeltaPercent(d))}</p>
+                <p className="tag-delta tag-delta--mobile">{renderSleepDelta(d.delta)}</p>
                 <div className="tag-bar-track" aria-hidden="true">
                   <span
                     className="tag-bar-fill"
@@ -208,7 +226,7 @@ export const InsightsTagInsights = ({
                   <div className="tag-insights-block">
                     <div className="tag-insights-block-header">
                       <h3 className="tag-insights-block-title">Events that predict sleep</h3>
-                      <Tooltip label="Predict how much these events will affect your sleep tonight.">
+                      <Tooltip label="Compares sleep on days with an event vs without it.">
                         <span className="tooltip-trigger">
                           <span className="tooltip-icon" aria-hidden="true">i</span>
                         </span>

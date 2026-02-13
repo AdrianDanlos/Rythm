@@ -1,6 +1,5 @@
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { TrendingDown, TrendingUp } from 'lucide-react'
-import { Tooltip } from '../Tooltip'
 import { IdeaSleepTargetTeaser } from './IdeaSleepTargetTeaser'
 
 type IdeaSleepTargetProps = {
@@ -46,14 +45,9 @@ export const IdeaSleepTarget = ({
         <div>
           <h2>
             Your ideal sleep target
-            <Tooltip label="What is this? An estimated sleep target tied to your best mood days.">
-              <span className="tooltip-trigger">
-                <span className="tooltip-icon" aria-hidden="true">i</span>
-              </span>
-            </Tooltip>
           </h2>
           <p className="muted">
-            Finds your ideal target sleep time based on your sleep history.
+            Finds your ideal sleep time target based on your sleep and mood history.
           </p>
         </div>
       </div>

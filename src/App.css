@@ -2237,6 +2237,7 @@ button.toggle-group__btn--disabled:disabled {
   flex-direction: column;
   gap: 20px;
   align-items: center;
+  margin-top: 20px;
 }
 
 .ideal-sleep-target-ring {
@@ -3051,10 +3052,6 @@ button.toggle-group__btn--disabled:disabled {
   .heatmap-header,
   .heatmap-body {
     grid-template-columns: 36px 1fr;
-  }
-
-  .ideal-sleep-target-content {
-    margin-top: 20px;
   }
 }
 

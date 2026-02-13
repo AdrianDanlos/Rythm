@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'react'
-import { Tooltip } from '../Tooltip'
 import type { Entry } from '../../lib/entries'
 
 type InsightsMoodDistributionProps = {
@@ -44,11 +43,6 @@ export const InsightsMoodDistribution = ({
         <div>
           <h2>
             Mood distribution
-            <Tooltip label="What is this? A breakdown of mood ratings across all logged entries.">
-              <span className="tooltip-trigger">
-                <span className="tooltip-icon" aria-hidden="true">i</span>
-              </span>
-            </Tooltip>
           </h2>
           <p className="muted">Mood distribution across your entries</p>
         </div>

@@ -237,7 +237,7 @@ export const InsightsScatter = ({
         <div>
           <h2>
             Sleep & Mood
-            <Tooltip label="What is this? A scatter plot of daily sleep vs mood; hover dots for details.">
+            <Tooltip label="What is this? A scatter plot of daily sleep vs mood; click dots for details.">
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
@@ -311,7 +311,7 @@ export const InsightsScatter = ({
                 )}
           </div>
           {!showTeaser && (
-            <p className="muted" style={{ justifySelf: 'end' }}>
+            <p className="muted" style={{ justifySelf: 'end', marginTop: '10px' }}>
               {isLoading ? 'Loading entries...' : `${plottedData.length} entries`}
             </p>
           )}
