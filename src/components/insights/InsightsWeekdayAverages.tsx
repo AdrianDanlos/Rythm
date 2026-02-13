@@ -32,50 +32,6 @@ type WeekdayLegendProps = {
   wrapperStyle?: React.CSSProperties
 }
 
-const buildAxisScale = (
-  values: number[],
-  {
-    fallback,
-    step,
-    padSteps,
-    minSpan,
-    minLimit,
-    maxLimit,
-  }: {
-    fallback: { min: number, max: number }
-    step: number
-    padSteps: number
-    minSpan: number
-    minLimit: number
-    maxLimit: number
-  },
-) => {
-  if (!values.length) return fallback
-
-  let min = Math.min(...values)
-  let max = Math.max(...values)
-  if (min === max) {
-    min -= step
-    max += step
-  }
-  min = Math.floor((min - padSteps * step) / step) * step
-  max = Math.ceil((max + padSteps * step) / step) * step
-  min = Math.max(minLimit, min)
-  max = Math.min(maxLimit, max)
-
-  if (max - min < minSpan) {
-    const midpoint = (min + max) / 2
-    min = Math.max(minLimit, midpoint - minSpan / 2)
-    max = Math.min(maxLimit, midpoint + minSpan / 2)
-    min = Math.floor(min / step) * step
-    max = Math.ceil(max / step) * step
-  }
-
-  if (max <= min) return fallback
-
-  return { min, max }
-}
-
 const WeekdayLegend = ({ wrapperStyle }: WeekdayLegendProps) => (
   <div className="rolling-trend-legend weekday-legend" style={wrapperStyle}>
     <span className="rolling-trend-legend__item">
@@ -98,33 +54,10 @@ export const InsightsWeekdayAverages = ({
   const totalCompleteLogs = weekdayAverages.reduce((sum, point) => sum + point.observationCount, 0)
   const showEarlySignalNote = hasAnyData && totalCompleteLogs < EARLY_SIGNAL_MIN_COMPLETE_LOGS
   const chartMargin = isMobile
-    ? { top: 0, right: 0, bottom: 0, left: 0 }
+    ? { top: 8, right: 0, bottom: 0, left: -23 }
     : { top: 0, right: 0, bottom: 0, left: 0 }
   const baseTickProps = { fontSize: isMobile ? 12 : 13 }
   const legendWrapperStyle = isMobile ? { paddingTop: 10 } : undefined
-  const sleepValues = weekdayAverages
-    .map(point => point.avgSleep)
-    .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
-  const moodValues = weekdayAverages
-    .map(point => point.avgMood)
-    .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
-  const sleepAxis = buildAxisScale(sleepValues, {
-    fallback: { min: 4, max: 10 },
-    step: 0.25,
-    padSteps: 0.5,
-    minSpan: 0.75,
-    minLimit: 0,
-    maxLimit: 12,
-  })
-  const moodAxis = buildAxisScale(moodValues, {
-    fallback: { min: 1, max: 5 },
-    step: 0.1,
-    padSteps: 0.5,
-    minSpan: 0.4,
-    minLimit: 1,
-    maxLimit: 5,
-  })
-
   return (
     <section className="card chart-card chart-card--compact">
       <div className="card-header">
@@ -164,8 +97,8 @@ export const InsightsWeekdayAverages = ({
                     />
                     <YAxis
                       yAxisId="left"
-                      domain={[sleepAxis.min, sleepAxis.max]}
-                      tickCount={5}
+                      domain={[4, 10]}
+                      ticks={[4, 5, 6, 7, 8, 9, 10]}
                       tickFormatter={value => formatSleepHours(Number(value))}
                       tick={baseTickProps}
                       width={isMobile ? 50 : 56}
@@ -173,8 +106,8 @@ export const InsightsWeekdayAverages = ({
                     <YAxis
                       yAxisId="right"
                       orientation="right"
-                      domain={[moodAxis.min, moodAxis.max]}
-                      tickCount={5}
+                      domain={[1, 5]}
+                      ticks={[1, 2, 3, 4, 5]}
                       tick={baseTickProps}
                       width={isMobile ? 24 : 28}
                     />

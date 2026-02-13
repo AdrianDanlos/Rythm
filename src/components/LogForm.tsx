@@ -165,11 +165,19 @@ export const LogForm = ({
             />
           </div>
         </div>
-        <label className="field">
-          How much did you sleep?
+        <div className="field">
+          <span>
+            <label htmlFor="log-form-sleep-hours">How much did you sleep?</label>
+            <Tooltip label="You can always log your sleep now and come back later in the day to log your mood and events">
+              <span className="tooltip-trigger" style={{ marginLeft: '0.25em' }}>
+                <span className="tooltip-icon" aria-hidden="true">i</span>
+              </span>
+            </Tooltip>
+          </span>
           <div className="sleep-hours-row" ref={sleepMenuRef}>
             <div className="sleep-select">
               <button
+                id="log-form-sleep-hours"
                 type="button"
                 className="sleep-select-button"
                 aria-haspopup="listbox"
@@ -234,7 +242,7 @@ export const LogForm = ({
                 : null}
             </div>
           </div>
-        </label>
+        </div>
         <div className="field" ref={tagAreaRef}>
           <div className="field-title">
             <span>
