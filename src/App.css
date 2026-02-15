@@ -2654,6 +2654,10 @@ button.toggle-group__btn--disabled:disabled {
 }
 
 @media (max-width: 540px) {
+  .app-header {
+    align-items: flex-end;
+  }
+
   .tabs {
     gap: 20px;
   }
