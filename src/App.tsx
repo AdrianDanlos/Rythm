@@ -20,8 +20,7 @@ import { useSettingsSync } from './hooks/useSettingsSync'
 import { useAppShell } from './hooks/useAppShell'
 import { useEntries } from './hooks/useEntries'
 import { useLogForm } from './hooks/useLogForm'
-import logo from './assets/rythm-logo.png'
-import { StripeLanding } from './billing/stripe/StripeLanding'
+import { Privacy } from './billing/stripe/Privacy'
 import { DeleteAccountPage } from './billing/stripe/DeleteAccountPage'
 import {
   ROUTES,
@@ -306,7 +305,7 @@ function App() {
     setExportError(null)
     try {
       await exportMonthlyReport(entries, stats, {
-        title: 'Rythm Report',
+        title: '',
         profileName,
       })
     }
@@ -316,10 +315,10 @@ function App() {
   }
 
   if (showDeleteAccountPage) {
-    return <DeleteAccountPage logo={logo} />
+    return <DeleteAccountPage />
   }
   if (showPrivacyPage) {
-    return <StripeLanding logo={logo} />
+    return <Privacy />
   }
 
   return (

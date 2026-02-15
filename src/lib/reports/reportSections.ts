@@ -36,36 +36,47 @@ export const renderReportHeader = ({
   brandImage,
 }: ReportHeaderParams) => {
   const pageWidth = doc.internal.pageSize.getWidth()
-  const bannerHeight = 30
+  const marginLeft = 14
+  // Match app nav (dark theme): column layout (eyebrow on top, logo below), dark bar, logo 100×34 proportion
+  const logoHeight = 10
+  const logoWidth = (100 / 34) * logoHeight
+  const eyebrowBaseline = 5
+  const gap = 2
+  const logoY = eyebrowBaseline + gap
+  const bannerHeight = logoY + logoHeight + 4
   const bannerY = 0
-  const logoSize = 16
-  const logoX = 14
-  const logoY = bannerY + (bannerHeight - logoSize) / 2
 
-  doc.setFillColor(15, 23, 42)
+  doc.setFillColor(17, 24, 39)
   doc.rect(0, bannerY, pageWidth, bannerHeight, 'F')
+  doc.setDrawColor(31, 41, 55)
+  doc.setLineWidth(0.3)
+  doc.line(0, bannerY + bannerHeight, pageWidth, bannerY + bannerHeight)
+
+  doc.setFontSize(7)
+  doc.setTextColor(148, 163, 184)
+  doc.text('Sleep & Mood Tracker', marginLeft, eyebrowBaseline)
+
   if (brandImage) {
-    doc.addImage(brandImage, 'PNG', logoX, logoY, logoSize, logoSize)
+    doc.addImage(brandImage, 'PNG', marginLeft, logoY, logoWidth, logoHeight)
   }
-  const textX = logoX + logoSize + 8
-  doc.setFontSize(11)
-  doc.setTextColor(203, 213, 225)
-  doc.text('Sleep & Mood Tracker', textX, bannerY + 11)
-  doc.setFontSize(20)
-  doc.setTextColor(255)
-  doc.text(title, textX, bannerY + 23)
-  yRef.value = bannerY + bannerHeight + 12
+
+  yRef.value = bannerY + bannerHeight + 10
+
+  doc.setFontSize(18)
+  doc.setTextColor(15, 23, 42)
+  doc.text(title, marginLeft, yRef.value)
+  yRef.value += 8
 
   if (welcomeName) {
     doc.setFontSize(12)
-    doc.setTextColor(60)
-    doc.text(`Welcome to your report ${welcomeName}`, 14, yRef.value)
+    doc.setTextColor(100, 116, 139)
+    doc.text(`Welcome to your report ${welcomeName}`, marginLeft, yRef.value)
     yRef.value += 7
   }
 
   doc.setFontSize(11)
   doc.setTextColor(80)
-  doc.text(`${formatLongDate(start)} - ${formatLongDate(end)}`, 14, yRef.value)
+  doc.text(`${formatLongDate(start)} - ${formatLongDate(end)}`, marginLeft, yRef.value)
   yRef.value += 10
 }
 

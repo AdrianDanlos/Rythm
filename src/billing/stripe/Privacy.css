@@ -1,0 +1,165 @@
+/* Same shell as main app; .app (on same element) provides max-width and padding */
+.privacy-page {
+  background: var(--privacy-bg);
+  color: var(--privacy-text);
+  min-height: 100vh;
+}
+
+.privacy-landing {
+  display: flex;
+  flex-direction: column;
+}
+
+.privacy-landing__content {
+  width: 100%;
+  display: grid;
+  gap: 32px;
+}
+
+.privacy-landing__hero {
+  margin-bottom: 8px;
+}
+
+.privacy-landing__hero h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  margin: 0 0 12px;
+  color: var(--privacy-text);
+}
+
+.privacy-landing__lede {
+  color: var(--privacy-lede);
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.privacy-landing__section {
+  background: var(--privacy-section-bg);
+  border: 1px solid var(--privacy-section-border);
+  border-radius: 20px;
+  padding: 28px 32px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+:root[data-theme="dark"] .privacy-landing__section {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.privacy-landing__section h3 {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--privacy-text);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--privacy-section-border);
+}
+
+.privacy-landing__section h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 1.5em 0 0.4em;
+  color: var(--privacy-text);
+}
+
+.privacy-landing__section h4:first-of-type {
+  margin-top: 1em;
+}
+
+.privacy-landing__section p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--privacy-lede);
+}
+
+.privacy-landing__section p + p {
+  margin-top: 12px;
+}
+
+.privacy-landing__section ul {
+  margin: 12px 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.privacy-landing__section ul li {
+  position: relative;
+  padding-left: 24px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--privacy-lede);
+}
+
+.privacy-landing__section ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--privacy-primary-bg);
+  opacity: 0.9;
+}
+
+.privacy-landing__section ul li:last-child {
+  margin-bottom: 0;
+}
+
+.privacy-landing__actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 8px;
+}
+
+.privacy-landing__primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--privacy-primary-bg);
+  color: var(--privacy-primary-text);
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.15s ease;
+}
+
+.privacy-landing__primary:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.privacy-landing__primary:focus-visible {
+  outline: 2px solid var(--privacy-primary-bg);
+  outline-offset: 2px;
+}
+
+/* Primary button is an <a>; override link styles so text stays white/readable */
+.privacy-landing a.privacy-landing__primary {
+  color: var(--privacy-primary-text);
+  text-decoration: none;
+}
+
+.privacy-landing a.privacy-landing__primary:hover {
+  color: var(--privacy-primary-text);
+}
+
+.privacy-landing a {
+  color: var(--privacy-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+.privacy-landing a:hover {
+  text-decoration-thickness: 2px;
+}

@@ -118,15 +118,15 @@
   );
   --review-cta-button-text: var(--white);
   /* Privacy page – light theme */
-  --stripe-landing-bg: #f8fafc;
-  --stripe-landing-text: #0f172a;
-  --stripe-landing-muted: #64748b;
-  --stripe-landing-lede: #334155;
-  --stripe-landing-section-bg: #ffffff;
-  --stripe-landing-section-border: #e2e8f0;
-  --stripe-landing-primary-bg: #22c55e;
-  --stripe-landing-primary-text: #ffffff;
-  --stripe-landing-link: #0f172a;
+  --privacy-bg: #f8fafc;
+  --privacy-text: #0f172a;
+  --privacy-muted: #64748b;
+  --privacy-lede: #334155;
+  --privacy-section-bg: #ffffff;
+  --privacy-section-border: #e2e8f0;
+  --privacy-primary-bg: #22c55e;
+  --privacy-primary-text: #ffffff;
+  --privacy-link: #0f172a;
 }
 
 :root[data-theme="dark"] {
@@ -212,15 +212,15 @@
   --review-cta-button-border: var(--selected-border);
   --review-cta-button-text: var(--selected-text);
   /* Privacy page – dark theme */
-  --stripe-landing-bg: #0f1115;
-  --stripe-landing-text: #f8fafc;
-  --stripe-landing-muted: #94a3b8;
-  --stripe-landing-lede: #cbd5e1;
-  --stripe-landing-section-bg: rgba(30, 41, 59, 0.6);
-  --stripe-landing-section-border: rgba(148, 163, 184, 0.25);
-  --stripe-landing-primary-bg: #22c55e;
-  --stripe-landing-primary-text: #0f1115;
-  --stripe-landing-link: #7dd3fc;
+  --privacy-bg: #0f1115;
+  --privacy-text: #f8fafc;
+  --privacy-muted: #94a3b8;
+  --privacy-lede: #cbd5e1;
+  --privacy-section-bg: rgba(30, 41, 59, 0.6);
+  --privacy-section-border: rgba(148, 163, 184, 0.25);
+  --privacy-primary-bg: #22c55e;
+  --privacy-primary-text: #ffffff;
+  --privacy-link: #7dd3fc;
 }
 
 * {
