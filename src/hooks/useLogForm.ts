@@ -19,6 +19,9 @@ const DEFAULT_TAG_SUGGESTIONS = [
   'Sunlight',
 ]
 
+/** Once the user has this many unique tags in their entries, we stop showing default suggestions. */
+const SUGGEST_DEFAULTS_UNTIL_USER_TAG_COUNT = 5
+
 type UseLogFormParams = {
   userId?: string
   entries: Entry[]
@@ -61,12 +64,34 @@ export const useLogForm = ({
   )
 
   const tagSuggestions = useMemo(() => {
-    const defaultsLower = DEFAULT_TAG_SUGGESTIONS.map(t => t.trim().toLowerCase())
-    const seen = new Set<string>(defaultsLower)
-    const suggestions = [...defaultsLower]
     const sorted = [...entries].sort((a, b) =>
       b.entry_date.localeCompare(a.entry_date),
     )
+    const userTagSet = new Set<string>()
+    sorted.forEach((entry) => {
+      entry.tags?.forEach((tag) => {
+        const normalized = tag.trim().toLowerCase()
+        if (normalized) userTagSet.add(normalized)
+      })
+    })
+
+    if (userTagSet.size >= SUGGEST_DEFAULTS_UNTIL_USER_TAG_COUNT) {
+      const suggestions: string[] = []
+      const seen = new Set<string>()
+      sorted.forEach((entry) => {
+        entry.tags?.forEach((tag) => {
+          const normalized = tag.trim().toLowerCase()
+          if (!normalized || seen.has(normalized)) return
+          seen.add(normalized)
+          suggestions.push(normalized)
+        })
+      })
+      return suggestions
+    }
+
+    const defaultsLower = DEFAULT_TAG_SUGGESTIONS.map(t => t.trim().toLowerCase())
+    const seen = new Set<string>(defaultsLower)
+    const suggestions = [...defaultsLower]
     sorted.forEach((entry) => {
       entry.tags?.forEach((tag) => {
         const normalized = tag.trim().toLowerCase()
