@@ -45,7 +45,7 @@ const MOTIVATION_MESSAGES: MessageDef[] = [
       return summary7 != null && summary7.sleepDelta != null && summary7.sleepDelta > 0
     },
     getText: () =>
-      'Your sleep is heading in the right direction. Small changes add up.',
+      'Your sleep is up over the last 7 days. Small changes add up.',
   },
   {
     id: 'mood-trend-up',
@@ -54,27 +54,14 @@ const MOTIVATION_MESSAGES: MessageDef[] = [
       return summary7 != null && summary7.moodDelta != null && summary7.moodDelta > 0
     },
     getText: () =>
-      'Your mood trend is climbing. You\'re doing something right.',
+      'Your mood is up over the last 7 days. You\'re doing something right.',
   },
   {
     id: 'mood-better-when-sleep-better',
     condition: ctx =>
       ctx.moodBySleepDeltaPercent != null && ctx.moodBySleepDeltaPercent >= 10,
-    getText: () =>
-      'When you sleep well, your mood tends to rise. You\'re not imagining it; your data shows it.',
-  },
-  {
-    id: 'more-sleep-lately',
-    condition: (ctx) => {
-      const { last7, last30 } = ctx.windowAverages
-      return (
-        last7.sleep != null
-        && last30.sleep != null
-        && last7.sleep > last30.sleep
-      )
-    },
-    getText: () =>
-      'You\'ve been giving rest more priority. Your future self will thank you.',
+    getText: ctx =>
+      `When you sleep more, your mood tends to rise. Your data shows a clear link (${ctx.moodBySleepDeltaPercent}%+).`,
   },
   {
     id: 'new-first-week',
@@ -87,21 +74,14 @@ const MOTIVATION_MESSAGES: MessageDef[] = [
     condition: ctx =>
       ctx.streak === 1 && ctx.statCounts.completeEntries > 7,
     getText: () =>
-      'You\'re back. That matters more than the gap. Today counts.',
-  },
-  {
-    id: 'steady-mood-despite-ups-and-downs',
-    condition: ctx =>
-      ctx.statCounts.completeEntries >= 14 && ctx.correlationLabel != null,
-    getText: () =>
-      'You\'re tracking through the ups and downs. That\'s how you learn what actually helps.',
+      'It\'s nice to see you back. Picking up where you left off is what counts — keep going and your data will keep rewarding you.',
   },
   {
     id: 'sleep-consistency-improving',
     condition: ctx =>
       ctx.rhythmScore != null && ctx.rhythmScore >= 70,
     getText: () =>
-      'Your sleep is becoming more predictable. Consistency is a superpower.',
+      'Your rhythm score is 70+. Your sleep and wake times are becoming more predictable. That consistency helps your body and mind.',
   },
   {
     id: 'unlocked-several-stats',
@@ -110,7 +90,7 @@ const MOTIVATION_MESSAGES: MessageDef[] = [
       return !ctx.hasMissingStats && n >= 3 && n <= 5
     },
     getText: () =>
-      'You\'re starting to see the full picture. Keep going and it gets even clearer.',
+      'You\'ve logged enough to see how sleep and mood connect. A few more days and the patterns will really pop.',
   },
   {
     id: 'weekday-pattern',
@@ -148,8 +128,8 @@ const MOTIVATION_MESSAGES: MessageDef[] = [
   {
     id: 'long-term-tracker',
     condition: ctx => ctx.statCounts.completeEntries >= 60,
-    getText: () =>
-      'You\'ve put in the time. Your data is starting to repay you.',
+    getText: ctx =>
+      `You've logged ${ctx.statCounts.completeEntries} days. That history is what makes your insights reliable.`,
   },
   {
     id: 'tip-anchor-wake',
