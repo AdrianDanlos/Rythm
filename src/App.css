@@ -2188,9 +2188,66 @@ button.toggle-group__btn--disabled:disabled {
   gap: 12px;
 }
 
+/* Tags field: align Recommended pill and Add button to same column width */
+.field--tags {
+  display: grid;
+  grid-template-columns: 1fr 80px;
+  grid-template-rows: auto auto auto;
+  gap: 10px 10px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+.field--tags .field-title {
+  display: contents;
+}
+.field--tags .field-title .label--with-tooltip {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+}
+.field--tags .field-hint-pill {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 0;
+}
+.field--tags .tag-control-row {
+  display: contents;
+}
+.field--tags .tag-dropdown-wrap {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+}
+.field--tags .tag-add-wrap {
+  grid-column: 2;
+  grid-row: 2;
+}
+.field--tags .tag-add-button {
+  width: 100%;
+  box-sizing: border-box;
+}
+.field--tags .tag-pills-row {
+  grid-column: 1 / -1;
+  grid-row: 3;
+}
+
 .field-hint {
   font-size: 0.8rem;
   color: var(--muted);
+}
+
+.field-hint-pill {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--surface-elevated, rgba(0, 0, 0, 0.06));
+  padding: 2px 8px;
+  border-radius: 9999px;
 }
 
 .label {
