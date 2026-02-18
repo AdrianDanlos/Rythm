@@ -161,7 +161,7 @@ export const renderLast30DaysSection = ({
         `Sleep: ${
           bestDay.sleep_hours !== null ? formatSleepHours(Number(bestDay.sleep_hours)) : '—'
         }`,
-        `Events: ${bestTags}`,
+        `Daily events: ${bestTags}`,
       ],
       22,
     )
@@ -293,7 +293,7 @@ export const renderAllTimeSection = ({
     yRef.value += 4
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text('Events that predict mood', 16, yRef.value)
+    doc.text('Daily events that predict mood', 16, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 6
     if (moodPos.length > 0) {
@@ -331,7 +331,7 @@ export const renderAllTimeSection = ({
     yRef.value += 4
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text('Events that predict sleep', 16, yRef.value)
+    doc.text('Daily events that predict sleep', 16, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 6
     if (sleepPos.length > 0) {
@@ -369,7 +369,7 @@ export const renderAllTimeSection = ({
     yRef.value += 4
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text('Most used events', 16, yRef.value)
+    doc.text('Most used daily events', 16, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 6
     drawBullets(

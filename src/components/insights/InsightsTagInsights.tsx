@@ -157,7 +157,7 @@ export const InsightsTagInsights = ({
                 <>
                   <div className="tag-insights-block">
                     <div className="tag-insights-block-header">
-                      <h3 className="tag-insights-block-title">Events that predict mood</h3>
+                      <h3 className="tag-insights-block-title">Daily events that predict mood</h3>
                       <Tooltip label="Compares mood on days with an event vs without it.">
                         <span className="tooltip-trigger">
                           <span className="tooltip-icon" aria-hidden="true">i</span>
@@ -220,12 +220,12 @@ export const InsightsTagInsights = ({
                           </>
                         )
                       : (
-                          <p className="muted">Add events to see mood impact (min 3 entries per event).</p>
+                          <p className="muted">Add daily events to see mood impact (min 3 entries per event).</p>
                         )}
                   </div>
                   <div className="tag-insights-block">
                     <div className="tag-insights-block-header">
-                      <h3 className="tag-insights-block-title">Events that predict sleep</h3>
+                      <h3 className="tag-insights-block-title">Daily events that predict sleep</h3>
                       <Tooltip label="Compares sleep on days with an event vs without it.">
                         <span className="tooltip-trigger">
                           <span className="tooltip-icon" aria-hidden="true">i</span>
@@ -240,14 +240,14 @@ export const InsightsTagInsights = ({
                           </>
                         )
                       : (
-                          <p className="muted">Add events to see sleep impact (min 3 entries per event).</p>
+                          <p className="muted">Add daily events to see sleep impact (min 3 entries per event).</p>
                         )}
                   </div>
                 </>
               )
             : (
                 <p className="muted">
-                  <button type="button" className="link-button link-button--text" onClick={goToLog}>Add events</button>
+                  <button type="button" className="link-button link-button--text" onClick={goToLog}>Add daily events</button>
                   {' '}to see how each one changes your mood and sleep <strong>(at least {DEFAULT_TAG_DRIVER_MIN_COUNT} entries per event).</strong>
                 </p>
               )}

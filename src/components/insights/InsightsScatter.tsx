@@ -120,7 +120,7 @@ export const InsightsScatter = ({
         <p>Sleep: {entry.sleep_hours == null ? 'N/A' : formatSleepHours(entry.sleep_hours)}</p>
         <p>Mood: {entry.mood} / 5</p>
         <div className="tooltip-events">
-          <p>Events:</p>
+          <p>Daily events:</p>
           {tags.length
             ? (
                 <div className="tooltip-tags">

@@ -247,7 +247,7 @@ export const LogForm = ({
           <div className="field-title">
             <span className="label--with-tooltip">
               What happened today?
-              <Tooltip label="Log events from your day (e.g. stress, caffeine, excercise...). Use the default events or add your own custome ones. Rythm will automatically recognize patterns in them and show you insights.">
+              <Tooltip label="Log daily events (e.g. stress, caffeine, excercise...). Use the default events or add your own custome ones. Rythm will automatically recognize patterns in them and show you insights.">
                 <span className="tooltip-trigger">
                   <span className="tooltip-icon" aria-hidden="true">i</span>
                 </span>
@@ -262,7 +262,7 @@ export const LogForm = ({
                 className="tag-dropdown-trigger"
                 aria-haspopup="listbox"
                 aria-expanded={tagDropdownOpen}
-                aria-label="Add events (e.g. stress, caffeine, exercise)"
+                aria-label="Add daily events (e.g. stress, caffeine, exercise)"
                 placeholder={atMaxTags ? `Maximum of ${maxTagsPerEntry} reached` : 'e.g. stress, exercise...'}
                 value={tagInputValue}
                 disabled={atMaxTags}

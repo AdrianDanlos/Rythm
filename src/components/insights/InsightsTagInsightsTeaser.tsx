@@ -98,7 +98,7 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
       <div className="premium-preview__blur">
         <div className="tag-insights-block">
           <div className="tag-insights-block-header">
-            <h3 className="tag-insights-block-title">Events that predict mood</h3>
+            <h3 className="tag-insights-block-title">Daily events that predict mood</h3>
             <Tooltip label="Compares mood on days with an event vs without it.">
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
@@ -158,8 +158,8 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
         </div>
         <div className="tag-insights-block">
           <div className="tag-insights-block-header">
-            <h3 className="tag-insights-block-title">Events that predict sleep</h3>
-            <Tooltip label="Predict how much these events will affect your sleep tonight.">
+            <h3 className="tag-insights-block-title">Daily events that predict sleep</h3>
+            <Tooltip label="Predict how much these daily events will affect your sleep tonight.">
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>

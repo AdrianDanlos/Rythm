@@ -21,7 +21,7 @@ export const InsightsQuickStart = ({ goToLog, hasNoEntries }: InsightsQuickStart
         </div>
         <div className="intro-step">
           <span className="intro-step__number">2</span>
-          <p>Log events that happened during the day (e.g. coffee, workout, late night, stress).</p>
+          <p>Log daily events (e.g. coffee, workout, late night, stress).</p>
         </div>
         <div className="intro-step">
           <span className="intro-step__number">3</span>

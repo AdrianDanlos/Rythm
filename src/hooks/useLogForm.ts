@@ -187,11 +187,11 @@ export const useLogForm = ({
 
     const tagList = parseTags(tags)
     if (tagList.some(tag => tag.length > MAX_TAG_LENGTH)) {
-      if (!options?.silent) showEntriesError(`Each event must be ${MAX_TAG_LENGTH} characters or less.`)
+      if (!options?.silent) showEntriesError(`Each daily event must be ${MAX_TAG_LENGTH} characters or less.`)
       return
     }
     if (tagList.length > maxTagsPerEntry) {
-      if (!options?.silent) showEntriesError(`Limit ${maxTagsPerEntry} events per entry.`)
+      if (!options?.silent) showEntriesError(`Limit ${maxTagsPerEntry} daily events per entry.`)
       return
     }
 
@@ -241,7 +241,7 @@ export const useLogForm = ({
       setSaved(true)
       if (!options?.silent) {
         if (tagList.length === 0) {
-          toast.info('Saved. No events added. Add them next time for better insights.')
+          toast.info('Saved. No daily events added. Add them next time for better insights.')
         }
         else {
           toast.success(getSupportMessage({

@@ -80,7 +80,7 @@ export const InsightsDayDetailModal = ({
                 </div>
 
                 <div className="insights-day-modal__row">
-                  <p className="label">Events</p>
+                  <p className="label">Daily events</p>
                   {tags.length
                     ? (
                         <div className="insights-day-modal__tags">
@@ -91,7 +91,7 @@ export const InsightsDayDetailModal = ({
                           ))}
                         </div>
                       )
-                    : <p className="muted">No events logged</p>}
+                    : <p className="muted">No daily events logged</p>}
                 </div>
 
                 <div className="insights-day-modal__row">
