@@ -6,7 +6,7 @@ import type {
   RollingPoint,
   RollingSummary,
   SleepMoodAverages,
-  SleepConsistencyBadge,
+  Badge,
   TagDriver,
   TagSleepDriver,
   TrendPoint,
@@ -27,7 +27,12 @@ import { InsightsStats } from './insights/InsightsStats'
 import { InsightsTagInsights } from './insights/InsightsTagInsights'
 import { InsightsMoodDistribution } from './insights/InsightsMoodDistribution'
 import { InsightsWeekdayAverages } from './insights/InsightsWeekdayAverages'
-import badgeIcon from '../assets/badge.png'
+import rankingBadge1 from '../assets/badges/ranking-badge_1.png'
+import rankingBadge2 from '../assets/badges/ranking-badge_2.png'
+import rankingBadge3 from '../assets/badges/ranking-badge_3.png'
+import rankingBadge4 from '../assets/badges/ranking-badge_4.png'
+import rankingBadge5 from '../assets/badges/ranking-badge_5.png'
+import rankingBadgeLast from '../assets/badges/ranking-badge_last.png'
 import googleLogo from '../assets/playstore.png?inline'
 import { PLAY_STORE_APP_URL } from '../lib/constants'
 import { buildMockScatterPlottedData } from '../lib/insightsMock'
@@ -62,7 +67,7 @@ type InsightsProps = {
   rhythmScore: number | null
   streak: number
   sleepConsistencyLabel: string | null
-  sleepConsistencyBadges: SleepConsistencyBadge[]
+  sleepConsistencyBadges: Badge[]
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
@@ -156,6 +161,19 @@ export const Insights = ({
     if (scatterRange === 'last90' && !showScatter90) return 'last30'
     return scatterRange
   }, [scatterRange, showScatter90, showScatterAll])
+
+  const sortedBadges = useMemo(() => {
+    const isCompleted = (b: Badge) =>
+      b.unlocked && (b.tierCount === 1 || b.currentTierIndex === b.tierCount - 1)
+    const progressRatio = (b: Badge) =>
+      b.progressTotal > 0 ? b.progressValue / b.progressTotal : 0
+    return [...sleepConsistencyBadges].sort((a, b) => {
+      const aDone = isCompleted(a)
+      const bDone = isCompleted(b)
+      if (aDone !== bDone) return aDone ? -1 : 1
+      return progressRatio(b) - progressRatio(a)
+    })
+  }, [sleepConsistencyBadges])
 
   const scatterEntries = useMemo(() => {
     if (!isPro) return []
@@ -302,13 +320,19 @@ export const Insights = ({
                 <section className="card">
                   <div className="card-header">
                     <div>
-                      <h2>Sleep badges</h2>
-                      <p className="muted">Consistency rewards based on your logs</p>
+                      <h2>Badges</h2>
+                      <p className="muted">Level up as you log</p>
                     </div>
                   </div>
                   <>
                     <div className="badge-list">
-                      {(entries.length >= 5 ? sleepConsistencyBadges : sleepConsistencyBadges.slice(0, 4)).map(badge => (
+                      {sortedBadges.map(badge => {
+                        const isMaxTier = badge.unlocked && (badge.tierCount === 1 || badge.currentTierIndex === badge.tierCount - 1)
+                        const step = badge.unlocked ? (isMaxTier ? 'last' : badge.currentTierIndex + 2) : 1
+                        const badgeSrc = step === 'last'
+                          ? rankingBadgeLast
+                          : [rankingBadge1, rankingBadge2, rankingBadge3, rankingBadge4, rankingBadge5][step - 1]
+                        return (
                         <div
                           className={`badge-row ${badge.unlocked ? 'unlocked' : 'locked'}`}
                           key={badge.id}
@@ -316,48 +340,35 @@ export const Insights = ({
                           <div className="badge-row-header">
                             <div className="badge-title-row">
                               <p className="badge-title">{badge.title}</p>
-                              {badge.unlocked
-                                ? (
-                                    <img
-                                      className="badge-status-icon"
-                                      src={badgeIcon}
-                                      alt=""
-                                      aria-hidden
-                                    />
-                                  )
-                                : (
-                                    <span className="badge-status-icon badge-status-icon--lock" aria-hidden>
-                                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                                      </svg>
-                                    </span>
-                                  )}
+                              <img
+                                className="badge-status-icon badge-status-icon--ranking"
+                                src={badgeSrc}
+                                alt=""
+                                aria-hidden
+                              />
                             </div>
                             <p className="badge-helper">{badge.description}</p>
                           </div>
-                          {!badge.unlocked
-                            ? (
-                                <div className="badge-progress-track" aria-hidden="true">
-                                  <span
-                                    className="badge-progress-fill"
-                                    style={{
-                                      width: `${Math.min(
-                                        100,
-                                        Math.max(0, (badge.progressValue / (badge.progressTotal || 1)) * 100),
-                                      )}%`,
-                                    }}
-                                  />
-                                </div>
-                              )
-                            : null}
+                          {badge.progressTotal > 0 && (
+                            <div className="badge-progress-track" aria-hidden="true">
+                              <span
+                                className="badge-progress-fill"
+                                style={{
+                                  width: `${Math.min(
+                                    100,
+                                    Math.max(0, (badge.progressValue / (badge.progressTotal || 1)) * 100),
+                                  )}%`,
+                                }}
+                              />
+                            </div>
+                          )}
                           {badge.progressText
                             ? (
                                 <p className="badge-progress-text">{badge.progressText}</p>
                               )
                             : null}
                         </div>
-                      ))}
+                      )})}
                     </div>
                   </>
                 </section>

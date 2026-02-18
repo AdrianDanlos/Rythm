@@ -64,7 +64,7 @@ export type TagSleepDriver = {
   delta: number | null
 }
 
-export type SleepConsistencyBadge = {
+export type Badge = {
   id: string
   title: string
   description: string
@@ -72,4 +72,8 @@ export type SleepConsistencyBadge = {
   progressText: string | null
   progressValue: number
   progressTotal: number
+  /** 0-based tier for incremental badges; 0 = locked, 1 = unlocked for non-incremental */
+  currentTierIndex: number
+  /** Total tiers (1 for non-incremental) */
+  tierCount: number
 }

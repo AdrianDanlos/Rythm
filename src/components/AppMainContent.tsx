@@ -6,7 +6,7 @@ import type { StatCounts } from '../lib/stats'
 import type {
   RollingPoint,
   RollingSummary,
-  SleepConsistencyBadge,
+  Badge,
   TagDriver,
   TagSleepDriver,
   TrendPoint,
@@ -79,7 +79,7 @@ type AppMainContentProps = {
   rhythmScore: number | null
   streak: number
   sleepConsistencyLabel: string | null
-  sleepConsistencyBadges: SleepConsistencyBadge[]
+  sleepConsistencyBadges: Badge[]
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null; low: number | null }

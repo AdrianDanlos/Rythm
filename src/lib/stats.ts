@@ -2,7 +2,7 @@ import type { Entry } from './entries'
 import type {
   RollingPoint,
   RollingSummary,
-  SleepConsistencyBadge,
+  Badge,
   TagDriver,
   TagSleepDriver,
   TrendPoint,
@@ -11,10 +11,8 @@ import type {
 } from './types/stats'
 import { calculateAverages } from './utils/averages'
 import { getCorrelationInsight } from './utils/correlation'
-import {
-  getSleepConsistencyBadges,
-  getSleepConsistencyLabel,
-} from './utils/sleepConsistency'
+import { getTieredBadges } from './utils/tieredBadges'
+import { getSleepConsistencyLabel } from './utils/sleepConsistency'
 import { buildTagDrivers, buildTagSleepDrivers } from './utils/tagInsights'
 
 export type StatCounts = {
@@ -37,7 +35,7 @@ export type StatsResult = {
   rhythmScore: number | null
   streak: number
   sleepConsistencyLabel: string | null
-  sleepConsistencyBadges: SleepConsistencyBadge[]
+  sleepConsistencyBadges: Badge[]
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
@@ -172,7 +170,7 @@ export const buildStats = (
   }
 
   const sleepConsistencyLabel = getSleepConsistencyLabel(entries)
-  const sleepConsistencyBadges = getSleepConsistencyBadges(entries)
+  const sleepConsistencyBadges = getTieredBadges(entries)
   const {
     label: correlationLabel,
     direction: correlationDirection,
