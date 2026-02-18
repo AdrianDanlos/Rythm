@@ -116,7 +116,7 @@ export const InsightsScatter = ({
     const tags = entry.tags?.filter(Boolean) ?? []
     return (
       <div className="tooltip">
-        <p>{labelDate}</p>
+        <p className="tooltip-date">{labelDate}</p>
         <p>Sleep: {entry.sleep_hours == null ? 'N/A' : formatSleepHours(entry.sleep_hours)}</p>
         <p>Mood: {entry.mood} / 5</p>
         <div className="tooltip-events">

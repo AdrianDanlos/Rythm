@@ -2534,6 +2534,10 @@ button.toggle-group__btn--disabled:disabled {
   word-break: break-word;
 }
 
+.tooltip-date {
+  margin-bottom: 6px;
+}
+
 .tooltip-note {
   margin-top: 6px;
   color: var(--muted);
