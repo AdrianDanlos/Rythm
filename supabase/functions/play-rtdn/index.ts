@@ -19,6 +19,9 @@ if (!supabaseUrl || !supabaseServiceRoleKey) {
   throw new Error('Missing required Supabase environment variables.')
 }
 
+const validatedSupabaseUrl: string = supabaseUrl
+const validatedServiceRoleKey: string = supabaseServiceRoleKey
+
 // Subscription notification types that mean the user should lose Pro access.
 const REVOKE_SUBSCRIPTION_TYPES = new Set([3, 12, 13]) // CANCELED, REVOKED, EXPIRED
 
@@ -50,31 +53,31 @@ type DeveloperNotification = {
 
 async function revokeProForUser(userId: string): Promise<void> {
   const adminHeaders = {
-    Authorization: `Bearer ${supabaseServiceRoleKey}`,
-    apikey: supabaseServiceRoleKey,
+    'Authorization': `Bearer ${validatedServiceRoleKey}`,
+    'apikey': validatedServiceRoleKey,
     'Content-Type': 'application/json',
   }
-  const userRes = await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {
+  const userRes = await fetch(`${validatedSupabaseUrl}/auth/v1/admin/users/${userId}`, {
     headers: adminHeaders,
   })
   if (!userRes.ok) return
   const userPayload = await userRes.json()
   const current = (userPayload?.app_metadata ?? {}) as Record<string, unknown>
-  const {
-    subscription_source,
-    play_subscription_token: _pt,
-    play_subscription_id: _pid,
-    play_subscription_expiry_time_millis: _exp,
-    ...rest
-  } = current
+  const subscriptionSource = current.subscription_source
   const updates: Record<string, unknown> = {
-    ...rest,
+    ...current,
     is_pro: false,
   }
-  if (subscription_source !== 'play') {
-    updates.subscription_source = subscription_source
+  delete updates.play_subscription_token
+  delete updates.play_subscription_id
+  delete updates.play_subscription_expiry_time_millis
+  if (subscriptionSource !== 'play') {
+    updates.subscription_source = subscriptionSource
   }
-  await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {
+  else {
+    delete updates.subscription_source
+  }
+  await fetch(`${validatedSupabaseUrl}/auth/v1/admin/users/${userId}`, {
     method: 'PUT',
     headers: adminHeaders,
     body: JSON.stringify({ app_metadata: updates }),
@@ -82,11 +85,11 @@ async function revokeProForUser(userId: string): Promise<void> {
 }
 
 async function findUserIdByPurchaseToken(purchaseToken: string): Promise<string | null> {
-  const url = `${supabaseUrl}/rest/v1/play_subscription_user?purchase_token=eq.${encodeURIComponent(purchaseToken)}&select=user_id`
+  const url = `${validatedSupabaseUrl}/rest/v1/play_subscription_user?purchase_token=eq.${encodeURIComponent(purchaseToken)}&select=user_id`
   const res = await fetch(url, {
     headers: {
-      apikey: supabaseServiceRoleKey,
-      Authorization: `Bearer ${supabaseServiceRoleKey}`,
+      apikey: validatedServiceRoleKey,
+      Authorization: `Bearer ${validatedServiceRoleKey}`,
     },
   })
   if (!res.ok) return null
@@ -106,7 +109,8 @@ Deno.serve(async (req) => {
   let body: PubSubMessage
   try {
     body = await req.json()
-  } catch {
+  }
+  catch {
     return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -125,7 +129,8 @@ Deno.serve(async (req) => {
   try {
     const decoded = atob(dataB64)
     notification = JSON.parse(decoded) as DeveloperNotification
-  } catch {
+  }
+  catch {
     return new Response(JSON.stringify({ error: 'Invalid base64 or JSON' }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -148,7 +153,8 @@ Deno.serve(async (req) => {
     if (REVOKE_SUBSCRIPTION_TYPES.has(notificationType)) {
       purchaseToken = sub.purchaseToken
     }
-  } else if (notification.voidedPurchaseNotification) {
+  }
+  else if (notification.voidedPurchaseNotification) {
     const voided = notification.voidedPurchaseNotification
     if (voided.productType === 1) {
       purchaseToken = voided.purchaseToken
