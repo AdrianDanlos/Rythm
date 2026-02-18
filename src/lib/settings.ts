@@ -63,7 +63,7 @@ export const setStoredProfileName = (value: string) => {
 
 export const normalizeSleepTarget = (value: number) => {
   if (!Number.isFinite(value)) return DEFAULT_SLEEP_TARGET
-  const rounded = Math.round(value * 2) / 2
+  const rounded = Math.round(value * 4) / 4
   return Math.min(MAX_SLEEP_TARGET, Math.max(MIN_SLEEP_TARGET, rounded))
 }
 

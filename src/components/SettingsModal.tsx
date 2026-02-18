@@ -207,7 +207,7 @@ export const SettingsModal = ({
                   inputMode="decimal"
                   min={4}
                   max={12}
-                  step={0.5}
+                  step={0.25}
                   value={sleepTargetInput}
                   onChange={(event) => {
                     setSleepTargetInput(event.target.value)
