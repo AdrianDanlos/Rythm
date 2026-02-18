@@ -18,16 +18,16 @@ export function getSupportMessage({
 }: SupportMessageInput): string {
   if (!isComplete) {
     if (sleepHours !== null && mood === null) {
-      return 'Sleep saved. Add mood later to complete this day.'
+      return 'Sleep saved. One more tap to add mood and you\'re done — you\'ve got this.'
     }
     if (sleepHours === null && mood !== null) {
-      return 'Mood saved. Add sleep later to complete this day.'
+      return 'Mood saved. Add sleep when you can and you\'ll have a complete picture.'
     }
-    return 'Draft saved. You can complete this entry later.'
+    return 'Draft saved. Come back anytime — every little step counts.'
   }
 
   if (sleepHours === null || mood === null) {
-    return 'Entry saved. Every log helps you see your patterns over time.'
+    return 'Logged. You\'re building a clearer picture of your rhythm — keep going.'
   }
 
   const shortSleep = sleepHours < (sleepThreshold - 1)
@@ -36,26 +36,23 @@ export function getSupportMessage({
   const tagSet = new Set(tags.map(t => t.trim().toLowerCase()))
 
   if (shortSleep && goodMood) {
-    return 'Even after a brief night, you are moving through the day in good spirits!'
+    return 'Short on sleep but still in good spirits — that\'s real resilience.'
   }
   if (shortSleep && !lowMood) {
-    return 'Sleep was under your target. Rest well tonight when you can.'
+    return 'You\'re aware of your sleep — that\'s the first step. Tonight\'s a fresh chance to rest.'
   }
   if (shortSleep && lowMood) {
-    return 'Rough combo today. Logging it is a good step — tomorrow’s a new day.'
+    return 'Tough combo today. You showed up and logged it — that takes strength. Tomorrow’s a new day.'
   }
   if (!shortSleep && goodMood) {
-    return 'Solid sleep and a good mood — nice combo!'
+    return 'Great sleep and a good mood — you\'re in a strong place today.'
   }
   if (!shortSleep && lowMood) {
-    return 'You got decent sleep. If today still felt tough, be gentle with yourself.'
+    return 'You gave your body good rest. Be kind to yourself — some days are just harder.'
   }
   if (tagSet.has('exercise') && goodMood) {
-    return 'Exercise and a good mood — nice to see that link!'
-  }
-  if (tagSet.has('caffeine') && shortSleep) {
-    return 'Noted. Caffeine and sleep can be tricky — worth watching in your insights.'
+    return 'Excercise and a good mood — you\'re seeing the connection. Keep it up.'
   }
 
-  return 'Entry saved. Every log helps you see your patterns over time.'
+  return 'Logged. Every entry brings you closer to understanding your patterns.'
 }
