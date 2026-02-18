@@ -128,11 +128,11 @@ export const InsightsStats = ({
           {isLoading ? <div className="skeleton-line" /> : <p className="value">{streak} {streak === 1 ? 'day' : 'days'}</p>}
           <p className="helper">Consecutive logged days</p>
         </div>
-        {motivationMessage
+        {(isLoading || motivationMessage)
           ? (
-              <p className="streak-card__motivation" aria-live="polite">
-                {motivationMessage}
-              </p>
+              <div className="streak-card__motivation" aria-live="polite">
+                {isLoading ? <div className="skeleton-line" /> : motivationMessage}
+              </div>
             )
           : null}
       </section>
