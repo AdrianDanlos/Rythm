@@ -240,13 +240,17 @@ export const useLogForm = ({
       }
       setSaved(true)
       if (!options?.silent) {
-        toast.success(getSupportMessage({
+        const message = getSupportMessage({
           sleepHours: parsedSleep,
           mood,
           sleepThreshold,
           tags: tagList,
           isComplete,
-        }))
+        })
+        const fullMessage = tagList.length === 0
+          ? `${message} You didn't add any events. Add them next time for better insights.`
+          : message
+        toast.success(fullMessage)
       }
       window.setTimeout(() => setSaved(false), 2000)
       if (entryDate === today && isComplete && !options?.silent) {
