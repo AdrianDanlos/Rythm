@@ -11,7 +11,7 @@ const DEFAULT_TAG_SUGGESTIONS = [
   'Late intake',
   'Evening screens',
   'Late bedtime',
-  'Excercise',
+  'Exercise',
   'Fragmented sleep',
   'Alcohol intake',
   'Progress',

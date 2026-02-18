@@ -51,7 +51,7 @@ export function getSupportMessage({
     return 'You gave your body good rest. Be kind to yourself — some days are just harder.'
   }
   if (tagSet.has('exercise') && goodMood) {
-    return 'Excercise and a good mood — you\'re seeing the connection. Keep it up.'
+    return 'Exercise and a good mood — you\'re seeing the connection. Keep it up.'
   }
 
   return 'Logged. Every entry brings you closer to understanding your patterns.'
