@@ -61,7 +61,7 @@ export const InsightsStats = ({
     ? 'lower'
     : 'better'
   const moodBySleepMessage = moodBySleepDeltaPercent !== null
-    ? `When you sleep ${formatSleepHours(sleepThreshold)} or more, your average mood tends to be ${moodBySleepDirection} by ${Math.abs(moodBySleepDeltaPercent).toFixed(0)}%.`
+    ? `When you sleep ${formatSleepHours(sleepThreshold)} or more, your mood tends to be ${moodBySleepDirection} by ${Math.abs(moodBySleepDeltaPercent).toFixed(0)}%.`
     : null
 
   const renderTopStat = (
