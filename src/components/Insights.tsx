@@ -36,6 +36,7 @@ import rankingBadgeLast from '../assets/badges/ranking-badge_last.png'
 import googleLogo from '../assets/playstore.png?inline'
 import { PLAY_STORE_APP_URL } from '../lib/constants'
 import { buildMockScatterPlottedData } from '../lib/insightsMock'
+import { getMotivationMessage } from '../lib/utils/motivationMessage'
 import { STORAGE_KEYS } from '../lib/storageKeys'
 import { motionTransition } from '../lib/motion'
 
@@ -161,6 +162,47 @@ export const Insights = ({
     if (scatterRange === 'last90' && !showScatter90) return 'last30'
     return scatterRange
   }, [scatterRange, showScatter90, showScatterAll])
+
+  const hasMissingStats = rhythmScore === null
+    || sleepConsistencyLabel === null
+    || correlationLabel === null
+    || (moodBySleepThreshold.high === null && moodBySleepThreshold.low === null)
+  const moodBySleepDeltaPercent = useMemo(() => {
+    const high = moodBySleepThreshold.high
+    const low = moodBySleepThreshold.low
+    if (high === null || low === null) return null
+    if (low > 0) return ((high - low) / low) * 100
+    return 0
+  }, [moodBySleepThreshold.high, moodBySleepThreshold.low])
+
+  const motivationMessage = useMemo(
+    () =>
+      getMotivationMessage({
+        entries,
+        statCounts,
+        streak,
+        windowAverages: { last7: windowAverages.last7, last30: windowAverages.last30 },
+        rollingSummaries,
+        rhythmScore,
+        moodBySleepDeltaPercent,
+        hasMissingStats,
+        weekdayAverages,
+        correlationLabel,
+      }),
+    [
+      entries,
+      statCounts,
+      streak,
+      windowAverages.last7,
+      windowAverages.last30,
+      rollingSummaries,
+      rhythmScore,
+      moodBySleepDeltaPercent,
+      hasMissingStats,
+      weekdayAverages,
+      correlationLabel,
+    ],
+  )
 
   const sortedBadges = useMemo(() => {
     const isCompleted = (b: Badge) =>
@@ -296,6 +338,7 @@ export const Insights = ({
                 sleepThreshold={sleepThreshold}
                 isPro={isPro}
                 goToLog={goToLog}
+                motivationMessage={motivationMessage.text}
               />
               {hasEnoughEntries && (
                 <IdeaSleepTarget

@@ -28,6 +28,7 @@ type InsightsStatsProps = {
   sleepThreshold: number
   isPro: boolean
   goToLog: () => void
+  motivationMessage: string
 }
 
 export const InsightsStats = ({
@@ -45,6 +46,7 @@ export const InsightsStats = ({
   sleepThreshold,
   isPro,
   goToLog,
+  motivationMessage,
 }: InsightsStatsProps) => {
   const rhythmMore = Math.max(0, RHYTHM_NEED - statCounts.last30WithSleep)
   const sleepConsistencyMore = Math.max(0, SLEEP_CONSISTENCY_NEED - statCounts.sleepEntries)
@@ -118,12 +120,21 @@ export const InsightsStats = ({
   return (
     <>
       <section className="card streak-card">
-        <Flame className="streak-card__image" size={48} aria-hidden />
+        <div className="streak-card__image">
+          <Flame className="streak-card__icon" size={48} aria-hidden />
+        </div>
         <div className="streak-card__content">
           <p className="label">Streak</p>
           {isLoading ? <div className="skeleton-line" /> : <p className="value">{streak} {streak === 1 ? 'day' : 'days'}</p>}
           <p className="helper">Consecutive logged days</p>
         </div>
+        {motivationMessage
+          ? (
+              <p className="streak-card__motivation" aria-live="polite">
+                {motivationMessage}
+              </p>
+            )
+          : null}
       </section>
       <section className="card stats">
         {renderTopStat(

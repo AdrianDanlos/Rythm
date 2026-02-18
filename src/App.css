@@ -967,20 +967,68 @@
 
 .streak-card {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 20px;
+  padding: 20px;
 }
 
 .streak-card__image {
-  width: 48px;
-  height: 48px;
+  width: 72px;
+  min-width: 72px;
   flex-shrink: 0;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--streak-icon) 14%, transparent);
+}
+
+.streak-card__image .streak-card__icon {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
   color: var(--streak-icon);
 }
 
 .streak-card__content {
   display: flex;
   flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.streak-card__content .label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.streak-card__content .value {
+  font-size: 1.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.streak-card__content .helper {
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+.streak-card__motivation {
+  flex-basis: 100%;
+  margin: 0;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--muted, #94a3b8);
+  font-style: italic;
 }
 
 .stats::after {
