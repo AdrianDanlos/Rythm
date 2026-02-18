@@ -315,26 +315,28 @@ export const LogForm = ({
               </button>
             </div>
           </div>
-          <div className="tag-pills-row">
-            {usedTags.map((tag, index) => (
-              <span
-                key={tag}
-                className="tag-pill"
-                data-color-index={index}
-              >
-                {tag}
-                <button
-                  type="button"
-                  className="tag-badge-remove"
-                  aria-label={`Remove ${tag}`}
-                  onMouseDown={e => e.preventDefault()}
-                  onClick={() => removeTag(tag)}
+          {usedTags.length > 0 && (
+            <div className="tag-pills-row">
+              {usedTags.map((tag, index) => (
+                <span
+                  key={tag}
+                  className="tag-pill"
+                  data-color-index={index}
                 >
-                  ×
-                </button>
-              </span>
-            ))}
-          </div>
+                  {tag}
+                  <button
+                    type="button"
+                    className="tag-badge-remove"
+                    aria-label={`Remove ${tag}`}
+                    onMouseDown={e => e.preventDefault()}
+                    onClick={() => removeTag(tag)}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
         <div className="field field-mood">
           How did you feel today?
