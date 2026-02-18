@@ -2,7 +2,7 @@ import type { Transition } from 'framer-motion'
 
 /** Short, minimal transitions for UI elements (e.g. tab switch) */
 export const motionTransition: Transition = {
-  duration: 0.15,
+  duration: 0.2,
   ease: 'easeOut',
 }
 
