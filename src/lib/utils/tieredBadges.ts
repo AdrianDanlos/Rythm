@@ -397,6 +397,7 @@ function hasBounceBack(entries: Entry[]): boolean {
   let lowRun = 0
   let highRun = 0
   let prevDate: string | null = null
+  let prevWasLow = false
   for (const entry of sorted) {
     const mood = entry.mood as number
     const isGood = mood >= MOOD_GOOD
@@ -407,10 +408,12 @@ function hasBounceBack(entries: Entry[]): boolean {
       // do not reset lowRun here: we need it to still be >= 2 when highRun reaches 2
     }
     else {
-      lowRun = isConsecutive ? lowRun + 1 : 1
+      // only extend low run when the previous day was also low (consecutive low days)
+      lowRun = isConsecutive && prevWasLow ? lowRun + 1 : 1
       highRun = 0
     }
     prevDate = entry.entry_date
+    prevWasLow = !isGood
   }
   return false
 }
