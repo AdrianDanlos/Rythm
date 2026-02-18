@@ -106,42 +106,102 @@ Deno.serve(async (req) => {
     return new Response('Method not allowed', { status: 405, headers: corsHeaders })
   }
 
-  let body: PubSubMessage
+  const jsonHeaders = { ...corsHeaders, 'Content-Type': 'application/json' }
+
+  let rawBody = ''
   try {
-    body = await req.json()
+    rawBody = await req.text()
   }
-  catch {
-    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
-      status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  catch (error) {
+    console.error('[play-rtdn] Failed to read request body', error)
+    return new Response(JSON.stringify({ received: true, ignored: 'body_read_error' }), {
+      status: 200,
+      headers: jsonHeaders,
     })
   }
 
-  const dataB64 = body.message?.data
-  if (!dataB64 || typeof dataB64 !== 'string') {
-    return new Response(JSON.stringify({ error: 'Missing message.data' }), {
-      status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  console.log('[play-rtdn] Incoming request', {
+    method: req.method,
+    contentType: req.headers.get('content-type'),
+    bodyLength: rawBody.length,
+  })
+
+  if (!rawBody.trim()) {
+    console.warn('[play-rtdn] Empty body, acknowledging to avoid retries')
+    return new Response(JSON.stringify({ received: true, ignored: 'empty_body' }), {
+      status: 200,
+      headers: jsonHeaders,
+    })
+  }
+
+  let body: PubSubMessage & Record<string, unknown>
+  try {
+    body = JSON.parse(rawBody) as PubSubMessage & Record<string, unknown>
+  }
+  catch {
+    console.warn('[play-rtdn] Invalid JSON body, acknowledging to avoid retries')
+    return new Response(JSON.stringify({ received: true, ignored: 'invalid_json' }), {
+      status: 200,
+      headers: jsonHeaders,
+    })
+  }
+
+  if ('hello' in body) {
+    console.log('[play-rtdn] Hello test payload received', body.hello)
+    return new Response(JSON.stringify({ received: true, hello: body.hello ?? true }), {
+      status: 200,
+      headers: jsonHeaders,
     })
   }
 
   let notification: DeveloperNotification
-  try {
-    const decoded = atob(dataB64)
-    notification = JSON.parse(decoded) as DeveloperNotification
+
+  const maybeDirectNotification = body as DeveloperNotification
+  if (
+    maybeDirectNotification.subscriptionNotification
+    || maybeDirectNotification.voidedPurchaseNotification
+    || maybeDirectNotification.testNotification
+  ) {
+    console.log('[play-rtdn] Detected unwrapped RTDN payload')
+    notification = maybeDirectNotification
   }
-  catch {
-    return new Response(JSON.stringify({ error: 'Invalid base64 or JSON' }), {
-      status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+  else {
+    const dataB64 = body.message?.data
+    if (!dataB64 || typeof dataB64 !== 'string') {
+      console.warn('[play-rtdn] Missing message.data, acknowledging to avoid retries')
+      return new Response(JSON.stringify({ received: true, ignored: 'missing_message_data' }), {
+        status: 200,
+        headers: jsonHeaders,
+      })
+    }
+
+    try {
+      const decoded = atob(dataB64)
+      notification = JSON.parse(decoded) as DeveloperNotification
+    }
+    catch {
+      console.warn('[play-rtdn] Invalid message.data payload, acknowledging to avoid retries')
+      return new Response(JSON.stringify({ received: true, ignored: 'invalid_message_data' }), {
+        status: 200,
+        headers: jsonHeaders,
+      })
+    }
   }
+
+  console.log('[play-rtdn] Parsed RTDN notification', {
+    messageId: body.message?.messageId,
+    publishTime: body.message?.publishTime,
+    hasTestNotification: Boolean(notification.testNotification),
+    hasSubscriptionNotification: Boolean(notification.subscriptionNotification),
+    hasVoidedPurchaseNotification: Boolean(notification.voidedPurchaseNotification),
+  })
 
   // Test notification from Play Console – acknowledge only.
   if (notification.testNotification) {
+    console.log('[play-rtdn] Received Google Play testNotification')
     return new Response(JSON.stringify({ received: true }), {
       status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: jsonHeaders,
     })
   }
 
@@ -162,14 +222,19 @@ Deno.serve(async (req) => {
   }
 
   if (purchaseToken) {
+    console.log('[play-rtdn] Purchase token flagged for revocation flow')
     const userId = await findUserIdByPurchaseToken(purchaseToken)
     if (userId) {
+      console.log('[play-rtdn] Found user for purchase token, revoking Pro', { userId })
       await revokeProForUser(userId)
+    }
+    else {
+      console.warn('[play-rtdn] No user found for purchase token')
     }
   }
 
   return new Response(JSON.stringify({ received: true }), {
     status: 200,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    headers: jsonHeaders,
   })
 })
