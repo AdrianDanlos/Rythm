@@ -54,7 +54,7 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
           {hasMood && (
             <div className="insights-first-five-card__data-item" role="listitem">
               <span className="insights-first-five-card__data-item-label">Mood</span>
-              <span className="insights-first-five-card__data-item-value">{mood!.toFixed(1)} / 5</span>
+              <span className="insights-first-five-card__data-item-value">{Math.round(mood!)} / 5</span>
             </div>
           )}
         </div>
