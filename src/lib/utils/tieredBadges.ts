@@ -358,24 +358,32 @@ export function getBalancedWeekBadge(entries: Entry[]): Badge {
   )
 }
 
-// --- Non-incremental badge 2: Monthly Milestone (30 logged days in a month) ---
-function hasMonthlyMilestone(entries: Entry[]): boolean {
-  const byMonth = new Map<string, number>()
-  entries.forEach((e) => {
-    const month = e.entry_date.slice(0, 7)
-    byMonth.set(month, (byMonth.get(month) ?? 0) + 1)
-  })
-  return [...byMonth.values()].some(c => c >= 30)
+// --- Non-incremental badge 2: Monthly Milestone (30 logged days in current month) ---
+function getCurrentMonthKey(): string {
+  const now = new Date()
+  const y = now.getFullYear()
+  const m = String(now.getMonth() + 1).padStart(2, '0')
+  return `${y}-${m}`
 }
 
 export function getMonthlyMilestoneBadge(entries: Entry[]): Badge {
-  const unlocked = hasMonthlyMilestone(entries)
-  return buildNonIncrementalBadge(
-    'monthly-milestone',
-    'Monthly Milestone',
-    '30 logged days in a month.',
+  const currentMonthKey = getCurrentMonthKey()
+  const count = entries.filter(e => e.entry_date.startsWith(currentMonthKey)).length
+  const unlocked = count >= 30
+  const progressValue = Math.min(count, 30)
+  const progressTotal = 30
+  const progressText = unlocked ? '30/30 days' : `${count}/30 days`
+  return {
+    id: 'monthly-milestone',
+    title: 'Monthly Milestone',
+    description: '30 logged days in the current month.',
     unlocked,
-  )
+    progressText,
+    progressValue,
+    progressTotal,
+    currentTierIndex: unlocked ? 1 : 0,
+    tierCount: 1,
+  }
 }
 
 // --- Non-incremental badge 3: Bounce Back (2+ good-mood days after 2+ low-mood days) ---
@@ -396,7 +404,7 @@ function hasBounceBack(entries: Entry[]): boolean {
     if (isGood) {
       highRun = isConsecutive ? highRun + 1 : 1
       if (lowRun >= 2 && highRun >= 2) return true
-      lowRun = 0
+      // do not reset lowRun here: we need it to still be >= 2 when highRun reaches 2
     }
     else {
       lowRun = isConsecutive ? lowRun + 1 : 1
