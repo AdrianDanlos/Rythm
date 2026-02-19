@@ -146,7 +146,7 @@ export const InsightsTagInsights = ({
     <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
       <div className="card-header">
         <div>
-          <h2>Event Insights</h2>
+          <h2>Daily Events Insights</h2>
           <p className="muted">See how what happens during the day influences your mood and sleep over time.</p>
         </div>
       </div>
@@ -226,7 +226,7 @@ export const InsightsTagInsights = ({
                   <div className="tag-insights-block">
                     <div className="tag-insights-block-header">
                       <h3 className="tag-insights-block-title">Daily events that predict sleep</h3>
-                      <Tooltip label="Compares sleep on days with an event vs without it.">
+                      <Tooltip label="Compares next-night sleep after days with an event vs days without it.">
                         <span className="tooltip-trigger">
                           <span className="tooltip-icon" aria-hidden="true">i</span>
                         </span>

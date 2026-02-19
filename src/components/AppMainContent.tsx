@@ -264,7 +264,7 @@ export function AppMainContent({
                               ?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
                         />
                         <p className="log-form-tip" role="status">
-                          Tip: Best time to log is in the <strong>evening or before bed</strong> so you can log the daily events. The more you log, the clearer the picture of what helps you feel better.
+                          Tip: Best time to log is in the <strong>evening or before bed</strong> so you can log your daily events. The more you log, the clearer the picture of what helps you feel better.
                         </p>
                         <LogForm
                           selectedDate={selectedDate}

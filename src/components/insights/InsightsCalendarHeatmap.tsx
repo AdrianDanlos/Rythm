@@ -19,7 +19,14 @@ type InsightsCalendarHeatmapProps = {
   isMobile: boolean
 }
 
+type SleepColorScale = {
+  min: number
+  max: number
+  bucketSize: number
+}
+
 const dayLabels = ['Mon', '', 'Wed', '', 'Fri', '', '']
+const MIN_DYNAMIC_SLEEP_ENTRIES = 7
 
 const buildHeatmapWeeks = (entries: Entry[], days: number): HeatmapDay[][] => {
   const end = new Date()
@@ -83,13 +90,24 @@ const getMoodColor = (mood: number | null, palette: string[]) => {
   return palette[index] ?? null
 }
 
-const getSleepColor = (sleep: number | null) => {
+const getFixedSleepColor = (sleep: number | null) => {
   if (sleep === null) return null
   if (sleep <= 4) return sleepHeatmapColors[0] ?? null
   if (sleep < 5.5) return sleepHeatmapColors[1] ?? null
   if (sleep < 6.9) return sleepHeatmapColors[2] ?? null
   if (sleep >= 7 && sleep < 8.9) return sleepHeatmapColors[3] ?? null
   return sleepHeatmapColors[4] ?? null
+}
+
+const getSleepColor = (sleep: number | null, scale: SleepColorScale | null) => {
+  if (sleep === null) return null
+  if (!scale) return getFixedSleepColor(sleep)
+  if (scale.min === scale.max || scale.bucketSize <= 0) return sleepHeatmapColors[3] ?? null
+
+  const maxIndex = sleepHeatmapColors.length - 1
+  const bucket = Math.floor((sleep - scale.min) / scale.bucketSize)
+  const clampedBucket = Math.min(maxIndex, Math.max(0, bucket))
+  return sleepHeatmapColors[clampedBucket] ?? null
 }
 
 export const InsightsCalendarHeatmap = ({
@@ -106,6 +124,33 @@ export const InsightsCalendarHeatmap = ({
     () => buildHeatmapWeeks(entries, totalDays),
     [entries, totalDays],
   )
+  const sleepColorScale = useMemo<SleepColorScale | null>(() => {
+    const sleepValues: number[] = []
+
+    weeks.forEach((week) => {
+      week.forEach((day) => {
+        if (!day.inRange || day.isFuture || day.sleep === null) return
+        sleepValues.push(day.sleep)
+      })
+    })
+
+    if (sleepValues.length < MIN_DYNAMIC_SLEEP_ENTRIES) return null
+
+    let min = Number.POSITIVE_INFINITY
+    let max = Number.NEGATIVE_INFINITY
+    sleepValues.forEach((value) => {
+      if (value < min) min = value
+      if (value > max) max = value
+    })
+
+    if (!Number.isFinite(min) || !Number.isFinite(max)) return null
+
+    return {
+      min,
+      max,
+      bucketSize: (max - min) / sleepHeatmapColors.length,
+    }
+  }, [weeks])
   const gapSize = 2
   const legendColors = metric === 'mood' ? moodColors : sleepHeatmapColors
   const monthLabels = useMemo(() => {
@@ -254,7 +299,7 @@ export const InsightsCalendarHeatmap = ({
                 {week.map((day) => {
                   const color = metric === 'mood'
                     ? getMoodColor(day.mood, moodColors)
-                    : getSleepColor(day.sleep)
+                    : getSleepColor(day.sleep, sleepColorScale)
                   const labelDate = formatLongDate(new Date(`${day.date}T00:00:00`))
                   const valueLabel = metric === 'mood'
                     ? day.mood !== null
