@@ -9,11 +9,12 @@ import '../types.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-rtdn-secret',
 }
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL') || Deno.env.get('URL')
 const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SERVICE_ROLE_KEY')
+const rtdnSharedSecret = (Deno.env.get('RTDN_SHARED_SECRET') ?? '').trim()
 
 if (!supabaseUrl || !supabaseServiceRoleKey) {
   throw new Error('Missing required Supabase environment variables.')
@@ -107,6 +108,16 @@ Deno.serve(async (req) => {
   }
 
   const jsonHeaders = { ...corsHeaders, 'Content-Type': 'application/json' }
+  const reqUrl = new URL(req.url)
+  const providedSecret = req.headers.get('x-rtdn-secret') ?? reqUrl.searchParams.get('secret') ?? ''
+
+  if (rtdnSharedSecret && providedSecret !== rtdnSharedSecret) {
+    console.warn('[play-rtdn] Ignored request from untrusted sender')
+    return new Response(JSON.stringify({ received: true, ignored: 'unauthorized_sender' }), {
+      status: 200,
+      headers: jsonHeaders,
+    })
+  }
 
   let rawBody = ''
   try {
@@ -120,14 +131,8 @@ Deno.serve(async (req) => {
     })
   }
 
-  console.log('[play-rtdn] Incoming request', {
-    method: req.method,
-    contentType: req.headers.get('content-type'),
-    bodyLength: rawBody.length,
-  })
-
   if (!rawBody.trim()) {
-    console.warn('[play-rtdn] Empty body, acknowledging to avoid retries')
+    console.warn('[play-rtdn] Ignored empty request body')
     return new Response(JSON.stringify({ received: true, ignored: 'empty_body' }), {
       status: 200,
       headers: jsonHeaders,
@@ -139,7 +144,7 @@ Deno.serve(async (req) => {
     body = JSON.parse(rawBody) as PubSubMessage & Record<string, unknown>
   }
   catch {
-    console.warn('[play-rtdn] Invalid JSON body, acknowledging to avoid retries')
+    console.warn('[play-rtdn] Ignored invalid JSON body')
     return new Response(JSON.stringify({ received: true, ignored: 'invalid_json' }), {
       status: 200,
       headers: jsonHeaders,
@@ -162,13 +167,12 @@ Deno.serve(async (req) => {
     || maybeDirectNotification.voidedPurchaseNotification
     || maybeDirectNotification.testNotification
   ) {
-    console.log('[play-rtdn] Detected unwrapped RTDN payload')
     notification = maybeDirectNotification
   }
   else {
     const dataB64 = body.message?.data
     if (!dataB64 || typeof dataB64 !== 'string') {
-      console.warn('[play-rtdn] Missing message.data, acknowledging to avoid retries')
+      console.warn('[play-rtdn] Ignored message without Pub/Sub payload')
       return new Response(JSON.stringify({ received: true, ignored: 'missing_message_data' }), {
         status: 200,
         headers: jsonHeaders,
@@ -180,7 +184,7 @@ Deno.serve(async (req) => {
       notification = JSON.parse(decoded) as DeveloperNotification
     }
     catch {
-      console.warn('[play-rtdn] Invalid message.data payload, acknowledging to avoid retries')
+      console.warn('[play-rtdn] Ignored invalid Pub/Sub payload')
       return new Response(JSON.stringify({ received: true, ignored: 'invalid_message_data' }), {
         status: 200,
         headers: jsonHeaders,
@@ -188,17 +192,41 @@ Deno.serve(async (req) => {
     }
   }
 
-  console.log('[play-rtdn] Parsed RTDN notification', {
-    messageId: body.message?.messageId,
-    publishTime: body.message?.publishTime,
-    hasTestNotification: Boolean(notification.testNotification),
-    hasSubscriptionNotification: Boolean(notification.subscriptionNotification),
-    hasVoidedPurchaseNotification: Boolean(notification.voidedPurchaseNotification),
+  const hasKnownNotification = Boolean(
+    notification.testNotification
+    || notification.subscriptionNotification
+    || notification.voidedPurchaseNotification,
+  )
+  if (!hasKnownNotification) {
+    const notificationKeys = Object.keys(notification ?? {}).slice(0, 10)
+    console.warn('[play-rtdn] Ignored unknown notification shape', {
+      messageId: body.message?.messageId ?? null,
+      keys: notificationKeys,
+    })
+    return new Response(JSON.stringify({ received: true, ignored: 'unknown_notification_shape' }), {
+      status: 200,
+      headers: jsonHeaders,
+    })
+  }
+
+  let notificationKind: 'test' | 'subscription' | 'voided_purchase'
+  if (notification.testNotification) {
+    notificationKind = 'test'
+  }
+  else if (notification.subscriptionNotification) {
+    notificationKind = 'subscription'
+  }
+  else {
+    notificationKind = 'voided_purchase'
+  }
+
+  console.log('[play-rtdn] Received RTDN', {
+    kind: notificationKind,
+    messageId: body.message?.messageId ?? null,
   })
 
   // Test notification from Play Console – acknowledge only.
   if (notification.testNotification) {
-    console.log('[play-rtdn] Received Google Play testNotification')
     return new Response(JSON.stringify({ received: true }), {
       status: 200,
       headers: jsonHeaders,
@@ -222,14 +250,13 @@ Deno.serve(async (req) => {
   }
 
   if (purchaseToken) {
-    console.log('[play-rtdn] Purchase token flagged for revocation flow')
     const userId = await findUserIdByPurchaseToken(purchaseToken)
     if (userId) {
-      console.log('[play-rtdn] Found user for purchase token, revoking Pro', { userId })
       await revokeProForUser(userId)
+      console.log('[play-rtdn] Revoked Pro due to RTDN event', { userId })
     }
     else {
-      console.warn('[play-rtdn] No user found for purchase token')
+      console.warn('[play-rtdn] No user found for RTDN purchase token')
     }
   }
 

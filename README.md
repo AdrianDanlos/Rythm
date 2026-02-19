@@ -32,6 +32,9 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
   - Dev: local anon key.
   - Prod: hosted anon key.
 - `SUPABASE_SERVICE_ROLE_KEY`: Service role key (prod and dev each have their own).
+- `RTDN_SHARED_SECRET`: Shared secret for `play-rtdn` sender trust checks.
+  - Configure this in Supabase secrets.
+  - Add the same value to the Pub/Sub push endpoint as `?secret=<value>`.
 - `STRIPE_SECRET_KEY`: Stripe secret API key.
   - Dev: `sk_test_...`
   - Prod: `sk_live_...`
@@ -80,16 +83,25 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
    - `npx supabase functions deploy stripe-portal-session --no-verify-jwt`
    - `npx supabase functions deploy submit-feedback --no-verify-jwt`
    - `npx supabase functions deploy stripe-webhook --no-verify-jwt`
+   - `npx supabase functions deploy play-verify-purchase --no-verify-jwt`
+   - `npx supabase functions deploy play-rtdn --no-verify-jwt`
 3. Set Supabase secrets in the prod project:
    - `npx supabase secrets set STRIPE_SECRET_KEY=sk_live_...`
    - `npx supabase secrets set STRIPE_PRICE_ID=price_...`
+   - `npx supabase secrets set GOOGLE_SERVICE_ACCOUNT_JSON='<service-account-json>'`
+   - `npx supabase secrets set PLAY_PACKAGE_NAME=com.rythm.app`
+   - `npx supabase secrets set RTDN_SHARED_SECRET=<long-random-secret>`
 
 - `npx supabase secrets set STRIPE_SUCCESS_URL=https://rythm-one.vercel.app/success`
 - `npx supabase secrets set STRIPE_CANCEL_URL=https://rythm-one.vercel.app/cancel`
 - `npx supabase secrets set STRIPE_PORTAL_RETURN_URL=https://rythm-one.vercel.app/`
 - `npx supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...`
 
-4. Configure the Stripe webhook:
+4. Configure Google Play purchase verification (pay action):
+
+5. Configure Google Play RTDN Pub/Sub
+
+6. Configure the Stripe webhook:
    - Endpoint URL: `https://mdruanwmwapdaecrayyi.functions.supabase.co/stripe-webhook`
    - Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`
 
