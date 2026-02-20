@@ -1,3 +1,63 @@
 # Google Play Payments Flow
 
-Your Google Play payments setup works as a two-part lifecycle: at purchase time, the app sends the Play `purchaseToken` + `subscriptionId` (from your subscription product in Play Console) to the Supabase Edge Function `play-verify-purchase` (what you called `verify-play-purchase`), which uses the Google Android Publisher API via a service account (`GOOGLE_SERVICE_ACCOUNT_JSON`) to verify that the subscription is active, paid, acknowledged, and unexpired; if valid, it marks the user `is_pro=true` in Supabase auth metadata and stores a token-to-user mapping in `play_subscription_user`. Then for ongoing state changes, Google Play sends RTDN events through Pub/Sub (topic publisher IAM for `google-play-developer-notifications@system.gserviceaccount.com`) to your `play-rtdn` push endpoint, secured with `RTDN_SHARED_SECRET` in Supabase secrets, and `play-rtdn` decodes the notification and uses that stored mapping to revoke Pro on cancel/revoke/expire/voided events, so initial entitlement comes from API verification and long-term correctness comes from RTDN-driven updates.
+This flow has two parts:
+
+1. **Grant Pro access at purchase time**
+2. **Keep Pro access correct over time with Google notifications**
+
+---
+
+## 1) Purchase Verification (grant access)
+
+When a user buys a subscription in the app:
+
+- The app sends `purchaseToken` and `subscriptionId` to the Supabase Edge Function `play-verify-purchase`.
+- `play-verify-purchase` calls the Google Android Publisher API using `GOOGLE_SERVICE_ACCOUNT_JSON`.
+- Google response is validated to confirm the subscription is:
+  - active
+  - paid
+  - acknowledged
+  - not expired
+- If valid:
+  - user metadata is updated to `is_pro=true`
+  - token-to-user mapping is stored in `play_subscription_user`
+
+This is what gives the user Pro access initially.
+
+---
+
+## 2) RTDN Updates (maintain access)
+
+After purchase, subscription status can change (cancelled, expired, revoked, refunded, etc.).
+
+- Google Play sends RTDN (Real-time Developer Notifications) events via Pub/Sub.
+- Pub/Sub pushes those events to your `play-rtdn` endpoint.
+- The endpoint is protected with `RTDN_SHARED_SECRET`.
+- `play-rtdn` processes the event and checks `play_subscription_user` to find the related user.
+- For cancel/revoke/expire/voided events, Pro access is removed.
+
+This keeps entitlement accurate even when status changes happen outside the app.
+
+---
+
+## Required Configuration
+
+- `GOOGLE_SERVICE_ACCOUNT_JSON` (for purchase verification API calls)
+- `RTDN_SHARED_SECRET` (for securing RTDN endpoint)
+- Pub/Sub topic permissions allowing:
+  - `google-play-developer-notifications@system.gserviceaccount.com`
+
+---
+
+## Quick Summary
+
+- **Source of truth at checkout:** `play-verify-purchase`
+- **Source of truth after checkout:** `play-rtdn` notifications
+
+Together, these ensure users get Pro access quickly and lose it when subscriptions are no longer valid.
+
+---
+
+## Diagram
+
+![Google Play Billing Flow](../assets/playstore_billing_flow.png)
