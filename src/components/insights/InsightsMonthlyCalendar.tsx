@@ -98,7 +98,7 @@ export const InsightsMonthlyCalendar = ({
     <section className="card monthly-calendar-card">
       <div className="card-header">
         <div>
-          <h2>Month calendar</h2>
+          <h2>Calendar</h2>
           <p className="muted">Overview of your daily logs</p>
         </div>
         <div className="toggle-group monthly-calendar-nav">

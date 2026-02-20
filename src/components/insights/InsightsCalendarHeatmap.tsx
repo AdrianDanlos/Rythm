@@ -240,7 +240,7 @@ export const InsightsCalendarHeatmap = ({
       <div className="card-header">
         <div>
           <h2>
-            Calendar heatmap
+            Heatmap
           </h2>
           <p className="muted">
             Daily {metric} · Last {totalDays} days
