@@ -61,7 +61,9 @@ export const LogForm = ({
   const sleepHourValue = hasSleepValue ? String(Math.floor(totalSleepMinutes / 60)) : ''
   const sleepMinuteValue = hasSleepValue ? String(totalSleepMinutes % 60) : ''
   const sleepMenuRef = useRef<HTMLDivElement | null>(null)
+  const focusedSleepHourRef = useRef<HTMLButtonElement | null>(null)
   const [sleepMenu, setSleepMenu] = useState<'hours' | 'minutes' | null>(null)
+  const preferredFocusedHour = sleepHourValue ? Number(sleepHourValue) : 8
 
   const updateSleepHours = (hourValue: string, minuteValue: string) => {
     if (!hourValue) {
@@ -86,6 +88,11 @@ export const LogForm = ({
     document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
+
+  useEffect(() => {
+    if (sleepMenu !== 'hours') return
+    focusedSleepHourRef.current?.focus()
+  }, [sleepMenu, preferredFocusedHour])
   const tagAreaRef = useRef<HTMLDivElement | null>(null)
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false)
   const [tagInputValue, setTagInputValue] = useState('')
@@ -192,6 +199,7 @@ export const LogForm = ({
                       {sleepHourOptions.map(value => (
                         <button
                           key={value}
+                          ref={value === preferredFocusedHour ? focusedSleepHourRef : null}
                           type="button"
                           className="tag-suggestion"
                           onMouseDown={(event) => {

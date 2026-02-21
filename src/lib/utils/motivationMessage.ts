@@ -61,7 +61,7 @@ const MOTIVATION_MESSAGES: MessageDef[] = [
     condition: ctx =>
       ctx.moodBySleepDeltaPercent != null && ctx.moodBySleepDeltaPercent >= 10,
     getText: ctx =>
-      `When you sleep more, your mood tends to rise. Your data shows a clear link (${ctx.moodBySleepDeltaPercent}%+).`,
+      `When you sleep more, your mood tends to rise. Your data shows a clear link (${Math.round(ctx.moodBySleepDeltaPercent)}%+).`,
   },
   {
     id: 'new-first-week',
