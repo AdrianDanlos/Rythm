@@ -107,7 +107,7 @@ export const LogForm = ({
   )
   const token = tagInputValue.trim().toLowerCase()
   const matchingSuggestions = token
-    ? availableSuggestions.filter(s => s.startsWith(token))
+    ? availableSuggestions.filter(s => s.toLowerCase().includes(token))
     : availableSuggestions
   const atMaxTags = usedTags.length >= maxTagsPerEntry
 
