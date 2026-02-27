@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { Capacitor } from '@capacitor/core'
+import { StatusBar, Style } from '@capacitor/status-bar'
 import type { Session } from '@supabase/supabase-js'
 import {
   getStoredDateFormat,
@@ -19,17 +21,10 @@ export function useSettingsSync(session: Session | null) {
     getStoredDateFormat(),
   )
   const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme())
-  const [profileName, setProfileName] = useState('')
+  const [profileName, setProfileName] = useState(() => getStoredProfileName())
   const [sleepTarget, setSleepTarget] = useState(() =>
     getStoredPersonalSleepTarget(),
   )
-
-  // Hydrate from storage on mount
-  useEffect(() => {
-    setDateFormat(getStoredDateFormat())
-    setProfileName(getStoredProfileName())
-    setSleepTarget(getStoredPersonalSleepTarget())
-  }, [])
 
   // Apply theme to DOM and persist
   useEffect(() => {
@@ -37,23 +32,24 @@ export function useSettingsSync(session: Session | null) {
     setStoredTheme(theme)
   }, [theme])
 
-  // Sync profile name from storage or session
+  // Keep Android status bar colors/icons aligned with the selected app theme.
   useEffect(() => {
-    const storedName = getStoredProfileName()
-    if (storedName) {
-      setProfileName(storedName)
-      return
-    }
-    const fallbackName =
-      session?.user?.user_metadata?.full_name ??
-      session?.user?.user_metadata?.name ??
-      ''
-    setProfileName(fallbackName)
-  }, [
-    session?.user?.id,
-    session?.user?.user_metadata?.full_name,
-    session?.user?.user_metadata?.name,
-  ])
+    if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') return
+    const backgroundColor = theme === 'dark' ? '#0B1220' : '#F8FAFC'
+    const style = theme === 'dark' ? Style.Light : Style.Dark
+
+    void (async () => {
+      await StatusBar.setOverlaysWebView({ overlay: false })
+      await StatusBar.setBackgroundColor({ color: backgroundColor })
+      await StatusBar.setStyle({ style })
+    })()
+  }, [theme])
+
+  const sessionFallbackName
+    = session?.user?.user_metadata?.full_name
+      ?? session?.user?.user_metadata?.name
+      ?? ''
+  const resolvedProfileName = profileName || sessionFallbackName
 
   const handleDateFormatChange = (value: DateFormatPreference) => {
     setDateFormat(value)
@@ -80,7 +76,7 @@ export function useSettingsSync(session: Session | null) {
     setDateFormat,
     theme,
     setTheme,
-    profileName,
+    profileName: resolvedProfileName,
     setProfileName,
     sleepTarget,
     setSleepTarget,

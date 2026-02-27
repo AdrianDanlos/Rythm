@@ -1,7 +1,7 @@
 .app {
   max-width: 720px;
   margin: 0 auto;
-  padding: 24px 16px 96px;
+  padding: 24px 16px calc(96px + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -1172,6 +1172,7 @@
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 8px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   box-shadow: var(--card-shadow);
 }
 
