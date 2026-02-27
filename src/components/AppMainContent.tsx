@@ -17,7 +17,7 @@ import { AuthForm } from './AuthForm'
 import { InsightsQuickStart } from './InsightsQuickStart'
 import { LogForm } from './LogForm'
 import { Insights } from './Insights'
-import { Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
+import { AppPage, Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
 import { motionTransition } from '../lib/motion'
 
 type AppMainContentProps = {
@@ -34,7 +34,7 @@ type AppMainContentProps = {
   onEmailChange: (value: string) => void
   onPasswordChange: (value: string) => void
   activeTab: TabKey
-  setActiveTab: (tab: TabKey) => void
+  onNavigateToPage: (page: AppPage) => void
   activeInsightsTab: InsightsSection
   saveLogWhenLeaving: (cb: () => void) => void
   entriesSettled: boolean
@@ -119,7 +119,7 @@ export function AppMainContent({
   onEmailChange,
   onPasswordChange,
   activeTab,
-  setActiveTab,
+  onNavigateToPage,
   activeInsightsTab,
   saveLogWhenLeaving,
   entriesSettled,
@@ -221,7 +221,7 @@ export function AppMainContent({
                 { silent: true },
               ),
             )
-            setActiveTab(Tabs.Insights)
+            onNavigateToPage(AppPage.Summary)
           }}
         >
           Insights
@@ -229,7 +229,7 @@ export function AppMainContent({
         <button
           type="button"
           className={`tab-button ${activeTab === Tabs.Log ? 'active' : ''}`}
-          onClick={() => setActiveTab(Tabs.Log)}
+          onClick={() => onNavigateToPage(AppPage.Log)}
         >
           Log
         </button>
@@ -333,7 +333,7 @@ export function AppMainContent({
                   onExportMonthlyReport={onExportMonthlyReport}
                   onOpenPaywall={onOpenPaywall}
                   onOpenFeedback={onOpenFeedback}
-                  goToLog={() => setActiveTab(Tabs.Log)}
+                  goToLog={() => onNavigateToPage(AppPage.Log)}
                   activeTab={activeInsightsTab}
                 />
               </motion.div>

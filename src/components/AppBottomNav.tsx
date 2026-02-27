@@ -1,14 +1,13 @@
 import { CreditCard, LogOut, Settings } from 'lucide-react'
 import { AppBrand } from './AppBrand'
 import { Tooltip } from './Tooltip'
-import { Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
+import { AppPage, Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
 
 type AppBottomNavProps = {
   session: { user: { email?: string } } | null
   activeTab: TabKey
   activeInsightsTab: InsightsSection
-  setActiveTab: (tab: TabKey) => void
-  setActiveInsightsTab: (tab: InsightsSection) => void
+  onNavigateToPage: (page: AppPage) => void
   onBeforeLeaveTab: () => void
   canManageSubscription: boolean
   isPortalLoading: boolean
@@ -22,8 +21,7 @@ export function AppBottomNav({
   session,
   activeTab,
   activeInsightsTab,
-  setActiveTab,
-  setActiveInsightsTab,
+  onNavigateToPage,
   onBeforeLeaveTab,
   canManageSubscription,
   isPortalLoading,
@@ -47,8 +45,7 @@ export function AppBottomNav({
               className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Summary ? 'active' : ''}`}
               onClick={() => {
                 onBeforeLeaveTab()
-                setActiveTab(Tabs.Insights)
-                setActiveInsightsTab(Tabs.Summary)
+                onNavigateToPage(AppPage.Summary)
               }}
             >
               <span className="tab-icon" aria-hidden="true">
@@ -79,8 +76,7 @@ export function AppBottomNav({
               className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Charts ? 'active' : ''}`}
               onClick={() => {
                 onBeforeLeaveTab()
-                setActiveTab(Tabs.Insights)
-                setActiveInsightsTab(Tabs.Charts)
+                onNavigateToPage(AppPage.Charts)
               }}
             >
               <span className="tab-icon" aria-hidden="true">
@@ -106,8 +102,7 @@ export function AppBottomNav({
               className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Data ? 'active' : ''}`}
               onClick={() => {
                 onBeforeLeaveTab()
-                setActiveTab(Tabs.Insights)
-                setActiveInsightsTab(Tabs.Data)
+                onNavigateToPage(AppPage.Export)
               }}
             >
               <span className="tab-icon" aria-hidden="true">
@@ -140,7 +135,7 @@ export function AppBottomNav({
             <button
               type="button"
               className={`tab-button ${activeTab === Tabs.Log ? 'active' : ''}`}
-              onClick={() => setActiveTab(Tabs.Log)}
+              onClick={() => onNavigateToPage(AppPage.Log)}
             >
               <span className="tab-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" aria-hidden="true">

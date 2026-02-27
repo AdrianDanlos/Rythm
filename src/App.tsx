@@ -70,9 +70,10 @@ function App() {
   const shell = useAppShell()
   const {
     activeTab,
-    setActiveTab,
     activeInsightsTab,
-    setActiveInsightsTab,
+    navigateToPage,
+    canGoBackInApp,
+    goBackInApp,
     isStreakOpen,
     isPaywallOpen,
     isFeedbackOpen,
@@ -229,6 +230,55 @@ function App() {
   }, [])
 
   useEffect(() => {
+    if (!isNativeApp || Capacitor.getPlatform() !== 'android') return
+
+    const listenerPromise = CapacitorApp.addListener('backButton', () => {
+      if (isSettingsOpen) {
+        closeSettings()
+        return
+      }
+      if (isFeedbackOpen) {
+        closeFeedback()
+        return
+      }
+      if (isPaywallOpen) {
+        closePaywall()
+        return
+      }
+      if (isStreakOpen) {
+        closeStreak()
+        return
+      }
+
+      if (canGoBackInApp) {
+        runSaveBeforeLeavingTab()
+        if (goBackInApp()) {
+          return
+        }
+      }
+
+      CapacitorApp.exitApp()
+    })
+
+    return () => {
+      void listenerPromise.then(listener => listener.remove())
+    }
+  }, [
+    isNativeApp,
+    isSettingsOpen,
+    isFeedbackOpen,
+    isPaywallOpen,
+    isStreakOpen,
+    closeSettings,
+    closeFeedback,
+    closePaywall,
+    closeStreak,
+    canGoBackInApp,
+    runSaveBeforeLeavingTab,
+    goBackInApp,
+  ])
+
+  useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [activeTab, activeInsightsTab])
 
@@ -378,7 +428,7 @@ function App() {
         onEmailChange={setAuthEmail}
         onPasswordChange={setAuthPassword}
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        onNavigateToPage={navigateToPage}
         activeInsightsTab={activeInsightsTab}
         saveLogWhenLeaving={saveLogWhenLeaving}
         entriesSettled={entriesSettled}
@@ -441,8 +491,7 @@ function App() {
               session={session}
               activeTab={activeTab}
               activeInsightsTab={activeInsightsTab}
-              setActiveTab={setActiveTab}
-              setActiveInsightsTab={setActiveInsightsTab}
+              onNavigateToPage={navigateToPage}
               onBeforeLeaveTab={runSaveBeforeLeavingTab}
               canManageSubscription={canManageSubscription}
               isPortalLoading={isPortalLoading}
