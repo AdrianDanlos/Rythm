@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ChangeEvent } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
@@ -62,6 +62,7 @@ export const LogForm = ({
   const sleepMinuteValue = hasSleepValue ? String(totalSleepMinutes % 60) : ''
   const sleepMenuRef = useRef<HTMLDivElement | null>(null)
   const focusedSleepHourRef = useRef<HTMLButtonElement | null>(null)
+  const noteTextareaRef = useRef<HTMLTextAreaElement | null>(null)
   const [sleepMenu, setSleepMenu] = useState<'hours' | 'minutes' | null>(null)
   const preferredFocusedHour = sleepHourValue ? Number(sleepHourValue) : 8
 
@@ -145,6 +146,21 @@ export const LogForm = ({
   const submitTagInput = () => {
     if (!tagInputValue.trim() || atMaxTags) return
     addTag(tagInputValue)
+  }
+
+  const autoResizeNote = () => {
+    const textarea = noteTextareaRef.current
+    if (!textarea) return
+    textarea.style.height = '0px'
+    textarea.style.height = `${textarea.scrollHeight}px`
+  }
+
+  useEffect(() => {
+    autoResizeNote()
+  }, [note])
+
+  const handleNoteChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    onNoteChange(event.target.value.slice(0, 300))
   }
 
   return (
@@ -368,13 +384,15 @@ export const LogForm = ({
           </div>
         </div>
         <label className="field">
-          Note (optional)
-          <input
-            type="text"
+          Journal (optional)
+          <textarea
+            ref={noteTextareaRef}
             value={note}
-            onChange={event => onNoteChange(event.target.value)}
+            onChange={handleNoteChange}
+            onInput={autoResizeNote}
             placeholder="Short reflection..."
-            maxLength={140}
+            maxLength={300}
+            rows={1}
           />
         </label>
         {entriesError ? <p className="error">{entriesError}</p> : null}

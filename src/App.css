@@ -487,13 +487,21 @@
   margin-top: -10px;
 }
 
-.field input {
+.field input,
+.field textarea {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 10px 12px;
   font-size: 1rem;
   background: var(--card);
   color: var(--text);
+}
+
+.field textarea {
+  min-height: 44px;
+  resize: none;
+  overflow-y: hidden;
+  font-family: inherit;
 }
 
 .field select {
@@ -543,12 +551,14 @@
 }
 
 .field input:disabled,
+.field textarea:disabled,
 .field select:disabled {
   background: var(--bg);
   color: var(--muted);
 }
 
 .field input:focus,
+.field textarea:focus,
 .field select:focus {
   outline: none;
   border-color: var(--input-focus-border);

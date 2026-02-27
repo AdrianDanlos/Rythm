@@ -212,11 +212,11 @@ export function getPeakDaysBadge(entries: Entry[]): Badge {
 // --- Incremental badge 6: Reflector (notes count) ---
 const REFLECTOR_THRESHOLDS = [5, 10, 15, 20, 30]
 const REFLECTOR_LABELS = [
-  'Add a note 5 times',
-  'Add a note 10 times',
-  'Add a note 15 times',
-  'Add a note 20 times',
-  'Add a note 30 times',
+  'Add a journal entry 5 times',
+  'Add a journal entry 10 times',
+  'Add a journal entry 15 times',
+  'Add a journal entry 20 times',
+  'Add a journal entry 30 times',
 ]
 
 export function getReflectorBadge(entries: Entry[]): Badge {

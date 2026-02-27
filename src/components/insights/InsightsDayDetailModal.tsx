@@ -95,8 +95,8 @@ export const InsightsDayDetailModal = ({
                 </div>
 
                 <div className="insights-day-modal__row">
-                  <p className="label">Note</p>
-                  {note ? <p>{note}</p> : <p className="muted">No note for this day</p>}
+                  <p className="label">Journal</p>
+                  {note ? <p>{note}</p> : <p className="muted">No journal entry for this day</p>}
                 </div>
               </div>
             )
