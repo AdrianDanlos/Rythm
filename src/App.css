@@ -718,6 +718,10 @@
   color: var(--muted);
 }
 
+.tag-input {
+  position: relative;
+}
+
 .tag-suggestions {
   position: absolute;
   top: calc(100% + 6px);

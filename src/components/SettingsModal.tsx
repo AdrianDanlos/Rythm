@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type FocusEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
 import {
   cancelDailyReminder,
@@ -68,6 +68,11 @@ export const SettingsModal = ({
 
   const handleDateFormatSelect = (value: DateFormatPreference) => {
     onDateFormatChange(value)
+    setIsDateFormatOpen(false)
+  }
+
+  const handleDateFormatBlur = (event: FocusEvent<HTMLDivElement>) => {
+    if (event.currentTarget.contains(event.relatedTarget as Node | null)) return
     setIsDateFormatOpen(false)
   }
 
@@ -158,16 +163,14 @@ export const SettingsModal = ({
           <section className="settings-section">
             <p className="eyebrow">Preferences</p>
             <div className="settings-grid">
-              <label className="field" htmlFor="settings-date-format">
+              <div className="field">
                 <span>Preferred date format</span>
-                <div className="tag-input">
+                <div className="tag-input" onBlur={handleDateFormatBlur}>
                   <input
                     id="settings-date-format"
                     type="text"
                     readOnly
                     value={activeDateFormat.label}
-                    onFocus={() => setIsDateFormatOpen(true)}
-                    onBlur={() => setIsDateFormatOpen(false)}
                     onClick={() => setIsDateFormatOpen(true)}
                     aria-haspopup="listbox"
                     aria-expanded={isDateFormatOpen}
@@ -180,7 +183,7 @@ export const SettingsModal = ({
                               key={option.value}
                               type="button"
                               className="tag-suggestion"
-                              onMouseDown={(event) => {
+                              onPointerDown={(event) => {
                                 event.preventDefault()
                                 handleDateFormatSelect(option.value)
                               }}
@@ -197,7 +200,7 @@ export const SettingsModal = ({
                       )
                     : null}
                 </div>
-              </label>
+              </div>
 
               <label className="field" htmlFor="settings-sleep-target">
                 <span>Personal sleep target (hours)</span>
