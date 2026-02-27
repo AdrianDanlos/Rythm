@@ -104,7 +104,7 @@ export function getLoggerBadge(entries: Entry[]): Badge {
   const total = entries.length
   return buildTieredBadge(
     'logger-beast',
-    'Logger beast',
+    'Logger Beast',
     total,
     LOGGER_THRESHOLDS,
     LOGGER_LABELS,
