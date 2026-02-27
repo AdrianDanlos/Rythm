@@ -67,6 +67,53 @@ const getDateTickInterval = (pointCount: number, targetTicks = 6) => {
   return Math.max(0, Math.ceil(pointCount / targetTicks) - 1)
 }
 
+const getMetricAxisConfig = (
+  points: RollingPoint[],
+  metric: 'sleep' | 'mood',
+  options?: { show30?: boolean, show90?: boolean },
+) => {
+  const metricBounds = metric === 'sleep' ? { min: 4, max: 10 } : { min: 1, max: 5 }
+  const keys = metric === 'sleep'
+    ? ['sleep7', 'sleep30', 'sleep90'] as const
+    : ['mood7', 'mood30', 'mood90'] as const
+  const activeKeys = [
+    keys[0],
+    ...(options?.show30 === false ? [] : [keys[1]]),
+    ...(options?.show90 === false ? [] : [keys[2]]),
+  ]
+  const values = points.flatMap(point =>
+    activeKeys.flatMap((key) => {
+      const raw = point[key]
+      return typeof raw === 'number' && Number.isFinite(raw) ? [raw] : []
+    }))
+
+  if (values.length === 0) {
+    const defaultTicks = Array.from(
+      { length: metricBounds.max - metricBounds.min + 1 },
+      (_, index) => metricBounds.min + index,
+    )
+    return {
+      domain: [metricBounds.min, metricBounds.max] as [number, number],
+      ticks: defaultTicks,
+    }
+  }
+
+  let lower = Math.max(metricBounds.min, Math.floor(Math.min(...values)))
+  let upper = Math.min(metricBounds.max, Math.ceil(Math.max(...values)))
+
+  // Prevent zero-height domains for flat series by expanding one step when possible.
+  if (lower === upper) {
+    if (lower > metricBounds.min) lower -= 1
+    else if (upper < metricBounds.max) upper += 1
+  }
+
+  const ticks = Array.from({ length: upper - lower + 1 }, (_, index) => lower + index)
+  return {
+    domain: [lower, upper] as [number, number],
+    ticks,
+  }
+}
+
 type RollingLegendProps = {
   show30: boolean
   show90: boolean
@@ -117,6 +164,9 @@ export const InsightsSmoothedTrends = ({
   const previewRollingSeries = buildMockRollingSeries()
   const trimmedRollingSeries = trimToDataExtentRolling(rollingSeries)
   const trimmedPreviewRolling = trimToDataExtentRolling(previewRollingSeries)
+  const previewRollingData = trimmedPreviewRolling.length ? trimmedPreviewRolling : previewRollingSeries
+  const previewAxisConfig = getMetricAxisConfig(previewRollingData, rollingMetric)
+  const rollingAxisConfig = getMetricAxisConfig(trimmedRollingSeries, rollingMetric, { show30, show90 })
   const smoothedChartMargin = isMobile
     ? { top: 12, right: 0, bottom: 0, left: -34 }
     : { top: 12, right: 28, bottom: 0, left: -12 }
@@ -176,7 +226,7 @@ export const InsightsSmoothedTrends = ({
                 <div className="chart-wrapper chart-wrapper--teaser full-bleed">
                   <ResponsiveContainer width="100%" height="100%" minHeight={120}>
                     <LineChart
-                      data={trimmedPreviewRolling.length ? trimmedPreviewRolling : previewRollingSeries}
+                      data={previewRollingData}
                       margin={smoothedChartMargin}
                     >
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -196,10 +246,10 @@ export const InsightsSmoothedTrends = ({
                             : formatAxisValue
                         }
                         domain={
-                          rollingMetric === 'sleep' ? [4, 10] : [1, 5]
+                          previewAxisConfig.domain
                         }
                         ticks={
-                          rollingMetric === 'sleep' ? [4, 6, 8, 10] : [1, 2, 3, 4, 5]
+                          previewAxisConfig.ticks
                         }
                         tick={baseTickProps}
                       />
@@ -329,10 +379,10 @@ export const InsightsSmoothedTrends = ({
                             : formatAxisValue
                         }
                         domain={
-                          rollingMetric === 'sleep' ? [4, 10] : [1, 5]
+                          rollingAxisConfig.domain
                         }
                         ticks={
-                          rollingMetric === 'sleep' ? [4, 6, 8, 10] : [1, 2, 3, 4, 5]
+                          rollingAxisConfig.ticks
                         }
                         tick={baseTickProps}
                       />
