@@ -237,17 +237,17 @@ export const InsightsSmoothedTrends = ({
                               />
                               <Line
                                 type="monotone"
-                                dataKey="sleep30"
-                                name="Last 30 days"
-                                stroke={rollingTrendColors.mid}
+                                dataKey="sleep90"
+                                name="Last 90 days"
+                                stroke="var(--chart-sleep)"
                                 dot={false}
                                 strokeWidth={2}
                               />
                               <Line
                                 type="monotone"
-                                dataKey="sleep90"
-                                name="Last 90 days"
-                                stroke="var(--chart-sleep)"
+                                dataKey="sleep30"
+                                name="Last 30 days"
+                                stroke={rollingTrendColors.mid}
                                 dot={false}
                                 strokeWidth={2}
                               />
@@ -265,17 +265,17 @@ export const InsightsSmoothedTrends = ({
                               />
                               <Line
                                 type="monotone"
-                                dataKey="mood30"
-                                name="Last 30 days"
-                                stroke={rollingTrendColors.mid}
+                                dataKey="mood90"
+                                name="Last 90 days"
+                                stroke="var(--chart-sleep)"
                                 dot={false}
                                 strokeWidth={2}
                               />
                               <Line
                                 type="monotone"
-                                dataKey="mood90"
-                                name="Last 90 days"
-                                stroke="var(--chart-sleep)"
+                                dataKey="mood30"
+                                name="Last 30 days"
+                                stroke={rollingTrendColors.mid}
                                 dot={false}
                                 strokeWidth={2}
                               />
@@ -369,22 +369,22 @@ export const InsightsSmoothedTrends = ({
                                 dot={false}
                                 strokeWidth={2}
                               />
-                              {show30 && (
-                                <Line
-                                  type="monotone"
-                                  dataKey="sleep30"
-                                  name="Last 30 days"
-                                  stroke={rollingTrendColors.mid}
-                                  dot={false}
-                                  strokeWidth={2}
-                                />
-                              )}
                               {show90 && (
                                 <Line
                                   type="monotone"
                                   dataKey="sleep90"
                                   name="Last 90 days"
                                   stroke="var(--chart-sleep)"
+                                  dot={false}
+                                  strokeWidth={2}
+                                />
+                              )}
+                              {show30 && (
+                                <Line
+                                  type="monotone"
+                                  dataKey="sleep30"
+                                  name="Last 30 days"
+                                  stroke={rollingTrendColors.mid}
                                   dot={false}
                                   strokeWidth={2}
                                 />
@@ -401,22 +401,22 @@ export const InsightsSmoothedTrends = ({
                                 dot={false}
                                 strokeWidth={2}
                               />
-                              {show30 && (
-                                <Line
-                                  type="monotone"
-                                  dataKey="mood30"
-                                  name="Last 30 days"
-                                  stroke={rollingTrendColors.mid}
-                                  dot={false}
-                                  strokeWidth={2}
-                                />
-                              )}
                               {show90 && (
                                 <Line
                                   type="monotone"
                                   dataKey="mood90"
                                   name="Last 90 days"
                                   stroke="var(--chart-sleep)"
+                                  dot={false}
+                                  strokeWidth={2}
+                                />
+                              )}
+                              {show30 && (
+                                <Line
+                                  type="monotone"
+                                  dataKey="mood30"
+                                  name="Last 30 days"
+                                  stroke={rollingTrendColors.mid}
                                   dot={false}
                                   strokeWidth={2}
                                 />
