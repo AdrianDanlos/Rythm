@@ -109,7 +109,7 @@ function App() {
   } = settings
 
   const sleepThreshold = sleepTarget
-  const maxTagsPerEntry = 6
+  const maxTagsPerEntry = 8
 
   const {
     entries,
