@@ -85,7 +85,7 @@ export const InsightsDayDetailModal = ({
                     ? (
                         <div className="insights-day-modal__tags">
                           {tags.map((tag, index) => (
-                            <span className="tag-pill" data-color-index={index % 6} key={tag}>
+                            <span className="tag-pill" data-color-index={index % 8} key={tag}>
                               {tag}
                             </span>
                           ))}

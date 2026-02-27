@@ -674,6 +674,14 @@
   background: var(--tag-pill-5);
 }
 
+.tag-pill[data-color-index="6"] {
+  background: var(--tag-pill-6);
+}
+
+.tag-pill[data-color-index="7"] {
+  background: var(--tag-pill-7);
+}
+
 .tag-pill .tag-badge-remove {
   color: rgba(255, 255, 255, 0.85);
 }
