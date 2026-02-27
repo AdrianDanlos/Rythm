@@ -261,7 +261,7 @@ export const LogForm = ({
                 </span>
               </Tooltip>
             </span>
-            <span className="field-hint-pill" aria-label="Recommended">Recommended</span>
+            <span className="field-hint-pill field-hint-pill--plain" aria-label="Recommended">Recommended</span>
           </div>
           <div className="tag-control-row">
             <div className="tag-dropdown-wrap">
