@@ -458,6 +458,10 @@
   margin-bottom: 16px;
 }
 
+.oauth-button--standalone {
+  margin-bottom: 0;
+}
+
 .oauth-logo {
   width: 18px;
   height: 18px;
