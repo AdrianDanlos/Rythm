@@ -95,8 +95,10 @@ export const LogForm = ({
     focusedSleepHourRef.current?.focus()
   }, [sleepMenu, preferredFocusedHour])
   const tagAreaRef = useRef<HTMLDivElement | null>(null)
+  const tagInputRef = useRef<HTMLInputElement | null>(null)
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false)
   const [tagInputValue, setTagInputValue] = useState('')
+  const [tagPlaceholderOverride, setTagPlaceholderOverride] = useState<string | null>(null)
 
   const usedTags = parseTags(tags)
   const usedTagSet = new Set(usedTags)
@@ -135,6 +137,7 @@ export const LogForm = ({
     const nextList = [...usedTags, normalized]
     onTagsChange(nextList.join(', '))
     setTagInputValue('')
+    setTagPlaceholderOverride(null)
     setTagDropdownOpen(false)
   }
 
@@ -144,7 +147,14 @@ export const LogForm = ({
   }
 
   const submitTagInput = () => {
-    if (!tagInputValue.trim() || atMaxTags) return
+    if (atMaxTags) return
+    if (!tagInputValue.trim()) {
+      setTagPlaceholderOverride('Type event, press +Add')
+      setTagDropdownOpen(true)
+      // Keep the input focused so mobile keyboards open.
+      tagInputRef.current?.focus()
+      return
+    }
     addTag(tagInputValue)
   }
 
@@ -282,15 +292,23 @@ export const LogForm = ({
           <div className="tag-control-row">
             <div className="tag-dropdown-wrap">
               <input
+                ref={tagInputRef}
                 type="text"
                 className="tag-dropdown-trigger"
                 aria-haspopup="listbox"
                 aria-expanded={tagDropdownOpen}
                 aria-label="Add daily events (e.g. stress, caffeine, exercise)"
-                placeholder={atMaxTags ? `Maximum of ${maxTagsPerEntry} reached` : 'e.g. stress, exercise...'}
+                placeholder={
+                  atMaxTags
+                    ? `Maximum of ${maxTagsPerEntry} reached`
+                    : tagPlaceholderOverride ?? 'e.g. stress, exercise...'
+                }
                 value={tagInputValue}
                 disabled={atMaxTags}
                 onChange={(e) => {
+                  if (tagPlaceholderOverride) {
+                    setTagPlaceholderOverride(null)
+                  }
                   setTagInputValue(e.target.value.slice(0, MAX_TAG_LENGTH))
                   setTagDropdownOpen(true)
                 }}
