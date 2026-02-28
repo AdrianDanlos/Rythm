@@ -263,9 +263,11 @@ button {
     box-shadow 0.2s ease;
 }
 
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--button-hover-shadow);
+@media (hover: hover) and (pointer: fine) {
+  button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--button-hover-shadow);
+  }
 }
 
 button:disabled {
