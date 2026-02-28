@@ -36,7 +36,7 @@ export function useSettingsSync(session: Session | null) {
   useEffect(() => {
     if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') return
     const backgroundColor = theme === 'dark' ? '#0B1220' : '#F8FAFC'
-    const style = theme === 'dark' ? Style.Light : Style.Dark
+    const style = theme === 'dark' ? Style.Dark : Style.Light
 
     void (async () => {
       await StatusBar.setOverlaysWebView({ overlay: false })
