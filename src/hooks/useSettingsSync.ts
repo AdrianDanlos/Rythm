@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { StatusBar, Style } from '@capacitor/status-bar'
+import { NavigationBar } from '@capgo/capacitor-navigation-bar'
 import type { Session } from '@supabase/supabase-js'
 import {
   getStoredDateFormat,
@@ -37,11 +38,16 @@ export function useSettingsSync(session: Session | null) {
     if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') return
     const backgroundColor = theme === 'dark' ? '#0B1220' : '#F8FAFC'
     const style = theme === 'dark' ? Style.Dark : Style.Light
+    const darkButtons = theme !== 'dark'
 
     void (async () => {
       await StatusBar.setOverlaysWebView({ overlay: false })
       await StatusBar.setBackgroundColor({ color: backgroundColor })
       await StatusBar.setStyle({ style })
+      await NavigationBar.setNavigationBarColor({
+        color: backgroundColor,
+        darkButtons,
+      })
     })()
   }, [theme])
 
