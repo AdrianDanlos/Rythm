@@ -3070,21 +3070,29 @@ button.toggle-group__btn--disabled:disabled {
     border-radius: 0;
     border-left: 0;
     border-right: 0;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: flex-start;
     gap: 24px;
+  }
+
+  .nav-center {
+    display: contents;
   }
 
   .insights-bottom-nav__tabs {
     width: auto;
-    margin: 0 auto;
+    margin: 0;
+    grid-column: 2;
+    justify-self: center;
   }
 
   .nav-actions {
-    justify-content: center;
+    justify-content: flex-end;
     gap: 12px;
-    margin-left: 36px;
+    margin-left: 0;
+    grid-column: 3;
+    justify-self: end;
   }
 
   .nav-actions .app-tooltip-bubble {
@@ -3114,8 +3122,10 @@ button.toggle-group__btn--disabled:disabled {
     display: flex;
     align-items: flex-start;
     gap: 8px;
-    margin-left: 20px;
-    margin-right: 16px;
+    margin-left: 0;
+    margin-right: 0;
+    grid-column: 1;
+    justify-self: start;
   }
 
   .nav-brand .app-logo {
@@ -3135,8 +3145,7 @@ button.toggle-group__btn--disabled:disabled {
   }
 
   .nav-center {
-    flex: 1;
-    justify-content: center;
+    justify-content: initial;
   }
 
   .nav-actions .icon-button {
