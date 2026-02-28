@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Entry } from '../../lib/entries'
 
 type InsightsMoodDistributionProps = {
@@ -12,7 +13,14 @@ export const InsightsMoodDistribution = ({
   moodColors,
   goToLog,
 }: InsightsMoodDistributionProps) => {
-  const moodLabels = ['Very low', 'Low', 'Okay', 'Good', 'Great']
+  const { t } = useTranslation()
+  const moodLabels = [
+    t('insights.veryLow'),
+    t('insights.low'),
+    t('insights.okay'),
+    t('insights.good'),
+    t('insights.great'),
+  ]
   const moodCounts = entries.reduce(
     (acc, entry) => {
       const mood = Number(entry.mood)
@@ -42,9 +50,9 @@ export const InsightsMoodDistribution = ({
       <div className="card-header">
         <div>
           <h2>
-            Mood distribution
+            {t('insights.moodDistribution')}
           </h2>
-          <p className="muted">Mood distribution across your entries</p>
+          <p className="muted">{t('insights.moodDistributionSubtitle')}</p>
         </div>
       </div>
       {total
@@ -53,7 +61,7 @@ export const InsightsMoodDistribution = ({
               <div className="mood-pie" style={pieStyle} aria-hidden="true" />
               <div className="mood-legend">
                 <p className="mood-total">
-                  <span className="label">Total logs</span>
+                  <span className="label">{t('insights.totalLogs')}</span>
                   <span className="value">{total}</span>
                 </p>
                 {moodCounts.map((count, index) => {
@@ -80,9 +88,9 @@ export const InsightsMoodDistribution = ({
         : (
             <p className="muted">
               <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                Log a day
+                {t('insights.logMoreDays')}
               </button>
-              {' '}to see your mood distribution.
+              {' '}{t('insights.moodDistributionSubtitle')}
             </p>
           )}
     </section>

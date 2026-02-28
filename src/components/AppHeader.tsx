@@ -1,4 +1,5 @@
 import { CreditCard, LogOut, Settings } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { AppBrand } from './AppBrand'
 import { Tooltip } from './Tooltip'
 
@@ -21,6 +22,7 @@ export function AppHeader({
   onManageSubscription,
   onSignOut,
 }: AppHeaderProps) {
+  const { t } = useTranslation()
   return (
     <header className="app-header">
       <AppBrand />
@@ -28,12 +30,12 @@ export function AppHeader({
         {session
           ? (
               <>
-                <Tooltip label="Settings">
+                <Tooltip label={t('nav.settings')}>
                   <button
                     className="ghost icon-button"
                     type="button"
                     onClick={onOpenSettings}
-                    aria-label="Settings"
+                    aria-label={t('nav.settings')}
                   >
                     <Settings className="icon" aria-hidden="true" />
                   </button>
@@ -41,12 +43,12 @@ export function AppHeader({
 
                 {canManageSubscription
                   ? (
-                      <Tooltip label="Manage subscription">
+                      <Tooltip label={t('nav.manageSubscription')}>
                         <button
                           className="ghost icon-button"
                           type="button"
                           onClick={onManageSubscription}
-                          aria-label="Manage subscription"
+                          aria-label={t('nav.manageSubscription')}
                           disabled={isPortalLoading}
                         >
                           <CreditCard className="icon" aria-hidden="true" />
@@ -55,12 +57,12 @@ export function AppHeader({
                     )
                   : null}
 
-                <Tooltip label="Sign out">
+                <Tooltip label={t('nav.signOut')}>
                   <button
                     className="ghost icon-button"
                     onClick={onSignOut}
                     type="button"
-                    aria-label={isSignOutLoading ? 'Signing out' : 'Sign out'}
+                    aria-label={isSignOutLoading ? t('nav.signingOut') : t('nav.signOut')}
                     aria-busy={isSignOutLoading}
                     disabled={isSignOutLoading}
                   >

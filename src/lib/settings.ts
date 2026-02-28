@@ -2,6 +2,7 @@ import { STORAGE_KEYS } from './storageKeys'
 
 export type DateFormatPreference = 'mdy' | 'dmy' | 'ymd'
 export type ThemePreference = 'light' | 'dark'
+export type LanguagePreference = 'en' | 'es'
 
 const DEFAULT_SLEEP_TARGET = 8
 const MIN_SLEEP_TARGET = 4
@@ -51,6 +52,22 @@ export const getStoredTheme = (): ThemePreference => {
 
 export const setStoredTheme = (value: ThemePreference) => {
   writeStorage(STORAGE_KEYS.THEME, value)
+}
+
+export const getStoredLanguage = (): LanguagePreference => {
+  const value = readStorage(STORAGE_KEYS.LANGUAGE)
+  if (value === 'es' || value === 'en') {
+    return value
+  }
+  if (typeof navigator !== 'undefined') {
+    const browser = navigator.language.toLowerCase().split('-')[0]
+    if (browser === 'es') return 'es'
+  }
+  return 'en'
+}
+
+export const setStoredLanguage = (value: LanguagePreference) => {
+  writeStorage(STORAGE_KEYS.LANGUAGE, value)
 }
 
 export const getStoredProfileName = () => {

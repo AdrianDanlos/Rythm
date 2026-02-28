@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Entry } from '../../lib/entries'
 import { formatLocalDate, getDateLocale } from '../../lib/utils/dateFormatters'
 import { InsightsDayDetailModal } from './InsightsDayDetailModal'
@@ -65,6 +66,7 @@ export const InsightsMonthlyCalendar = ({
   isMobile,
   entriesLoading,
 }: InsightsMonthlyCalendarProps) => {
+  const { t } = useTranslation()
   const dateLocale = getDateLocale()
   const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()))
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
@@ -98,32 +100,32 @@ export const InsightsMonthlyCalendar = ({
     <section className="card monthly-calendar-card">
       <div className="card-header">
         <div>
-          <h2>Calendar</h2>
-          <p className="muted">Overview of your daily logs</p>
+          <h2>{t('insights.calendar')}</h2>
+          <p className="muted">{t('insights.overviewDailyLogs')}</p>
         </div>
         <div className="toggle-group monthly-calendar-nav">
           <button
             type="button"
             className="ghost"
-            aria-label="Previous month"
+            aria-label={t('insights.previousMonth')}
             onClick={() => setVisibleMonth(current => new Date(current.getFullYear(), current.getMonth() - 1, 1))}
           >
-            Prev
+            {t('insights.prev')}
           </button>
           <button
             type="button"
             className="ghost"
             onClick={() => setVisibleMonth(startOfMonth(new Date()))}
           >
-            Today
+            {t('insights.today')}
           </button>
           <button
             type="button"
             className="ghost"
-            aria-label="Next month"
+            aria-label={t('insights.nextMonth')}
             onClick={() => setVisibleMonth(current => new Date(current.getFullYear(), current.getMonth() + 1, 1))}
           >
-            Next
+            {t('insights.next')}
           </button>
         </div>
       </div>
@@ -165,13 +167,13 @@ export const InsightsMonthlyCalendar = ({
                         day.isFuture ? 'future' : '',
                       ].filter(Boolean).join(' ')}
                       onClick={() => setSelectedDate(day.key)}
-                      aria-label={`${day.key}${day.entry ? ', has entry' : ', no entry'}`}
+                      aria-label={`${day.key}${day.entry ? ', has entry' : `, ${t('insights.noEntryShort').toLowerCase()}`}`}
                     >
                       <span className="monthly-calendar-day__number">{day.date.getDate()}</span>
                       <span className="monthly-calendar-day__meta">
                         {day.entry
                           ? (
-                              <span className="monthly-calendar-day__logged" aria-label="Entry logged">
+                              <span className="monthly-calendar-day__logged" aria-label={t('insights.entryLogged')}>
                                 <span
                                   className="monthly-calendar-day__dot"
                                   style={moodColor ? { backgroundColor: moodColor } : undefined}
@@ -182,7 +184,7 @@ export const InsightsMonthlyCalendar = ({
                             )
                           : (
                               <span className="muted monthly-calendar-day__empty">
-                                {isMobile ? '' : 'No entry'}
+                                {isMobile ? '' : t('insights.noEntryShort')}
                               </span>
                             )}
                       </span>
@@ -192,7 +194,7 @@ export const InsightsMonthlyCalendar = ({
               </div>
 
               {!monthHasEntries
-                ? <p className="muted monthly-calendar-empty">No entries in this month yet.</p>
+                ? <p className="muted monthly-calendar-empty">{t('insights.noEntriesThisMonth')}</p>
                 : null}
             </>
           )}

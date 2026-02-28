@@ -1,5 +1,6 @@
 import { useEffect, useState, type FocusEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
+import { useTranslation } from 'react-i18next'
 import {
   cancelDailyReminder,
   getStoredDailyReminderEnabled,
@@ -8,7 +9,11 @@ import {
   setStoredDailyReminderEnabled,
   setStoredDailyReminderTime,
 } from '../lib/notifications'
-import type { DateFormatPreference, ThemePreference } from '../lib/settings'
+import type {
+  DateFormatPreference,
+  LanguagePreference,
+  ThemePreference,
+} from '../lib/settings'
 import appleLogo from '../assets/apple.png'
 import fitbitLogo from '../assets/fitbit.png'
 
@@ -18,10 +23,12 @@ type SettingsModalProps = {
   name: string
   email: string
   dateFormat: DateFormatPreference
+  language: LanguagePreference
   theme: ThemePreference
   personalSleepTarget: number
   onNameChange: (value: string) => void
   onDateFormatChange: (value: DateFormatPreference) => void
+  onLanguageChange: (value: LanguagePreference) => void
   onThemeChange: (value: ThemePreference) => void
   onPersonalSleepTargetChange: (value: number) => void
 }
@@ -32,13 +39,16 @@ export const SettingsModal = ({
   name,
   email,
   dateFormat,
+  language,
   theme,
   personalSleepTarget,
   onNameChange,
   onDateFormatChange,
+  onLanguageChange,
   onThemeChange,
   onPersonalSleepTargetChange,
 }: SettingsModalProps) => {
+  const { t } = useTranslation()
   const remindersSupported = Capacitor.isNativePlatform()
   const [remindersEnabled, setRemindersEnabled] = useState(
     () => getStoredDailyReminderEnabled(),
@@ -54,9 +64,9 @@ export const SettingsModal = ({
   const reminderActive = remindersSupported && remindersEnabled
 
   const dateFormatOptions: { value: DateFormatPreference, label: string }[] = [
-    { value: 'dmy', label: 'Day / Month / Year' },
-    { value: 'mdy', label: 'Month / Day / Year' },
-    { value: 'ymd', label: 'Year / Month / Day' },
+    { value: 'dmy', label: t('settings.dayMonthYear') },
+    { value: 'mdy', label: t('settings.monthDayYear') },
+    { value: 'ymd', label: t('settings.yearMonthDay') },
   ]
 
   const activeDateFormat = dateFormatOptions.find(option => option.value === dateFormat)
@@ -122,13 +132,13 @@ export const SettingsModal = ({
       >
         <div className="modal-header">
           <div>
-            <h2 id="settings-title">Settings</h2>
+            <h2 id="settings-title">{t('settings.title')}</h2>
           </div>
           <button
             type="button"
             className="ghost icon-button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t('common.close')}
           >
             ×
           </button>
@@ -136,20 +146,20 @@ export const SettingsModal = ({
 
         <div className="settings-form">
           <section className="settings-section">
-            <p className="eyebrow">Account</p>
+            <p className="eyebrow">{t('settings.account')}</p>
             <div className="settings-grid">
               <label className="field" htmlFor="settings-name">
-                <span>Name</span>
+                <span>{t('settings.name')}</span>
                 <input
                   id="settings-name"
                   type="text"
                   value={name}
-                  placeholder="Add your name"
+                  placeholder={t('settings.addYourName')}
                   onChange={event => onNameChange(event.target.value)}
                 />
               </label>
               <label className="field settings-divider-none" htmlFor="settings-email">
-                <span>Email</span>
+                <span>{t('auth.email')}</span>
                 <input
                   id="settings-email"
                   type="email"
@@ -161,10 +171,10 @@ export const SettingsModal = ({
           </section>
 
           <section className="settings-section">
-            <p className="eyebrow">Preferences</p>
+            <p className="eyebrow">{t('settings.preferences')}</p>
             <div className="settings-grid">
               <div className="field">
-                <span>Preferred date format</span>
+                <span>{t('settings.preferredDateFormat')}</span>
                 <div className="tag-input" onBlur={handleDateFormatBlur}>
                   <input
                     id="settings-date-format"
@@ -203,7 +213,7 @@ export const SettingsModal = ({
               </div>
 
               <label className="field" htmlFor="settings-sleep-target">
-                <span>Personal sleep target (hours)</span>
+                <span>{t('settings.personalSleepTargetHours')}</span>
                 <input
                   id="settings-sleep-target"
                   type="number"
@@ -230,31 +240,51 @@ export const SettingsModal = ({
                   }}
                 />
                 <p className="settings-note">
-                  Used for avg sleep target and mood-by-sleep comparisons.
+                  {t('settings.sleepTargetHelper')}
                 </p>
               </label>
 
               <div className="field">
-                <span>Appearance</span>
+                <span>{t('settings.language')}</span>
+                <div className="toggle-group">
+                  <button
+                    type="button"
+                    className={`ghost ${language === 'en' ? 'active' : ''}`}
+                    onClick={() => onLanguageChange('en')}
+                  >
+                    {t('settings.english')}
+                  </button>
+                  <button
+                    type="button"
+                    className={`ghost ${language === 'es' ? 'active' : ''}`}
+                    onClick={() => onLanguageChange('es')}
+                  >
+                    {t('settings.spanish')}
+                  </button>
+                </div>
+              </div>
+
+              <div className="field">
+                <span>{t('settings.appearance')}</span>
                 <div className="toggle-group">
                   <button
                     type="button"
                     className={`ghost ${theme === 'dark' ? 'active' : ''}`}
                     onClick={() => onThemeChange('dark')}
                   >
-                    Dark
+                    {t('settings.dark')}
                   </button>
                   <button
                     type="button"
                     className={`ghost ${theme === 'light' ? 'active' : ''}`}
                     onClick={() => onThemeChange('light')}
                   >
-                    Light
+                    {t('settings.light')}
                   </button>
                 </div>
               </div>
               <div className="field">
-                <span>Daily log reminder</span>
+                <span>{t('settings.dailyLogReminder')}</span>
                 <div className="settings-inline">
                   <label className="toggle-row">
                     <input
@@ -268,7 +298,7 @@ export const SettingsModal = ({
                       <span className="toggle-thumb" />
                     </span>
                     <span className="toggle-text">
-                      {reminderActive ? 'Enabled' : 'Disabled'}
+                      {reminderActive ? t('settings.enabled') : t('settings.disabled')}
                     </span>
                   </label>
                   <input
@@ -276,20 +306,20 @@ export const SettingsModal = ({
                     value={reminderTime}
                     onChange={event => handleReminderTimeChange(event.target.value)}
                     disabled={!remindersEnabled || !remindersSupported}
-                    aria-label="Reminder time"
+                    aria-label={t('settings.reminderTime')}
                   />
                 </div>
                 {!remindersSupported
                   ? (
                       <p className="settings-note">
-                        Reminders are available on the mobile app only.
+                        {t('settings.remindersMobileOnly')}
                       </p>
                     )
                   : null}
               </div>
               <div className="field">
-                <span>Wearable sync</span>
-                <p className="settings-note">Sync sleep from wearable (coming soon)</p>
+                <span>{t('settings.wearableSync')}</span>
+                <p className="settings-note">{t('settings.wearableSyncComingSoon')}</p>
                 <div className="wearable-logos">
                   <img src={appleLogo} alt="Apple Health" className="wearable-logo" />
                   <img src={fitbitLogo} alt="Fitbit" className="wearable-logo" />
@@ -299,7 +329,7 @@ export const SettingsModal = ({
           </section>
           <div className="modal-actions modal-actions-right">
             <button type="button" className="ghost" onClick={onClose}>
-              Close
+              {t('common.close')}
             </button>
           </div>
         </div>

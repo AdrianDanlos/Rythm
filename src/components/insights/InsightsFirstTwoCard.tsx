@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import type { Entry } from '../../lib/entries'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { cardEnter, motionTransitionSlow, progressEnter } from '../../lib/motion'
@@ -11,6 +12,7 @@ type InsightsFirstTwoCardProps = {
 }
 
 export const InsightsFirstTwoCard = ({ entries, goToLog }: InsightsFirstTwoCardProps) => {
+  const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
   const last = entries[0]
   if (!last) return null
@@ -37,32 +39,32 @@ export const InsightsFirstTwoCard = ({ entries, goToLog }: InsightsFirstTwoCardP
       transition={reduceMotion ? { duration: 0 } : undefined}
     >
       <div className="insights-first-five-card__header">
-        <p className="eyebrow">Summary</p>
-        <h2>One more day to unlock</h2>
+        <p className="eyebrow">{t('insights.firstSummary')}</p>
+        <h2>{t('insights.oneMoreDayToUnlock')}</h2>
       </div>
-      <p className="insights-first-five-card__data-label">Your first day</p>
+      <p className="insights-first-five-card__data-label">{t('insights.yourFirstDay')}</p>
       {hasAnyData && (
         <div className="insights-first-five-card__data-row" role="list" aria-label="First day summary">
           {hasSleep && (
             <div className="insights-first-five-card__data-item" role="listitem">
-              <span className="insights-first-five-card__data-item-label">Sleep</span>
+              <span className="insights-first-five-card__data-item-label">{t('common.sleep')}</span>
               <span className="insights-first-five-card__data-item-value">{formatSleepHours(sleep!)}</span>
             </div>
           )}
           {hasMood && (
             <div className="insights-first-five-card__data-item" role="listitem">
-              <span className="insights-first-five-card__data-item-label">Mood</span>
+              <span className="insights-first-five-card__data-item-label">{t('common.mood')}</span>
               <span className="insights-first-five-card__data-item-value">{Math.round(mood!)} / 5</span>
             </div>
           )}
         </div>
       )}
-      {!hasAnyData && <p className="insights-first-five-card__data insights-first-five-card__data--muted">Your first day logged.</p>}
+      {!hasAnyData && <p className="insights-first-five-card__data insights-first-five-card__data--muted">{t('insights.yourFirstDayLogged')}</p>}
       <p className="insights-first-five-card__unlock muted">
         <button type="button" className="link-button link-button--text" onClick={goToLog}>
           Log 1 more day
         </button>
-        {' '}to unlock: sleep consistency.
+        {' '}{t('insights.logMoreDaysUnlock')}
       </p>
       <div className="first-five-progress">
         <div className="badge-progress-track" aria-hidden="true">

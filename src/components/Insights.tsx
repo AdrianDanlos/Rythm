@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import type { Entry } from '../lib/entries'
 import type { StatCounts } from '../lib/stats'
 import type {
@@ -127,6 +128,7 @@ export const Insights = ({
   activeTab,
   goToLog,
 }: InsightsProps) => {
+  const { t } = useTranslation()
   const [hasRatedOnPlay, setHasRatedOnPlay] = useState(
     () => typeof window !== 'undefined'
       && localStorage.getItem(STORAGE_KEYS.RATED_GOOGLE_PLAY) === 'true',
@@ -363,8 +365,8 @@ export const Insights = ({
                 <section className="card">
                   <div className="card-header">
                     <div>
-                      <h2>Badges</h2>
-                      <p className="muted">Level up as you log</p>
+                      <h2>{t('insights.badges')}</h2>
+                      <p className="muted">{t('insights.levelUp')}</p>
                     </div>
                   </div>
                   <>
@@ -513,29 +515,29 @@ export const Insights = ({
                       <img className="review-cta__icon" src={googleLogo} alt="" width={24} height={24} />
                     </div>
                     <div className="review-cta__text">
-                      <p className="label">Enjoying Rythm?</p>
-                      <p className="muted">A quick review helps a ton.</p>
+                      <p className="label">{t('insights.enjoyRythm')}</p>
+                      <p className="muted">{t('insights.quickReviewHelps')}</p>
                     </div>
                   </div>
                   <a className="review-cta__link" href={reviewUrl} target="_blank" rel="noreferrer" onClick={onRateClick}>
-                    Rate on Google Play
+                    {t('insights.rateOnGooglePlay')}
                   </a>
                 </div>
               )}
               <div className="card review-cta review-cta--standalone feedback-cta">
                 <div className="review-cta__content">
                   <div className="review-cta__text">
-                    <p className="label">Send feedback</p>
-                    <p className="muted">Suggestions, bugs, or ideas—we’d love to hear from you.</p>
+                    <p className="label">{t('insights.sendFeedback')}</p>
+                    <p className="muted">{t('insights.feedbackCta')}</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   className="review-cta__link"
                   onClick={onOpenFeedback}
-                  aria-label="Send feedback"
+                  aria-label={t('insights.sendFeedback')}
                 >
-                  Send feedback
+                  {t('insights.sendFeedback')}
                 </button>
               </div>
             </motion.div>

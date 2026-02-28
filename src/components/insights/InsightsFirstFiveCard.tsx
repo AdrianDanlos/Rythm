@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import type { Entry } from '../../lib/entries'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { cardEnter, motionTransitionSlow, progressEnter } from '../../lib/motion'
@@ -11,6 +12,7 @@ type InsightsFirstFiveCardProps = {
 }
 
 export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCardProps) => {
+  const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
   const sorted = [...entries].sort((a, b) => b.entry_date.localeCompare(a.entry_date))
   const last = sorted[0]
@@ -39,21 +41,21 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
       transition={reduceMotion ? { duration: 0 } : undefined}
     >
       <div className="insights-first-five-card__header">
-        <p className="eyebrow">Summary</p>
-        <h2>You're building your first week</h2>
+        <p className="eyebrow">{t('insights.firstSummary')}</p>
+        <h2>{t('insights.buildingFirstWeek')}</h2>
       </div>
-      <p className="insights-first-five-card__data">{`You've logged ${n} days`}{hasAnyData ? ' — last:' : '.'}</p>
+      <p className="insights-first-five-card__data">{t('insights.youLoggedDays', { count: n })}{hasAnyData ? ` ${t('insights.lastLabel')}` : '.'}</p>
       {hasAnyData && (
         <div className="insights-first-five-card__data-row" role="list" aria-label="Last night summary">
           {hasSleep && (
             <div className="insights-first-five-card__data-item" role="listitem">
-              <span className="insights-first-five-card__data-item-label">Sleep</span>
+              <span className="insights-first-five-card__data-item-label">{t('common.sleep')}</span>
               <span className="insights-first-five-card__data-item-value">{formatSleepHours(sleep!)}</span>
             </div>
           )}
           {hasMood && (
             <div className="insights-first-five-card__data-item" role="listitem">
-              <span className="insights-first-five-card__data-item-label">Mood</span>
+              <span className="insights-first-five-card__data-item-label">{t('common.mood')}</span>
               <span className="insights-first-five-card__data-item-value">{Math.round(mood!)} / 5</span>
             </div>
           )}
@@ -63,7 +65,7 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
         <button type="button" className="link-button link-button--text" onClick={goToLog}>
           Log {UNLOCK_DAYS - n} more {UNLOCK_DAYS - n === 1 ? 'day' : 'days'}
         </button>
-        {' '}to unlock: Rhythm score, sleep–mood link, and more badges.
+        {' '}{t('insights.unlockMoreBadges')}
       </p>
       <div className="first-five-progress">
         <div className="badge-progress-track" aria-hidden="true">

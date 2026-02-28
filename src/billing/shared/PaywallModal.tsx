@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type PaywallModalProps = {
   isOpen: boolean
@@ -28,6 +29,7 @@ export const PaywallModal = ({
   onRestore,
   showRestore,
 }: PaywallModalProps) => {
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [isRestoring, setIsRestoring] = useState(false)
   const canUpgrade = Boolean(onUpgrade || (upgradeUrl && upgradeUrl.trim()))
@@ -78,14 +80,14 @@ export const PaywallModal = ({
       >
         <div className="modal-header">
           <div>
-            <p className="eyebrow">Premium</p>
-            <h2 id="paywall-title">Unlock Pro features</h2>
+            <p className="eyebrow">{t('paywall.premium')}</p>
+            <h2 id="paywall-title">{t('paywall.unlockPro')}</h2>
           </div>
           <button
             type="button"
             className="ghost icon-button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t('common.close')}
           >
             ×
           </button>
@@ -94,7 +96,7 @@ export const PaywallModal = ({
           ? <p className="paywall-price">{priceLabel}</p>
           : null}
         <p className="muted">
-          Upgrade to access deeper insights.
+          {t('paywall.upgradeToAccess')}
         </p>
         <ul className="paywall-list">
           {premiumFeatures.map(feature => (
@@ -108,7 +110,7 @@ export const PaywallModal = ({
             disabled={!canUpgrade || isLoading}
             onClick={handleUpgrade}
           >
-            {isLoading ? 'Opening checkout...' : 'Upgrade now'}
+            {isLoading ? t('paywall.openingCheckout') : t('paywall.upgradeNow')}
           </button>
           {showRestore && onRestore
             ? (
@@ -118,18 +120,18 @@ export const PaywallModal = ({
                   disabled={isRestoring}
                   onClick={handleRestore}
                 >
-                  {isRestoring ? 'Restoring...' : 'Restore purchases'}
+                  {isRestoring ? t('paywall.restoring') : t('paywall.restorePurchases')}
                 </button>
               )
             : null}
           <button type="button" className="ghost" onClick={onClose}>
-            Not now
+            {t('paywall.notNow')}
           </button>
         </div>
         {!canUpgrade
           ? (
               <p className="helper">
-                Set <code>VITE_UPGRADE_URL</code> to enable the upgrade link.
+                {t('paywall.configureUpgradeUrl')}
               </p>
             )
           : null}

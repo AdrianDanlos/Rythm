@@ -1,4 +1,5 @@
 import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
+import { useTranslation } from 'react-i18next'
 import { DEFAULT_TAG_DRIVER_MIN_COUNT } from '../../lib/utils/tagInsights'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
@@ -20,6 +21,7 @@ export const InsightsTagInsights = ({
   onOpenPaywall,
   goToLog,
 }: InsightsTagInsightsProps) => {
+  const { t } = useTranslation()
   const positiveDrivers = [...tagDrivers]
     .filter(driver => typeof driver.delta === 'number' && driver.delta > 0)
     .sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0))
@@ -146,8 +148,8 @@ export const InsightsTagInsights = ({
     <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
       <div className="card-header">
         <div>
-          <h2>Daily Events Insights</h2>
-          <p className="muted">See how what happens during the day influences your mood and sleep over time.</p>
+          <h2>{t('insights.dailyEventsInsights')}</h2>
+          <p className="muted">{t('insights.eventsInfluence')}</p>
         </div>
       </div>
       {!isPro
@@ -157,8 +159,8 @@ export const InsightsTagInsights = ({
                 <>
                   <div className="tag-insights-block">
                     <div className="tag-insights-block-header">
-                      <h3 className="tag-insights-block-title">Daily events that predict mood</h3>
-                      <Tooltip label="Compares mood on days with an event vs without it.">
+                      <h3 className="tag-insights-block-title">{t('insights.eventsPredictMood')}</h3>
+                      <Tooltip label={t('insights.compareMoodWithWithout')}>
                         <span className="tooltip-trigger">
                           <span className="tooltip-icon" aria-hidden="true">i</span>
                         </span>
@@ -169,16 +171,16 @@ export const InsightsTagInsights = ({
                           <>
                             {positiveDrivers.length > 0 && (
                               <div className="tag-driver-section">
-                                <p className="label">Positive</p>
+                                <p className="label">{t('insights.positive')}</p>
                                 <div className="tag-bar-list">
                                   {positiveDrivers.map(tag => (
                                     <div className="tag-bar-item positive" key={tag.tag}>
                                       <div className="tag-bar-header">
                                         <p className="tag-title">{tag.tag}</p>
-                                        <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} mood</p>
+                                        <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
                                       </div>
                                       <div className="tag-bar-delta-and-track">
-                                        <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} mood</p>
+                                        <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
                                         <div className="tag-bar-track" aria-hidden="true">
                                           <span
                                             className="tag-bar-fill"
@@ -186,7 +188,7 @@ export const InsightsTagInsights = ({
                                           />
                                         </div>
                                       </div>
-                                      <p className="helper">{tag.count} entries</p>
+                                      <p className="helper">{t('insights.entriesSuffix', { count: tag.count })}</p>
                                     </div>
                                   ))}
                                 </div>
@@ -194,16 +196,16 @@ export const InsightsTagInsights = ({
                             )}
                             {negativeDrivers.length > 0 && (
                               <div className="tag-driver-section">
-                                <p className="label">Negative</p>
+                                <p className="label">{t('insights.negative')}</p>
                                 <div className="tag-bar-list">
                                   {negativeDrivers.map(tag => (
                                     <div className="tag-bar-item negative" key={tag.tag}>
                                       <div className="tag-bar-header">
                                         <p className="tag-title">{tag.tag}</p>
-                                        <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} mood</p>
+                                        <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
                                       </div>
                                       <div className="tag-bar-delta-and-track">
-                                        <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} mood</p>
+                                        <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
                                         <div className="tag-bar-track" aria-hidden="true">
                                           <span
                                             className="tag-bar-fill"
@@ -211,7 +213,7 @@ export const InsightsTagInsights = ({
                                           />
                                         </div>
                                       </div>
-                                      <p className="helper">{tag.count} entries</p>
+                                      <p className="helper">{t('insights.entriesSuffix', { count: tag.count })}</p>
                                     </div>
                                   ))}
                                 </div>
@@ -220,13 +222,13 @@ export const InsightsTagInsights = ({
                           </>
                         )
                       : (
-                          <p className="muted">Add daily events to see mood impact (min 3 entries per event).</p>
+                          <p className="muted">{t('insights.addEventsToSeeMoodImpact')}</p>
                         )}
                   </div>
                   <div className="tag-insights-block">
                     <div className="tag-insights-block-header">
-                      <h3 className="tag-insights-block-title">Daily events that predict sleep</h3>
-                      <Tooltip label="Compares next-night sleep after days with an event vs days without it.">
+                      <h3 className="tag-insights-block-title">{t('insights.eventsPredictSleep')}</h3>
+                      <Tooltip label={t('insights.compareSleepWithWithout')}>
                         <span className="tooltip-trigger">
                           <span className="tooltip-icon" aria-hidden="true">i</span>
                         </span>
@@ -235,12 +237,12 @@ export const InsightsTagInsights = ({
                     {(positiveSleepDrivers.length > 0 || negativeSleepDrivers.length > 0)
                       ? (
                           <>
-                            {renderSleepDriverSection('More sleep after', 'positive', positiveSleepDrivers)}
-                            {renderSleepDriverSection('Less sleep after', 'negative', negativeSleepDrivers)}
+                            {renderSleepDriverSection(t('insights.moreSleepAfter'), 'positive', positiveSleepDrivers)}
+                            {renderSleepDriverSection(t('insights.lessSleepAfter'), 'negative', negativeSleepDrivers)}
                           </>
                         )
                       : (
-                          <p className="muted">Add daily events to see sleep impact (min 3 entries per event).</p>
+                          <p className="muted">{t('insights.addEventsToSeeSleepImpact')}</p>
                         )}
                   </div>
                 </>
@@ -248,7 +250,7 @@ export const InsightsTagInsights = ({
             : (
                 <p className="muted">
                   <button type="button" className="link-button link-button--text" onClick={goToLog}>Add daily events</button>
-                  {' '}to see how each one changes your mood and sleep <strong>(at least {DEFAULT_TAG_DRIVER_MIN_COUNT} entries per event).</strong>
+                  {' '}{t('insights.addEventsToUnlock', { count: DEFAULT_TAG_DRIVER_MIN_COUNT })}
                 </p>
               )}
     </section>

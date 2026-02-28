@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ChangeEvent } from 'react'
 import { DayPicker } from 'react-day-picker'
+import { useTranslation } from 'react-i18next'
 import 'react-day-picker/dist/style.css'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import { Tooltip } from './Tooltip'
@@ -53,6 +54,7 @@ export const LogForm = ({
   onTagsChange,
   onSave,
 }: LogFormProps) => {
+  const { t } = useTranslation()
   const sleepHourOptions = Array.from({ length: 13 }, (_, index) => index)
   const sleepMinuteOptions = [0, 15, 30, 45]
   const parsedSleepHours = Number(sleepHours)
@@ -149,7 +151,7 @@ export const LogForm = ({
   const submitTagInput = () => {
     if (atMaxTags) return
     if (!tagInputValue.trim()) {
-      setTagPlaceholderOverride('Type event, press +Add')
+      setTagPlaceholderOverride(t('log.typeEventPrompt'))
       setTagDropdownOpen(true)
       // Keep the input focused so mobile keyboards open.
       tagInputRef.current?.focus()
@@ -200,8 +202,8 @@ export const LogForm = ({
         </div>
         <div className="field">
           <span className="label--with-tooltip">
-            <label htmlFor="log-form-sleep-hours">How much did you sleep?</label>
-            <Tooltip label="You can always log your sleep now and come back later to log your mood and activities.">
+            <label htmlFor="log-form-sleep-hours">{t('log.sleepQuestion')}</label>
+            <Tooltip label={t('log.sleepTooltip')}>
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
@@ -217,7 +219,7 @@ export const LogForm = ({
                 aria-expanded={sleepMenu === 'hours'}
                 onClick={() => setSleepMenu(sleepMenu === 'hours' ? null : 'hours')}
               >
-                {sleepHourValue ? `${sleepHourValue}h` : 'Hours'}
+                {sleepHourValue ? `${sleepHourValue}h` : t('log.hours')}
               </button>
               {sleepMenu === 'hours'
                 ? (
@@ -251,7 +253,7 @@ export const LogForm = ({
                 onClick={() => setSleepMenu(sleepMenu === 'minutes' ? null : 'minutes')}
                 disabled={!sleepHourValue}
               >
-                {sleepMinuteValue ? `${String(sleepMinuteValue).padStart(2, '0')}m` : 'Minutes'}
+                {sleepMinuteValue ? `${String(sleepMinuteValue).padStart(2, '0')}m` : t('log.minutes')}
               </button>
               {sleepMenu === 'minutes' && sleepHourValue
                 ? (
@@ -280,14 +282,14 @@ export const LogForm = ({
         <div className="field field--tags" ref={tagAreaRef}>
           <div className="field-title">
             <span className="label--with-tooltip">
-              What happened today?
-              <Tooltip label="Log daily events (e.g. stress, caffeine, exercise...). Use the default events or add your own custome ones. Rythm will automatically recognize patterns in them and show you insights.">
+              {t('log.eventsQuestion')}
+              <Tooltip label={t('log.eventsTooltip')}>
                 <span className="tooltip-trigger">
                   <span className="tooltip-icon" aria-hidden="true">i</span>
                 </span>
               </Tooltip>
             </span>
-            <span className="field-hint-pill field-hint-pill--plain" aria-label="Recommended">Recommended</span>
+            <span className="field-hint-pill field-hint-pill--plain" aria-label={t('log.recommended')}>{t('log.recommended')}</span>
           </div>
           <div className="tag-control-row">
             <div className="tag-dropdown-wrap">
@@ -297,11 +299,11 @@ export const LogForm = ({
                 className="tag-dropdown-trigger"
                 aria-haspopup="listbox"
                 aria-expanded={tagDropdownOpen}
-                aria-label="Add daily events (e.g. stress, caffeine, exercise)"
+                aria-label={t('log.addEventsAria')}
                 placeholder={
                   atMaxTags
-                    ? `Maximum of ${maxTagsPerEntry} reached`
-                    : tagPlaceholderOverride ?? 'e.g. stress, exercise...'
+                    ? t('log.maxReached', { count: maxTagsPerEntry })
+                    : tagPlaceholderOverride ?? t('log.eventsPlaceholder')
                 }
                 value={tagInputValue}
                 disabled={atMaxTags}
@@ -339,8 +341,8 @@ export const LogForm = ({
                     : (
                         <span className="tag-suggestions-empty">
                           {token
-                            ? 'Press Enter to add as new event'
-                            : 'No suggestions'}
+                            ? t('log.pressEnterForNew')
+                            : t('log.noSuggestions')}
                         </span>
                       )}
                 </div>
@@ -353,7 +355,7 @@ export const LogForm = ({
                 disabled={atMaxTags}
                 onClick={submitTagInput}
               >
-                + Add
+                {t('log.addButton')}
               </button>
             </div>
           </div>
@@ -369,7 +371,7 @@ export const LogForm = ({
                   <button
                     type="button"
                     className="tag-badge-remove"
-                    aria-label={`Remove ${tag}`}
+                    aria-label={t('log.removeTag', { tag })}
                     onMouseDown={e => e.preventDefault()}
                     onClick={() => removeTag(tag)}
                   >
@@ -381,7 +383,7 @@ export const LogForm = ({
           )}
         </div>
         <div className="field field-mood">
-          How did you feel today?
+          {t('log.moodQuestion')}
           <div className="mood-row">
             {([1, 2, 3, 4, 5] as const).map(value => (
               <button
@@ -402,20 +404,24 @@ export const LogForm = ({
           </div>
         </div>
         <label className="field">
-          Journal (optional)
+          {t('log.journalOptional')}
           <textarea
             ref={noteTextareaRef}
             value={note}
             onChange={handleNoteChange}
             onInput={autoResizeNote}
-            placeholder="Short reflection..."
+            placeholder={t('log.journalPlaceholder')}
             maxLength={300}
             rows={1}
           />
         </label>
         {entriesError ? <p className="error">{entriesError}</p> : null}
         <button type="submit" disabled={saving} className="save-button">
-          {saving ? <span className="spinner" aria-label="Saving" /> : saved ? 'Saved!' : 'Save entry'}
+          {saving
+            ? <span className="spinner" aria-label={t('log.saving')} />
+            : saved
+              ? t('log.saved')
+              : t('log.saveEntry')}
         </button>
       </form>
     </section>

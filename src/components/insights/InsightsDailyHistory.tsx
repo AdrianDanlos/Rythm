@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   CartesianGrid,
   Legend,
@@ -76,6 +77,7 @@ export const InsightsDailyHistory = ({
   onOpenPaywall,
   goToLog,
 }: InsightsDailyHistoryProps) => {
+  const { t } = useTranslation()
   const [trendRange, setTrendRange] = useState<'last30' | 'last90' | 'last365'>('last30')
   const show90 = entryCount >= DAILY_HISTORY_THRESHOLD_90
   const show365 = entryCount >= DAILY_HISTORY_THRESHOLD_365
@@ -140,14 +142,14 @@ export const InsightsDailyHistory = ({
       <div className="card-header">
         <div>
           <h2>
-            Daily history
-            <Tooltip label="90 days and 365 days are aggregated for visualization purposes.">
+            {t('insights.dailyHistory')}
+            <Tooltip label={t('insights.dailyHistoryTooltip')}>
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
             </Tooltip>
           </h2>
-          <p className="muted">Raw day-by-day sleep and mood values across 30/90/365 days</p>
+          <p className="muted">{t('insights.dailyHistorySubtitle')}</p>
         </div>
         <div className="toggle-group">
           <button
@@ -157,7 +159,7 @@ export const InsightsDailyHistory = ({
               setTrendRange('last30')
             })}
           >
-            30 days
+            {t('insights.last30Days')}
           </button>
           {show90
             ? (
@@ -172,7 +174,7 @@ export const InsightsDailyHistory = ({
                 </button>
               )
             : (
-                <Tooltip label={`Log ${DAILY_HISTORY_THRESHOLD_90}+ days to see 90-day history.`}>
+                <Tooltip label={t('insights.logDaysToSee90', { count: DAILY_HISTORY_THRESHOLD_90 })}>
                   <span className="ghost toggle-group__btn--disabled">
                     90 days
                   </span>
@@ -191,7 +193,7 @@ export const InsightsDailyHistory = ({
                 </button>
               )
             : (
-                <Tooltip label={`Log ${DAILY_HISTORY_THRESHOLD_365}+ days to see 365-day history.`}>
+                <Tooltip label={t('insights.logDaysToSee365', { count: DAILY_HISTORY_THRESHOLD_365 })}>
                   <span className="ghost toggle-group__btn--disabled">
                     365 days
                   </span>
@@ -259,7 +261,7 @@ export const InsightsDailyHistory = ({
               <div className="premium-preview__overlay">
                 <div className="locked-message">
                   <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
-                    Upgrade to Pro
+                    {t('insights.upgradeToPro')}
                   </button>
                 </div>
               </div>
@@ -269,11 +271,11 @@ export const InsightsDailyHistory = ({
           ? (
               <div className="chart-empty">
                 <p className="muted">
-                  Not enough data in this range.{' '}
+                  {t('insights.notEnoughDataRange')}{' '}
                   <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                    Log a day
+                    {t('insights.logMoreDays')}
                   </button>
-                  {' '}to see daily history.
+                  {' '}{t('insights.seeDailyHistory')}
                 </p>
               </div>
             )

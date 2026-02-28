@@ -1,4 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import type { Session } from '@supabase/supabase-js'
 import type { Entry } from '../lib/entries'
 import type { SleepMoodAverages } from '../lib/types/stats'
@@ -175,16 +176,17 @@ export function AppMainContent({
   onOpenPaywall,
   onOpenFeedback,
 }: AppMainContentProps) {
+  const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
   const tabTransition = reduceMotion ? { duration: 0 } : motionTransition
 
   if (!authInitialized) {
     return (
       <div className="card auth-loading" aria-live="polite">
-        <h2 className="auth-title">Loading your account</h2>
+        <h2 className="auth-title">{t('auth.loadingAccount')}</h2>
         <div className="loading-row">
           <span className="loading-spinner" aria-hidden="true" />
-          <span className="muted">Checking your session...</span>
+          <span className="muted">{t('auth.checkingSession')}</span>
         </div>
       </div>
     )
@@ -224,14 +226,14 @@ export function AppMainContent({
             onNavigateToPage(AppPage.Summary)
           }}
         >
-          Insights
+          {t('nav.insights')}
         </button>
         <button
           type="button"
           className={`tab-button ${activeTab === Tabs.Log ? 'active' : ''}`}
           onClick={() => onNavigateToPage(AppPage.Log)}
         >
-          Log
+          {t('nav.log')}
         </button>
       </div>
 
@@ -250,7 +252,7 @@ export function AppMainContent({
                       <div className="card auth-loading" aria-live="polite">
                         <div className="loading-row">
                           <span className="loading-spinner" aria-hidden="true" />
-                          <span className="muted">Loading your log...</span>
+                          <span className="muted">{t('log.loadingLog')}</span>
                         </div>
                       </div>
                     )
@@ -264,7 +266,7 @@ export function AppMainContent({
                               ?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
                         />
                         <p className="log-form-tip" role="status">
-                          Tip: Best time to log is in the <strong>evening or before bed</strong> so you can log your daily events. The more you log, the clearer the picture of what helps you feel better.
+                          {t('log.tip')}
                         </p>
                         <LogForm
                           selectedDate={selectedDate}

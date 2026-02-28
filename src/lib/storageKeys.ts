@@ -4,6 +4,7 @@
  */
 export const STORAGE_KEYS = {
   DATE_FORMAT: 'preferredDateFormat',
+  LANGUAGE: 'languagePreference',
   THEME: 'themePreference',
   PROFILE_NAME: 'profileName',
   PERSONAL_SLEEP_TARGET: 'personalSleepTarget',

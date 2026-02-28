@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { Capacitor } from '@capacitor/core'
+import { t } from 'i18next'
 import { NativePurchases, PURCHASE_TYPE } from '@capgo/native-purchases'
 import { Browser } from '@capacitor/browser'
 import { supabase } from '../../lib/supabaseClient'
@@ -31,7 +32,7 @@ export const useBillingActions = ({
       try {
         const supported = await NativePurchases.isBillingSupported()
         if (!supported?.isBillingSupported) {
-          window.alert('In-app purchases are not available on this device.')
+          window.alert(t('errors.iapNotAvailable'))
           return false
         }
         const { subscriptionId, basePlanId } = BILLING.play
@@ -59,8 +60,9 @@ export const useBillingActions = ({
           return true
         }
         return false
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Purchase failed.'
+      }
+      catch (err) {
+        const message = err instanceof Error ? err.message : t('errors.purchaseFailed')
         if (!message.toLowerCase().includes('cancel')) {
           window.alert(message)
         }
@@ -113,7 +115,8 @@ export const useBillingActions = ({
           return true
         }
       }
-    } catch {
+    }
+    catch {
       // ignore
     }
     return false
@@ -139,10 +142,10 @@ export const useBillingActions = ({
         window.location.href = portalUrl
         return
       }
-      throw new Error('Missing portal URL.')
+      throw new Error(t('errors.missingPortalUrl'))
     }
     catch {
-      window.alert('Unable to open subscription management.')
+      window.alert(t('errors.unableToOpenSubscriptionManagement'))
     }
     finally {
       setIsPortalLoading(false)

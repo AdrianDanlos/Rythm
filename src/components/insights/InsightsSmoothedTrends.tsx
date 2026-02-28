@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   CartesianGrid,
   Legend,
@@ -158,6 +159,7 @@ export const InsightsSmoothedTrends = ({
   onOpenPaywall,
   goToLog,
 }: InsightsSmoothedTrendsProps) => {
+  const { t } = useTranslation()
   const [rollingMetric, setRollingMetric] = useState<'sleep' | 'mood'>('mood')
   const show30 = entryCount >= ENTRY_THRESHOLD_30
   const show90 = entryCount >= ENTRY_THRESHOLD_90
@@ -191,15 +193,15 @@ export const InsightsSmoothedTrends = ({
       <div className="card-header">
         <div>
           <h2>
-            Smoothed trends
-            <Tooltip label="These lines are the average of the last N days (7, 30, 90). Line going up = trend improving; going down = declining. The 7-day line reacts quickly to recent changes; the 90-day line shows the longer-term direction.">
+            {t('insights.smoothedTrends')}
+            <Tooltip label={t('insights.smoothedTrendsTooltip')}>
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
             </Tooltip>
           </h2>
           <p className="muted">
-            See how your week, month, or 3-month trend is moving
+            {t('insights.smoothedTrendsSubtitle')}
           </p>
         </div>
         <div className="toggle-group">
@@ -208,14 +210,14 @@ export const InsightsSmoothedTrends = ({
             className={`ghost ${rollingMetric === 'mood' ? 'active' : ''}`}
             onClick={() => handleProAction(() => setRollingMetric('mood'))}
           >
-            Mood
+            {t('common.mood')}
           </button>
           <button
             type="button"
             className={`ghost ${rollingMetric === 'sleep' ? 'active' : ''}`}
             onClick={() => handleProAction(() => setRollingMetric('sleep'))}
           >
-            Sleep
+            {t('common.sleep')}
           </button>
         </div>
       </div>
@@ -338,7 +340,7 @@ export const InsightsSmoothedTrends = ({
               <div className="premium-preview__overlay">
                 <div className="locked-message">
                   <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
-                    Upgrade to Pro
+                    {t('insights.upgradeToPro')}
                   </button>
                 </div>
               </div>
@@ -348,11 +350,11 @@ export const InsightsSmoothedTrends = ({
           ? (
               <div className="chart-empty">
                 <p className="muted">
-                  Not enough data for rolling trends.{' '}
+                  {t('insights.notEnoughRolling')}{' '}
                   <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                    Log a day
+                    {t('insights.logMoreDays')}
                   </button>
-                  {' '}to see smoothed direction.
+                  {' '}{t('insights.seeSmoothedDirection')}
                 </p>
               </div>
             )

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { t } from 'i18next'
 import { toast } from 'sonner'
 import { upsertEntry, type Entry } from '../lib/entries'
 import { getSupportMessage } from '../lib/supportMessage'
@@ -166,32 +167,36 @@ export const useLogForm = ({
     if (!userId) return
 
     if (entryDate > today) {
-      if (!options?.silent) showEntriesError('You cannot log entries in the future.')
+      if (!options?.silent) showEntriesError(t('log.futureError'))
       return
     }
 
     const hasSleepInput = sleepHours.trim().length > 0
     const parsedSleep = parseSleepHours(sleepHours)
     if (hasSleepInput && parsedSleep === null) {
-      if (!options?.silent) showEntriesError('Sleep hours are invalid.')
+      if (!options?.silent) showEntriesError(t('log.invalidSleep'))
       return
     }
     if (parsedSleep !== null && (parsedSleep < 0 || parsedSleep > 12)) {
-      if (!options?.silent) showEntriesError('Sleep hours must be between 0 and 12.')
+      if (!options?.silent) showEntriesError(t('log.sleepRange'))
       return
     }
     if (mood !== null && (mood < 1 || mood > 5)) {
-      if (!options?.silent) showEntriesError('Mood rating must be between 1 and 5.')
+      if (!options?.silent) showEntriesError(t('log.moodRange'))
       return
     }
 
     const tagList = parseTags(tags)
     if (tagList.some(tag => tag.length > MAX_TAG_LENGTH)) {
-      if (!options?.silent) showEntriesError(`Each daily event must be ${MAX_TAG_LENGTH} characters or less.`)
+      if (!options?.silent) {
+        showEntriesError(t('log.maxTagLength', { count: MAX_TAG_LENGTH }))
+      }
       return
     }
     if (tagList.length > maxTagsPerEntry) {
-      if (!options?.silent) showEntriesError(`Limit ${maxTagsPerEntry} daily events per entry.`)
+      if (!options?.silent) {
+        showEntriesError(t('log.maxTagsPerEntry', { count: maxTagsPerEntry }))
+      }
       return
     }
 
@@ -201,7 +206,7 @@ export const useLogForm = ({
       || normalizedNote !== null
       || tagList.length > 0
     if (!hasAnyValue) {
-      if (!options?.silent) showEntriesError('Add at least one value before saving.')
+      if (!options?.silent) showEntriesError(t('log.addAtLeastOneValue'))
       return
     }
 
@@ -241,7 +246,7 @@ export const useLogForm = ({
       setSaved(true)
       if (!options?.silent) {
         if (tagList.length === 0) {
-          toast.info('Saved. No daily events added. Add them next time for better insights.')
+          toast.info(t('log.saveNoEvents'))
         }
         else {
           toast.success(getSupportMessage({
@@ -259,7 +264,7 @@ export const useLogForm = ({
       }
     }
     catch {
-      if (!options?.silent) showEntriesError('Unable to save entry.')
+      if (!options?.silent) showEntriesError(t('log.saveEntryError'))
     }
     finally {
       setSaving(false)

@@ -1,4 +1,5 @@
 import { jsPDF } from 'jspdf'
+import { t } from 'i18next'
 import logo from '../assets/rythm-logo.png'
 import type { Entry } from './entries'
 import type { StatsResult } from './stats'
@@ -34,7 +35,7 @@ export const exportMonthlyReport = async (
   options: ReportOptions = {},
 ) => {
   const rangeDays = options.rangeDays ?? 30
-  const title = options.title ?? 'Rythm Report'
+  const title = options.title ?? t('reports.reportTitle')
   const welcomeName = options.profileName?.trim()
   const doc = new jsPDF()
   const range = getReportRange(rangeDays)
@@ -74,7 +75,7 @@ export const exportMonthlyReport = async (
 
   const pdfBuffer = doc.output('arraybuffer') as ArrayBuffer
   await exportFile({
-    filename: 'rythm-report.pdf',
+    filename: t('reports.fileName'),
     mimeType: 'application/pdf',
     data: pdfBuffer,
   })

@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { createFeedback } from '../lib/feedback.ts'
 
@@ -13,6 +14,7 @@ export const FeedbackModal = ({
   onClose,
   userEmail,
 }: FeedbackModalProps) => {
+  const { t } = useTranslation()
   const [message, setMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -31,12 +33,12 @@ export const FeedbackModal = ({
 
     const trimmedMessage = message.trim()
     if (!userEmail) {
-      toast.error('Sign in to send feedback.')
+      toast.error(t('feedback.signInRequired'))
       onClose()
       return
     }
     if (!trimmedMessage) {
-      toast.error('Please enter your feedback.')
+      toast.error(t('feedback.enterFeedback'))
       onClose()
       return
     }
@@ -46,12 +48,12 @@ export const FeedbackModal = ({
       await createFeedback({
         message: trimmedMessage,
       })
-      toast.success('Thanks for the feedback!')
+      toast.success(t('feedback.thanks'))
       setMessage('')
       onClose()
     }
     catch {
-      toast.error('Unable to send feedback. Please try again.')
+      toast.error(t('feedback.sendError'))
       onClose()
     }
     finally {
@@ -72,28 +74,28 @@ export const FeedbackModal = ({
       >
         <div className="modal-header">
           <div>
-            <p className="eyebrow">Feedback</p>
-            <h2 id="feedback-title">Share your thoughts</h2>
+            <p className="eyebrow">{t('feedback.eyebrow')}</p>
+            <h2 id="feedback-title">{t('feedback.title')}</h2>
           </div>
           <button
             type="button"
             className="ghost icon-button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t('common.close')}
           >
             ×
           </button>
         </div>
         <p className="muted">
           {!userEmail
-            ? 'Sign in to send feedback.'
+            ? t('feedback.signInRequired')
             : null}
         </p>
         <form className="feedback-form" onSubmit={handleSubmit}>
           <textarea
             id="feedback-message"
             className="feedback-textarea"
-            placeholder="Share what you love, what feels off, or ideas to improve Rythm."
+            placeholder={t('feedback.placeholder')}
             value={message}
             onChange={event => setMessage(event.target.value)}
             rows={5}
@@ -105,7 +107,7 @@ export const FeedbackModal = ({
               className="primary-button"
               disabled={!canSubmit}
             >
-              {isLoading ? 'Sending...' : 'Send feedback'}
+              {isLoading ? t('feedback.sending') : t('feedback.send')}
             </button>
           </div>
         </form>

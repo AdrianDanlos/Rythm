@@ -1,9 +1,12 @@
+import { useTranslation } from 'react-i18next'
+
 type StreakModalProps = {
   isOpen: boolean
   onClose: () => void
 }
 
 export const StreakModal = ({ isOpen, onClose }: StreakModalProps) => {
+  const { t } = useTranslation()
   if (!isOpen) return null
 
   return (
@@ -17,24 +20,24 @@ export const StreakModal = ({ isOpen, onClose }: StreakModalProps) => {
       >
         <div className="modal-header">
           <div>
-            <p className="eyebrow">Milestone</p>
-            <h2 id="streak-title">Congratulations — 1 week in a row!</h2>
+            <p className="eyebrow">{t('streak.eyebrow')}</p>
+            <h2 id="streak-title">{t('streak.title')}</h2>
           </div>
           <button
             type="button"
             className="ghost icon-button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t('common.close')}
           >
             ×
           </button>
         </div>
         <p className="muted">
-          You logged 7 days straight. Keep the streak going.
+          {t('streak.body')}
         </p>
         <div className="modal-actions">
           <button type="button" className="primary-button" onClick={onClose}>
-            Nice!
+            {t('streak.cta')}
           </button>
         </div>
       </div>

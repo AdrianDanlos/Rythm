@@ -1,4 +1,5 @@
 import type { StatCounts } from '../../lib/stats'
+import { useTranslation } from 'react-i18next'
 import type { SleepMoodAverages, WindowStats } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
@@ -48,6 +49,7 @@ export const InsightsStats = ({
   goToLog,
   motivationMessage,
 }: InsightsStatsProps) => {
+  const { t } = useTranslation()
   const rhythmMore = Math.max(0, RHYTHM_NEED - statCounts.last30WithSleep)
   const sleepConsistencyMore = Math.max(0, SLEEP_CONSISTENCY_NEED - statCounts.sleepEntries)
   const correlationMore = Math.max(0, CORRELATION_NEED - statCounts.completeEntries)
@@ -60,10 +62,14 @@ export const InsightsStats = ({
     : null
   const isMoodBySleepPositive = moodBySleepDeltaPercent !== null && moodBySleepDeltaPercent >= 0
   const moodBySleepDirection = moodBySleepDeltaPercent !== null && moodBySleepDeltaPercent < 0
-    ? 'lower'
-    : 'better'
+    ? t('insights.moodLower')
+    : t('insights.moodBetter')
   const moodBySleepMessage = moodBySleepDeltaPercent !== null
-    ? `When you sleep ${formatSleepHours(sleepThreshold)} or more, your mood tends to be ${moodBySleepDirection} by ${Math.abs(moodBySleepDeltaPercent).toFixed(0)}%.`
+    ? t('insights.moodWhenSleepMore', {
+        threshold: formatSleepHours(sleepThreshold),
+        direction: moodBySleepDirection,
+        percent: Math.abs(moodBySleepDeltaPercent).toFixed(0),
+      })
     : null
 
   const renderTopStat = (
@@ -101,7 +107,7 @@ export const InsightsStats = ({
         <p className="label">{label}</p>
         <p className="value">{value}</p>
         <p className="helper">
-          Sleep avg / Mood avg · {window.count} entries
+          {t('insights.avgSleep')} / {t('insights.avgMood')} · {t('insights.entriesSuffix', { count: window.count })}
         </p>
       </div>
     )
@@ -124,9 +130,11 @@ export const InsightsStats = ({
           <Flame className="streak-card__icon" size={48} aria-hidden />
         </div>
         <div className="streak-card__content">
-          <p className="label">Streak</p>
-          {isLoading ? <div className="skeleton-line" /> : <p className="value">{streak} {streak === 1 ? 'day' : 'days'}</p>}
-          <p className="helper">Consecutive logged days</p>
+          <p className="label">{t('insights.streak')}</p>
+          {isLoading
+            ? <div className="skeleton-line" />
+            : <p className="value">{streak} {streak === 1 ? t('common.day') : t('common.days')}</p>}
+          <p className="helper">{t('insights.consecutiveDays')}</p>
         </div>
         {(isLoading || motivationMessage)
           ? (
@@ -138,13 +146,13 @@ export const InsightsStats = ({
       </section>
       <section className="card stats">
         {renderTopStat(
-          'Average sleep',
+          t('insights.averageSleep'),
           averages.sleep !== null ? formatSleepHours(averages.sleep) : '—',
           averages.sleep !== null ? (averages.sleep / sleepThreshold) * 100 : null,
           'stat-block--sleep',
         )}
         {renderTopStat(
-          'Average mood',
+          t('insights.averageMood'),
           `${averages.mood !== null ? averages.mood.toFixed(1) : '—'} / 5`,
           averages.mood !== null ? (averages.mood / 5) * 100 : null,
           'stat-block--mood',
@@ -156,9 +164,9 @@ export const InsightsStats = ({
           ? (
               <p className="muted">
                 <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                  Log a few more days
+                  {t('insights.logFewMoreDays')}
                 </button>
-                {' '}to unlock all stats
+                {' '}{t('insights.unlockAllStats')}
               </p>
             )
           : null}
@@ -177,12 +185,12 @@ export const InsightsStats = ({
               )
             : (
                 <>
-                  {renderWindowTile('Last 7 days', windowAverages.last7)}
-                  {renderWindowTile('Last 30 days', windowAverages.last30)}
+                  {renderWindowTile(t('insights.last7Days'), windowAverages.last7)}
+                  {renderWindowTile(t('insights.last30Days'), windowAverages.last30)}
                   <div className="stat-tile">
                     <p className="label label--with-tooltip">
-                      Rhythm score
-                      <Tooltip label="Score based on how steady your sleep hours are in the last 30 days. Higher score = more consistent.">
+                      {t('insights.rhythmScore')}
+                      <Tooltip label={t('insights.rhythmTooltip')}>
                         <span className="tooltip-trigger">
                           <span className="tooltip-icon" aria-hidden="true">i</span>
                         </span>
@@ -191,40 +199,40 @@ export const InsightsStats = ({
                     <p className="value">{rhythmScore !== null ? `${rhythmScore} / 100` : '—'}</p>
                     <p className="helper">
                       {rhythmScore !== null
-                        ? 'Sleep stability over the last 30 days'
-                        : `Needs ${rhythmMore} more day${rhythmMore === 1 ? '' : 's'}`}
+                        ? t('insights.sleepStability30')
+                        : t('insights.needsMoreDays', { count: rhythmMore, unit: rhythmMore === 1 ? t('common.day') : t('common.days') })}
                     </p>
                   </div>
                   <div className="stat-tile">
-                    <p className="label">Sleep consistency</p>
+                    <p className="label">{t('insights.sleepConsistency')}</p>
                     <p className="value">{sleepConsistencyLabel ?? '—'}</p>
                     <p className="helper">
                       {sleepConsistencyLabel
-                        ? 'How steady your sleep hours are (all time)'
-                        : `Needs ${sleepConsistencyMore} more day${sleepConsistencyMore === 1 ? '' : 's'}`}
+                        ? t('insights.sleepConsistencyHelper')
+                        : t('insights.needsMoreDays', { count: sleepConsistencyMore, unit: sleepConsistencyMore === 1 ? t('common.day') : t('common.days') })}
                     </p>
                   </div>
                   <div className="stat-tile">
-                    <p className="label">Sleep–mood link</p>
+                    <p className="label">{t('insights.sleepMoodLink')}</p>
                     <p className="value">{correlationLabel ?? '—'}</p>
                     {correlationDirection
                       ? <p className="helper">{correlationDirection}</p>
                       : (
                           <p className="helper">
                             {correlationLabel
-                              ? 'Correlation strength'
+                              ? t('insights.correlationStrength')
                               : correlationMore > 0
-                                ? `Needs ${correlationMore} more day${correlationMore === 1 ? '' : 's'}`
-                                : 'Log more days with different sleep or mood to see a link.'}
+                                ? t('insights.needsMoreDays', { count: correlationMore, unit: correlationMore === 1 ? t('common.day') : t('common.days') })
+                                : t('insights.logDifferentDaysForLink')}
                           </p>
                         )}
                   </div>
                   <div className="stat-tile">
                     <p className="label label--with-tooltip">
-                      <span className="label-nowrap">Mood · {formatSleepHours(sleepThreshold)} sleep</span>
+                      <span className="label-nowrap">{t('insights.moodBySleepTitle', { threshold: formatSleepHours(sleepThreshold) })}</span>
                       {shouldShowIdealSleepTooltip && (
                         <Tooltip
-                          label={`${formatSleepHours(sleepThreshold)} is a general benchmark. Upgrade to Pro to get your personal ideal sleep target.`}
+                          label={t('insights.moodBySleepTooltip', { threshold: formatSleepHours(sleepThreshold) })}
                         >
                           <span className="tooltip-trigger">
                             <span className="tooltip-icon" aria-hidden="true">i</span>
@@ -252,9 +260,9 @@ export const InsightsStats = ({
                       : <p className="value">—</p>}
                     <p className="helper">
                       {moodBySleepMessage ?? (moodBySleepBucketCounts.high === 0
-                        ? `Needs 1 day with more than ${formatSleepHours(sleepThreshold)} of sleep.`
+                        ? t('insights.needOneDayMoreThan', { threshold: formatSleepHours(sleepThreshold) })
                         : moodBySleepBucketCounts.low === 0
-                          ? `Needs 1 day with less than ${formatSleepHours(sleepThreshold)} of sleep.`
+                          ? t('insights.needOneDayLessThan', { threshold: formatSleepHours(sleepThreshold) })
                           : null)}
                     </p>
                   </div>

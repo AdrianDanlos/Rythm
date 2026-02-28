@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { t } from 'i18next'
 import { fetchEntries, type Entry } from '../lib/entries'
 import { buildStats } from '../lib/stats'
 import { calculateAverages } from '../lib/utils/averages'
@@ -42,7 +43,7 @@ export const useEntries = ({
         onEntriesLoaded?.(data)
       }
       catch {
-        setEntriesError('Unable to load entries.')
+        setEntriesError(t('errors.unableToLoadEntries'))
       }
       finally {
         setEntriesLoading(false)

@@ -3,17 +3,21 @@ import { Capacitor } from '@capacitor/core'
 import { StatusBar, Style } from '@capacitor/status-bar'
 import { NavigationBar } from '@capgo/capacitor-navigation-bar'
 import type { Session } from '@supabase/supabase-js'
+import i18n from '../i18n'
 import {
   getStoredDateFormat,
+  getStoredLanguage,
   getStoredProfileName,
   getStoredPersonalSleepTarget,
   getStoredTheme,
   normalizeSleepTarget,
   setStoredDateFormat,
+  setStoredLanguage,
   setStoredProfileName,
   setStoredPersonalSleepTarget,
   setStoredTheme,
   type DateFormatPreference,
+  type LanguagePreference,
   type ThemePreference,
 } from '../lib/settings'
 
@@ -21,6 +25,7 @@ export function useSettingsSync(session: Session | null) {
   const [dateFormat, setDateFormat] = useState<DateFormatPreference>(() =>
     getStoredDateFormat(),
   )
+  const [language, setLanguage] = useState<LanguagePreference>(() => getStoredLanguage())
   const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme())
   const [profileName, setProfileName] = useState(() => getStoredProfileName())
   const [sleepTarget, setSleepTarget] = useState(() =>
@@ -32,6 +37,13 @@ export function useSettingsSync(session: Session | null) {
     document.documentElement.dataset.theme = theme
     setStoredTheme(theme)
   }, [theme])
+
+  useEffect(() => {
+    setStoredLanguage(language)
+    if (i18n.language !== language) {
+      void i18n.changeLanguage(language)
+    }
+  }, [language])
 
   // Keep Android status bar colors/icons aligned with the selected app theme.
   useEffect(() => {
@@ -66,6 +78,10 @@ export function useSettingsSync(session: Session | null) {
     setTheme(value)
   }
 
+  const handleLanguageChange = (value: LanguagePreference) => {
+    setLanguage(value)
+  }
+
   const handleProfileNameChange = (value: string) => {
     setProfileName(value)
     setStoredProfileName(value)
@@ -80,6 +96,8 @@ export function useSettingsSync(session: Session | null) {
   return {
     dateFormat,
     setDateFormat,
+    language,
+    setLanguage,
     theme,
     setTheme,
     profileName: resolvedProfileName,
@@ -87,6 +105,7 @@ export function useSettingsSync(session: Session | null) {
     sleepTarget,
     setSleepTarget,
     handleDateFormatChange,
+    handleLanguageChange,
     handleThemeChange,
     handleProfileNameChange,
     handleSleepTargetChange,

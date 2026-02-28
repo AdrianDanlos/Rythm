@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { useTranslation } from 'react-i18next'
 import type { Entry } from '../../lib/entries'
 import { formatLongDate } from '../../lib/utils/dateFormatters'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
@@ -65,6 +66,7 @@ export const InsightsScatter = ({
   isPro = true,
   onOpenPaywall,
 }: InsightsScatterProps) => {
+  const { t } = useTranslation()
   const baseTickProps = { fontSize: 13 }
   const mobileTickProps = { fontSize: 12 }
   const scatterSize = isMobile ? 28 : 36
@@ -117,10 +119,10 @@ export const InsightsScatter = ({
     return (
       <div className="tooltip">
         <p className="tooltip-date">{labelDate}</p>
-        <p>Sleep: {entry.sleep_hours == null ? 'N/A' : formatSleepHours(entry.sleep_hours)}</p>
-        <p>Mood: {entry.mood} / 5</p>
+        <p>{t('insights.sleepLabel')}: {entry.sleep_hours == null ? 'N/A' : formatSleepHours(entry.sleep_hours)}</p>
+        <p>{t('insights.moodLabel')}: {entry.mood} / 5</p>
         <div className="tooltip-events">
-          <p>Daily events:</p>
+          <p>{t('insights.dailyEventsLabel')}</p>
           {tags.length
             ? (
                 <div className="tooltip-tags">
@@ -131,7 +133,7 @@ export const InsightsScatter = ({
                   ))}
                 </div>
               )
-            : <p>None</p>}
+            : <p>{t('insights.none')}</p>}
         </div>
         {entry.note ? <p className="tooltip-note">{entry.note}</p> : null}
       </div>
@@ -151,7 +153,7 @@ export const InsightsScatter = ({
               <div className="chart-empty">
                 <p className="muted">
                   <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                    Log a day
+                    {t('insights.logMoreDays')}
                   </button>
                   {' '}to see insights.
                 </p>
@@ -160,7 +162,7 @@ export const InsightsScatter = ({
           : isRangeEmpty
             ? (
                 <div className="chart-empty">
-                  <p className="muted">No complete sleep and mood logs in this time frame yet.</p>
+                  <p className="muted">{t('insights.noCompleteLogsRange')}</p>
                 </div>
               )
             : (
@@ -179,7 +181,7 @@ export const InsightsScatter = ({
                           return formatSleepHours(Number(value))
                         }}
                         label={{
-                          value: 'Sleep hours',
+                          value: t('insights.sleepAxis'),
                           position: 'insideBottom',
                           offset: -5,
                         }}
@@ -193,7 +195,7 @@ export const InsightsScatter = ({
                         ticks={[1, 2, 3, 4, 5]}
                         tick={isMobile ? mobileTickProps : baseTickProps}
                         label={{
-                          value: 'Mood',
+                          value: t('common.mood'),
                           angle: -90,
                           position: 'insideLeft',
                           offset: -4,
@@ -236,32 +238,32 @@ export const InsightsScatter = ({
       <div className="card-header">
         <div>
           <h2>
-            Sleep & Mood
-            <Tooltip label="What is this? A scatter plot of daily sleep vs mood; click dots for details.">
+            {t('insights.sleepAndMood')}
+            <Tooltip label={t('insights.scatterTooltip')}>
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
             </Tooltip>
           </h2>
           <p className="muted">
-            Each dot is one day: more sleep is right, better mood is higher.
+            {t('insights.scatterSubtitle')}
             {bestSleepBand
-              ? ` Best sleep range in timeframe: ${formatSleepHours(bestSleepBand.x1)}-${formatSleepHours(bestSleepBand.x2)}.`
+              ? ` ${t('insights.bestSleepRange', { from: formatSleepHours(bestSleepBand.x1), to: formatSleepHours(bestSleepBand.x2) })}`
               : ''}
           </p>
         </div>
         <div style={{ display: 'grid', gap: 8, width: '100%', justifyItems: 'stretch' }}>
-          <div className="toggle-group toggle-group--thirds" aria-label="Sleep and mood timeframe">
+          <div className="toggle-group toggle-group--thirds" aria-label={t('insights.sleepAndMoodTimeframe')}>
             <button
               type="button"
               className={`ghost ${scatterRange === 'last30' ? 'active' : ''}`}
               onClick={() => handleRangeChange('last30')}
             >
-              30 days
+              {t('insights.last30Days')}
             </button>
             {!isPro || !show90Range
               ? (
-                  <Tooltip label="Log at least 30 days to view 90-day range.">
+                  <Tooltip label={t('insights.logAtLeast30')}>
                     <span className="tooltip-trigger">
                       <button
                         type="button"
@@ -286,7 +288,7 @@ export const InsightsScatter = ({
                 )}
             {!isPro || !showAllRange
               ? (
-                  <Tooltip label="Log at least 90 days to view All.">
+                  <Tooltip label={t('insights.logAtLeast90')}>
                     <span className="tooltip-trigger">
                       <button
                         type="button"
@@ -312,7 +314,7 @@ export const InsightsScatter = ({
           </div>
           {!showTeaser && (
             <p className="muted" style={{ justifySelf: 'end', marginTop: '10px' }}>
-              {isLoading ? 'Loading entries...' : `${plottedData.length} entries`}
+              {isLoading ? t('insights.loadingEntries') : t('insights.entriesCount', { count: plottedData.length })}
             </p>
           )}
         </div>
@@ -326,7 +328,7 @@ export const InsightsScatter = ({
               <div className="premium-preview__overlay">
                 <div className="locked-message">
                   <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
-                    Upgrade to Pro
+                    {t('insights.upgradeToPro')}
                   </button>
                 </div>
               </div>

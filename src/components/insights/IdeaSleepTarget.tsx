@@ -1,4 +1,5 @@
 import { formatSleepHours } from '../../lib/utils/sleepHours'
+import { useTranslation } from 'react-i18next'
 import { TrendingDown, TrendingUp } from 'lucide-react'
 import { IdeaSleepTargetTeaser } from './IdeaSleepTargetTeaser'
 
@@ -19,6 +20,7 @@ export const IdeaSleepTarget = ({
   onOpenPaywall,
   goToLog,
 }: IdeaSleepTargetProps) => {
+  const { t } = useTranslation()
   const hasThreshold = typeof personalSleepThreshold === 'number'
   const lowMood = moodByPersonalThreshold.low
   const highMood = moodByPersonalThreshold.high
@@ -33,8 +35,8 @@ export const IdeaSleepTarget = ({
     : null
   const isMoodDeltaPositive = moodDeltaPercent !== null && moodDeltaPercent >= 0
   const moodDeltaDirection = moodDeltaPercent !== null && moodDeltaPercent < 0
-    ? 'Worse'
-    : 'Better'
+    ? t('insights.worseMoodAbove')
+    : t('insights.betterMoodAbove')
   const shouldShowReduceSleepMessage = moodDeltaPercent !== null
     && moodDeltaPercent < 0
     && entryCount > 21
@@ -44,10 +46,10 @@ export const IdeaSleepTarget = ({
       <div className="card-header">
         <div>
           <h2>
-            Your ideal sleep target
+            {t('insights.idealSleepTarget')}
           </h2>
           <p className="muted">
-            Finds your ideal sleep time target based on your sleep and mood history.
+            {t('insights.idealSleepSubtitle')}
           </p>
         </div>
       </div>
@@ -62,7 +64,7 @@ export const IdeaSleepTarget = ({
                     style={{ ['--stat-progress' as string]: '100%' }}
                   >
                     <div className="stat-ring__inner">
-                      <p className="label">Target</p>
+                      <p className="label">{t('insights.target')}</p>
                       <p className="value">{formatSleepHours(personalSleepThreshold)}</p>
                     </div>
                   </div>
@@ -76,7 +78,7 @@ export const IdeaSleepTarget = ({
                               {highMood.toFixed(1)}
                             </span>
                             <span className="ideal-sleep-mood-comparison__label">
-                              Mood when sleep above {formatSleepHours(personalSleepThreshold)}
+                              {t('insights.moodWhenAbove', { threshold: formatSleepHours(personalSleepThreshold) })}
                             </span>
                           </div>
                           <span className="ideal-sleep-mood-comparison__divider" aria-hidden="true" />
@@ -85,7 +87,7 @@ export const IdeaSleepTarget = ({
                               {lowMood.toFixed(1)}
                             </span>
                             <span className="ideal-sleep-mood-comparison__label">
-                              Mood when sleep below {formatSleepHours(personalSleepThreshold)}
+                              {t('insights.moodWhenBelow', { threshold: formatSleepHours(personalSleepThreshold) })}
                             </span>
                           </div>
                         </div>
@@ -106,11 +108,11 @@ export const IdeaSleepTarget = ({
                               </span>
                             </p>
                             <p className="helper ideal-sleep-mood-delta__helper">
-                              {moodDeltaDirection} mood on average when above target
+                              {moodDeltaDirection}
                             </p>
                             {shouldShowReduceSleepMessage && (
                               <p className="helper ideal-sleep-mood-delta__helper ideal-sleep-mood-delta__helper--advice">
-                                It looks like you are sleeping more hours than what your body needs, try slightly reducing your sleep time
+                                {t('insights.reduceSleepAdvice')}
                               </p>
                             )}
                           </div>
@@ -119,7 +121,7 @@ export const IdeaSleepTarget = ({
                     )
                   : (
                       <p className="helper">
-                        Log more days to see average mood above vs below {formatSleepHours(personalSleepThreshold)}
+                        {t('insights.logMoreForAboveBelow', { threshold: formatSleepHours(personalSleepThreshold) })}
                       </p>
                     )}
               </div>
@@ -127,11 +129,11 @@ export const IdeaSleepTarget = ({
           : (
               <div className="stat-block">
                 <p className="muted">
-                  Not enough data yet.{' '}
+                  {t('insights.notEnoughDataYet')}{' '}
                   <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                    Log more days
+                    {t('insights.logMoreDays')}
                   </button>
-                  {' '}to estimate your personal threshold.
+                  {' '}{t('insights.estimateThreshold')}
                 </p>
               </div>
             )}

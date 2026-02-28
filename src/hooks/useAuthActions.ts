@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
+import { t } from 'i18next'
 import { toast } from 'sonner'
 import { supabase } from '../lib/supabaseClient'
 
@@ -51,7 +52,7 @@ export const useAuthActions = ({
       },
     })
     if (error) {
-      toast.error('Unable to start Google sign-in.')
+      toast.error(t('errors.googleSignInStartFailed'))
       setAuthError(null)
     }
   }

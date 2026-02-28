@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Entry } from '../../lib/entries'
 import { formatLocalDate, formatLongDate, getDateLocale } from '../../lib/utils/dateFormatters'
 import { sleepHeatmapColors } from '../../lib/colors'
@@ -115,6 +116,7 @@ export const InsightsCalendarHeatmap = ({
   moodColors,
   isMobile,
 }: InsightsCalendarHeatmapProps) => {
+  const { t } = useTranslation()
   const [metric, setMetric] = useState<'mood' | 'sleep'>('mood')
   const [daySize, setDaySize] = useState<number | null>(null)
   const gridRef = useRef<HTMLDivElement | null>(null)
@@ -240,10 +242,10 @@ export const InsightsCalendarHeatmap = ({
       <div className="card-header">
         <div>
           <h2>
-            Heatmap
+            {t('insights.heatmap')}
           </h2>
           <p className="muted">
-            Daily {metric} · Last {totalDays} days
+            {t('insights.dailyMetricLastDays', { metric, days: totalDays })}
           </p>
         </div>
         <div className="toggle-group">
@@ -252,18 +254,18 @@ export const InsightsCalendarHeatmap = ({
             className={`ghost ${metric === 'mood' ? 'active' : ''}`}
             onClick={() => setMetric('mood')}
           >
-            Mood
+            {t('common.mood')}
           </button>
           <button
             type="button"
             className={`ghost ${metric === 'sleep' ? 'active' : ''}`}
             onClick={() => setMetric('sleep')}
           >
-            Sleep
+            {t('common.sleep')}
           </button>
         </div>
       </div>
-      <div className="heatmap-layout" role="img" aria-label="Calendar heatmap">
+      <div className="heatmap-layout" role="img" aria-label={t('insights.calendarHeatmapAria')}>
         <div className="heatmap-header">
           <div className="heatmap-spacer" aria-hidden="true" />
           <div
@@ -304,10 +306,10 @@ export const InsightsCalendarHeatmap = ({
                   const valueLabel = metric === 'mood'
                     ? day.mood !== null
                       ? `${day.mood.toFixed(0)} / 5`
-                      : 'No entry'
+                      : t('common.noEntry')
                     : day.sleep !== null
                       ? formatSleepHours(day.sleep)
-                      : 'No entry'
+                      : t('common.noEntry')
                   if (day.isFuture) {
                     return (
                       <span
@@ -334,7 +336,7 @@ export const InsightsCalendarHeatmap = ({
         </div>
       </div>
       <div className="heatmap-legend">
-        <span className="muted">Low</span>
+        <span className="muted">{t('common.low')}</span>
         <div className="heatmap-legend-scale">
           {legendColors.map(color => (
             <span
@@ -344,7 +346,7 @@ export const InsightsCalendarHeatmap = ({
             />
           ))}
         </div>
-        <span className="muted">High</span>
+        <span className="muted">{t('common.high')}</span>
       </div>
     </section>
   )

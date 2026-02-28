@@ -1,4 +1,5 @@
 import type { jsPDF } from 'jspdf'
+import { t } from 'i18next'
 import type { Entry } from '../entries'
 import type { StatsResult } from '../stats'
 import { formatLongDate } from '../utils/dateFormatters'
@@ -54,7 +55,7 @@ export const renderReportHeader = ({
 
   doc.setFontSize(7)
   doc.setTextColor(148, 163, 184)
-  doc.text('Sleep & Mood Tracker', marginLeft, eyebrowBaseline)
+  doc.text(t('reports.reportLogoLabel'), marginLeft, eyebrowBaseline)
 
   if (brandImage) {
     doc.addImage(brandImage, 'PNG', marginLeft, logoY, logoWidth, logoHeight)
@@ -70,7 +71,7 @@ export const renderReportHeader = ({
   if (welcomeName) {
     doc.setFontSize(12)
     doc.setTextColor(100, 116, 139)
-    doc.text(`Welcome to your report ${welcomeName}`, marginLeft, yRef.value)
+    doc.text(t('reports.welcomeReport', { name: welcomeName }), marginLeft, yRef.value)
     yRef.value += 7
   }
 
@@ -107,13 +108,13 @@ export const renderLast30DaysSection = ({
   } = data
 
   doc.setTextColor(20)
-  drawSectionHeader(doc, yRef, 'Last 30 days')
+  drawSectionHeader(doc, yRef, t('reports.last30Days'))
 
   if (recentEntries.length > 1) {
     const chartWidth = 182
     const chartHeight = 22
     doc.setFontSize(12)
-    doc.text('Overview', 16, yRef.value)
+    doc.text(t('reports.overview'), 16, yRef.value)
     yRef.value += 5
     const sorted = [...recentEntries].sort((a, b) =>
       a.entry_date.localeCompare(b.entry_date),
@@ -132,36 +133,34 @@ export const renderLast30DaysSection = ({
     doc.setLineWidth(1.2)
     doc.setDrawColor(79, 70, 229)
     doc.line(16, legendY, 26, legendY)
-    doc.text('Sleep', 30, legendY + 1)
+    doc.text(t('common.sleep'), 30, legendY + 1)
     doc.setDrawColor(14, 165, 233)
     doc.line(60, legendY, 70, legendY)
-    doc.text('Mood', 74, legendY + 1)
+    doc.text(t('common.mood'), 74, legendY + 1)
     doc.setTextColor(20)
     yRef.value += chartHeight + 18
   }
 
   drawBullets(doc, yRef, [
-    `Entries logged: ${recentEntries.length}`,
-    `Average sleep: ${avgSleep !== null ? formatSleepHours(avgSleep) : '—'}`,
-    `Average mood: ${avgMood !== null ? avgMood.toFixed(1) : '—'} / 5`,
-    `Sleep consistency: ${monthlyConsistency ?? '—'}`,
-    `Sleep-mood link: ${monthlyCorrelation ?? '—'}`,
+    t('reports.entriesLogged', { count: recentEntries.length }),
+    t('reports.averageSleep', { value: avgSleep !== null ? formatSleepHours(avgSleep) : '—' }),
+    t('reports.averageMood', { value: avgMood !== null ? avgMood.toFixed(1) : '—' }),
+    t('reports.sleepConsistency', { value: monthlyConsistency ?? '—' }),
+    t('reports.sleepMoodLink', { value: monthlyCorrelation ?? '—' }),
   ])
 
   if (bestDay) {
     const bestTags = bestDay.tags?.length ? bestDay.tags.join(', ') : '—'
     drawBullets(doc, yRef, [
-      `Best day: ${formatLongDate(new Date(`${bestDay.entry_date}T00:00:00`))}`,
+      t('reports.bestDay', { date: formatLongDate(new Date(`${bestDay.entry_date}T00:00:00`)) }),
     ])
     drawLines(
       doc,
       yRef,
       [
-        `Mood: ${bestDay.mood !== null ? bestDay.mood : '—'}`,
-        `Sleep: ${
-          bestDay.sleep_hours !== null ? formatSleepHours(Number(bestDay.sleep_hours)) : '—'
-        }`,
-        `Daily events: ${bestTags}`,
+        t('reports.moodValue', { value: bestDay.mood !== null ? bestDay.mood : '—' }),
+        t('reports.sleepValue', { value: bestDay.sleep_hours !== null ? formatSleepHours(Number(bestDay.sleep_hours)) : '—' }),
+        t('reports.dailyEventsValue', { value: bestTags }),
       ],
       22,
     )
@@ -171,7 +170,7 @@ export const renderLast30DaysSection = ({
     yRef.value += 6
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text('Weekly averages', 16, yRef.value)
+    doc.text(t('reports.weeklyAverages'), 16, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 7
     drawLines(
@@ -192,7 +191,10 @@ export const renderLast30DaysSection = ({
     const sleepValue = Number(bestNight.sleep_hours)
     if (Number.isFinite(sleepValue)) {
       highlightLines.push(
-        `Best night: ${formatLongDate(new Date(`${bestNight.entry_date}T00:00:00`))} (${formatSleepHours(sleepValue)})`,
+        t('reports.bestNight', {
+          date: formatLongDate(new Date(`${bestNight.entry_date}T00:00:00`)),
+          value: formatSleepHours(sleepValue),
+        }),
       )
     }
   }
@@ -201,19 +203,26 @@ export const renderLast30DaysSection = ({
     .sort((a, b) => (a.sleepStdDev ?? 0) - (b.sleepStdDev ?? 0))[0]
   if (mostConsistentWeek?.sleepStdDev !== null) {
     highlightLines.push(
-      `Most consistent week: ${mostConsistentWeek.label} (+/-${formatSleepHours(mostConsistentWeek.sleepStdDev)})`,
+      t('reports.mostConsistentWeek', {
+        label: mostConsistentWeek.label,
+        value: formatSleepHours(mostConsistentWeek.sleepStdDev),
+      }),
     )
   }
   if (biggestMoodDip) {
     highlightLines.push(
-      `Biggest mood dip: ${formatLongDate(new Date(`${biggestMoodDip.from.entry_date}T00:00:00`))} to ${formatLongDate(new Date(`${biggestMoodDip.to.entry_date}T00:00:00`))} (${biggestMoodDip.delta.toFixed(1)})`,
+      t('reports.biggestMoodDip', {
+        from: formatLongDate(new Date(`${biggestMoodDip.from.entry_date}T00:00:00`)),
+        to: formatLongDate(new Date(`${biggestMoodDip.to.entry_date}T00:00:00`)),
+        delta: biggestMoodDip.delta.toFixed(1),
+      }),
     )
   }
   if (highlightLines.length) {
     yRef.value += 6
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text('Highlights', 16, yRef.value)
+    doc.text(t('reports.highlights'), 16, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 7
     drawBullets(doc, yRef, highlightLines.slice(0, 4), 18)
@@ -223,15 +232,15 @@ export const renderLast30DaysSection = ({
   if (sleepDelta !== null) {
     summaryLines.push(
       sleepDelta >= 0
-        ? `Sleep increased by ${formatSleepHours(sleepDelta)} vs prior 30 days.`
-        : `Sleep decreased by ${formatSleepHours(Math.abs(sleepDelta))} vs prior 30 days.`,
+        ? t('reports.sleepIncreased', { value: formatSleepHours(sleepDelta) })
+        : t('reports.sleepDecreased', { value: formatSleepHours(Math.abs(sleepDelta)) }),
     )
   }
   if (moodDelta !== null) {
     summaryLines.push(
       moodDelta >= 0
-        ? `Mood improved by ${moodDelta.toFixed(1)} points vs prior 30 days.`
-        : `Mood dropped by ${Math.abs(moodDelta).toFixed(1)} points vs prior 30 days.`,
+        ? t('reports.moodImproved', { value: moodDelta.toFixed(1) })
+        : t('reports.moodDropped', { value: Math.abs(moodDelta).toFixed(1) }),
     )
   }
 
@@ -239,7 +248,7 @@ export const renderLast30DaysSection = ({
     yRef.value += 4
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text('Summary', 16, yRef.value)
+    doc.text(t('reports.summary'), 16, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 7
     drawBullets(doc, yRef, summaryLines.slice(0, 4), 18)
@@ -272,17 +281,20 @@ export const renderAllTimeSection = ({
   startNewPage(doc, yRef)
   doc.setFontSize(12)
 
-  drawSectionHeader(doc, yRef, 'All time')
+  drawSectionHeader(doc, yRef, t('reports.allTime'))
 
   drawBullets(doc, yRef, [
-    `Entries logged: ${entries.length}`,
-    `Average sleep: ${allTimeAvgSleep !== null ? formatSleepHours(allTimeAvgSleep) : '—'}`,
-    `Average mood: ${allTimeAvgMood !== null ? allTimeAvgMood.toFixed(1) : '—'} / 5`,
-    `Sleep consistency: ${stats.sleepConsistencyLabel ?? '—'}`,
-    `Sleep-mood link: ${stats.correlationLabel ?? '—'}`,
+    t('reports.entriesLogged', { count: entries.length }),
+    t('reports.averageSleep', { value: allTimeAvgSleep !== null ? formatSleepHours(allTimeAvgSleep) : '—' }),
+    t('reports.averageMood', { value: allTimeAvgMood !== null ? allTimeAvgMood.toFixed(1) : '—' }),
+    t('reports.sleepConsistency', { value: stats.sleepConsistencyLabel ?? '—' }),
+    t('reports.sleepMoodLink', { value: stats.correlationLabel ?? '—' }),
   ])
 
-  drawBullets(doc, yRef, [`Streak: ${stats.streak} ${stats.streak === 1 ? 'day' : 'days'}`])
+  drawBullets(doc, yRef, [t('reports.streakValue', {
+    count: stats.streak,
+    unit: stats.streak === 1 ? t('common.day') : t('common.days'),
+  })])
 
   const moodPos = allTimeTagDrivers.filter(d => (d.delta ?? 0) > 0).sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0)).slice(0, 4)
   const moodNeg = allTimeTagDrivers.filter(d => (d.delta ?? 0) < 0).sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)).slice(0, 4)
@@ -293,19 +305,19 @@ export const renderAllTimeSection = ({
     yRef.value += 4
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text('Daily events that predict mood', 16, yRef.value)
+    doc.text(t('reports.eventsPredictMood'), 16, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 6
     if (moodPos.length > 0) {
       doc.setFontSize(10)
       doc.setTextColor(60)
-      doc.text('Top 4 positive', 18, yRef.value)
+      doc.text(t('reports.top4Positive'), 18, yRef.value)
       yRef.value += 5
       doc.setTextColor(20)
       drawBullets(
         doc,
         yRef,
-        moodPos.map(d => `${d.tag} · +${(d.delta ?? 0).toFixed(1)} mood`),
+        moodPos.map(d => t('reports.moodDeltaLine', { tag: d.tag, delta: `+${(d.delta ?? 0).toFixed(1)}` })),
         20,
       )
       yRef.value += 2
@@ -313,13 +325,13 @@ export const renderAllTimeSection = ({
     if (moodNeg.length > 0) {
       doc.setFontSize(10)
       doc.setTextColor(60)
-      doc.text('Top 4 negative', 18, yRef.value)
+      doc.text(t('reports.top4Negative'), 18, yRef.value)
       yRef.value += 5
       doc.setTextColor(20)
       drawBullets(
         doc,
         yRef,
-        moodNeg.map(d => `${d.tag} · ${(d.delta ?? 0).toFixed(1)} mood`),
+        moodNeg.map(d => t('reports.moodDeltaLine', { tag: d.tag, delta: (d.delta ?? 0).toFixed(1) })),
         20,
       )
       yRef.value += 2
@@ -331,19 +343,19 @@ export const renderAllTimeSection = ({
     yRef.value += 4
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text('Daily events that predict sleep', 16, yRef.value)
+    doc.text(t('reports.eventsPredictSleep'), 16, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 6
     if (sleepPos.length > 0) {
       doc.setFontSize(10)
       doc.setTextColor(60)
-      doc.text('Top 4 positive', 18, yRef.value)
+      doc.text(t('reports.top4Positive'), 18, yRef.value)
       yRef.value += 5
       doc.setTextColor(20)
       drawBullets(
         doc,
         yRef,
-        sleepPos.map(d => `${d.tag} · +${(d.delta ?? 0).toFixed(1)}h`),
+        sleepPos.map(d => t('reports.sleepDeltaLine', { tag: d.tag, delta: `+${(d.delta ?? 0).toFixed(1)}` })),
         20,
       )
       yRef.value += 2
@@ -351,13 +363,13 @@ export const renderAllTimeSection = ({
     if (sleepNeg.length > 0) {
       doc.setFontSize(10)
       doc.setTextColor(60)
-      doc.text('Top 4 negative', 18, yRef.value)
+      doc.text(t('reports.top4Negative'), 18, yRef.value)
       yRef.value += 5
       doc.setTextColor(20)
       drawBullets(
         doc,
         yRef,
-        sleepNeg.map(d => `${d.tag} · ${(d.delta ?? 0).toFixed(1)}h`),
+        sleepNeg.map(d => t('reports.sleepDeltaLine', { tag: d.tag, delta: (d.delta ?? 0).toFixed(1) })),
         20,
       )
       yRef.value += 2
@@ -369,13 +381,13 @@ export const renderAllTimeSection = ({
     yRef.value += 4
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text('Most used daily events', 16, yRef.value)
+    doc.text(t('reports.mostUsedEvents'), 16, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 6
     drawBullets(
       doc,
       yRef,
-      allTimeTags.slice(0, 5).map(tag => `${tag.tag} · ${tag.count} entries`),
+      allTimeTags.slice(0, 5).map(tag => t('reports.tagCountLine', { tag: tag.tag, count: tag.count })),
       18,
     )
   }

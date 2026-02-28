@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 type InsightsExportProps = {
   hasEntries: boolean
   isPro: boolean
@@ -15,6 +17,7 @@ export const InsightsExport = ({
   onExportMonthlyReport,
   onOpenPaywall,
 }: InsightsExportProps) => {
+  const { t } = useTranslation()
   const handleProAction = (action?: () => void) => {
     if (!isPro) {
       onOpenPaywall()
@@ -35,25 +38,25 @@ export const InsightsExport = ({
     <section className="card insights-export">
       <div className="insights-header">
         <div className="insights-title">
-          <p className="eyebrow">Export data</p>
-          <p className="muted">Export insights to share or analyze</p>
+          <p className="eyebrow">{t('insights.exportData')}</p>
+          <p className="muted">{t('insights.exportSubtitle')}</p>
         </div>
-        <div className="insights-actions" aria-label="Export data">
+        <div className="insights-actions" aria-label={t('insights.exportData')}>
           <div className="insights-actions-buttons">
             <button
               type="button"
               className="ghost"
               onClick={onExportCsv}
             >
-              Export CSV
+              {t('insights.exportCsv')}
             </button>
             <button
               type="button"
               className={`ghost ${!isPro ? 'pro-locked-button' : ''}`}
               onClick={handleReportClick}
             >
-              Export Report
-              {!isPro ? <span className="pro-pill">Pro</span> : null}
+              {t('insights.exportReport')}
+              {!isPro ? <span className="pro-pill">{t('insights.pro')}</span> : null}
             </button>
           </div>
           {exportError ? <p className="error">{exportError}</p> : null}

@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import { cardEnter } from '../lib/motion'
 
 type InsightsSummaryIntroProps = {
@@ -8,6 +9,7 @@ type InsightsSummaryIntroProps = {
 }
 
 export const InsightsSummaryIntro = ({ entryCount, entriesLoading, goToLog }: InsightsSummaryIntroProps) => {
+  const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
   if (entriesLoading || entryCount > 1) return null
 
@@ -19,16 +21,16 @@ export const InsightsSummaryIntro = ({ entryCount, entriesLoading, goToLog }: In
     >
       <div className="insights-intro__header">
         <div>
-          <p className="eyebrow">Summary</p>
-          <h2>Your overview at a glance</h2>
+          <p className="eyebrow">{t('nav.summary')}</p>
+          <h2>{t('insights.summaryTitle')}</h2>
         </div>
       </div>
       <p className="insights-summary-intro__copy">
-        This is where you'll see your Rhythm score, streak, and how your sleep and mood connect.{' '}
+        {t('insights.summaryIntro')}{' '}
         <button type="button" className="link-button link-button--text" onClick={goToLog}>
-          Log your first day
+          {t('insights.logFirstDay')}
         </button>
-        {' '}to get started.
+        {' '}{t('insights.toGetStarted')}
       </p>
     </motion.section>
   )

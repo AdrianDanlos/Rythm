@@ -1,4 +1,5 @@
 import { buildMockTagDrivers, buildMockTagSleepDrivers } from '../../lib/insightsMock'
+import { useTranslation } from 'react-i18next'
 import type { TagDriver } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
@@ -56,6 +57,7 @@ const renderDeltaPercent = (percent: number | null) => {
 }
 
 export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsightsTeaserProps) => {
+  const { t } = useTranslation()
   const mockTagDrivers = buildMockTagDrivers()
   const mockTagSleepDrivers = buildMockTagSleepDrivers()
   const mockPositiveDrivers = [...mockTagDrivers]
@@ -98,8 +100,8 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
       <div className="premium-preview__blur">
         <div className="tag-insights-block">
           <div className="tag-insights-block-header">
-            <h3 className="tag-insights-block-title">Daily events that predict mood</h3>
-            <Tooltip label="Compares mood on days with an event vs without it.">
+            <h3 className="tag-insights-block-title">{t('insights.eventsPredictMood')}</h3>
+            <Tooltip label={t('insights.compareMoodWithWithout')}>
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
@@ -107,7 +109,7 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
           </div>
           {mockPositiveDrivers.length > 0 && (
             <div className="tag-driver-section">
-              <p className="label">Positive</p>
+              <p className="label">{t('insights.positive')}</p>
               <div className="tag-bar-list">
                 {mockPositiveDrivers.map(tag => (
                   <div className="tag-bar-item positive" key={tag.tag}>
@@ -132,7 +134,7 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
           )}
           {mockNegativeDrivers.length > 0 && (
             <div className="tag-driver-section">
-              <p className="label">Negative</p>
+              <p className="label">{t('insights.negative')}</p>
               <div className="tag-bar-list">
                 {mockNegativeDrivers.map(tag => (
                   <div className="tag-bar-item negative" key={tag.tag}>
@@ -158,8 +160,8 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
         </div>
         <div className="tag-insights-block">
           <div className="tag-insights-block-header">
-            <h3 className="tag-insights-block-title">Daily events that predict sleep</h3>
-            <Tooltip label="Predict how much these daily events will affect your sleep tonight.">
+            <h3 className="tag-insights-block-title">{t('insights.eventsPredictSleep')}</h3>
+            <Tooltip label={t('insights.compareSleepWithWithout')}>
               <span className="tooltip-trigger">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
@@ -167,7 +169,7 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
           </div>
           {mockPositiveSleepDrivers.length > 0 && (
             <div className="tag-driver-section">
-              <p className="label">More sleep after</p>
+              <p className="label">{t('insights.moreSleepAfter')}</p>
               <div className="tag-bar-list">
                 {mockPositiveSleepDrivers.map(d => (
                   <div className="tag-bar-item positive" key={d.tag}>
@@ -192,7 +194,7 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
           )}
           {mockNegativeSleepDrivers.length > 0 && (
             <div className="tag-driver-section">
-              <p className="label">Less sleep after</p>
+              <p className="label">{t('insights.lessSleepAfter')}</p>
               <div className="tag-bar-list">
                 {mockNegativeSleepDrivers.map(d => (
                   <div className="tag-bar-item negative" key={d.tag}>
@@ -220,7 +222,7 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
       <div className="premium-preview__overlay">
         <div className="locked-message">
           <button type="button" className="ghost cta-ghost" onClick={onOpenPaywall}>
-            Upgrade to Pro
+            {t('insights.upgradeToPro')}
           </button>
         </div>
       </div>

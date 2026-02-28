@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
+import { useTranslation } from 'react-i18next'
 import { exportMonthlyReport } from './lib/reports'
 import { exportEntriesCsv } from './lib/utils/csvExport'
 import { formatLocalDate } from './lib/utils/dateFormatters'
@@ -34,6 +35,7 @@ import { Toaster } from 'sonner'
 import './App.css'
 
 function App() {
+  const { t } = useTranslation()
   const showPrivacyPage = isPrivacyPage()
   const showDeleteAccountPage = isDeleteAccountPage()
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
@@ -100,10 +102,12 @@ function App() {
   const settings = useSettingsSync(session)
   const {
     dateFormat,
+    language,
     theme,
     profileName,
     sleepTarget,
     handleDateFormatChange,
+    handleLanguageChange,
     handleThemeChange,
     handleProfileNameChange,
     handleSleepTargetChange,
@@ -329,7 +333,7 @@ function App() {
 
   const handleExportCsv = async () => {
     if (!entries.length) {
-      setExportError('Add at least one entry to export.')
+      setExportError(t('errors.addOneEntryToExport'))
       return
     }
     setExportError(null)
@@ -337,7 +341,7 @@ function App() {
       await exportEntriesCsv(entries)
     }
     catch {
-      setExportError('Unable to export CSV.')
+      setExportError(t('errors.unableToExportCsv'))
     }
   }
 
@@ -348,7 +352,7 @@ function App() {
         openPaywall()
         return
       }
-      setExportError('Add at least one entry to export.')
+      setExportError(t('errors.addOneEntryToExport'))
       return
     }
     if (!isPro) return
@@ -360,7 +364,7 @@ function App() {
       })
     }
     catch {
-      setExportError('Unable to export report.')
+      setExportError(t('errors.unableToExportReport'))
     }
   }
 
@@ -406,10 +410,12 @@ function App() {
         name={profileName}
         email={session?.user?.email ?? ''}
         dateFormat={dateFormat}
+        language={language}
         theme={theme}
         personalSleepTarget={sleepTarget}
         onNameChange={handleProfileNameChange}
         onDateFormatChange={handleDateFormatChange}
+        onLanguageChange={handleLanguageChange}
         onThemeChange={handleThemeChange}
         onPersonalSleepTargetChange={handleSleepTargetChange}
       />

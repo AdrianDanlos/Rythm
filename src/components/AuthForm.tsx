@@ -1,4 +1,5 @@
 import type { FormEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import googleLogo from '../assets/google-logo.png'
 
 type AuthFormProps = {
@@ -26,6 +27,7 @@ export const AuthForm = ({
   onGoogleSignIn,
   onToggleMode,
 }: AuthFormProps) => {
+  const { t } = useTranslation()
   if (!showEmailPassword) {
     return (
       <button
@@ -34,7 +36,7 @@ export const AuthForm = ({
         onClick={onGoogleSignIn}
       >
         <img className="oauth-logo" src={googleLogo} alt="Google logo" />
-        Continue with Google
+        {t('auth.continueWithGoogle')}
       </button>
     )
   }
@@ -42,21 +44,21 @@ export const AuthForm = ({
   return (
     <section className="card auth-card">
       <h2 className="auth-title">
-        {authMode === 'signin' ? 'Sign in' : 'Create account'}
+        {authMode === 'signin' ? t('auth.signIn') : t('auth.createAccount')}
       </h2>
       <form onSubmit={onSubmit} className="stack">
         <label className="field">
-          Email
+          {t('auth.email')}
           <input
             type="email"
             value={authEmail}
             onChange={event => onEmailChange(event.target.value)}
-            placeholder="you@email.com"
+            placeholder={t('auth.email')}
             required
           />
         </label>
         <label className="field">
-          Password
+          {t('auth.password')}
           <input
             type="password"
             value={authPassword}
@@ -64,22 +66,22 @@ export const AuthForm = ({
             placeholder="••••••••"
             required
             minLength={authMode === 'signup' ? 6 : undefined}
-            title={authMode === 'signup' ? 'At least 6 characters' : undefined}
+            title={authMode === 'signup' ? t('auth.passwordMinLength') : undefined}
           />
           {authMode === 'signup'
             ? (
                 <span className="field-hint" aria-live="polite">
-                  At least 6 characters
+                  {t('auth.passwordMinLength')}
                 </span>
               )
             : null}
         </label>
         <button type="submit" disabled={authLoading}>
           {authLoading
-            ? 'Working...'
+            ? t('auth.working')
             : authMode === 'signin'
-              ? 'Sign in'
-              : 'Sign up'}
+              ? t('auth.signIn')
+              : t('auth.signUp')}
         </button>
       </form>
       <button
@@ -91,12 +93,12 @@ export const AuthForm = ({
         }}
       >
         <img className="oauth-logo" src={googleLogo} alt="Google logo" />
-        Continue with Google
+        {t('auth.continueWithGoogle')}
       </button>
       <button className="ghost auth-toggle" type="button" onClick={onToggleMode}>
         {authMode === 'signin'
-          ? 'Need an account? Sign up'
-          : 'Already have an account? Sign in'}
+          ? t('auth.needAccount')
+          : t('auth.alreadyHaveAccount')}
       </button>
     </section>
   )

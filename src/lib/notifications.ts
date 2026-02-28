@@ -1,4 +1,5 @@
 import { Capacitor } from '@capacitor/core'
+import { t } from 'i18next'
 import { LocalNotifications } from '@capacitor/local-notifications'
 import { STORAGE_KEYS } from './storageKeys'
 
@@ -47,8 +48,8 @@ const ensureAndroidChannel = async () => {
   if (Capacitor.getPlatform() !== 'android') return
   await LocalNotifications.createChannel({
     id: DAILY_REMINDER_CHANNEL_ID,
-    name: 'Daily reminders',
-    description: 'Daily logging reminders',
+    name: t('notifications.channelName'),
+    description: t('notifications.channelDescription'),
     importance: 3,
   })
 }
@@ -94,8 +95,8 @@ export const scheduleDailyReminder = async ({
     notifications: [
       {
         id: DAILY_REMINDER_ID,
-        title: 'Log your day',
-        body: 'Add your sleep and mood to keep your streak going.',
+        title: t('notifications.title'),
+        body: t('notifications.body'),
         schedule: {
           on: { hour: resolvedTime.hour, minute: resolvedTime.minute },
           repeats: true,

@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { useTranslation } from 'react-i18next'
 import type { WeekdayAveragePoint } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 
@@ -50,6 +51,7 @@ export const InsightsWeekdayAverages = ({
   isMobile,
   goToLog,
 }: InsightsWeekdayAveragesProps) => {
+  const { t } = useTranslation()
   const hasAnyData = weekdayAverages.some(point => point.observationCount > 0)
   const totalCompleteLogs = weekdayAverages.reduce((sum, point) => sum + point.observationCount, 0)
   const showEarlySignalNote = hasAnyData && totalCompleteLogs < EARLY_SIGNAL_MIN_COMPLETE_LOGS
@@ -87,9 +89,9 @@ export const InsightsWeekdayAverages = ({
       <div className="card-header">
         <div>
           <h2>
-            Weekday pattern
+            {t('insights.weekdayPattern')}
           </h2>
-          <p className="muted">Your average sleep and mood for each day of the week.</p>
+          <p className="muted">{t('insights.weekdaySubtitle')}</p>
         </div>
       </div>
       {!hasAnyData
@@ -97,9 +99,9 @@ export const InsightsWeekdayAverages = ({
             <div className="chart-empty chart-empty--compact">
               <p className="muted">
                 <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                  Log more days
+                  {t('insights.logMoreDays')}
                 </button>
-                {' '}to unlock weekday patterns.
+                {' '}{t('insights.unlockWeekdayPatterns')}
               </p>
             </div>
           )
@@ -107,7 +109,7 @@ export const InsightsWeekdayAverages = ({
             <>
               {showEarlySignalNote && (
                 <p className="muted" style={{ marginTop: 8 }}>
-                  Early signal: patterns get more reliable after about {EARLY_SIGNAL_MIN_COMPLETE_LOGS} days.
+                  {t('insights.earlySignal', { count: EARLY_SIGNAL_MIN_COMPLETE_LOGS })}
                 </p>
               )}
               <div className="chart-wrapper chart-wrapper--compact" style={{ marginTop: 16 }}>
