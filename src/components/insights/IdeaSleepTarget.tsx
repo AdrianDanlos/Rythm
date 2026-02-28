@@ -72,7 +72,7 @@ export const IdeaSleepTarget = ({
                 {hasMoodAverages
                   ? (
                       <>
-                        <div className="ideal-sleep-mood-comparison" role="group" aria-label="Mood by personal sleep threshold">
+                        <div className="ideal-sleep-mood-comparison" role="group" aria-label={t('insights.moodByPersonalSleepThresholdAria')}>
                           <div className={`ideal-sleep-mood-comparison__item ${aboveMoodToneClass}`}>
                             <span className="ideal-sleep-mood-comparison__circle">
                               {highMood.toFixed(1)}
@@ -99,7 +99,7 @@ export const IdeaSleepTarget = ({
                               </span>
                               <span
                                 className={`mood-by-sleep-trend ${isMoodDeltaPositive ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
-                                aria-label={isMoodDeltaPositive ? 'Mood trend up' : 'Mood trend down'}
+                                aria-label={isMoodDeltaPositive ? t('insights.moodTrendUp') : t('insights.moodTrendDown')}
                                 role="img"
                               >
                                 {isMoodDeltaPositive

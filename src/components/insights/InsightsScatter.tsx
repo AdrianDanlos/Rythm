@@ -119,7 +119,7 @@ export const InsightsScatter = ({
     return (
       <div className="tooltip">
         <p className="tooltip-date">{labelDate}</p>
-        <p>{t('insights.sleepLabel')}: {entry.sleep_hours == null ? 'N/A' : formatSleepHours(entry.sleep_hours)}</p>
+        <p>{t('insights.sleepLabel')}: {entry.sleep_hours == null ? t('common.notAvailable') : formatSleepHours(entry.sleep_hours)}</p>
         <p>{t('insights.moodLabel')}: {entry.mood} / 5</p>
         <div className="tooltip-events">
           <p>{t('insights.dailyEventsLabel')}</p>
@@ -155,7 +155,7 @@ export const InsightsScatter = ({
                   <button type="button" className="link-button link-button--text" onClick={goToLog}>
                     {t('insights.logMoreDays')}
                   </button>
-                  {' '}to see insights.
+                  {' '}{t('insights.toSeeInsights')}
                 </p>
               </div>
             )
@@ -272,7 +272,7 @@ export const InsightsScatter = ({
                         aria-disabled="true"
                         style={{ pointerEvents: 'none' }}
                       >
-                        90 days
+                        {t('insights.last90Days')}
                       </button>
                     </span>
                   </Tooltip>
@@ -283,7 +283,7 @@ export const InsightsScatter = ({
                     className={`ghost ${scatterRange === 'last90' ? 'active' : ''}`}
                     onClick={() => handleRangeChange('last90')}
                   >
-                    90 days
+                    {t('insights.last90Days')}
                   </button>
                 )}
             {!isPro || !showAllRange
@@ -297,7 +297,7 @@ export const InsightsScatter = ({
                         aria-disabled="true"
                         style={{ pointerEvents: 'none' }}
                       >
-                        All
+                        {t('insights.all')}
                       </button>
                     </span>
                   </Tooltip>
@@ -308,7 +308,7 @@ export const InsightsScatter = ({
                     className={`ghost ${scatterRange === 'all' ? 'active' : ''}`}
                     onClick={() => handleRangeChange('all')}
                   >
-                    All
+                    {t('insights.all')}
                   </button>
                 )}
           </div>

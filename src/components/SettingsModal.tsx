@@ -321,8 +321,8 @@ export const SettingsModal = ({
                 <span>{t('settings.wearableSync')}</span>
                 <p className="settings-note">{t('settings.wearableSyncComingSoon')}</p>
                 <div className="wearable-logos">
-                  <img src={appleLogo} alt="Apple Health" className="wearable-logo" />
-                  <img src={fitbitLogo} alt="Fitbit" className="wearable-logo" />
+                  <img src={appleLogo} alt={t('settings.appleHealthAlt')} className="wearable-logo" />
+                  <img src={fitbitLogo} alt={t('settings.fitbitAlt')} className="wearable-logo" />
                 </div>
               </div>
             </div>

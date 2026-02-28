@@ -46,7 +46,7 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
       </div>
       <p className="insights-first-five-card__data">{t('insights.youLoggedDays', { count: n })}{hasAnyData ? ` ${t('insights.lastLabel')}` : '.'}</p>
       {hasAnyData && (
-        <div className="insights-first-five-card__data-row" role="list" aria-label="Last night summary">
+        <div className="insights-first-five-card__data-row" role="list" aria-label={t('insights.lastNightSummaryAria')}>
           {hasSleep && (
             <div className="insights-first-five-card__data-item" role="listitem">
               <span className="insights-first-five-card__data-item-label">{t('common.sleep')}</span>
@@ -63,7 +63,7 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
       )}
       <p className="insights-first-five-card__unlock muted">
         <button type="button" className="link-button link-button--text" onClick={goToLog}>
-          Log {UNLOCK_DAYS - n} more {UNLOCK_DAYS - n === 1 ? 'day' : 'days'}
+          {t('insights.logMoreDaysToUnlockButton', { count: UNLOCK_DAYS - n })}
         </button>
         {' '}{t('insights.unlockMoreBadges')}
       </p>
@@ -77,7 +77,7 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
           />
         </div>
         <p className="first-five-progress__text">
-          {progress} / {UNLOCK_DAYS} days
+          {t('insights.daysProgress', { current: progress, total: UNLOCK_DAYS })}
         </p>
       </div>
     </motion.section>

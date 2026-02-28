@@ -53,18 +53,20 @@ const getDateTickInterval = (pointCount: number, targetTicks = 6) => {
 }
 
 type DailyHistoryLegendProps = {
+  sleepLabel: string
+  moodLabel: string
   wrapperStyle?: React.CSSProperties
 }
 
-const DailyHistoryLegend = ({ wrapperStyle }: DailyHistoryLegendProps) => (
+const DailyHistoryLegend = ({ sleepLabel, moodLabel, wrapperStyle }: DailyHistoryLegendProps) => (
   <div className="rolling-trend-legend" style={wrapperStyle}>
     <span className="rolling-trend-legend__item">
       <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-sleep-bar, var(--chart-sleep))' }} aria-hidden />
-      Sleep
+      {sleepLabel}
     </span>
     <span className="rolling-trend-legend__item">
       <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-mood)' }} aria-hidden />
-      Mood
+      {moodLabel}
     </span>
   </div>
 )
@@ -170,13 +172,13 @@ export const InsightsDailyHistory = ({
                     setTrendRange('last90')
                   })}
                 >
-                  90 days
+                  {t('insights.last90Days')}
                 </button>
               )
             : (
                 <Tooltip label={t('insights.logDaysToSee90', { count: DAILY_HISTORY_THRESHOLD_90 })}>
                   <span className="ghost toggle-group__btn--disabled">
-                    90 days
+                    {t('insights.last90Days')}
                   </span>
                 </Tooltip>
               )}
@@ -189,13 +191,13 @@ export const InsightsDailyHistory = ({
                     setTrendRange('last365')
                   })}
                 >
-                  365 days
+                  {t('insights.last365Days')}
                 </button>
               )
             : (
                 <Tooltip label={t('insights.logDaysToSee365', { count: DAILY_HISTORY_THRESHOLD_365 })}>
                   <span className="ghost toggle-group__btn--disabled">
-                    365 days
+                    {t('insights.last365Days')}
                   </span>
                 </Tooltip>
               )}
@@ -239,7 +241,7 @@ export const InsightsDailyHistory = ({
                       <Line
                         type="monotone"
                         dataKey="sleep"
-                        name="Sleep"
+                        name={t('common.sleep')}
                         stroke="var(--chart-sleep-bar, var(--chart-sleep))"
                         strokeWidth={2}
                         dot={false}
@@ -248,7 +250,7 @@ export const InsightsDailyHistory = ({
                       <Line
                         type="monotone"
                         dataKey="mood"
-                        name="Mood"
+                        name={t('common.mood')}
                         stroke="var(--chart-mood)"
                         strokeWidth={2}
                         dot={false}
@@ -311,11 +313,17 @@ export const InsightsDailyHistory = ({
                         formatLongDate(new Date(`${value}T00:00:00`))}
                       formatter={formatTooltipValue}
                     />
-                    <Legend content={<DailyHistoryLegend wrapperStyle={legendWrapperStyle} />} />
+                    <Legend
+                      content={<DailyHistoryLegend
+                        sleepLabel={t('common.sleep')}
+                        moodLabel={t('common.mood')}
+                        wrapperStyle={legendWrapperStyle}
+                      />}
+                    />
                     <Line
                       type="monotone"
                       dataKey="sleep"
-                      name="Sleep"
+                      name={t('common.sleep')}
                       stroke="var(--chart-sleep-bar, var(--chart-sleep))"
                       strokeWidth={2}
                       dot={false}
@@ -324,7 +332,7 @@ export const InsightsDailyHistory = ({
                     <Line
                       type="monotone"
                       dataKey="mood"
-                      name="Mood"
+                      name={t('common.mood')}
                       stroke="var(--chart-mood)"
                       strokeWidth={2}
                       dot={false}

@@ -13,16 +13,6 @@ import type { WeekdayAveragePoint } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 
 const EARLY_SIGNAL_MIN_COMPLETE_LOGS = 14
-const weekdayLabelMap: Record<string, string> = {
-  Mon: 'Monday',
-  Tue: 'Tuesday',
-  Wed: 'Wednesday',
-  Thu: 'Thursday',
-  Fri: 'Friday',
-  Sat: 'Saturday',
-  Sun: 'Sunday',
-}
-
 type InsightsWeekdayAveragesProps = {
   weekdayAverages: WeekdayAveragePoint[]
   isMobile: boolean
@@ -30,18 +20,20 @@ type InsightsWeekdayAveragesProps = {
 }
 
 type WeekdayLegendProps = {
+  avgSleepLabel: string
+  avgMoodLabel: string
   wrapperStyle?: React.CSSProperties
 }
 
-const WeekdayLegend = ({ wrapperStyle }: WeekdayLegendProps) => (
+const WeekdayLegend = ({ avgSleepLabel, avgMoodLabel, wrapperStyle }: WeekdayLegendProps) => (
   <div className="rolling-trend-legend weekday-legend" style={wrapperStyle}>
     <span className="rolling-trend-legend__item">
       <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-sleep-bar, var(--chart-sleep))' }} aria-hidden />
-      Avg sleep
+      {avgSleepLabel}
     </span>
     <span className="rolling-trend-legend__item">
       <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-mood)' }} aria-hidden />
-      Avg mood
+      {avgMoodLabel}
     </span>
   </div>
 )
@@ -141,18 +133,24 @@ export const InsightsWeekdayAverages = ({
                       formatter={(value, name, item) => {
                         const numeric = typeof value === 'number' ? value : Number(value)
                         if (!Number.isFinite(numeric)) return ['—', name]
-                        if (name === 'Avg sleep') return [formatSleepHours(numeric), name]
+                        if (name === t('insights.avgSleep')) return [formatSleepHours(numeric), name]
                         const observations = item?.payload?.observationCount
-                        return [`${numeric.toFixed(1)} / 5 (${observations} logs)`, name]
+                        return [`${numeric.toFixed(1)} / 5 (${t('insights.logsCount', { count: observations ?? 0 })})`, name]
                       }}
-                      itemSorter={item => (item.name === 'Avg sleep' ? -1 : 1)}
-                      labelFormatter={label => weekdayLabelMap[String(label)] ?? String(label)}
+                      itemSorter={item => (item.name === t('insights.avgSleep') ? -1 : 1)}
+                      labelFormatter={label => t(`insights.weekday${String(label)}Full`)}
                     />
-                    <Legend content={<WeekdayLegend wrapperStyle={legendWrapperStyle} />} />
+                    <Legend
+                      content={<WeekdayLegend
+                        avgSleepLabel={t('insights.avgSleep')}
+                        avgMoodLabel={t('insights.avgMood')}
+                        wrapperStyle={legendWrapperStyle}
+                      />}
+                    />
                     <Bar
                       yAxisId="left"
                       dataKey="avgSleep"
-                      name="Avg sleep"
+                      name={t('insights.avgSleep')}
                       fill="var(--chart-sleep-bar, var(--chart-sleep))"
                       radius={[4, 4, 0, 0]}
                       maxBarSize={isMobile ? 16 : 18}
@@ -160,7 +158,7 @@ export const InsightsWeekdayAverages = ({
                     <Line
                       yAxisId="right"
                       dataKey="avgMood"
-                      name="Avg mood"
+                      name={t('insights.avgMood')}
                       type="monotone"
                       stroke="var(--chart-mood)"
                       strokeWidth={3}

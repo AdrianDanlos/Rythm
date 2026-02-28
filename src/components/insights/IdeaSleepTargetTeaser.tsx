@@ -63,7 +63,7 @@ export const IdeaSleepTargetTeaser = ({ onOpenPaywall }: IdeaSleepTargetTeaserPr
               <span className="mood-by-sleep-percent--up">
                 {Math.abs(MOCK_DELTA_PERCENT).toFixed(0)}%
               </span>
-              <span className="mood-by-sleep-trend mood-by-sleep-trend--up" aria-label="Mood trend up" role="img">
+              <span className="mood-by-sleep-trend mood-by-sleep-trend--up" aria-label={t('insights.moodTrendUp')} role="img">
                 <TrendingUp size={16} aria-hidden="true" />
               </span>
             </p>

@@ -35,7 +35,7 @@ export const AuthForm = ({
         type="button"
         onClick={onGoogleSignIn}
       >
-        <img className="oauth-logo" src={googleLogo} alt="Google logo" />
+        <img className="oauth-logo" src={googleLogo} alt={t('common.googleLogoAlt')} />
         {t('auth.continueWithGoogle')}
       </button>
     )
@@ -92,7 +92,7 @@ export const AuthForm = ({
           onGoogleSignIn()
         }}
       >
-        <img className="oauth-logo" src={googleLogo} alt="Google logo" />
+        <img className="oauth-logo" src={googleLogo} alt={t('common.googleLogoAlt')} />
         {t('auth.continueWithGoogle')}
       </button>
       <button className="ghost auth-toggle" type="button" onClick={onToggleMode}>

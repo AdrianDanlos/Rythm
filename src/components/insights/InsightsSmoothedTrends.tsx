@@ -118,34 +118,41 @@ const getMetricAxisConfig = (
 type RollingLegendProps = {
   show30: boolean
   show90: boolean
+  labels: {
+    last7Days: string
+    last30Days: string
+    last90Days: string
+    logDaysToSee30: string
+    logDaysToSee90: string
+  }
   wrapperStyle?: React.CSSProperties
 }
 
-const RollingLegend = ({ show30, show90, wrapperStyle }: RollingLegendProps) => (
+const RollingLegend = ({ show30, show90, labels, wrapperStyle }: RollingLegendProps) => (
   <div className="rolling-trend-legend" style={wrapperStyle}>
     <span className="rolling-trend-legend__item">
       <span className="rolling-trend-legend__swatch" style={{ background: rollingTrendColors.long }} aria-hidden />
-      Last 7 days
+      {labels.last7Days}
     </span>
     <span className={`rolling-trend-legend__item ${!show30 ? 'rolling-trend-legend__item--disabled' : ''}`}>
       <span className="rolling-trend-legend__swatch" style={{ background: rollingTrendColors.mid }} aria-hidden />
       {!show30
         ? (
-            <Tooltip label={`Log ${ENTRY_THRESHOLD_30}+ days to see 30-day trend.`}>
-              <span className="tooltip-trigger">Last 30 days</span>
+            <Tooltip label={labels.logDaysToSee30}>
+              <span className="tooltip-trigger">{labels.last30Days}</span>
             </Tooltip>
           )
-        : 'Last 30 days'}
+        : labels.last30Days}
     </span>
     <span className={`rolling-trend-legend__item ${!show90 ? 'rolling-trend-legend__item--disabled' : ''}`}>
       <span className="rolling-trend-legend__swatch" style={{ background: 'var(--chart-sleep)' }} aria-hidden />
       {!show90
         ? (
-            <Tooltip label={`Log ${ENTRY_THRESHOLD_90}+ days to see 90-day trend.`}>
-              <span className="tooltip-trigger">Last 90 days</span>
+            <Tooltip label={labels.logDaysToSee90}>
+              <span className="tooltip-trigger">{labels.last90Days}</span>
             </Tooltip>
           )
-        : 'Last 90 days'}
+        : labels.last90Days}
     </span>
   </div>
 )
@@ -282,7 +289,7 @@ export const InsightsSmoothedTrends = ({
                               <Line
                                 type="monotone"
                                 dataKey="sleep7"
-                                name="Last 7 days"
+                                name={t('insights.last7Days')}
                                 stroke={rollingTrendColors.long}
                                 dot={false}
                                 strokeWidth={2}
@@ -290,7 +297,7 @@ export const InsightsSmoothedTrends = ({
                               <Line
                                 type="monotone"
                                 dataKey="sleep90"
-                                name="Last 90 days"
+                                name={t('insights.last90Days')}
                                 stroke="var(--chart-sleep)"
                                 dot={false}
                                 strokeWidth={2}
@@ -298,7 +305,7 @@ export const InsightsSmoothedTrends = ({
                               <Line
                                 type="monotone"
                                 dataKey="sleep30"
-                                name="Last 30 days"
+                                name={t('insights.last30Days')}
                                 stroke={rollingTrendColors.mid}
                                 dot={false}
                                 strokeWidth={2}
@@ -310,7 +317,7 @@ export const InsightsSmoothedTrends = ({
                               <Line
                                 type="monotone"
                                 dataKey="mood7"
-                                name="Last 7 days"
+                                name={t('insights.last7Days')}
                                 stroke={rollingTrendColors.long}
                                 dot={false}
                                 strokeWidth={2}
@@ -318,7 +325,7 @@ export const InsightsSmoothedTrends = ({
                               <Line
                                 type="monotone"
                                 dataKey="mood90"
-                                name="Last 90 days"
+                                name={t('insights.last90Days')}
                                 stroke="var(--chart-sleep)"
                                 dot={false}
                                 strokeWidth={2}
@@ -326,7 +333,7 @@ export const InsightsSmoothedTrends = ({
                               <Line
                                 type="monotone"
                                 dataKey="mood30"
-                                name="Last 30 days"
+                                name={t('insights.last30Days')}
                                 stroke={rollingTrendColors.mid}
                                 dot={false}
                                 strokeWidth={2}
@@ -409,14 +416,27 @@ export const InsightsSmoothedTrends = ({
                           return 99
                         }}
                       />
-                      <Legend content={<RollingLegend show30={show30} show90={show90} wrapperStyle={legendWrapperStyle} />} />
+                      <Legend
+                        content={<RollingLegend
+                          show30={show30}
+                          show90={show90}
+                          labels={{
+                            last7Days: t('insights.last7Days'),
+                            last30Days: t('insights.last30Days'),
+                            last90Days: t('insights.last90Days'),
+                            logDaysToSee30: t('insights.logDaysToSee30Trend', { count: ENTRY_THRESHOLD_30 }),
+                            logDaysToSee90: t('insights.logDaysToSee90Trend', { count: ENTRY_THRESHOLD_90 }),
+                          }}
+                          wrapperStyle={legendWrapperStyle}
+                        />}
+                      />
                       {rollingMetric === 'sleep'
                         ? (
                             <>
                               <Line
                                 type="monotone"
                                 dataKey="sleep7"
-                                name="Last 7 days"
+                                name={t('insights.last7Days')}
                                 stroke={rollingTrendColors.long}
                                 dot={false}
                                 strokeWidth={2}
@@ -425,7 +445,7 @@ export const InsightsSmoothedTrends = ({
                                 <Line
                                   type="monotone"
                                   dataKey="sleep90"
-                                  name="Last 90 days"
+                                  name={t('insights.last90Days')}
                                   stroke="var(--chart-sleep)"
                                   dot={false}
                                   strokeWidth={2}
@@ -435,7 +455,7 @@ export const InsightsSmoothedTrends = ({
                                 <Line
                                   type="monotone"
                                   dataKey="sleep30"
-                                  name="Last 30 days"
+                                  name={t('insights.last30Days')}
                                   stroke={rollingTrendColors.mid}
                                   dot={false}
                                   strokeWidth={2}
@@ -448,7 +468,7 @@ export const InsightsSmoothedTrends = ({
                               <Line
                                 type="monotone"
                                 dataKey="mood7"
-                                name="Last 7 days"
+                                name={t('insights.last7Days')}
                                 stroke={rollingTrendColors.long}
                                 dot={false}
                                 strokeWidth={2}
@@ -457,7 +477,7 @@ export const InsightsSmoothedTrends = ({
                                 <Line
                                   type="monotone"
                                   dataKey="mood90"
-                                  name="Last 90 days"
+                                  name={t('insights.last90Days')}
                                   stroke="var(--chart-sleep)"
                                   dot={false}
                                   strokeWidth={2}
@@ -467,7 +487,7 @@ export const InsightsSmoothedTrends = ({
                                 <Line
                                   type="monotone"
                                   dataKey="mood30"
-                                  name="Last 30 days"
+                                  name={t('insights.last30Days')}
                                   stroke={rollingTrendColors.mid}
                                   dot={false}
                                   strokeWidth={2}
@@ -491,8 +511,8 @@ export const InsightsSmoothedTrends = ({
                         {isDisabled && (
                           <Tooltip
                             label={is30Disabled
-                              ? `Log ${ENTRY_THRESHOLD_30}+ days to see 30-day trend.`
-                              : `Log ${ENTRY_THRESHOLD_90}+ days to see 90-day trend.`}
+                              ? t('insights.logDaysToSee30Trend', { count: ENTRY_THRESHOLD_30 })
+                              : t('insights.logDaysToSee90Trend', { count: ENTRY_THRESHOLD_90 })}
                             className="tooltip-wrap-card"
                           >
                             <span className="tooltip-trigger stat-block-tooltip-overlay" aria-hidden />
@@ -501,10 +521,10 @@ export const InsightsSmoothedTrends = ({
                         <div className={isDisabled ? 'stat-block__content stat-block__content--dimmed' : 'stat-block__content'}>
                           <p className="label">
                             {summary.days === 7
-                              ? 'Last 7 days'
+                              ? t('insights.last7Days')
                               : summary.days === 30
-                                ? 'Last 30 days'
-                                : 'Last 90 days'}
+                                ? t('insights.last30Days')
+                                : t('insights.last90Days')}
                           </p>
                           <p className="value">
                             {summary.sleep !== null
@@ -516,43 +536,43 @@ export const InsightsSmoothedTrends = ({
                             {is30Disabled
                               ? (
                                   <span className="muted">
-                                    Need {ENTRY_THRESHOLD_30}+ entries for 30-day line
+                                    {t('insights.needEntriesFor30Line', { count: ENTRY_THRESHOLD_30 })}
                                   </span>
                                 )
                               : is90Disabled
                                 ? (
                                     <span className="muted">
-                                      Need {ENTRY_THRESHOLD_90}+ entries for 90-day line
+                                      {t('insights.needEntriesFor90Line', { count: ENTRY_THRESHOLD_90 })}
                                     </span>
                                   )
                                 : (() => {
                                     const noDelta = summary.sleepDelta === null && summary.moodDelta === null
                                     const deltaNote = summary.days === 7
-                                      ? '~14 days'
+                                      ? t('insights.approx14Days')
                                       : summary.days === 30
-                                        ? '~30 days'
-                                        : '~90 days'
+                                        ? t('insights.approx30Days')
+                                        : t('insights.approx90Days')
                                     return noDelta
                                       ? (
                                           <Tooltip
-                                            label={`Delta compares to the previous ${summary.days}-day window; need about ${deltaNote} of history.`}
+                                            label={t('insights.deltaNeedHistory', { days: summary.days, period: deltaNote })}
                                           >
                                             <span className="tooltip-trigger muted">
-                                              Delta after {deltaNote} of data
+                                              {t('insights.deltaAfterData', { period: deltaNote })}
                                             </span>
                                           </Tooltip>
                                         )
                                       : (
                                           <Tooltip
-                                            label={`Change vs prior ${summary.days}-day window.`}
+                                            label={t('insights.changeVsPrior', { days: summary.days })}
                                           >
                                             <span className="tooltip-trigger delta-block muted">
                                               <span className="delta-block__label">
-                                                VS prior {summary.days} days
+                                                {t('insights.vsPriorDays', { days: summary.days })}
                                               </span>
                                               <span className="delta-stacked">
                                                 <span className="delta-stacked-sleep">
-                                                  Sleep:{' '}
+                                                  {t('insights.sleepLabel')}:{' '}
                                                   {summary.sleepDelta !== null && Number.isFinite(summary.sleepDelta)
                                                     ? (
                                                         <>
@@ -561,7 +581,7 @@ export const InsightsSmoothedTrends = ({
                                                           </span>
                                                           <span
                                                             className={`mood-by-sleep-trend ${summary.sleepDelta >= 0 ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
-                                                            aria-label={summary.sleepDelta >= 0 ? 'Sleep trend up' : 'Sleep trend down'}
+                                                            aria-label={summary.sleepDelta >= 0 ? t('insights.sleepTrendUp') : t('insights.sleepTrendDown')}
                                                             role="img"
                                                           >
                                                             {summary.sleepDelta >= 0 ? <TrendingUp size={14} aria-hidden="true" /> : <TrendingDown size={14} aria-hidden="true" />}
@@ -571,7 +591,7 @@ export const InsightsSmoothedTrends = ({
                                                     : '—'}
                                                 </span>
                                                 <span className="delta-stacked-mood">
-                                                  Mood:{' '}
+                                                  {t('insights.moodLabel')}:{' '}
                                                   {(() => {
                                                     const moodPct = getMoodDeltaPercent(summary.mood, summary.moodDelta)
                                                     if (moodPct === null) return '—'
@@ -583,7 +603,7 @@ export const InsightsSmoothedTrends = ({
                                                         </span>
                                                         <span
                                                           className={`mood-by-sleep-trend ${isUp ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
-                                                          aria-label={isUp ? 'Mood trend up' : 'Mood trend down'}
+                                                          aria-label={isUp ? t('insights.moodTrendUp') : t('insights.moodTrendDown')}
                                                           role="img"
                                                         >
                                                           {isUp ? <TrendingUp size={14} aria-hidden="true" /> : <TrendingDown size={14} aria-hidden="true" />}

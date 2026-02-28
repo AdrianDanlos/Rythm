@@ -60,7 +60,7 @@ export const InsightsTagInsights = ({
         </span>
         <span
           className={`mood-by-sleep-trend ${isUp ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
-          aria-label={isUp ? 'Increase' : 'Decrease'}
+          aria-label={isUp ? t('insights.increaseAria') : t('insights.decreaseAria')}
           role="img"
         >
           <Icon size={16} aria-hidden="true" />
@@ -80,7 +80,7 @@ export const InsightsTagInsights = ({
         </span>
         <span
           className={`mood-by-sleep-trend ${isUp ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
-          aria-label={isUp ? 'Increase' : 'Decrease'}
+          aria-label={isUp ? t('insights.increaseAria') : t('insights.decreaseAria')}
           role="img"
         >
           <Icon size={16} aria-hidden="true" />
@@ -136,7 +136,7 @@ export const InsightsTagInsights = ({
                   />
                 </div>
               </div>
-              <p className="helper">{d.count} entries</p>
+              <p className="helper">{t('insights.entriesSuffix', { count: d.count })}</p>
             </div>
           ))}
         </div>
@@ -249,7 +249,7 @@ export const InsightsTagInsights = ({
               )
             : (
                 <p className="muted">
-                  <button type="button" className="link-button link-button--text" onClick={goToLog}>Add daily events</button>
+                  <button type="button" className="link-button link-button--text" onClick={goToLog}>{t('insights.addDailyEvents')}</button>
                   {' '}{t('insights.addEventsToUnlock', { count: DEFAULT_TAG_DRIVER_MIN_COUNT })}
                 </p>
               )}

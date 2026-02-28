@@ -44,7 +44,7 @@ export const InsightsFirstTwoCard = ({ entries, goToLog }: InsightsFirstTwoCardP
       </div>
       <p className="insights-first-five-card__data-label">{t('insights.yourFirstDay')}</p>
       {hasAnyData && (
-        <div className="insights-first-five-card__data-row" role="list" aria-label="First day summary">
+        <div className="insights-first-five-card__data-row" role="list" aria-label={t('insights.firstDaySummaryAria')}>
           {hasSleep && (
             <div className="insights-first-five-card__data-item" role="listitem">
               <span className="insights-first-five-card__data-item-label">{t('common.sleep')}</span>
@@ -62,7 +62,7 @@ export const InsightsFirstTwoCard = ({ entries, goToLog }: InsightsFirstTwoCardP
       {!hasAnyData && <p className="insights-first-five-card__data insights-first-five-card__data--muted">{t('insights.yourFirstDayLogged')}</p>}
       <p className="insights-first-five-card__unlock muted">
         <button type="button" className="link-button link-button--text" onClick={goToLog}>
-          Log 1 more day
+          {t('insights.logOneMoreDay')}
         </button>
         {' '}{t('insights.logMoreDaysUnlock')}
       </p>
@@ -76,7 +76,7 @@ export const InsightsFirstTwoCard = ({ entries, goToLog }: InsightsFirstTwoCardP
           />
         </div>
         <p className="first-five-progress__text">
-          {progress} / {UNLOCK_DAYS} days
+          {t('insights.daysProgress', { current: progress, total: UNLOCK_DAYS })}
         </p>
       </div>
     </motion.section>

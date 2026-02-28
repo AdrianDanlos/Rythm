@@ -1,7 +1,22 @@
 import type { Entry } from '../entries'
 import type { Badge } from '../types/stats'
+import i18n from '../../i18n'
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000
+const t = (key: string, params?: Record<string, unknown>) => i18n.t(key, params)
+
+const getUnitLabel = (unitKey: string, count: number) => {
+  if (count === 1) {
+    const singularMap: Record<string, string> = {
+      days: 'day',
+      nights: 'night',
+      events: 'event',
+      times: 'time',
+    }
+    return t(`badges.units.${singularMap[unitKey] ?? unitKey}`)
+  }
+  return t(`badges.units.${unitKey}`)
+}
 
 const parseEntryDate = (entry: Entry) => {
   const date = new Date(`${entry.entry_date}T00:00:00`)
@@ -28,10 +43,10 @@ function getTierState(
   const nextTierLabel = nextThreshold !== null ? tierLabels[currentTierIndex + 1] : null
   const progressValue = nextThreshold !== null ? Math.min(value, nextThreshold) : value
   const progressTotal = nextThreshold !== null ? nextThreshold : Math.max(value, 1)
-  const unitDisplay = nextThreshold === 1 && unitLabel.endsWith('s') ? unitLabel.slice(0, -1) : unitLabel
+  const unitDisplay = getUnitLabel(unitLabel, nextThreshold ?? value)
   const progressText = nextThreshold !== null
     ? `${Math.min(value, nextThreshold)}/${nextThreshold} ${unitDisplay}`
-    : 'Max level'
+    : t('badges.maxLevel')
   return {
     currentTierIndex,
     currentTierLabel,
@@ -56,8 +71,8 @@ function buildTieredBadge(
   const title = badgeName
   const description = state.nextThreshold !== null
     ? `${state.nextTierLabel}.`
-    : (state.currentTierLabel ? `${state.currentTierLabel}.` : 'Max level reached.')
-  const lockedUnit = thresholds[0] === 1 && unitLabel.endsWith('s') ? unitLabel.slice(0, -1) : unitLabel
+    : (state.currentTierLabel ? `${state.currentTierLabel}.` : t('badges.maxLevelReached'))
+  const lockedUnit = getUnitLabel(unitLabel, thresholds[0])
   return {
     id,
     title,
@@ -82,7 +97,7 @@ function buildNonIncrementalBadge(
     title,
     description,
     unlocked,
-    progressText: unlocked ? 'Max level' : '0/1',
+    progressText: unlocked ? t('badges.maxLevel') : '0/1',
     progressValue: unlocked ? 1 : 0,
     progressTotal: 1,
     currentTierIndex: unlocked ? 1 : 0,
@@ -92,35 +107,35 @@ function buildNonIncrementalBadge(
 
 // --- Incremental badge 1: Logger beast ---
 const LOGGER_THRESHOLDS = [1, 7, 30, 180, 365]
-const LOGGER_LABELS = [
-  '1 logged day',
-  '7 logged days',
-  '30 logged days',
-  '180 logged days',
-  '365 logged days',
-]
+const LOGGER_LABELS = () => ([
+  t('badges.logger.tier1'),
+  t('badges.logger.tier2'),
+  t('badges.logger.tier3'),
+  t('badges.logger.tier4'),
+  t('badges.logger.tier5'),
+])
 
 export function getLoggerBadge(entries: Entry[]): Badge {
   const total = entries.length
   return buildTieredBadge(
     'logger-beast',
-    'Logger Beast',
+    t('badges.logger.title'),
     total,
     LOGGER_THRESHOLDS,
-    LOGGER_LABELS,
+    LOGGER_LABELS(),
     'days',
   )
 }
 
 // --- Incremental badge 2: Eight-Hour Elite (8+ hours per night) ---
 const EIGHT_HOUR_THRESHOLDS = [1, 7, 14, 21, 30]
-const EIGHT_HOUR_LABELS = [
-  '8+ hours for 1 night',
-  '8+ hours for 7 nights',
-  '8+ hours for 14 nights',
-  '8+ hours for 21 nights',
-  '8+ hours for 30 nights',
-]
+const EIGHT_HOUR_LABELS = () => ([
+  t('badges.eightHour.tier1'),
+  t('badges.eightHour.tier2'),
+  t('badges.eightHour.tier3'),
+  t('badges.eightHour.tier4'),
+  t('badges.eightHour.tier5'),
+])
 
 export function getEightHourEliteBadge(entries: Entry[]): Badge {
   const count = entries.filter((e) => {
@@ -129,23 +144,23 @@ export function getEightHourEliteBadge(entries: Entry[]): Badge {
   }).length
   return buildTieredBadge(
     'eight-hour-elite',
-    'Eight-Hour Elite',
+    t('badges.eightHour.title'),
     count,
     EIGHT_HOUR_THRESHOLDS,
-    EIGHT_HOUR_LABELS,
+    EIGHT_HOUR_LABELS(),
     'nights',
   )
 }
 
 // --- Incremental badge 3: Events Explorer (unique/different daily events = distinct tags) ---
 const EVENTS_EXPLORER_THRESHOLDS = [5, 10, 15, 20, 30]
-const EVENTS_EXPLORER_LABELS = [
-  'Add 5 different daily events',
-  'Add 10 different daily events',
-  'Add 15 different daily events',
-  'Add 20 different daily events',
-  'Add 30 different daily events',
-]
+const EVENTS_EXPLORER_LABELS = () => ([
+  t('badges.eventsExplorer.tier1'),
+  t('badges.eventsExplorer.tier2'),
+  t('badges.eventsExplorer.tier3'),
+  t('badges.eventsExplorer.tier4'),
+  t('badges.eventsExplorer.tier5'),
+])
 
 export function getEventsExplorerBadge(entries: Entry[]): Badge {
   const uniqueTags = new Set<string>()
@@ -157,89 +172,89 @@ export function getEventsExplorerBadge(entries: Entry[]): Badge {
   })
   return buildTieredBadge(
     'events-explorer',
-    'Events Explorer',
+    t('badges.eventsExplorer.title'),
     uniqueTags.size,
     EVENTS_EXPLORER_THRESHOLDS,
-    EVENTS_EXPLORER_LABELS,
+    EVENTS_EXPLORER_LABELS(),
     'events',
   )
 }
 
 // --- Incremental badge 4: Events Master (total daily events count) ---
 const EVENTS_MASTER_THRESHOLDS = [10, 25, 50, 100, 500]
-const EVENTS_MASTER_LABELS = [
-  'Add 10 daily events',
-  'Add 25 daily events',
-  'Add 50 daily events',
-  'Add 100 daily events',
-  'Add 500 daily events',
-]
+const EVENTS_MASTER_LABELS = () => ([
+  t('badges.eventsMaster.tier1'),
+  t('badges.eventsMaster.tier2'),
+  t('badges.eventsMaster.tier3'),
+  t('badges.eventsMaster.tier4'),
+  t('badges.eventsMaster.tier5'),
+])
 
 export function getEventsMasterBadge(entries: Entry[]): Badge {
   const total = entries.reduce((sum, e) => sum + (e.tags?.length ?? 0), 0)
   return buildTieredBadge(
     'events-master',
-    'Events Master',
+    t('badges.eventsMaster.title'),
     total,
     EVENTS_MASTER_THRESHOLDS,
-    EVENTS_MASTER_LABELS,
+    EVENTS_MASTER_LABELS(),
     'events',
   )
 }
 
 // --- Incremental badge 5: Peak Days (mood 5/5) ---
 const PEAK_DAYS_THRESHOLDS = [1, 3, 7, 14, 30]
-const PEAK_DAYS_LABELS = [
-  '1 day with mood 5/5',
-  '3 days with mood 5/5',
-  '7 days with mood 5/5',
-  '14 days with mood 5/5',
-  '30 days with mood 5/5',
-]
+const PEAK_DAYS_LABELS = () => ([
+  t('badges.peakDays.tier1'),
+  t('badges.peakDays.tier2'),
+  t('badges.peakDays.tier3'),
+  t('badges.peakDays.tier4'),
+  t('badges.peakDays.tier5'),
+])
 
 export function getPeakDaysBadge(entries: Entry[]): Badge {
   const count = entries.filter(e => typeof e.mood === 'number' && e.mood === 5).length
   return buildTieredBadge(
     'peak-days',
-    'Peak Days',
+    t('badges.peakDays.title'),
     count,
     PEAK_DAYS_THRESHOLDS,
-    PEAK_DAYS_LABELS,
+    PEAK_DAYS_LABELS(),
     'days',
   )
 }
 
 // --- Incremental badge 6: Reflector (notes count) ---
 const REFLECTOR_THRESHOLDS = [5, 10, 15, 20, 30]
-const REFLECTOR_LABELS = [
-  'Add a journal entry 5 times',
-  'Add a journal entry 10 times',
-  'Add a journal entry 15 times',
-  'Add a journal entry 20 times',
-  'Add a journal entry 30 times',
-]
+const REFLECTOR_LABELS = () => ([
+  t('badges.reflector.tier1'),
+  t('badges.reflector.tier2'),
+  t('badges.reflector.tier3'),
+  t('badges.reflector.tier4'),
+  t('badges.reflector.tier5'),
+])
 
 export function getReflectorBadge(entries: Entry[]): Badge {
   const count = entries.filter(e => (e.note ?? '').trim().length > 0).length
   return buildTieredBadge(
     'reflector',
-    'Reflector',
+    t('badges.reflector.title'),
     count,
     REFLECTOR_THRESHOLDS,
-    REFLECTOR_LABELS,
+    REFLECTOR_LABELS(),
     'times',
   )
 }
 
 // --- Incremental badge 7: Mood Steady (consecutive days mood >= 3/5) ---
 const MOOD_STEADY_THRESHOLDS = [2, 5, 10, 14, 21]
-const MOOD_STEADY_LABELS = [
-  '2 days in a row with mood ≥ 3/5',
-  '5 days in a row with mood ≥ 3/5',
-  '10 days in a row with mood ≥ 3/5',
-  '14 days in a row with mood ≥ 3/5',
-  '21 days in a row with mood ≥ 3/5',
-]
+const MOOD_STEADY_LABELS = () => ([
+  t('badges.moodSteady.tier1'),
+  t('badges.moodSteady.tier2'),
+  t('badges.moodSteady.tier3'),
+  t('badges.moodSteady.tier4'),
+  t('badges.moodSteady.tier5'),
+])
 
 function getLongestConsecutiveMoodSteady(entries: Entry[]): number {
   if (!entries.length) return 0
@@ -293,25 +308,25 @@ export function getMoodSteadyBadge(entries: Entry[]): Badge {
   const bestStreak = getLongestConsecutiveMoodSteady(entries)
   const badge = buildTieredBadge(
     'mood-steady',
-    'Mood Steady',
+    t('badges.moodSteady.title'),
     bestStreak,
     MOOD_STEADY_THRESHOLDS,
-    MOOD_STEADY_LABELS,
+    MOOD_STEADY_LABELS(),
     'days',
   )
   const currentStreak = getCurrentConsecutiveMoodSteady(entries)
-  const state = getTierState(bestStreak, MOOD_STEADY_THRESHOLDS, MOOD_STEADY_LABELS, 'days')
+  const state = getTierState(bestStreak, MOOD_STEADY_THRESHOLDS, MOOD_STEADY_LABELS(), 'days')
   const nextThreshold = state.currentTierIndex + 1 < MOOD_STEADY_THRESHOLDS.length ? MOOD_STEADY_THRESHOLDS[state.currentTierIndex + 1] : null
   const progressTotal = nextThreshold ?? state.progressTotal
   const progressValue = Math.min(currentStreak, progressTotal)
-  const unitDisplay = progressTotal === 1 ? 'day' : 'days'
+  const unitDisplay = getUnitLabel('days', progressTotal)
   return {
     ...badge,
     progressValue: badge.unlocked ? progressValue : Math.min(currentStreak, MOOD_STEADY_THRESHOLDS[0]),
     progressTotal: badge.unlocked ? progressTotal : MOOD_STEADY_THRESHOLDS[0],
     progressText: badge.unlocked
-      ? (nextThreshold !== null ? `${progressValue}/${progressTotal} ${unitDisplay}` : 'Max level')
-      : `${Math.min(currentStreak, MOOD_STEADY_THRESHOLDS[0])}/${MOOD_STEADY_THRESHOLDS[0]} days`,
+      ? (nextThreshold !== null ? `${progressValue}/${progressTotal} ${unitDisplay}` : t('badges.maxLevel'))
+      : `${Math.min(currentStreak, MOOD_STEADY_THRESHOLDS[0])}/${MOOD_STEADY_THRESHOLDS[0]} ${getUnitLabel('days', MOOD_STEADY_THRESHOLDS[0])}`,
   }
 }
 
@@ -352,8 +367,8 @@ export function getBalancedWeekBadge(entries: Entry[]): Badge {
   const unlocked = hasBalancedWeek(entries)
   return buildNonIncrementalBadge(
     'balanced-week',
-    'Balanced Week',
-    'All 7 nights between 6–9 hours.',
+    t('badges.balancedWeek.title'),
+    t('badges.balancedWeek.description'),
     unlocked,
   )
 }
@@ -372,11 +387,13 @@ export function getMonthlyMilestoneBadge(entries: Entry[]): Badge {
   const unlocked = count >= 30
   const progressValue = Math.min(count, 30)
   const progressTotal = 30
-  const progressText = unlocked ? '30/30 days' : `${count}/30 days`
+  const progressText = unlocked
+    ? `30/30 ${getUnitLabel('days', 30)}`
+    : `${count}/30 ${getUnitLabel('days', 30)}`
   return {
     id: 'monthly-milestone',
-    title: 'Monthly Milestone',
-    description: '30 logged days in the current month.',
+    title: t('badges.monthlyMilestone.title'),
+    description: t('badges.monthlyMilestone.description'),
     unlocked,
     progressText,
     progressValue,
@@ -422,8 +439,8 @@ export function getBounceBackBadge(entries: Entry[]): Badge {
   const unlocked = hasBounceBack(entries)
   return buildNonIncrementalBadge(
     'bounce-back',
-    'Bounce Back',
-    '2+ good-mood days in a row after 2+ low-mood days.',
+    t('badges.bounceBack.title'),
+    t('badges.bounceBack.description'),
     unlocked,
   )
 }

@@ -248,7 +248,7 @@ export const InsightsStats = ({
                             </span>
                             <span
                               className={`mood-by-sleep-trend ${isMoodBySleepPositive ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
-                              aria-label={isMoodBySleepPositive ? 'Mood trend up' : 'Mood trend down'}
+                              aria-label={isMoodBySleepPositive ? t('insights.moodTrendUp') : t('insights.moodTrendDown')}
                               role="img"
                             >
                               {isMoodBySleepPositive

@@ -26,7 +26,6 @@ type SleepColorScale = {
   bucketSize: number
 }
 
-const dayLabels = ['Mon', '', 'Wed', '', 'Fri', '', '']
 const MIN_DYNAMIC_SLEEP_ENTRIES = 7
 
 const buildHeatmapWeeks = (entries: Entry[], days: number): HeatmapDay[][] => {
@@ -281,7 +280,15 @@ export const InsightsCalendarHeatmap = ({
         </div>
         <div className="heatmap-body">
           <div className="heatmap-days" aria-hidden="true">
-            {dayLabels.map((label, index) => (
+            {[
+              t('insights.weekdayMonShort'),
+              '',
+              t('insights.weekdayWedShort'),
+              '',
+              t('insights.weekdayFriShort'),
+              '',
+              '',
+            ].map((label, index) => (
               <span className="heatmap-day-label" key={`day-${index}`}>
                 {label}
               </span>

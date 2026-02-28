@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { t } from 'i18next'
 import { fetchEntries, type Entry } from '../lib/entries'
 import { buildStats } from '../lib/stats'
+import i18n from '../i18n'
 import { calculateAverages } from '../lib/utils/averages'
 
 type UseEntriesParams = {
@@ -90,7 +91,7 @@ export const useEntries = ({
 
   const stats = useMemo(
     () => buildStats(entries, sleepThreshold, formatLocalDate),
-    [entries, sleepThreshold, formatLocalDate],
+    [entries, sleepThreshold, formatLocalDate, i18n.resolvedLanguage],
   )
 
   return {

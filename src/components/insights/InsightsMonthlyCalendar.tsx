@@ -20,8 +20,6 @@ type CalendarDay = {
   entry: Entry | null
 }
 
-const weekLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-
 const startOfMonth = (value: Date) => new Date(value.getFullYear(), value.getMonth(), 1)
 
 const buildMonthDays = (visibleMonth: Date, entriesByDate: Map<string, Entry>) => {
@@ -141,8 +139,16 @@ export const InsightsMonthlyCalendar = ({
           )
         : (
             <>
-              <div className="monthly-calendar-grid" role="grid" aria-label={`Calendar for ${monthLabel}`}>
-                {weekLabels.map(label => (
+              <div className="monthly-calendar-grid" role="grid" aria-label={t('insights.calendarForAria', { month: monthLabel })}>
+                {[
+                  t('insights.weekdayMonShort'),
+                  t('insights.weekdayTueShort'),
+                  t('insights.weekdayWedShort'),
+                  t('insights.weekdayThuShort'),
+                  t('insights.weekdayFriShort'),
+                  t('insights.weekdaySatShort'),
+                  t('insights.weekdaySunShort'),
+                ].map(label => (
                   <div key={label} className="monthly-calendar-weekday" role="columnheader">{label}</div>
                 ))}
                 {monthDays.map((day) => {
@@ -167,7 +173,7 @@ export const InsightsMonthlyCalendar = ({
                         day.isFuture ? 'future' : '',
                       ].filter(Boolean).join(' ')}
                       onClick={() => setSelectedDate(day.key)}
-                      aria-label={`${day.key}${day.entry ? ', has entry' : `, ${t('insights.noEntryShort').toLowerCase()}`}`}
+                      aria-label={`${day.key}${day.entry ? t('insights.hasEntryAria') : `, ${t('insights.noEntryShort').toLowerCase()}`}`}
                     >
                       <span className="monthly-calendar-day__number">{day.date.getDate()}</span>
                       <span className="monthly-calendar-day__meta">
