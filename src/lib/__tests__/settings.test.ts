@@ -14,8 +14,18 @@ describe('settings storage helpers', () => {
     window.localStorage.clear()
   })
 
-  it('falls back to defaults when storage is empty', () => {
-    expect(getStoredDateFormat()).toBe('dmy')
+  it('falls back to regional date format when storage is empty', () => {
+    vi.spyOn(Intl.DateTimeFormat.prototype, 'formatToParts').mockReturnValue(
+      [
+        { type: 'month', value: '11' },
+        { type: 'literal', value: '/' },
+        { type: 'day', value: '23' },
+        { type: 'literal', value: '/' },
+        { type: 'year', value: '2001' },
+      ] as Intl.DateTimeFormatPart[],
+    )
+
+    expect(getStoredDateFormat()).toBe('mdy')
     expect(getStoredTheme()).toBe('dark')
     expect(getStoredProfileName()).toBe('')
   })
@@ -31,11 +41,35 @@ describe('settings storage helpers', () => {
   })
 
   it('ignores invalid stored values', () => {
+    vi.spyOn(Intl.DateTimeFormat.prototype, 'formatToParts').mockReturnValue(
+      [
+        { type: 'day', value: '23' },
+        { type: 'literal', value: '/' },
+        { type: 'month', value: '11' },
+        { type: 'literal', value: '/' },
+        { type: 'year', value: '2001' },
+      ] as Intl.DateTimeFormatPart[],
+    )
+
     window.localStorage.setItem(STORAGE_KEYS.DATE_FORMAT, 'invalid')
     window.localStorage.setItem(STORAGE_KEYS.THEME, 'invalid')
 
     expect(getStoredDateFormat()).toBe('dmy')
     expect(getStoredTheme()).toBe('dark')
+  })
+
+  it('detects year-month-day locale ordering', () => {
+    vi.spyOn(Intl.DateTimeFormat.prototype, 'formatToParts').mockReturnValue(
+      [
+        { type: 'year', value: '2001' },
+        { type: 'literal', value: '/' },
+        { type: 'month', value: '11' },
+        { type: 'literal', value: '/' },
+        { type: 'day', value: '23' },
+      ] as Intl.DateTimeFormatPart[],
+    )
+
+    expect(getStoredDateFormat()).toBe('ymd')
   })
 
   it('handles storage failures safely', () => {

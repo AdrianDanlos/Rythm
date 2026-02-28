@@ -30,12 +30,42 @@ const writeStorage = (key: string, value: string) => {
   }
 }
 
+const detectRegionalDateFormat = (): DateFormatPreference => {
+  if (typeof navigator === 'undefined') return 'dmy'
+  const locale = navigator.languages?.[0] ?? navigator.language
+  if (!locale) return 'dmy'
+
+  try {
+    const formatter = new Intl.DateTimeFormat(locale, {
+      timeZone: 'UTC',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    })
+    const parts = formatter.formatToParts(new Date(Date.UTC(2001, 10, 23)))
+    const dayIndex = parts.findIndex(part => part.type === 'day')
+    const monthIndex = parts.findIndex(part => part.type === 'month')
+    const yearIndex = parts.findIndex(part => part.type === 'year')
+
+    if (monthIndex >= 0 && dayIndex >= 0 && yearIndex >= 0) {
+      if (yearIndex < monthIndex && monthIndex < dayIndex) return 'ymd'
+      if (monthIndex < dayIndex && dayIndex < yearIndex) return 'mdy'
+      return 'dmy'
+    }
+  }
+  catch {
+    // Fall back to dmy when locale detection is unavailable.
+  }
+
+  return 'dmy'
+}
+
 export const getStoredDateFormat = (): DateFormatPreference => {
   const value = readStorage(STORAGE_KEYS.DATE_FORMAT)
   if (value === 'dmy' || value === 'ymd' || value === 'mdy') {
     return value
   }
-  return 'dmy'
+  return detectRegionalDateFormat()
 }
 
 export const setStoredDateFormat = (value: DateFormatPreference) => {
