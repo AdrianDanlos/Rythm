@@ -41,7 +41,7 @@ export function useSettingsSync(session: Session | null) {
     const darkButtons = theme !== 'dark'
 
     void (async () => {
-      await StatusBar.setOverlaysWebView({ overlay: false })
+      await StatusBar.setOverlaysWebView({ overlay: true })
       await StatusBar.setBackgroundColor({ color: backgroundColor })
       await StatusBar.setStyle({ style })
       await NavigationBar.setNavigationBarColor({
