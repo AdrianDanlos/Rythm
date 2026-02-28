@@ -204,8 +204,8 @@ export const InsightsStats = ({
                     </p>
                   </div>
                   <div className="stat-tile">
-                    <p className="label">{t('insights.sleepConsistency')}</p>
-                    <p className="value">{sleepConsistencyLabel ?? '—'}</p>
+                    <p className="label">{t('insights.consistency')}</p>
+                    <p className="value">{sleepConsistencyLabel ? t(`insights.sleepConsistencyLevels.${sleepConsistencyLabel}`) : '—'}</p>
                     <p className="helper">
                       {sleepConsistencyLabel
                         ? t('insights.sleepConsistencyHelper')

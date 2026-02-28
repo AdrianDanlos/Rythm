@@ -13,6 +13,7 @@ import { calculateAverages } from './utils/averages'
 import { getCorrelationInsight } from './utils/correlation'
 import { getTieredBadges } from './utils/tieredBadges'
 import { getSleepConsistencyLabel } from './utils/sleepConsistency'
+import type { SleepConsistencyLevel } from './utils/sleepConsistency'
 import { buildTagDrivers, buildTagSleepDrivers } from './utils/tagInsights'
 
 export type StatCounts = {
@@ -34,7 +35,7 @@ export type StatsResult = {
   statCounts: StatCounts
   rhythmScore: number | null
   streak: number
-  sleepConsistencyLabel: string | null
+  sleepConsistencyLabel: SleepConsistencyLevel | null
   sleepConsistencyBadges: Badge[]
   correlationLabel: string | null
   correlationDirection: string | null

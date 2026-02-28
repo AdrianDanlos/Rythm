@@ -145,7 +145,7 @@ export const renderLast30DaysSection = ({
     t('reports.entriesLogged', { count: recentEntries.length }),
     t('reports.averageSleep', { value: avgSleep !== null ? formatSleepHours(avgSleep) : '—' }),
     t('reports.averageMood', { value: avgMood !== null ? avgMood.toFixed(1) : '—' }),
-    t('reports.sleepConsistency', { value: monthlyConsistency ?? '—' }),
+    t('reports.sleepConsistency', { value: monthlyConsistency ? t(`insights.sleepConsistencyLevels.${monthlyConsistency}`) : '—' }),
     t('reports.sleepMoodLink', { value: monthlyCorrelation ?? '—' }),
   ])
 
@@ -287,7 +287,7 @@ export const renderAllTimeSection = ({
     t('reports.entriesLogged', { count: entries.length }),
     t('reports.averageSleep', { value: allTimeAvgSleep !== null ? formatSleepHours(allTimeAvgSleep) : '—' }),
     t('reports.averageMood', { value: allTimeAvgMood !== null ? allTimeAvgMood.toFixed(1) : '—' }),
-    t('reports.sleepConsistency', { value: stats.sleepConsistencyLabel ?? '—' }),
+    t('reports.sleepConsistency', { value: stats.sleepConsistencyLabel ? t(`insights.sleepConsistencyLevels.${stats.sleepConsistencyLabel}`) : '—' }),
     t('reports.sleepMoodLink', { value: stats.correlationLabel ?? '—' }),
   ])
 

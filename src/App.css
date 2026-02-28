@@ -1310,10 +1310,14 @@
 
 .stat-block--mood .stat-ring {
   --stat-ring-color: var(--chart-mood);
+  width: 160px;
+  height: 160px;
 }
 
 .stat-block--sleep .stat-ring {
   --stat-ring-color: var(--chart-sleep-bar, var(--chart-sleep));
+  width: 160px;
+  height: 160px;
 }
 
 .stat-ring::before {
@@ -2822,6 +2826,12 @@ button.toggle-group__btn--disabled:disabled {
   .stat-ring {
     width: 124px;
     height: 124px;
+  }
+
+  .stat-block--mood .stat-ring,
+  .stat-block--sleep .stat-ring {
+    width: 132px;
+    height: 132px;
   }
 
   .mood-distribution {

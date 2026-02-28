@@ -2,6 +2,7 @@ import type { Entry } from '../entries'
 import { calculateAverages } from '../utils/averages'
 import { getCorrelationInsight } from '../utils/correlation'
 import { getSleepConsistencyLabel } from '../utils/sleepConsistency'
+import type { SleepConsistencyLevel } from '../utils/sleepConsistency'
 import { buildTagDrivers, buildTagInsights, buildTagSleepDrivers } from '../utils/tagInsights'
 import { formatLongDate } from '../utils/dateFormatters'
 
@@ -28,7 +29,7 @@ export type MoodDip = {
 export type ReportData = {
   recentEntries: Entry[]
   priorEntries: Entry[]
-  monthlyConsistency: string | null
+  monthlyConsistency: SleepConsistencyLevel | null
   monthlyCorrelation: string | null
   monthlyTags: ReturnType<typeof buildTagInsights>
   allTimeTags: ReturnType<typeof buildTagInsights>
