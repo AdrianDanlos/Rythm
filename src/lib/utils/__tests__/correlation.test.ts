@@ -39,6 +39,7 @@ describe('getCorrelationInsight', () => {
       makeEntry(7, 4),
       makeEntry(8, 5),
       makeEntry(9, 6),
+      makeEntry(10, 7),
     ]
     expect(getCorrelationInsight(entries)).toEqual({
       label: 'Strong',
@@ -52,6 +53,7 @@ describe('getCorrelationInsight', () => {
       makeEntry(7, 6),
       makeEntry(8, 5),
       makeEntry(9, 4),
+      makeEntry(10, 3),
     ]
     expect(getCorrelationInsight(entries)).toEqual({
       label: 'Strong',
@@ -66,6 +68,8 @@ describe('getCorrelationInsight', () => {
       makeEntry(8, null),
       makeEntry(null, 5),
       makeEntry(9, 6),
+      makeEntry(10, 7),
+      makeEntry(11, 8),
     ]
     expect(getCorrelationInsight(entries)).toEqual({
       label: 'Strong',
