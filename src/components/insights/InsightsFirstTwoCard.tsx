@@ -42,7 +42,6 @@ export const InsightsFirstTwoCard = ({ entries, goToLog }: InsightsFirstTwoCardP
         <p className="eyebrow">{t('insights.firstSummary')}</p>
         <h2>{t('insights.oneMoreDayToUnlock')}</h2>
       </div>
-      <p className="insights-first-five-card__data-label">{t('insights.yourFirstDay')}</p>
       {hasAnyData && (
         <div className="insights-first-five-card__data-row" role="list" aria-label={t('insights.firstDaySummaryAria')}>
           {hasSleep && (
