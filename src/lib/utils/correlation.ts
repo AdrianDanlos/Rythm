@@ -1,8 +1,19 @@
 import type { Entry } from '../entries'
 
+export type CorrelationLevel =
+  | 'notClear'
+  | 'weak'
+  | 'moderate'
+  | 'strong'
+
+export type CorrelationDirection =
+  | 'higherSleepBetterMood'
+  | 'higherSleepLowerMood'
+  | 'noClearDirection'
+
 type CorrelationInsight = {
-  label: string | null
-  direction: string | null
+  label: CorrelationLevel | null
+  direction: CorrelationDirection | null
 }
 
 export const getCorrelationInsight = (entries: Entry[]): CorrelationInsight => {
@@ -43,19 +54,19 @@ export const getCorrelationInsight = (entries: Entry[]): CorrelationInsight => {
   const magnitude = Math.abs(correlation)
   const label
     = magnitude < 0.2
-      ? 'Not clear'
+      ? 'notClear'
       : magnitude < 0.4
-        ? 'Weak'
+        ? 'weak'
         : magnitude < 0.7
-          ? 'Moderate'
-          : 'Strong'
+          ? 'moderate'
+          : 'strong'
 
   const direction
     = correlation > 0.05
-      ? 'Higher sleep, better mood'
+      ? 'higherSleepBetterMood'
       : correlation < -0.05
-        ? 'Higher sleep, lower mood'
-        : 'No clear direction'
+        ? 'higherSleepLowerMood'
+        : 'noClearDirection'
 
   return { label, direction }
 }

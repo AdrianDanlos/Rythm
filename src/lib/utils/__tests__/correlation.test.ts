@@ -42,8 +42,8 @@ describe('getCorrelationInsight', () => {
       makeEntry(10, 7),
     ]
     expect(getCorrelationInsight(entries)).toEqual({
-      label: 'Strong',
-      direction: 'Higher sleep, better mood',
+      label: 'strong',
+      direction: 'higherSleepBetterMood',
     })
   })
 
@@ -56,8 +56,8 @@ describe('getCorrelationInsight', () => {
       makeEntry(10, 3),
     ]
     expect(getCorrelationInsight(entries)).toEqual({
-      label: 'Strong',
-      direction: 'Higher sleep, lower mood',
+      label: 'strong',
+      direction: 'higherSleepLowerMood',
     })
   })
 
@@ -72,8 +72,8 @@ describe('getCorrelationInsight', () => {
       makeEntry(11, 8),
     ]
     expect(getCorrelationInsight(entries)).toEqual({
-      label: 'Strong',
-      direction: 'Higher sleep, better mood',
+      label: 'strong',
+      direction: 'higherSleepBetterMood',
     })
   })
 })

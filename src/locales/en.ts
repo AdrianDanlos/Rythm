@@ -313,6 +313,17 @@ const en = {
     },
     sleepConsistencyHelper: 'How steady your sleep hours are (all time)',
     sleepMoodLink: 'Sleep–mood link',
+    correlationLevels: {
+      notClear: 'Not clear',
+      weak: 'Weak',
+      moderate: 'Moderate',
+      strong: 'Strong',
+    },
+    correlationDirections: {
+      higherSleepBetterMood: 'Higher sleep, better mood',
+      higherSleepLowerMood: 'Higher sleep, lower mood',
+      noClearDirection: 'No clear direction',
+    },
     correlationStrength: 'Correlation strength',
     logDifferentDaysForLink: 'Log more days with different sleep or mood to see a link.',
     moodBySleepTitle: 'Mood · {{threshold}} sleep',

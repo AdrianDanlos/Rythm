@@ -214,9 +214,9 @@ export const InsightsStats = ({
                   </div>
                   <div className="stat-tile">
                     <p className="label">{t('insights.sleepMoodLink')}</p>
-                    <p className="value">{correlationLabel ?? '—'}</p>
+                    <p className="value">{correlationLabel ? t(`insights.correlationLevels.${correlationLabel}`) : '—'}</p>
                     {correlationDirection
-                      ? <p className="helper">{correlationDirection}</p>
+                      ? <p className="helper">{t(`insights.correlationDirections.${correlationDirection}`)}</p>
                       : (
                           <p className="helper">
                             {correlationLabel
