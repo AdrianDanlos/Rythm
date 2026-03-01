@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { exportMonthlyReport } from './lib/reports'
 import { exportEntriesCsv } from './lib/utils/csvExport'
@@ -29,15 +30,47 @@ import {
   isDeleteAccountPage,
   isStripeReturn,
 } from './billing/stripe/routes'
+import {
+  AppPage,
+  getInsightsSectionForPage,
+  getPageFromPathname,
+  getPathForPage,
+  getTabForPage,
+} from './lib/appTabs'
 import { moodColors } from './lib/colors'
 import { STORAGE_KEYS } from './lib/storageKeys'
 import { Toaster } from 'sonner'
 import './App.css'
 
+function getReturningUserStorageKey(userId: string): string {
+  return `${STORAGE_KEYS.RETURNING_USER}:${userId}`
+}
+
+function isReturningUser(userId?: string): boolean {
+  if (!userId) {
+    return false
+  }
+
+  try {
+    return window.localStorage.getItem(getReturningUserStorageKey(userId)) === 'true'
+  }
+  catch {
+    return false
+  }
+}
+
+function getDefaultPageForUser(userId?: string): AppPage {
+  return isReturningUser(userId) ? AppPage.Summary : AppPage.Log
+}
+
 function App() {
   const { t } = useTranslation()
-  const showPrivacyPage = isPrivacyPage()
-  const showDeleteAccountPage = isDeleteAccountPage()
+  const location = useLocation()
+  const navigate = useNavigate()
+  const pathname = location.pathname
+  const showPrivacyPage = isPrivacyPage(pathname)
+  const showDeleteAccountPage = isDeleteAccountPage(pathname)
+  const showStripeReturnPage = isStripeReturn(pathname)
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
   const [authEmail, setAuthEmail] = useState('')
   const [authPassword, setAuthPassword] = useState('')
@@ -69,13 +102,22 @@ function App() {
   }, [])
   const today = useMemo(() => formatLocalDate(todayDate), [todayDate])
 
-  const shell = useAppShell()
+  const userId = session?.user?.id
+  const activePage = getPageFromPathname(pathname) ?? getDefaultPageForUser(userId)
+  const activeTab = getTabForPage(activePage)
+  const activeInsightsTab = getInsightsSectionForPage(activePage)
+  const navigateToPage = useCallback(
+    (page: AppPage, options?: { replace?: boolean }) => {
+      const targetPath = getPathForPage(page)
+      if (pathname === targetPath) {
+        return
+      }
+      navigate(targetPath, { replace: options?.replace ?? false })
+    },
+    [pathname, navigate],
+  )
+  const shell = useAppShell({ activeTab, onNavigateToPage: navigateToPage })
   const {
-    activeTab,
-    activeInsightsTab,
-    navigateToPage,
-    canGoBackInApp,
-    goBackInApp,
     isStreakOpen,
     isPaywallOpen,
     isFeedbackOpen,
@@ -90,6 +132,28 @@ function App() {
     openPaywall,
     goToInsightsSummary,
   } = shell
+  const pageHistoryRef = useRef<AppPage[]>([activePage])
+  const suppressNextHistoryEntryRef = useRef(false)
+  const [canGoBackInApp, setCanGoBackInApp] = useState(false)
+
+  const goBackInApp = useCallback(() => {
+    const history = pageHistoryRef.current
+    if (history.length <= 1) {
+      return false
+    }
+
+    const nextHistory = history.slice(0, -1)
+    const targetPage = nextHistory[nextHistory.length - 1]
+    if (!targetPage) {
+      return false
+    }
+
+    pageHistoryRef.current = nextHistory
+    setCanGoBackInApp(nextHistory.length > 1)
+    suppressNextHistoryEntryRef.current = true
+    navigateToPage(targetPage, { replace: true })
+    return true
+  }, [navigateToPage])
 
   const billing = useBillingState(session)
   const {
@@ -164,13 +228,16 @@ function App() {
     onEntrySavedForToday: goToInsightsSummary,
   })
 
-  const runSaveBeforeLeavingTab = () =>
-    saveLogWhenLeaving(() =>
-      void handleSave(
-        { preventDefault: () => {} } as FormEvent<HTMLFormElement>,
-        { silent: true },
+  const runSaveBeforeLeavingTab = useCallback(
+    () =>
+      saveLogWhenLeaving(() =>
+        void handleSave(
+          { preventDefault: () => {} } as FormEvent<HTMLFormElement>,
+          { silent: true },
+        ),
       ),
-    )
+    [saveLogWhenLeaving, handleSave],
+  )
 
   const handleEntryDateChange = (newDateStr: string) => {
     if (newDateStr !== formatLocalDate(selectedDate)) {
@@ -284,16 +351,69 @@ function App() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-  }, [activeTab, activeInsightsTab])
+  }, [activePage])
 
   useEffect(() => {
-    const path = window.location.pathname
-    if (!isStripeReturn(path)) return
-    if (path === ROUTES.stripeSuccess) {
+    if (!showStripeReturnPage) return
+    if (pathname === ROUTES.stripeSuccess) {
       void refreshSession()
     }
-    window.history.replaceState({}, '', '/')
-  }, [refreshSession])
+    navigate(getPathForPage(getDefaultPageForUser(userId)), { replace: true })
+  }, [showStripeReturnPage, pathname, refreshSession, navigate, userId])
+
+  useEffect(() => {
+    if (showPrivacyPage || showDeleteAccountPage || showStripeReturnPage) return
+
+    if (pathname === '/') {
+      navigate(getPathForPage(getDefaultPageForUser(userId)), { replace: true })
+      return
+    }
+
+    if (!getPageFromPathname(pathname)) {
+      navigate(getPathForPage(getDefaultPageForUser(userId)), { replace: true })
+    }
+  }, [
+    showPrivacyPage,
+    showDeleteAccountPage,
+    showStripeReturnPage,
+    pathname,
+    navigate,
+    userId,
+  ])
+
+  useEffect(() => {
+    if (!userId || showPrivacyPage || showDeleteAccountPage || showStripeReturnPage) {
+      return
+    }
+
+    const routedPage = getPageFromPathname(pathname)
+    if (!routedPage || routedPage === AppPage.Log) {
+      return
+    }
+
+    if (!isReturningUser(userId)) {
+      navigate(getPathForPage(AppPage.Log), { replace: true })
+    }
+  }, [userId, showPrivacyPage, showDeleteAccountPage, showStripeReturnPage, pathname, navigate])
+
+  useEffect(() => {
+    if (!getPageFromPathname(pathname)) {
+      return
+    }
+
+    if (suppressNextHistoryEntryRef.current) {
+      suppressNextHistoryEntryRef.current = false
+      return
+    }
+
+    const history = pageHistoryRef.current
+    if (history[history.length - 1] === activePage) {
+      return
+    }
+
+    pageHistoryRef.current = [...history, activePage]
+    setCanGoBackInApp(pageHistoryRef.current.length > 1)
+  }, [pathname, activePage])
 
   const restoredForUserIdRef = useRef<string | null>(null)
   useEffect(() => {
@@ -311,14 +431,14 @@ function App() {
   }, [entries.length, exportError])
 
   useEffect(() => {
-    if (entriesLoading || entries.length === 0) return
+    if (entriesLoading || entries.length === 0 || !userId) return
     try {
-      window.localStorage.setItem(STORAGE_KEYS.RETURNING_USER, 'true')
+      window.localStorage.setItem(`${STORAGE_KEYS.RETURNING_USER}:${userId}`, 'true')
     }
     catch {
       // Ignore storage write failures.
     }
-  }, [entriesLoading, entries.length])
+  }, [entriesLoading, entries.length, userId])
 
   const handleSignOut = async () => {
     if (isSignOutLoading) return

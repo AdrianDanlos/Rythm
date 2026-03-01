@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
 import { t } from 'i18next'
 import './index.css'
 import './i18n'
@@ -30,7 +31,9 @@ createRoot(document.getElementById('root')!).render(
         </div>
       )}
     >
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </Sentry.ErrorBoundary>
   </StrictMode>,
 )

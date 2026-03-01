@@ -1,31 +1,16 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
-import { STORAGE_KEYS } from '../lib/storageKeys'
-import {
-  AppPage,
-  Tabs,
-  getAppPage,
-  getInsightsSectionForPage,
-  type TabKey,
-  type InsightsSection,
-} from '../lib/appTabs'
+import { useState, useCallback } from 'react'
+import { AppPage, Tabs, type TabKey } from '../lib/appTabs'
 
-export function useAppShell() {
-  const [activeTab, setActiveTab] = useState<TabKey>(() =>
-    typeof window !== 'undefined' &&
-    window.localStorage.getItem(STORAGE_KEYS.RETURNING_USER) === 'true'
-      ? Tabs.Insights
-      : Tabs.Log,
-  )
-  const [activeInsightsTab, setActiveInsightsTab] =
-    useState<InsightsSection>(Tabs.Summary)
+type UseAppShellParams = {
+  activeTab: TabKey
+  onNavigateToPage: (page: AppPage, options?: { replace?: boolean }) => void
+}
+
+export function useAppShell({ activeTab, onNavigateToPage }: UseAppShellParams) {
   const [isStreakOpen, setIsStreakOpen] = useState(false)
   const [isPaywallOpen, setIsPaywallOpen] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-  const initialPage = getAppPage(activeTab, activeInsightsTab)
-  const pageHistoryRef = useRef<AppPage[]>([initialPage])
-  const suppressNextHistoryEntryRef = useRef(false)
-  const [canGoBackInApp, setCanGoBackInApp] = useState(false)
 
   const saveLogWhenLeaving = useCallback((handleSave: () => void) => {
     if (activeTab === Tabs.Log) {
@@ -33,66 +18,7 @@ export function useAppShell() {
     }
   }, [activeTab])
 
-  const applyPage = useCallback((page: AppPage) => {
-    if (page === AppPage.Log) {
-      setActiveTab(Tabs.Log)
-      return
-    }
-
-    setActiveTab(Tabs.Insights)
-    setActiveInsightsTab(getInsightsSectionForPage(page))
-  }, [])
-
-  const recordPageVisit = useCallback((page: AppPage) => {
-    const history = pageHistoryRef.current
-    if (history[history.length - 1] === page) {
-      return
-    }
-    pageHistoryRef.current = [...history, page]
-    setCanGoBackInApp(pageHistoryRef.current.length > 1)
-  }, [])
-
-  const navigateToPage = useCallback((page: AppPage) => {
-    applyPage(page)
-  }, [applyPage])
-
-  const goBackInApp = useCallback(() => {
-    const history = pageHistoryRef.current
-    if (history.length <= 1) {
-      return false
-    }
-
-    const nextHistory = history.slice(0, -1)
-    const targetPage = nextHistory[nextHistory.length - 1]
-    if (!targetPage) {
-      return false
-    }
-
-    pageHistoryRef.current = nextHistory
-    setCanGoBackInApp(nextHistory.length > 1)
-    suppressNextHistoryEntryRef.current = true
-    applyPage(targetPage)
-    return true
-  }, [applyPage])
-
-  useEffect(() => {
-    const currentPage = getAppPage(activeTab, activeInsightsTab)
-    if (suppressNextHistoryEntryRef.current) {
-      suppressNextHistoryEntryRef.current = false
-      return
-    }
-    recordPageVisit(currentPage)
-  }, [activeTab, activeInsightsTab, recordPageVisit])
-
   return {
-    activeTab,
-    setActiveTab,
-    activeInsightsTab,
-    setActiveInsightsTab,
-    navigateToPage,
-    canGoBackInApp,
-    goBackInApp,
-    recordPageVisit,
     isStreakOpen,
     setIsStreakOpen,
     isPaywallOpen,
@@ -110,7 +36,7 @@ export function useAppShell() {
     openSettings: () => setIsSettingsOpen(true),
     closeSettings: () => setIsSettingsOpen(false),
     goToInsightsSummary: () => {
-      navigateToPage(AppPage.Summary)
+      onNavigateToPage(AppPage.Summary)
     },
   }
 }
