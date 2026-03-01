@@ -42,7 +42,7 @@ export const renderReportHeader = ({
   const logoHeight = 10
   const logoWidth = (100 / 34) * logoHeight
   const eyebrowBaseline = 5
-  const gap = 2
+  const gap = 5
   const logoY = eyebrowBaseline + gap
   const bannerHeight = logoY + logoHeight + 4
   const bannerY = 0
@@ -178,9 +178,9 @@ export const renderLast30DaysSection = ({
       yRef,
       weeklySummaries.map(
         week =>
-          `${week.label} · Sleep ${
+          `${week.label} · ${t('common.sleep')} ${
             week.avgSleep !== null ? formatSleepHours(week.avgSleep) : '—'
-          } · Mood ${week.avgMood !== null ? week.avgMood.toFixed(1) : '—'}`,
+          } · ${t('common.mood')} ${week.avgMood !== null ? week.avgMood.toFixed(1) : '—'}`,
       ),
       18,
     )
