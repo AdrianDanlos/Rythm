@@ -161,7 +161,7 @@ export const InsightsDailyHistory = ({
               setTrendRange('last30')
             })}
           >
-            {t('insights.last30Days')}
+            {t('insights.scatterRange30Days')}
           </button>
           {show90
             ? (
@@ -172,13 +172,13 @@ export const InsightsDailyHistory = ({
                     setTrendRange('last90')
                   })}
                 >
-                  {t('insights.last90Days')}
+                  {t('insights.scatterRange90Days')}
                 </button>
               )
             : (
                 <Tooltip label={t('insights.logDaysToSee90', { count: DAILY_HISTORY_THRESHOLD_90 })}>
                   <span className="ghost toggle-group__btn--disabled">
-                    {t('insights.last90Days')}
+                    {t('insights.scatterRange90Days')}
                   </span>
                 </Tooltip>
               )}

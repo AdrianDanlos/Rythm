@@ -259,7 +259,7 @@ export const InsightsScatter = ({
               className={`ghost ${scatterRange === 'last30' ? 'active' : ''}`}
               onClick={() => handleRangeChange('last30')}
             >
-              {t('insights.last30Days')}
+              {t('insights.scatterRange30Days')}
             </button>
             {!isPro || !show90Range
               ? (
@@ -272,7 +272,7 @@ export const InsightsScatter = ({
                         aria-disabled="true"
                         style={{ pointerEvents: 'none' }}
                       >
-                        {t('insights.last90Days')}
+                        {t('insights.scatterRange90Days')}
                       </button>
                     </span>
                   </Tooltip>
@@ -283,7 +283,7 @@ export const InsightsScatter = ({
                     className={`ghost ${scatterRange === 'last90' ? 'active' : ''}`}
                     onClick={() => handleRangeChange('last90')}
                   >
-                    {t('insights.last90Days')}
+                    {t('insights.scatterRange90Days')}
                   </button>
                 )}
             {!isPro || !showAllRange

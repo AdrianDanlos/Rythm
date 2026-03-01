@@ -154,6 +154,7 @@ export const InsightsCalendarHeatmap = ({
   }, [weeks])
   const gapSize = 2
   const legendColors = metric === 'mood' ? moodColors : sleepHeatmapColors
+  const metricLabel = metric === 'mood' ? t('common.mood') : t('common.sleep')
   const monthLabels = useMemo(() => {
     const formatter = new Intl.DateTimeFormat(dateLocale, { month: 'short' })
     const monthTotals = new Map<string, number>()
@@ -244,7 +245,7 @@ export const InsightsCalendarHeatmap = ({
             {t('insights.heatmap')}
           </h2>
           <p className="muted">
-            {t('insights.dailyMetricLastDays', { metric, days: totalDays })}
+            {t('insights.dailyMetricLastDays', { metric: metricLabel, days: totalDays })}
           </p>
         </div>
         <div className="toggle-group">

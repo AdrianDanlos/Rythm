@@ -64,8 +64,9 @@ export const InsightsMonthlyCalendar = ({
   isMobile,
   entriesLoading,
 }: InsightsMonthlyCalendarProps) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const dateLocale = getDateLocale()
+  const monthLocale = i18n.resolvedLanguage ?? i18n.language ?? dateLocale
   const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()))
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
@@ -82,10 +83,10 @@ export const InsightsMonthlyCalendar = ({
     [visibleMonth, entriesByDate],
   )
 
-  const monthLabel = useMemo(
-    () => new Intl.DateTimeFormat(dateLocale, { month: 'long', year: 'numeric' }).format(visibleMonth),
-    [dateLocale, visibleMonth],
-  )
+  const monthLabel = useMemo(() => {
+    const label = new Intl.DateTimeFormat(monthLocale, { month: 'long', year: 'numeric' }).format(visibleMonth)
+    return label.charAt(0).toUpperCase() + label.slice(1)
+  }, [monthLocale, visibleMonth])
 
   const monthHasEntries = useMemo(
     () => monthDays.some(day => day.inCurrentMonth && day.entry),
@@ -108,7 +109,7 @@ export const InsightsMonthlyCalendar = ({
             aria-label={t('insights.previousMonth')}
             onClick={() => setVisibleMonth(current => new Date(current.getFullYear(), current.getMonth() - 1, 1))}
           >
-            {t('insights.prev')}
+            {'\u2190'}
           </button>
           <button
             type="button"
@@ -123,7 +124,7 @@ export const InsightsMonthlyCalendar = ({
             aria-label={t('insights.nextMonth')}
             onClick={() => setVisibleMonth(current => new Date(current.getFullYear(), current.getMonth() + 1, 1))}
           >
-            {t('insights.next')}
+            {'\u2192'}
           </button>
         </div>
       </div>
