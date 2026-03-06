@@ -6,19 +6,19 @@ import { getSupportMessage } from '../lib/supportMessage'
 import { buildStats, type StatsResult } from '../lib/stats'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 
-const DEFAULT_TAG_SUGGESTIONS = [
-  'Caffeine',
-  'Stress',
-  'Late intake',
-  'Evening screens',
-  'Late bedtime',
-  'Exercise',
-  'Fragmented sleep',
-  'Alcohol intake',
-  'Progress',
-  'Social',
-  'Sunlight',
-]
+const DEFAULT_TAG_SUGGESTION_KEYS = [
+  'log.defaultTags.caffeine',
+  'log.defaultTags.stress',
+  'log.defaultTags.lateEating',
+  'log.defaultTags.eveningScreens',
+  'log.defaultTags.lateBedtime',
+  'log.defaultTags.exercise',
+  'log.defaultTags.fragmentedSleep',
+  'log.defaultTags.alcoholConsumption',
+  'log.defaultTags.progressFeeling',
+  'log.defaultTags.social',
+  'log.defaultTags.sunlight',
+] as const
 
 /** Once the user has this many unique tags in their entries, we stop showing default suggestions. */
 const SUGGEST_DEFAULTS_UNTIL_USER_TAG_COUNT = 5
@@ -90,7 +90,9 @@ export const useLogForm = ({
       return suggestions
     }
 
-    const defaultsLower = DEFAULT_TAG_SUGGESTIONS.map(t => t.trim().toLowerCase())
+    const defaultsLower = DEFAULT_TAG_SUGGESTION_KEYS.map(key =>
+      t(key).trim().toLowerCase(),
+    )
     const seen = new Set<string>(defaultsLower)
     const suggestions = [...defaultsLower]
     sorted.forEach((entry) => {
