@@ -12,6 +12,7 @@ Example `.env.production`:
 ```
 VITE_SUPABASE_URL=https://<project>.supabase.co
 VITE_SUPABASE_ANON_KEY=<prod_anon_key>
+VITE_ANDROID_UPDATE_MANIFEST_URL=https://rythm-one.vercel.app/app-version.json
 ```
 
 - `VITE_SUPABASE_URL`: Supabase project URL.
@@ -20,6 +21,9 @@ VITE_SUPABASE_ANON_KEY=<prod_anon_key>
 - `VITE_SUPABASE_ANON_KEY`: Supabase anon key.
   - Dev: local anon key from `npx supabase start` output or `supabase/.env`.
   - Prod: hosted Supabase anon key from the project settings.
+- `VITE_ANDROID_UPDATE_MANIFEST_URL`: Public URL for the Android update manifest.
+  - Use: `https://rythm-one.vercel.app/app-version.json`.
+  - Used by the app at runtime to check the latest available Android version.
 - Keep `public/app-version.json` up to date by bumping `androidLatestVersion` every time you publish a new Play Store version.
 
 ##### Edge Functions (Supabase secrets)

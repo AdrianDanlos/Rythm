@@ -10,7 +10,7 @@ type UpdateManifest = {
   androidLatest?: string
 }
 
-const SHOULD_FORCE_SHOW_UPDATE_PROMPT = import.meta.env.DEV
+const SHOULD_FORCE_SHOW_UPDATE_PROMPT = import.meta.env.VITE_FORCE_UPDATE_TOAST === 'true'
 
 function compareVersions(currentVersion: string, latestVersion: string): number {
   const currentParts = currentVersion.split('.').map(part => Number(part) || 0)
@@ -69,7 +69,6 @@ export async function checkForAndroidUpdate() {
       },
       duration: 12000,
     })
-
   }
   catch {
     // Update checks should never disrupt app usage.
