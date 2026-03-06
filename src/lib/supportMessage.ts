@@ -5,7 +5,6 @@ type SupportMessageInput = {
   mood: number | null
   sleepThreshold: number
   tags?: string[]
-  isComplete: boolean
 }
 
 /**
@@ -16,20 +15,15 @@ export function getSupportMessage({
   mood,
   sleepThreshold,
   tags = [],
-  isComplete,
 }: SupportMessageInput): string {
-  if (!isComplete) {
-    if (sleepHours !== null && mood === null) {
-      return t('support.sleepSavedOneMoreTap', 'Sleep saved. One more tap to add mood and you are done — you have got this.')
-    }
-    if (sleepHours === null && mood !== null) {
-      return t('support.moodSavedAddSleep', 'Mood saved. Add sleep when you can and you will have a complete picture.')
-    }
-    return t('support.draftSaved', 'Draft saved. Come back anytime — every little step counts.')
-  }
-
   if (sleepHours === null || mood === null) {
-    return t('support.loggedKeepGoing', 'Logged. You are building a clearer picture of your rhythm — keep going.')
+    if (sleepHours !== null) {
+      return t('support.sleepSavedOneMoreTap')
+    }
+    if (mood !== null) {
+      return t('support.moodSavedAddSleep')
+    }
+    return t('support.draftSaved')
   }
 
   const shortSleep = sleepHours < (sleepThreshold - 1)
@@ -38,23 +32,23 @@ export function getSupportMessage({
   const tagSet = new Set(tags.map(t => t.trim().toLowerCase()))
 
   if (shortSleep && goodMood) {
-    return t('support.shortSleepGoodMood', 'Short on sleep but still in good spirits — that is real resilience.')
+    return t('support.shortSleepGoodMood')
   }
   if (shortSleep && !lowMood) {
-    return t('support.shortSleepAware', 'You are aware of your sleep — that is the first step. Tonight is a fresh chance to rest.')
+    return t('support.shortSleepAware')
   }
   if (shortSleep && lowMood) {
-    return t('support.shortSleepLowMood', 'Tough combo today. You showed up and logged it — that takes strength. Tomorrow is a new day.')
+    return t('support.shortSleepLowMood')
   }
   if (!shortSleep && goodMood) {
-    return t('support.greatSleepGoodMood', 'Great sleep and a good mood — you are in a strong place today.')
+    return t('support.greatSleepGoodMood')
   }
   if (!shortSleep && lowMood) {
-    return t('support.restButLowMood', 'You gave your body good rest. Be kind to yourself — some days are just harder.')
+    return t('support.restButLowMood')
   }
   if (tagSet.has('exercise') && goodMood) {
-    return t('support.exerciseGoodMood', 'Exercise and a good mood — you are seeing the connection. Keep it up.')
+    return t('support.exerciseGoodMood')
   }
 
-  return t('support.loggedPatterns', 'Logged. Every entry brings you closer to understanding your patterns.')
+  return t('support.loggedPatterns')
 }

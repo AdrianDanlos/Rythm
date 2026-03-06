@@ -256,7 +256,6 @@ export const useLogForm = ({
             mood,
             sleepThreshold,
             tags: tagList,
-            isComplete,
           }))
         }
       }
