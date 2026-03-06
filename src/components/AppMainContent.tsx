@@ -252,7 +252,7 @@ export function AppMainContent({
                       <div className="card auth-loading" aria-live="polite">
                         <div className="loading-row">
                           <span className="loading-spinner" aria-hidden="true" />
-                          <span className="muted">{t('log.loadingLog')}</span>
+                          <span className="muted">{t('log.loading')}</span>
                         </div>
                       </div>
                     )

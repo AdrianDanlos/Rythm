@@ -1127,6 +1127,7 @@
   font-size: 0.9rem;
   white-space: nowrap;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .window-average-delta--up {
@@ -1332,8 +1333,8 @@
   --stat-progress: 0%;
   --stat-ring-color: var(--chart-sleep);
   --stat-ring-track: color-mix(in srgb, var(--border) 70%, transparent);
-  width: 150px;
-  height: 150px;
+  width: 154px;
+  height: 154px;
   border-radius: 50%;
   background: conic-gradient(
     var(--stat-ring-color) var(--stat-progress),
@@ -1346,14 +1347,14 @@
 
 .stat-block--mood .stat-ring {
   --stat-ring-color: var(--chart-mood);
-  width: 160px;
-  height: 160px;
+  width: 164px;
+  height: 164px;
 }
 
 .stat-block--sleep .stat-ring {
   --stat-ring-color: var(--chart-sleep-bar, var(--chart-sleep));
-  width: 160px;
-  height: 160px;
+  width: 164px;
+  height: 164px;
 }
 
 .stat-ring::before {
@@ -1373,7 +1374,7 @@
   align-items: center;
   gap: 4px;
   text-align: center;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .mood-distribution {
@@ -2378,7 +2379,11 @@ button.toggle-group__btn--disabled:disabled {
 }
 
 .label-nowrap {
-  white-space: nowrap;
+  white-space: pre-line;
+}
+
+.label--pre-line {
+  white-space: pre-line;
 }
 
 .value {
@@ -2861,14 +2866,14 @@ button.toggle-group__btn--disabled:disabled {
   }
 
   .stat-ring {
-    width: 124px;
-    height: 124px;
+    width: 128px;
+    height: 128px;
   }
 
   .stat-block--mood .stat-ring,
   .stat-block--sleep .stat-ring {
-    width: 132px;
-    height: 132px;
+    width: 136px;
+    height: 136px;
   }
 
   .mood-distribution {

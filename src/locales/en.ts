@@ -100,7 +100,7 @@ const en = {
     cta: 'Nice!',
   },
   log: {
-    loadingLog: 'Loading your log...',
+    loading: 'Loading...',
     tip: 'Tip: Best time to log is in the evening or before bed so you can log your daily events. The more you log, the clearer the picture of what helps you feel better.',
     sleepQuestion: 'How much did you sleep?',
     sleepTooltip: 'You can always log your sleep now and come back later to log your mood and activities.',
