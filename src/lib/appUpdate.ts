@@ -4,15 +4,13 @@ import { Capacitor } from '@capacitor/core'
 import { t } from 'i18next'
 import { toast } from 'sonner'
 import { PLAY_STORE_APP_URL } from './constants'
-import { STORAGE_KEYS } from './storageKeys'
 
 type UpdateManifest = {
   androidLatestVersion?: string
   androidLatest?: string
 }
 
-// Temporary testing override: always show update prompt when check runs.
-const FORCE_SHOW_UPDATE_PROMPT_FOR_TESTING = true
+const SHOULD_FORCE_SHOW_UPDATE_PROMPT = import.meta.env.DEV
 
 function compareVersions(currentVersion: string, latestVersion: string): number {
   const currentParts = currentVersion.split('.').map(part => Number(part) || 0)
@@ -39,7 +37,7 @@ async function openPlayStore() {
 
 export async function checkForAndroidUpdate() {
   const isAndroidNative = Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android'
-  if (!FORCE_SHOW_UPDATE_PROMPT_FOR_TESTING && !isAndroidNative) return
+  if (!SHOULD_FORCE_SHOW_UPDATE_PROMPT && !isAndroidNative) return
 
   const manifestUrl = typeof window !== 'undefined'
     ? new URL('/app-version.json', window.location.origin).toString()
@@ -59,12 +57,7 @@ export async function checkForAndroidUpdate() {
       ? (await CapacitorApp.getInfo()).version
       : '0.0.0'
 
-    if (!FORCE_SHOW_UPDATE_PROMPT_FOR_TESTING && compareVersions(installedVersion, latestVersion) >= 0) return
-
-    if (!FORCE_SHOW_UPDATE_PROMPT_FOR_TESTING) {
-      const lastPromptedVersion = window.localStorage.getItem(STORAGE_KEYS.UPDATE_LAST_PROMPTED_VERSION)
-      if (lastPromptedVersion === latestVersion) return
-    }
+    if (!SHOULD_FORCE_SHOW_UPDATE_PROMPT && compareVersions(installedVersion, latestVersion) >= 0) return
 
     toast.message(t('updates.title'), {
       description: t('updates.description', { version: latestVersion }),
@@ -77,9 +70,6 @@ export async function checkForAndroidUpdate() {
       duration: 12000,
     })
 
-    if (!FORCE_SHOW_UPDATE_PROMPT_FOR_TESTING) {
-      window.localStorage.setItem(STORAGE_KEYS.UPDATE_LAST_PROMPTED_VERSION, latestVersion)
-    }
   }
   catch {
     // Update checks should never disrupt app usage.
