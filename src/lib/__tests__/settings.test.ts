@@ -4,6 +4,7 @@ import {
   getStoredDateFormat,
   getStoredProfileName,
   getStoredTheme,
+  getStoredThemePreference,
   setStoredDateFormat,
   setStoredProfileName,
   setStoredTheme,
@@ -12,9 +13,11 @@ import {
 describe('settings storage helpers', () => {
   beforeEach(() => {
     window.localStorage.clear()
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
   })
 
-  it('falls back to regional date format when storage is empty', () => {
+  it('falls back to regional date format and system theme when storage is empty', () => {
     vi.spyOn(Intl.DateTimeFormat.prototype, 'formatToParts').mockReturnValue(
       [
         { type: 'month', value: '11' },
@@ -24,9 +27,23 @@ describe('settings storage helpers', () => {
         { type: 'year', value: '2001' },
       ] as Intl.DateTimeFormatPart[],
     )
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn().mockReturnValue({
+        matches: false,
+        media: '(prefers-color-scheme: dark)',
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+      } as unknown as MediaQueryList),
+    )
 
     expect(getStoredDateFormat()).toBe('mdy')
-    expect(getStoredTheme()).toBe('dark')
+    expect(getStoredThemePreference()).toBeNull()
+    expect(getStoredTheme()).toBe('light')
     expect(getStoredProfileName()).toBe('')
   })
 
@@ -55,7 +72,7 @@ describe('settings storage helpers', () => {
     window.localStorage.setItem(STORAGE_KEYS.THEME, 'invalid')
 
     expect(getStoredDateFormat()).toBe('dmy')
-    expect(getStoredTheme()).toBe('dark')
+    expect(getStoredThemePreference()).toBeNull()
   })
 
   it('detects year-month-day locale ordering', () => {
@@ -78,6 +95,7 @@ describe('settings storage helpers', () => {
         throw new Error('storage failure')
       })
 
+    expect(getStoredThemePreference()).toBeNull()
     expect(getStoredTheme()).toBe('dark')
     getItemSpy.mockRestore()
   })

@@ -10,6 +10,7 @@ import {
   getStoredProfileName,
   getStoredPersonalSleepTarget,
   getStoredTheme,
+  getStoredThemePreference,
   normalizeSleepTarget,
   setStoredDateFormat,
   setStoredLanguage,
@@ -27,6 +28,9 @@ export function useSettingsSync(session: Session | null) {
   )
   const [language, setLanguage] = useState<LanguagePreference>(() => getStoredLanguage())
   const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme())
+  const [hasExplicitThemeChoice, setHasExplicitThemeChoice] = useState(
+    () => getStoredThemePreference() !== null,
+  )
   const [profileName, setProfileName] = useState(() => getStoredProfileName())
   const [sleepTarget, setSleepTarget] = useState(() =>
     getStoredPersonalSleepTarget(),
@@ -35,8 +39,19 @@ export function useSettingsSync(session: Session | null) {
   // Apply theme to DOM and persist
   useEffect(() => {
     document.documentElement.dataset.theme = theme
-    setStoredTheme(theme)
   }, [theme])
+
+  // Follow system appearance until the user explicitly chooses light/dark.
+  useEffect(() => {
+    if (hasExplicitThemeChoice || typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return
+    }
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const applySystemTheme = () => setTheme(mediaQuery.matches ? 'dark' : 'light')
+    applySystemTheme()
+    mediaQuery.addEventListener('change', applySystemTheme)
+    return () => mediaQuery.removeEventListener('change', applySystemTheme)
+  }, [hasExplicitThemeChoice])
 
   useEffect(() => {
     setStoredLanguage(language)
@@ -75,7 +90,9 @@ export function useSettingsSync(session: Session | null) {
   }
 
   const handleThemeChange = (value: ThemePreference) => {
+    setHasExplicitThemeChoice(true)
     setTheme(value)
+    setStoredTheme(value)
   }
 
   const handleLanguageChange = (value: LanguagePreference) => {

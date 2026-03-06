@@ -73,15 +73,31 @@ export const setStoredDateFormat = (value: DateFormatPreference) => {
 }
 
 export const getStoredTheme = (): ThemePreference => {
+  return getStoredThemePreference() ?? detectSystemTheme()
+}
+
+export const getStoredThemePreference = (): ThemePreference | null => {
   const value = readStorage(STORAGE_KEYS.THEME)
   if (value === 'dark' || value === 'light') {
     return value
   }
-  return 'dark'
+  return null
 }
 
 export const setStoredTheme = (value: ThemePreference) => {
   writeStorage(STORAGE_KEYS.THEME, value)
+}
+
+const detectSystemTheme = (): ThemePreference => {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    return 'dark'
+  }
+  try {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+  catch {
+    return 'dark'
+  }
 }
 
 export const getStoredLanguage = (): LanguagePreference => {
