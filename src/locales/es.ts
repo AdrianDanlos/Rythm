@@ -510,7 +510,7 @@ const es = {
       description: '30 días registrados este mes.',
     },
     bounceBack: {
-      title: 'Recuperación',
+      title: 'Remontada',
       description: '2+ días seguidos de buen ánimo después de 2+ días de ánimo bajo.',
     },
   },

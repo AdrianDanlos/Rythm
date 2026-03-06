@@ -3,14 +3,14 @@ import { t } from 'i18next'
 import type { StatCounts } from '../stats'
 import type { RollingSummary, WeekdayAveragePoint, WindowStats } from '../types/stats'
 
-const WEEKDAY_FULL_LABEL: Record<string, string> = {
-  Mon: 'Monday',
-  Tue: 'Tuesday',
-  Wed: 'Wednesday',
-  Thu: 'Thursday',
-  Fri: 'Friday',
-  Sat: 'Saturday',
-  Sun: 'Sunday',
+const WEEKDAY_FULL_LABEL_KEY: Record<string, string> = {
+  Mon: 'analytics.weekdayMonFull',
+  Tue: 'analytics.weekdayTueFull',
+  Wed: 'analytics.weekdayWedFull',
+  Thu: 'analytics.weekdayThuFull',
+  Fri: 'analytics.weekdayFriFull',
+  Sat: 'analytics.weekdaySatFull',
+  Sun: 'analytics.weekdaySunFull',
 }
 
 export type MotivationContext = {
@@ -101,9 +101,8 @@ const MOTIVATION_MESSAGES: MessageDef[] = [
         .filter(d => d.observationCount >= 2 && d.avgSleep != null)
         .sort((a, b) => (b.avgSleep ?? 0) - (a.avgSleep ?? 0))
       const best = withData[0]
-      const dayLabel = best
-        ? WEEKDAY_FULL_LABEL[best.label] ?? best.label
-        : ''
+      const dayLabelKey = best ? WEEKDAY_FULL_LABEL_KEY[best.label] : null
+      const dayLabel = dayLabelKey ? t(dayLabelKey) : (best?.label ?? '')
       return t('motivation.weekdayPattern', { day: dayLabel })
     },
   },
