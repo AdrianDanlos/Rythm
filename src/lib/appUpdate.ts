@@ -39,8 +39,9 @@ export async function checkForAndroidUpdate() {
   const isAndroidNative = Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android'
   if (!SHOULD_FORCE_SHOW_UPDATE_PROMPT && !isAndroidNative) return
 
+  const hostedManifestUrl = import.meta.env.VITE_ANDROID_UPDATE_MANIFEST_URL as string | undefined
   const manifestUrl = typeof window !== 'undefined'
-    ? new URL('/app-version.json', window.location.origin).toString()
+    ? (hostedManifestUrl?.trim() || new URL('/app-version.json', window.location.origin).toString())
     : ''
   if (!manifestUrl) return
 
