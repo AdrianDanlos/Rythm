@@ -224,7 +224,7 @@ const es = {
     logsCount: '{{count}} registros',
     dailyHistory: 'Historial diario',
     dailyHistoryTooltip: '90 días y 365 días se agregan para una mejor visualización.',
-    dailyHistorySubtitle: 'Valores diarios de sueño y ánimo en 30/90/365 días',
+    dailyHistorySubtitle: 'Valores diarios de sueño y ánimo en los últimos 30, 90 y 365 días',
     last365Days: '365 días',
     logDaysToSee90: 'Registra {{count}}+ días para ver historial de 90 días.',
     logDaysToSee365: 'Registra {{count}}+ días para ver historial de 365 días.',
