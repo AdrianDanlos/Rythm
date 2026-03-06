@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { CreditCard, LogOut, Settings } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { AppBrand } from './AppBrand'
@@ -32,6 +33,39 @@ export function AppBottomNav({
   onSignOut,
 }: AppBottomNavProps) {
   const { t } = useTranslation()
+  const lastTouchNavAtMsRef = useRef(0)
+
+  const handleTabInteraction = (navigate: () => void) => ({
+    onTouchEnd: () => {
+      lastTouchNavAtMsRef.current = Date.now()
+      navigate()
+    },
+    onClick: () => {
+      // Mobile browsers may fire a delayed synthetic click after touch.
+      if (Date.now() - lastTouchNavAtMsRef.current < 500) {
+        return
+      }
+      navigate()
+    },
+  })
+
+  const goToSummary = () => {
+    onBeforeLeaveTab()
+    onNavigateToPage(AppPage.Summary)
+  }
+
+  const goToCharts = () => {
+    onBeforeLeaveTab()
+    onNavigateToPage(AppPage.Charts)
+  }
+
+  const goToExport = () => {
+    onBeforeLeaveTab()
+    onNavigateToPage(AppPage.Export)
+  }
+
+  const goToLog = () => onNavigateToPage(AppPage.Log)
+
   return (
     <div className="insights-bottom-nav">
       <AppBrand className="nav-brand" />
@@ -46,10 +80,7 @@ export function AppBottomNav({
                 <button
                   type="button"
                   className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Summary ? 'active' : ''}`}
-                  onClick={() => {
-                    onBeforeLeaveTab()
-                    onNavigateToPage(AppPage.Summary)
-                  }}
+                  {...handleTabInteraction(goToSummary)}
                 >
                   <span className="tab-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -77,10 +108,7 @@ export function AppBottomNav({
                 <button
                   type="button"
                   className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Charts ? 'active' : ''}`}
-                  onClick={() => {
-                    onBeforeLeaveTab()
-                    onNavigateToPage(AppPage.Charts)
-                  }}
+                  {...handleTabInteraction(goToCharts)}
                 >
                   <span className="tab-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -103,10 +131,7 @@ export function AppBottomNav({
                 <button
                   type="button"
                   className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Data ? 'active' : ''}`}
-                  onClick={() => {
-                    onBeforeLeaveTab()
-                    onNavigateToPage(AppPage.Export)
-                  }}
+                  {...handleTabInteraction(goToExport)}
                 >
                   <span className="tab-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -138,7 +163,7 @@ export function AppBottomNav({
                 <button
                   type="button"
                   className={`tab-button ${activeTab === Tabs.Log ? 'active' : ''}`}
-                  onClick={() => onNavigateToPage(AppPage.Log)}
+                  {...handleTabInteraction(goToLog)}
                 >
                   <span className="tab-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
