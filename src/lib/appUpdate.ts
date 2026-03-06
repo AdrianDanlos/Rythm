@@ -11,6 +11,9 @@ type UpdateManifest = {
   androidLatest?: string
 }
 
+// Temporary testing override: always show update prompt when check runs.
+const FORCE_SHOW_UPDATE_PROMPT_FOR_TESTING = true
+
 function compareVersions(currentVersion: string, latestVersion: string): number {
   const currentParts = currentVersion.split('.').map(part => Number(part) || 0)
   const latestParts = latestVersion.split('.').map(part => Number(part) || 0)
@@ -35,7 +38,8 @@ async function openPlayStore() {
 }
 
 export async function checkForAndroidUpdate() {
-  if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') return
+  const isAndroidNative = Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android'
+  if (!FORCE_SHOW_UPDATE_PROMPT_FOR_TESTING && !isAndroidNative) return
 
   const manifestUrl = typeof window !== 'undefined'
     ? new URL('/app-version.json', window.location.origin).toString()
@@ -43,21 +47,24 @@ export async function checkForAndroidUpdate() {
   if (!manifestUrl) return
 
   try {
-    const [{ version: installedVersion }, response] = await Promise.all([
-      CapacitorApp.getInfo(),
-      fetch(manifestUrl, { cache: 'no-store' }),
-    ])
+    const response = await fetch(manifestUrl, { cache: 'no-store' })
 
     if (!response.ok) return
 
     const payload = (await response.json()) as UpdateManifest
-    const latestVersion = (payload.androidLatestVersion ?? payload.androidLatest ?? '').trim()
+    const latestVersion = (payload.androidLatestVersion ?? payload.androidLatest ?? '').trim() || 'test-version'
     if (!latestVersion) return
 
-    if (compareVersions(installedVersion, latestVersion) >= 0) return
+    const installedVersion = isAndroidNative
+      ? (await CapacitorApp.getInfo()).version
+      : '0.0.0'
 
-    const lastPromptedVersion = window.localStorage.getItem(STORAGE_KEYS.UPDATE_LAST_PROMPTED_VERSION)
-    if (lastPromptedVersion === latestVersion) return
+    if (!FORCE_SHOW_UPDATE_PROMPT_FOR_TESTING && compareVersions(installedVersion, latestVersion) >= 0) return
+
+    if (!FORCE_SHOW_UPDATE_PROMPT_FOR_TESTING) {
+      const lastPromptedVersion = window.localStorage.getItem(STORAGE_KEYS.UPDATE_LAST_PROMPTED_VERSION)
+      if (lastPromptedVersion === latestVersion) return
+    }
 
     toast.message(t('updates.title'), {
       description: t('updates.description', { version: latestVersion }),
@@ -70,7 +77,9 @@ export async function checkForAndroidUpdate() {
       duration: 12000,
     })
 
-    window.localStorage.setItem(STORAGE_KEYS.UPDATE_LAST_PROMPTED_VERSION, latestVersion)
+    if (!FORCE_SHOW_UPDATE_PROMPT_FOR_TESTING) {
+      window.localStorage.setItem(STORAGE_KEYS.UPDATE_LAST_PROMPTED_VERSION, latestVersion)
+    }
   }
   catch {
     // Update checks should never disrupt app usage.

@@ -351,9 +351,9 @@ function App() {
   ])
 
   useEffect(() => {
+    void checkForAndroidUpdate()
     if (!isNativeApp || Capacitor.getPlatform() !== 'android') return
 
-    void checkForAndroidUpdate()
     const listenerPromise = CapacitorApp.addListener('appStateChange', ({ isActive }) => {
       if (isActive) {
         void checkForAndroidUpdate()
@@ -646,9 +646,17 @@ function App() {
         : null}
 
       <Toaster
-        className="sonner-close-top-right"
+        className="sonner-close-top-right app-toaster-theme"
         position={isMobile ? 'bottom-center' : 'top-right'}
-        richColors
+        toastOptions={{
+          classNames: {
+            toast: 'app-toast',
+            title: 'app-toast-title',
+            description: 'app-toast-description',
+            actionButton: 'app-toast-action-button',
+            closeButton: 'app-toast-close-button',
+          },
+        }}
         closeButton
       />
     </div>
