@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf'
 import { t } from 'i18next'
-import logo from '../assets/rythm-logo.png'
+import logo from '../assets/rythm-logo-small.png'
 import type { Entry } from './entries'
 import type { StatsResult } from './stats'
 import { exportFile } from './utils/fileExport'

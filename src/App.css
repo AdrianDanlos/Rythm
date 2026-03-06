@@ -51,22 +51,9 @@
 }
 
 .app-logo {
-  width: 110px;
+  width: 36px;
   height: 36px;
-  object-fit: cover;
-}
-
-.app-brand .app-logo-light {
-  display: block;
-}
-.app-brand .app-logo-dark {
-  display: none;
-}
-:root[data-theme="dark"] .app-brand .app-logo-light {
-  display: none;
-}
-:root[data-theme="dark"] .app-brand .app-logo-dark {
-  display: block;
+  object-fit: contain;
 }
 
 .tabs {
@@ -3142,9 +3129,10 @@ button.toggle-group__btn--disabled:disabled {
   }
 
   .nav-brand .app-logo {
-    width: 90px;
+    width: 30px;
     height: 30px;
     border-radius: 8px;
+    object-fit: contain;
   }
 
   .nav-brand h1 {
