@@ -331,7 +331,7 @@ const en = {
       mixed: 'Mixed',
       unstable: 'Unstable',
     },
-    sleepConsistencyHelper: 'How steady your sleep hours are (all time)',
+    sleepConsistencyHelper: 'Sleep stability overall',
     sleepMoodLink: 'Sleep–mood link',
     correlationLevels: {
       notClear: 'Not clear',
@@ -342,7 +342,7 @@ const en = {
     correlationDirections: {
       higherSleepBetterMood: 'Higher sleep, better mood',
       higherSleepLowerMood: 'Higher sleep, lower mood',
-      noClearDirection: 'No clear direction',
+      noClearDirection: 'No clear trend yet',
     },
     correlationStrength: 'Correlation strength',
     logDifferentDaysForLink: 'Log more days with different sleep or mood to see a link.',

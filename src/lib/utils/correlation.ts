@@ -23,7 +23,7 @@ export const getCorrelationInsight = (entries: Entry[]): CorrelationInsight => {
     return Number.isFinite(sleep) && Number.isFinite(mood)
   })
 
-  if (pairedEntries.length < 5) {
+  if (pairedEntries.length < 4) {
     return { label: null, direction: null }
   }
 
@@ -53,18 +53,18 @@ export const getCorrelationInsight = (entries: Entry[]): CorrelationInsight => {
   const correlation = numerator / denominator
   const magnitude = Math.abs(correlation)
   const label
-    = magnitude < 0.2
+    = magnitude < 0.12
       ? 'notClear'
-      : magnitude < 0.4
+      : magnitude < 0.3
         ? 'weak'
-        : magnitude < 0.7
+        : magnitude < 0.55
           ? 'moderate'
           : 'strong'
 
   const direction
-    = correlation > 0.05
+    = correlation > 0.02
       ? 'higherSleepBetterMood'
-      : correlation < -0.05
+      : correlation < -0.02
         ? 'higherSleepLowerMood'
         : 'noClearDirection'
 

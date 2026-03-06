@@ -331,7 +331,7 @@ const es = {
       mixed: 'Mixto',
       unstable: 'Inestable',
     },
-    sleepConsistencyHelper: 'Como de estables son tus horas de sueño (total)',
+    sleepConsistencyHelper: 'Estabilidad de sueño general',
     sleepMoodLink: 'Relación sueño-ánimo',
     correlationLevels: {
       notClear: 'No clara',
@@ -342,7 +342,7 @@ const es = {
     correlationDirections: {
       higherSleepBetterMood: 'Más sueño, mejor ánimo',
       higherSleepLowerMood: 'Más sueño, ánimo más bajo',
-      noClearDirection: 'Sin dirección clara',
+      noClearDirection: 'Sin tendencia clara aún',
     },
     correlationStrength: 'Fuerza de correlación',
     logDifferentDaysForLink: 'Registra más días con sueño o ánimo diferentes para ver una relación.',
