@@ -406,6 +406,11 @@ const en = {
     title: 'Log your day',
     body: 'Add your sleep and mood to keep your streak going.',
   },
+  updates: {
+    title: 'New version available',
+    description: 'Version {{version}} is available. Update now for the latest improvements.',
+    updateNow: 'Update',
+  },
   motivation: {
     streakBuilding: 'You are building a real habit. Every day you log is a vote for yourself.',
     sleepImproving: 'Your sleep is up over the last 7 days. Small changes add up.',

@@ -24,6 +24,7 @@ import { useEntries } from './hooks/useEntries'
 import { useLogForm } from './hooks/useLogForm'
 import { Privacy } from './billing/stripe/Privacy'
 import { DeleteAccountPage } from './billing/stripe/DeleteAccountPage'
+import { checkForAndroidUpdate } from './lib/appUpdate'
 import {
   ROUTES,
   isPrivacyPage,
@@ -348,6 +349,21 @@ function App() {
     runSaveBeforeLeavingTab,
     goBackInApp,
   ])
+
+  useEffect(() => {
+    if (!isNativeApp || Capacitor.getPlatform() !== 'android') return
+
+    void checkForAndroidUpdate()
+    const listenerPromise = CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) {
+        void checkForAndroidUpdate()
+      }
+    })
+
+    return () => {
+      void listenerPromise.then(listener => listener.remove())
+    }
+  }, [isNativeApp])
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })

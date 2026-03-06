@@ -406,6 +406,11 @@ const es = {
     title: 'Registra tu día',
     body: 'Agrega sueño y ánimo para mantener tu racha.',
   },
+  updates: {
+    title: 'Nueva version disponible',
+    description: 'La version {{version}} ya esta disponible. Actualiza ahora para obtener las ultimas mejoras.',
+    updateNow: 'Actualizar',
+  },
   motivation: {
     streakBuilding: 'Estás creando un hábito de verdad. Cada día que registras es un paso hacia ti.',
     sleepImproving: 'Dormiste mejor en los últimos 7 días. Los pequeños cambios se acumulan.',

@@ -20,6 +20,7 @@ VITE_SUPABASE_ANON_KEY=<prod_anon_key>
 - `VITE_SUPABASE_ANON_KEY`: Supabase anon key.
   - Dev: local anon key from `npx supabase start` output or `supabase/.env`.
   - Prod: hosted Supabase anon key from the project settings.
+- Keep `public/app-version.json` up to date by bumping `androidLatestVersion` every time you publish a new Play Store version.
 
 ##### Edge Functions (Supabase secrets)
 
