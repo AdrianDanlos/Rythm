@@ -98,17 +98,68 @@ export const InsightsStats = ({
     label: string,
     window: WindowStats,
   ) => {
-    const value = window.sleep !== null && window.mood !== null
-      ? `${formatSleepHours(window.sleep)} / ${window.mood.toFixed(1)}`
-      : '—'
+    const buildDelta = (value: number | null, avg: number | null) => {
+      if (value === null || avg === null || avg <= 0) {
+        return null
+      }
+
+      return ((value - avg) / avg) * 100
+    }
+
+    const sleepDeltaPercent = buildDelta(window.sleep, averages.sleep)
+    const moodDeltaPercent = buildDelta(window.mood, averages.mood)
+    const sleepDeltaRounded = sleepDeltaPercent !== null ? Math.round(Math.abs(sleepDeltaPercent)) : null
+    const moodDeltaRounded = moodDeltaPercent !== null ? Math.round(Math.abs(moodDeltaPercent)) : null
 
     return (
       <div className="stat-tile">
         <p className="label">{label}</p>
-        <p className="value">{value}</p>
-        <p className="helper">
-          {t('insights.avgSleep')} / {t('insights.avgMood')} · {t('insights.entriesSuffix', { count: window.count })}
-        </p>
+        <div className="window-averages">
+          <div className="window-average-row">
+            <p className="helper">{t('insights.sleepAverage')}</p>
+            <p className="value window-average-value">
+              {window.sleep !== null
+                ? (
+                    <>
+                      <span>{formatSleepHours(window.sleep)}</span>
+                      {sleepDeltaPercent !== null && sleepDeltaRounded !== null && sleepDeltaRounded > 0 && (
+                        <span
+                          className={`window-average-delta ${sleepDeltaPercent >= 0 ? 'window-average-delta--up' : 'window-average-delta--down'}`}
+                        >
+                          {sleepDeltaPercent >= 0
+                            ? <TrendingUp size={16} aria-hidden="true" />
+                            : <TrendingDown size={16} aria-hidden="true" />}
+                          <span>{sleepDeltaRounded}%</span>
+                        </span>
+                      )}
+                    </>
+                  )
+                : '—'}
+            </p>
+          </div>
+          <div className="window-average-row">
+            <p className="helper">{t('insights.moodAverage')}</p>
+            <p className="value window-average-value">
+              {window.mood !== null
+                ? (
+                    <>
+                      <span>{window.mood.toFixed(1)} / 5</span>
+                      {moodDeltaPercent !== null && moodDeltaRounded !== null && moodDeltaRounded > 0 && (
+                        <span
+                          className={`window-average-delta ${moodDeltaPercent >= 0 ? 'window-average-delta--up' : 'window-average-delta--down'}`}
+                        >
+                          {moodDeltaPercent >= 0
+                            ? <TrendingUp size={16} aria-hidden="true" />
+                            : <TrendingDown size={16} aria-hidden="true" />}
+                          <span>{moodDeltaRounded}%</span>
+                        </span>
+                      )}
+                    </>
+                  )
+                : '—'}
+            </p>
+          </div>
+        </div>
       </div>
     )
   }
