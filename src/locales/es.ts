@@ -121,7 +121,7 @@ const es = {
     journalPlaceholder: 'Reflexión corta...',
     saving: 'Guardando',
     saved: '¡Guardado!',
-    saveEntry: 'Guardar registro',
+    save: 'Guardar',
     typeEventPrompt: 'Escribe tu evento y presiona +',
     saveNoEvents: 'Guardado. No agregaste eventos diarios. Agrégalos la próxima vez para mejores estadísticas.',
     futureError: 'No puedes registrar entradas en el futuro.',

@@ -121,7 +121,7 @@ const en = {
     journalPlaceholder: 'Short reflection...',
     saving: 'Saving',
     saved: 'Saved!',
-    saveEntry: 'Save entry',
+    save: 'Save',
     typeEventPrompt: 'Type event, press +',
     saveNoEvents: 'Saved. No daily events added. Add them next time for better insights.',
     futureError: 'You cannot log entries in the future.',

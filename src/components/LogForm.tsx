@@ -421,7 +421,7 @@ export const LogForm = ({
             ? <span className="spinner" aria-label={t('log.saving')} />
             : saved
               ? t('log.saved')
-              : t('log.saveEntry')}
+              : t('log.save')}
         </button>
       </form>
     </section>
