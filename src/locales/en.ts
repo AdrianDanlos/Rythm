@@ -218,6 +218,7 @@ const en = {
     great: 'Great',
     weekdayPattern: 'Weekday pattern',
     weekdaySubtitle: 'Your average sleep and mood for each day of the week.',
+    weekdaySleepTooltip: 'Sleep hours reflect the previous night. For example, Sunday\'s bar shows how much you slept from Saturday night into Sunday morning.',
     logMoreDays: 'Log more days',
     unlockWeekdayPatterns: 'to unlock weekday patterns.',
     earlySignal: 'Early signal: patterns get more reliable after about {{count}} days.',

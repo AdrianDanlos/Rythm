@@ -11,6 +11,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import type { WeekdayAveragePoint } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
+import { Tooltip } from '../Tooltip'
 
 const EARLY_SIGNAL_MIN_COMPLETE_LOGS = 14
 type InsightsWeekdayAveragesProps = {
@@ -82,6 +83,11 @@ export const InsightsWeekdayAverages = ({
         <div>
           <h2>
             {t('insights.weekdayPattern')}
+            <Tooltip label={t('insights.weekdaySleepTooltip')}>
+              <span className="tooltip-trigger">
+                <span className="tooltip-icon" aria-hidden="true">i</span>
+              </span>
+            </Tooltip>
           </h2>
           <p className="muted">{t('insights.weekdaySubtitle')}</p>
         </div>
@@ -141,11 +147,13 @@ export const InsightsWeekdayAverages = ({
                       labelFormatter={label => t(`insights.weekday${String(label)}Full`)}
                     />
                     <Legend
-                      content={<WeekdayLegend
-                        avgSleepLabel={t('insights.avgSleep')}
-                        avgMoodLabel={t('insights.avgMood')}
-                        wrapperStyle={legendWrapperStyle}
-                      />}
+                      content={(
+                        <WeekdayLegend
+                          avgSleepLabel={t('insights.avgSleep')}
+                          avgMoodLabel={t('insights.avgMood')}
+                          wrapperStyle={legendWrapperStyle}
+                        />
+                      )}
                     />
                     <Bar
                       yAxisId="left"

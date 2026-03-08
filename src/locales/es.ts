@@ -218,6 +218,7 @@ const es = {
     great: 'Excelente',
     weekdayPattern: 'Sueño y ánimo semanal',
     weekdaySubtitle: 'Tu sueño y ánimo promedio para cada día de la semana.',
+    weekdaySleepTooltip: 'Las horas de sueño corresponden a la noche anterior. Por ejemplo, la barra del domingo muestra cuánto dormiste del sábado por la noche al domingo por la mañana.',
     logMoreDays: 'Registra más días',
     unlockWeekdayPatterns: 'para desbloquear patrones semanales.',
     earlySignal: 'Señal temprana: los patrones son más confiables después de ~{{count}} días.',
