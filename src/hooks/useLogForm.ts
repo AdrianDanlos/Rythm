@@ -76,8 +76,10 @@ export const useLogForm = ({
       })
     })
 
+    let suggestions: string[]
+
     if (userTagSet.size >= SUGGEST_DEFAULTS_UNTIL_USER_TAG_COUNT) {
-      const suggestions: string[] = []
+      suggestions = []
       const seen = new Set<string>()
       sorted.forEach((entry) => {
         entry.tags?.forEach((tag) => {
@@ -87,24 +89,32 @@ export const useLogForm = ({
           suggestions.push(normalized)
         })
       })
-      return suggestions
+    } else {
+      const defaultsLower = DEFAULT_TAG_SUGGESTION_KEYS.map(key =>
+        t(key).trim().toLowerCase(),
+      )
+      const seen = new Set<string>(defaultsLower)
+      suggestions = [...defaultsLower]
+      sorted.forEach((entry) => {
+        entry.tags?.forEach((tag) => {
+          const normalized = tag.trim().toLowerCase()
+          if (!normalized || seen.has(normalized)) return
+          seen.add(normalized)
+          suggestions.push(normalized)
+        })
+      })
     }
 
-    const defaultsLower = DEFAULT_TAG_SUGGESTION_KEYS.map(key =>
-      t(key).trim().toLowerCase(),
-    )
-    const seen = new Set<string>(defaultsLower)
-    const suggestions = [...defaultsLower]
-    sorted.forEach((entry) => {
-      entry.tags?.forEach((tag) => {
-        const normalized = tag.trim().toLowerCase()
-        if (!normalized || seen.has(normalized)) return
-        seen.add(normalized)
-        suggestions.push(normalized)
-      })
+    const suggestionSet = new Set(suggestions)
+    const formTags = parseTags(tags)
+    formTags.forEach((tag) => {
+      if (!suggestionSet.has(tag)) {
+        suggestionSet.add(tag)
+        suggestions.push(tag)
+      }
     })
     return suggestions
-  }, [entries])
+  }, [entries, tags])
 
   const parseSleepHours = (value: string) => {
     const trimmed = value.trim()

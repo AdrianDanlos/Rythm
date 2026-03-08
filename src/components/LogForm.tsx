@@ -96,7 +96,7 @@ export const LogForm = ({
     if (sleepMenu !== 'hours') return
     focusedSleepHourRef.current?.focus()
   }, [sleepMenu, preferredFocusedHour])
-  const tagAreaRef = useRef<HTMLDivElement | null>(null)
+  const tagDropdownWrapRef = useRef<HTMLDivElement | null>(null)
   const tagInputRef = useRef<HTMLInputElement | null>(null)
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false)
   const [tagInputValue, setTagInputValue] = useState('')
@@ -107,19 +107,25 @@ export const LogForm = ({
   const sortedTagSuggestions = [...tagSuggestions].sort((a, b) =>
     a.localeCompare(b),
   )
-  const availableSuggestions = sortedTagSuggestions.filter(
-    tag => tag.length <= MAX_TAG_LENGTH && !usedTagSet.has(tag),
+  const suggestionsWithinLength = sortedTagSuggestions.filter(
+    tag => tag.length <= MAX_TAG_LENGTH,
   )
   const token = tagInputValue.trim().toLowerCase()
-  const matchingSuggestions = token
-    ? availableSuggestions.filter(s => s.toLowerCase().includes(token))
-    : availableSuggestions
+  const allMatchingSuggestions = token
+    ? suggestionsWithinLength.filter(s => s.toLowerCase().includes(token))
+    : suggestionsWithinLength
+  const dropdownOptions = token
+    ? [
+        tagInputValue.trim(),
+        ...allMatchingSuggestions.filter(s => s.toLowerCase() !== token),
+      ]
+    : allMatchingSuggestions
   const atMaxTags = usedTags.length >= maxTagsPerEntry
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
-      if (!tagAreaRef.current) return
-      if (event.target instanceof Node && tagAreaRef.current.contains(event.target)) {
+      if (!tagDropdownWrapRef.current) return
+      if (event.target instanceof Node && tagDropdownWrapRef.current.contains(event.target)) {
         return
       }
       setTagDropdownOpen(false)
@@ -140,7 +146,6 @@ export const LogForm = ({
     onTagsChange(nextList.join(', '))
     setTagInputValue('')
     setTagPlaceholderOverride(null)
-    setTagDropdownOpen(false)
   }
 
   const removeTag = (tag: string) => {
@@ -279,7 +284,7 @@ export const LogForm = ({
             </div>
           </div>
         </div>
-        <div className="field field--tags" ref={tagAreaRef}>
+        <div className="field field--tags">
           <div className="field-title">
             <span className="label--with-tooltip">
               {t('log.eventsQuestion')}
@@ -292,7 +297,7 @@ export const LogForm = ({
             <span className="field-hint-pill field-hint-pill--plain" aria-label={t('log.recommended')}>{t('log.recommended')}</span>
           </div>
           <div className="tag-control-row">
-            <div className="tag-dropdown-wrap">
+            <div className="tag-dropdown-wrap" ref={tagDropdownWrapRef}>
               <input
                 ref={tagInputRef}
                 type="text"
@@ -324,20 +329,27 @@ export const LogForm = ({
                   }
                 }}
               />
-              {tagDropdownOpen && (matchingSuggestions.length > 0 || !isMobile) && (
+              {tagDropdownOpen && (dropdownOptions.length > 0 || !isMobile) && (
                 <div className="tag-suggestions" role="listbox">
-                  {matchingSuggestions.length > 0
-                    ? matchingSuggestions.map(suggestion => (
-                        <button
-                          key={suggestion}
-                          type="button"
-                          className="tag-suggestion"
-                          onMouseDown={e => e.preventDefault()}
-                          onClick={() => addTag(suggestion)}
-                        >
-                          {suggestion}
-                        </button>
-                      ))
+                  {dropdownOptions.length > 0
+                    ? dropdownOptions.map(suggestion => {
+                        const isAdded = usedTagSet.has(suggestion.toLowerCase())
+                        return (
+                          <button
+                            key={suggestion}
+                            type="button"
+                            className={`tag-suggestion${isAdded ? ' tag-suggestion--added' : ''}`}
+                            aria-label={isAdded ? t('log.removeTag', { tag: suggestion }) : undefined}
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => isAdded ? removeTag(suggestion.toLowerCase()) : addTag(suggestion)}
+                          >
+                            {isAdded && (
+                              <span className="tag-suggestion-check" aria-hidden="true">✓</span>
+                            )}
+                            {suggestion}
+                          </button>
+                        )
+                      })
                     : (
                         <span className="tag-suggestions-empty">
                           {token
@@ -352,10 +364,9 @@ export const LogForm = ({
               <button
                 type="button"
                 className="tag-add-button"
-                disabled={atMaxTags}
-                onClick={submitTagInput}
+                onClick={() => setTagDropdownOpen(false)}
               >
-                {t('log.addButton')}
+                {t('log.done')}
               </button>
             </div>
           </div>

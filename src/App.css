@@ -784,13 +784,38 @@
 
 .tag-suggestion:hover,
 .tag-suggestion:focus {
-  background: var(--button-hover-surface);
-  border-color: var(--border);
+  background: transparent;
+  border-color: transparent;
 }
 
 .tag-suggestion:hover::after,
 .tag-suggestion:focus::after {
   opacity: 0;
+}
+
+.tag-suggestion--added {
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tag-suggestion--added:hover,
+.tag-suggestion--added:focus {
+  background: transparent;
+  border-color: transparent;
+}
+
+.tag-suggestion--added:hover::after,
+.tag-suggestion--added:focus::after {
+  opacity: 1;
+}
+
+.tag-suggestion-check {
+  flex-shrink: 0;
+  font-size: 0.9em;
+  opacity: 0.9;
 }
 
 .date-picker {
