@@ -1,9 +1,7 @@
 .app {
   max-width: 720px;
   margin: 0 auto;
-  padding:
-    calc(16px + env(safe-area-inset-top, 0px))
-    16px
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 16px
     calc(96px + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
@@ -448,7 +446,7 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
-  background: #0B1220;
+  background: #0b1220;
   padding: 24px;
 }
 .app-loading-splash__logo {
@@ -3452,12 +3450,16 @@ button.toggle-group__btn--disabled:disabled {
   font-weight: 600 !important;
 }
 
-[data-sonner-toaster].app-toaster-theme [data-sonner-toast] [data-button]:hover {
+[data-sonner-toaster].app-toaster-theme
+  [data-sonner-toast]
+  [data-button]:hover {
   box-shadow: var(--button-hover-shadow);
   transform: translateY(-1px);
 }
 
-[data-sonner-toaster].app-toaster-theme [data-sonner-toast] [data-close-button] {
+[data-sonner-toaster].app-toaster-theme
+  [data-sonner-toast]
+  [data-close-button] {
   border: 1px solid var(--button-border) !important;
   background: var(--card) !important;
   color: var(--text) !important;
