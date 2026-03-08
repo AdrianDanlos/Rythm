@@ -20,6 +20,7 @@ import { LogForm } from './LogForm'
 import { Insights } from './Insights'
 import { AppPage, Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
 import { motionTransition } from '../lib/motion'
+import logo from '../assets/rythm-logo.png'
 
 type AppMainContentProps = {
   authInitialized: boolean
@@ -182,11 +183,17 @@ export function AppMainContent({
 
   if (!authInitialized) {
     return (
-      <div className="card auth-loading" aria-live="polite">
-        <h2 className="auth-title">{t('auth.loadingAccount')}</h2>
-        <div className="loading-row">
-          <span className="loading-spinner" aria-hidden="true" />
-          <span className="muted">{t('auth.checkingSession')}</span>
+      <div className="app-loading-splash" aria-live="polite">
+        <img
+          className="app-loading-splash__logo"
+          src={logo}
+          alt=""
+          aria-hidden
+        />
+        <h2 className="app-loading-splash__title">{t('auth.loadingAccount')}</h2>
+        <div className="app-loading-splash__row">
+          <span className="app-loading-splash__spinner" aria-hidden="true" />
+          <span className="app-loading-splash__muted">{t('auth.checkingSession')}</span>
         </div>
       </div>
     )

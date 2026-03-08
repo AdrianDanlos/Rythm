@@ -438,6 +438,49 @@
   gap: 12px;
 }
 
+/* Loading state before auth is ready: always dark bg + white logo (ignores system/theme) */
+.app-loading-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  background: #0B1220;
+  padding: 24px;
+}
+.app-loading-splash__logo {
+  width: 160px;
+  height: auto;
+  max-height: 56px;
+  object-fit: contain;
+}
+.app-loading-splash__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #f8fafc;
+  margin: 0;
+}
+.app-loading-splash__row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-loading-splash__muted {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+.app-loading-splash__spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(248, 250, 252, 0.35);
+  border-top-color: #f8fafc;
+  animation: spin 0.8s linear infinite;
+}
+
 .loading-row {
   display: inline-flex;
   align-items: center;
