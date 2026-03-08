@@ -98,17 +98,18 @@ export const InsightsStats = ({
     label: string,
     window: WindowStats,
   ) => {
-    const buildDelta = (value: number | null, avg: number | null) => {
+    const buildDeltaPercent = (value: number | null, avg: number | null) => {
       if (value === null || avg === null || avg <= 0) {
         return null
       }
-
       return ((value - avg) / avg) * 100
     }
 
-    const sleepDeltaPercent = buildDelta(window.sleep, averages.sleep)
-    const moodDeltaPercent = buildDelta(window.mood, averages.mood)
-    const sleepDeltaRounded = sleepDeltaPercent !== null ? Math.round(Math.abs(sleepDeltaPercent)) : null
+    const sleepDeltaMinutes =
+      window.sleep !== null && averages.sleep !== null
+        ? Math.round((window.sleep - averages.sleep) * 60)
+        : null
+    const moodDeltaPercent = buildDeltaPercent(window.mood, averages.mood)
     const moodDeltaRounded = moodDeltaPercent !== null ? Math.round(Math.abs(moodDeltaPercent)) : null
 
     return (
@@ -122,14 +123,14 @@ export const InsightsStats = ({
                 ? (
                     <>
                       <span>{formatSleepHours(window.sleep)}</span>
-                      {sleepDeltaPercent !== null && sleepDeltaRounded !== null && sleepDeltaRounded > 0 && (
+                      {sleepDeltaMinutes !== null && sleepDeltaMinutes !== 0 && (
                         <span
-                          className={`window-average-delta ${sleepDeltaPercent >= 0 ? 'window-average-delta--up' : 'window-average-delta--down'}`}
+                          className={`window-average-delta ${sleepDeltaMinutes >= 0 ? 'window-average-delta--up' : 'window-average-delta--down'}`}
                         >
-                          {sleepDeltaPercent >= 0
+                          {sleepDeltaMinutes >= 0
                             ? <TrendingUp size={16} aria-hidden="true" />
                             : <TrendingDown size={16} aria-hidden="true" />}
-                          <span>{sleepDeltaRounded}%</span>
+                          <span>{t('insights.sleepDeltaMinutes', { count: Math.abs(sleepDeltaMinutes) })}</span>
                         </span>
                       )}
                     </>

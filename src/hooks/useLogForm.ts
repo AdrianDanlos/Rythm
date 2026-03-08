@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { t } from 'i18next'
 import { toast } from 'sonner'
+import i18n from '../i18n'
 import { upsertEntry, type Entry } from '../lib/entries'
 import { getSupportMessage } from '../lib/supportMessage'
 import { buildStats, type StatsResult } from '../lib/stats'
@@ -114,7 +115,7 @@ export const useLogForm = ({
       }
     })
     return suggestions
-  }, [entries, tags])
+  }, [entries, tags, i18n.language])
 
   const parseSleepHours = (value: string) => {
     const trimmed = value.trim()

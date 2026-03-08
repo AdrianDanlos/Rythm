@@ -319,6 +319,7 @@ const en = {
     last7Days: 'Last 7 days',
     last30Days: 'Last 30 days',
     last90Days: 'Last 90 days',
+    sleepDeltaMinutes: '{{count}} min',
     scatterRange30Days: '30 days',
     scatterRange90Days: '90 days',
     rhythmScore: 'Rhythm score',
