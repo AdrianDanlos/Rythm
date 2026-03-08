@@ -101,7 +101,7 @@ const es = {
   },
   log: {
     loading: 'Cargando...',
-    tip: 'Consejo: el mejor momento para guardar tus registros es por la noche, antes de acostarte. Cuanto más registres, más claro verás qué te ayuda a sentirte mejor.',
+    tip: 'Consejo: anota tus datos cada noche, antes de acostarte. Cuantos más añadas, más claro verás qué te ayuda a sentirte mejor.',
     sleepQuestion: '¿Cuánto dormiste?',
     sleepTooltip: 'Puedes guardar tu sueño ahora y volver luego para registrar tu ánimo y tus actividades.',
     hours: 'Horas',
