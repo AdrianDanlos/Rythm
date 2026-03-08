@@ -519,7 +519,7 @@ const es = {
     },
     balancedWeek: {
       title: 'Semana equilibrada',
-      description: 'Las 7 noches entre 6-9 horas.',
+      description: 'Las 7 noches entre 7-9 horas.',
     },
     monthlyMilestone: {
       title: 'Hito mensual',

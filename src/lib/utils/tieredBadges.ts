@@ -353,7 +353,7 @@ function hasBalancedWeek(entries: Entry[]): boolean {
       next.setDate(start.getDate() + d)
       const key = formatDateKey(next)
       const sleep = byDate.get(key)
-      if (sleep === undefined || sleep < 6 || sleep > 9) {
+      if (sleep === undefined || sleep < 7 || sleep > 9) {
         allInRange = false
         break
       }

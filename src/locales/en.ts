@@ -519,7 +519,7 @@ const en = {
     },
     balancedWeek: {
       title: 'Balanced Week',
-      description: 'All 7 nights between 6-9 hours.',
+      description: 'All 7 nights between 7-9 hours.',
     },
     monthlyMilestone: {
       title: 'Monthly Milestone',
