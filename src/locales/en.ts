@@ -523,7 +523,7 @@ const en = {
     },
     monthlyMilestone: {
       title: 'Monthly Milestone',
-      description: '30 logged days in the current month.',
+      description: 'Logged 30 days in a row.',
     },
     bounceBack: {
       title: 'Bounce Back',

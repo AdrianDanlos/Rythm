@@ -373,17 +373,22 @@ export function getBalancedWeekBadge(entries: Entry[]): Badge {
   )
 }
 
-// --- Non-incremental badge 2: Monthly Milestone (30 logged days in current month) ---
-function getCurrentMonthKey(): string {
-  const now = new Date()
-  const y = now.getFullYear()
-  const m = String(now.getMonth() + 1).padStart(2, '0')
-  return `${y}-${m}`
+// --- Non-incremental badge 2: Monthly Milestone (30 logged days in last 30 days) ---
+function getLast30DaysRange(): { start: Date, end: Date } {
+  const end = new Date()
+  end.setHours(23, 59, 59, 999)
+  const start = new Date(end)
+  start.setDate(start.getDate() - 29)
+  start.setHours(0, 0, 0, 0)
+  return { start, end }
 }
 
 export function getMonthlyMilestoneBadge(entries: Entry[]): Badge {
-  const currentMonthKey = getCurrentMonthKey()
-  const count = entries.filter(e => e.entry_date.startsWith(currentMonthKey)).length
+  const { start, end } = getLast30DaysRange()
+  const count = entries.filter((e) => {
+    const d = parseEntryDate(e)
+    return d >= start && d <= end
+  }).length
   const unlocked = count >= 30
   const progressValue = Math.min(count, 30)
   const progressTotal = 30

@@ -523,7 +523,7 @@ const es = {
     },
     monthlyMilestone: {
       title: 'Hito mensual',
-      description: '30 días registrados este mes.',
+      description: 'Racha de 30 días registrados consecutivos.',
     },
     bounceBack: {
       title: 'Remontada',
