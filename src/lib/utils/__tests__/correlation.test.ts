@@ -43,7 +43,7 @@ describe('getCorrelationInsight', () => {
     ]
     expect(getCorrelationInsight(entries)).toEqual({
       label: 'strong',
-      direction: 'higherSleepBetterMood',
+      direction: 'higherSleepClearlyBetterMood',
     })
   })
 
@@ -57,7 +57,7 @@ describe('getCorrelationInsight', () => {
     ]
     expect(getCorrelationInsight(entries)).toEqual({
       label: 'strong',
-      direction: 'higherSleepLowerMood',
+      direction: 'higherSleepClearlyLowerMood',
     })
   })
 
@@ -73,7 +73,7 @@ describe('getCorrelationInsight', () => {
     ]
     expect(getCorrelationInsight(entries)).toEqual({
       label: 'strong',
-      direction: 'higherSleepBetterMood',
+      direction: 'higherSleepClearlyBetterMood',
     })
   })
 })

@@ -346,7 +346,7 @@ const es = {
       higherSleepSlightlyBetterMood: 'Más horas de sueño, ligeramente mejor ánimo',
       higherSleepBetterMood: 'Más horas de sueño, mejor ánimo',
       higherSleepClearlyBetterMood: 'Más horas de sueño, claramente mejor ánimo',
-      higherSleepSlightlyLowerMood: 'Más horas de sueño, ligeramentepeor ánimo',
+      higherSleepSlightlyLowerMood: 'Más horas de sueño, ligeramente peor ánimo',
       higherSleepLowerMood: 'Más horas de sueño, peor ánimo',
       higherSleepClearlyLowerMood: 'Más horas de sueño, claramente peor ánimo',
       noClearDirection: 'Sin tendencia clara aún',

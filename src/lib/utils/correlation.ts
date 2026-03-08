@@ -7,13 +7,26 @@ export type CorrelationLevel =
   | 'strong'
 
 export type CorrelationDirection =
+  | 'higherSleepSlightlyBetterMood'
   | 'higherSleepBetterMood'
+  | 'higherSleepClearlyBetterMood'
+  | 'higherSleepSlightlyLowerMood'
   | 'higherSleepLowerMood'
+  | 'higherSleepClearlyLowerMood'
   | 'noClearDirection'
 
 type CorrelationInsight = {
   label: CorrelationLevel | null
   direction: CorrelationDirection | null
+}
+
+const DIRECTION_BY_STRENGTH: Record<
+  Exclude<CorrelationLevel, 'notClear'>,
+  { positive: CorrelationDirection, negative: CorrelationDirection }
+> = {
+  weak: { positive: 'higherSleepSlightlyBetterMood', negative: 'higherSleepSlightlyLowerMood' },
+  moderate: { positive: 'higherSleepBetterMood', negative: 'higherSleepLowerMood' },
+  strong: { positive: 'higherSleepClearlyBetterMood', negative: 'higherSleepClearlyLowerMood' },
 }
 
 export const getCorrelationInsight = (entries: Entry[]): CorrelationInsight => {
@@ -61,12 +74,10 @@ export const getCorrelationInsight = (entries: Entry[]): CorrelationInsight => {
           ? 'moderate'
           : 'strong'
 
-  const direction
-    = correlation > 0.02
-      ? 'higherSleepBetterMood'
-      : correlation < -0.02
-        ? 'higherSleepLowerMood'
-        : 'noClearDirection'
+  const direction: CorrelationDirection
+    = Math.abs(correlation) <= 0.02 || label === 'notClear'
+      ? 'noClearDirection'
+      : DIRECTION_BY_STRENGTH[label][correlation > 0.02 ? 'positive' : 'negative']
 
   return { label, direction }
 }

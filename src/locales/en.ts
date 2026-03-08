@@ -343,8 +343,12 @@ const en = {
       strong: 'Strong',
     },
     correlationDirections: {
+      higherSleepSlightlyBetterMood: 'Higher sleep, slightly better mood',
       higherSleepBetterMood: 'Higher sleep, better mood',
+      higherSleepClearlyBetterMood: 'Higher sleep, clearly better mood',
+      higherSleepSlightlyLowerMood: 'Higher sleep, slightly lower mood',
       higherSleepLowerMood: 'Higher sleep, lower mood',
+      higherSleepClearlyLowerMood: 'Higher sleep, clearly lower mood',
       noClearDirection: 'No clear trend yet',
     },
     correlationStrength: 'Correlation strength',
