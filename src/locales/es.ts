@@ -320,7 +320,7 @@ const es = {
     last7Days: 'Últimos 7 días',
     last30Days: 'Últimos 30 días',
     last90Days: 'Últimos 90 días',
-    sleepDeltaMinutes: '{{count}} min',
+    sleepDeltaMinutes: '{{count}}m',
     scatterRange30Days: '30 días',
     scatterRange90Days: '90 días',
     rhythmScore: 'Puntos Rhythm',
