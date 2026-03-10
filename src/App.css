@@ -3370,29 +3370,31 @@ button.toggle-group__btn--disabled:disabled {
 
 /* Sonner toast styling aligned with app dark/light tokens */
 [data-sonner-toaster].app-toaster-theme {
-  --normal-bg: var(--card);
+  /* Slightly adjust toast backgrounds so they stand out from the app surface */
+  --normal-bg: color-mix(in srgb, var(--card) 88%, #000);
   --normal-text: var(--text);
-  --normal-border: var(--border);
+  --normal-border: color-mix(in srgb, var(--border) 70%, #000);
   --normal-button-bg: var(--ghost-bg);
   --normal-button-text: var(--text);
-  --success-bg: var(--card);
+  --success-bg: color-mix(in srgb, var(--card) 88%, #000);
   --success-text: var(--text);
-  --success-border: var(--border);
-  --error-bg: var(--card);
+  --success-border: color-mix(in srgb, var(--border) 70%, #000);
+  --error-bg: color-mix(in srgb, var(--card) 88%, #000);
   --error-text: var(--text);
-  --error-border: var(--border);
-  --warning-bg: var(--card);
+  --error-border: color-mix(in srgb, var(--border) 70%, #000);
+  --warning-bg: color-mix(in srgb, var(--card) 88%, #000);
   --warning-text: var(--text);
-  --warning-border: var(--border);
-  --info-bg: var(--card);
+  --warning-border: color-mix(in srgb, var(--border) 70%, #000);
+  --info-bg: color-mix(in srgb, var(--card) 88%, #000);
   --info-text: var(--text);
-  --info-border: var(--border);
+  --info-border: color-mix(in srgb, var(--border) 70%, #000);
 }
 
 [data-sonner-toast].app-toast {
-  background: var(--card) !important;
+  /* Make toasts stand out more from the main app surface */
+  background: color-mix(in srgb, var(--card) 70%, #000) !important;
   color: var(--text) !important;
-  border: 1px solid var(--border) !important;
+  border: 1px solid color-mix(in srgb, var(--border) 55%, #000) !important;
   box-shadow: var(--card-shadow);
 }
 
@@ -3462,4 +3464,35 @@ button.toggle-group__btn--disabled:disabled {
   border: 1px solid var(--button-border) !important;
   background: var(--card) !important;
   color: var(--text) !important;
+}
+
+/* Theme-specific toast background + text contrast */
+:root[data-theme="dark"] [data-sonner-toast].app-toast {
+  background: #1b2741 !important;
+  color: var(--text) !important;
+}
+
+:root[data-theme="dark"]
+  [data-sonner-toast].app-toast
+  .app-toast-description {
+  color: var(--muted);
+}
+
+:root:not([data-theme="dark"]) [data-sonner-toast].app-toast {
+  background: #0f172a !important;
+  /* Lighter text for contrast on dark slate bg */
+  color: #e5edf9 !important;
+  border-color: color-mix(in srgb, #e5edf9 18%, transparent) !important;
+}
+
+:root:not([data-theme="dark"])
+  [data-sonner-toast].app-toast
+  .app-toast-title {
+  color: #e5edf9 !important;
+}
+
+:root:not([data-theme="dark"])
+  [data-sonner-toast].app-toast
+  .app-toast-description {
+  color: #cbd5f5 !important;
 }
