@@ -1814,6 +1814,10 @@ button.toggle-group__btn--disabled:disabled {
   margin-bottom: 8px;
 }
 
+.tag-insights-show-more {
+  margin-top: 16px;
+}
+
 .badge-list {
   display: grid;
   gap: 10px;

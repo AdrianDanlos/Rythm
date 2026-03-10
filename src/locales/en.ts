@@ -292,6 +292,8 @@ const en = {
     negative: 'Negative',
     moodSuffix: 'mood',
     entriesSuffix: '{{count}} entries',
+    showAllTags: 'Show all tags',
+    showTopTags: 'Show top tags',
     daysSuffix: '{{count}} days',
     addEventsToSeeMoodImpact: 'Add daily events to see mood impact (min 3 entries per event).',
     addEventsToSeeSleepImpact: 'Add daily events to see sleep impact (min 3 entries per event).',

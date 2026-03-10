@@ -292,6 +292,8 @@ const es = {
     negative: 'Negativo',
     moodSuffix: 'ánimo',
     entriesSuffix: '{{count}} días',
+    showAllTags: 'Ver todos los eventos',
+    showTopTags: 'Ver solo los principales',
     daysSuffix: '{{count}} días',
     addEventsToSeeMoodImpact: 'Agrega eventos diarios para ver impacto en ánimo (mín. 3 registros por evento).',
     addEventsToSeeSleepImpact: 'Agrega eventos diarios para ver impacto en sueño (mín. 3 registros por evento).',

@@ -1,4 +1,5 @@
 import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DEFAULT_TAG_DRIVER_MIN_COUNT } from '../../lib/utils/tagInsights'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
@@ -22,25 +23,45 @@ export const InsightsTagInsights = ({
   goToLog,
 }: InsightsTagInsightsProps) => {
   const { t } = useTranslation()
-  const positiveDrivers = [...tagDrivers]
-    .filter(driver => typeof driver.delta === 'number' && driver.delta > 0)
-    .sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0))
-    .slice(0, 2)
-  const negativeDrivers = [...tagDrivers]
-    .filter(driver => typeof driver.delta === 'number' && driver.delta < 0)
-    .sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0))
-    .slice(0, 2)
+  const [showAllTags, setShowAllTags] = useState(false)
+
+  const allPositiveDrivers = useMemo(
+    () => [...tagDrivers]
+      .filter(driver => typeof driver.delta === 'number' && driver.delta > 0)
+      .sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0)),
+    [tagDrivers],
+  )
+  const allNegativeDrivers = useMemo(
+    () => [...tagDrivers]
+      .filter(driver => typeof driver.delta === 'number' && driver.delta < 0)
+      .sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)),
+    [tagDrivers],
+  )
+  const allPositiveSleepDrivers = useMemo(
+    () => [...tagSleepDrivers]
+      .filter(d => typeof d.delta === 'number' && d.delta > 0)
+      .sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0)),
+    [tagSleepDrivers],
+  )
+  const allNegativeSleepDrivers = useMemo(
+    () => [...tagSleepDrivers]
+      .filter(d => typeof d.delta === 'number' && d.delta < 0)
+      .sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)),
+    [tagSleepDrivers],
+  )
+
+  const positiveDrivers = showAllTags ? allPositiveDrivers : allPositiveDrivers.slice(0, 2)
+  const negativeDrivers = showAllTags ? allNegativeDrivers : allNegativeDrivers.slice(0, 2)
   const hasDrivers = positiveDrivers.length > 0 || negativeDrivers.length > 0
 
-  const positiveSleepDrivers = [...tagSleepDrivers]
-    .filter(d => typeof d.delta === 'number' && d.delta > 0)
-    .sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0))
-    .slice(0, 2)
-  const negativeSleepDrivers = [...tagSleepDrivers]
-    .filter(d => typeof d.delta === 'number' && d.delta < 0)
-    .sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0))
-    .slice(0, 2)
+  const positiveSleepDrivers = showAllTags ? allPositiveSleepDrivers : allPositiveSleepDrivers.slice(0, 2)
+  const negativeSleepDrivers = showAllTags ? allNegativeSleepDrivers : allNegativeSleepDrivers.slice(0, 2)
   const hasSleepDrivers = positiveSleepDrivers.length > 0 || negativeSleepDrivers.length > 0
+
+  const hasMoreThanTopTwo = allPositiveDrivers.length > 2
+    || allNegativeDrivers.length > 2
+    || allPositiveSleepDrivers.length > 2
+    || allNegativeSleepDrivers.length > 2
 
   const moodDeltaPercent = (tag: TagDriver): number | null => {
     if (tag.delta === null || tag.moodWithout === null || tag.moodWithout === 0) return null
@@ -245,6 +266,17 @@ export const InsightsTagInsights = ({
                           <p className="muted">{t('insights.addEventsToSeeSleepImpact')}</p>
                         )}
                   </div>
+                  {hasMoreThanTopTwo && (
+                    <div className="tag-insights-show-more">
+                      <button
+                        type="button"
+                        className="link-button link-button--text"
+                        onClick={() => setShowAllTags(prev => !prev)}
+                      >
+                        {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
+                      </button>
+                    </div>
+                  )}
                 </>
               )
             : (
