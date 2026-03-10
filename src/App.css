@@ -1496,16 +1496,19 @@
 }
 
 .mood-legend-metrics {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: baseline;
-  gap: 6px;
+  gap: 4px 8px;
   justify-self: end;
+  min-width: 8ch;
 }
 
 .mood-legend-separator {
   color: var(--muted);
   font-weight: 600;
   line-height: 1;
+  text-align: center;
 }
 
 .mood-legend-swatch {
@@ -1517,11 +1520,15 @@
 
 .mood-legend-value {
   font-variant-numeric: tabular-nums;
+  text-align: right;
+  display: inline-block;
 }
 
 .mood-legend-percent {
   color: var(--muted);
   font-variant-numeric: tabular-nums;
+  text-align: left;
+  display: inline-block;
 }
 
 .stat-block .value {

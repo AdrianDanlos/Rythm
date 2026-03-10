@@ -149,7 +149,7 @@ const es = {
     saveEntryError: 'No se pudo guardar la entrada.',
     postSaveSuggestions: {
       lowSleepNoEventsGoodMood: 'Dormiste poco pero aún así te sientes bien. Vale la pena añadir un evento diario para ver qué puede estar ayudando.',
-      lowSleepNoEventsLowMood: 'Poco sueño y un día difícil. Prueba añadir un evento diario para entender mejor qué te ha estado afectando.',
+      lowSleepNoEventsLowMood: 'Poco sueño y un día difícil. Prueba añadir un evento diario para entender mejor qué te ha afectado.',
       normalSleepNoEventsGoodMood: 'Añade un evento diario para recordar qué ha hecho que hoy haya sido un buen día.',
       normalSleepNoEventsLowMood: 'Un evento diario puede ayudarte a descubrir qué ha fallado hoy.',
     },
