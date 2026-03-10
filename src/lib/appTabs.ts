@@ -3,16 +3,16 @@ export enum Tabs {
   Log = 'log',
   Summary = 'summary',
   Charts = 'charts',
-  Data = 'data',
+  Events = 'events',
 }
 
 export type TabKey = Tabs.Insights | Tabs.Log
-export type InsightsSection = Tabs.Summary | Tabs.Charts | Tabs.Data
+export type InsightsSection = Tabs.Summary | Tabs.Charts | Tabs.Events
 
 export enum AppPage {
   Summary = 'summary',
   Charts = 'charts',
-  Export = 'export',
+  Events = 'events',
   Log = 'log',
 }
 
@@ -20,7 +20,7 @@ export const APP_PAGE_PATHS: Record<AppPage, string> = {
   [AppPage.Log]: '/log',
   [AppPage.Summary]: '/summary',
   [AppPage.Charts]: '/charts',
-  [AppPage.Export]: '/export',
+  [AppPage.Events]: '/events',
 }
 
 export function getPathForPage(page: AppPage): string {
@@ -44,8 +44,8 @@ export function getAppPage(tab: TabKey, insightsTab: InsightsSection): AppPage {
     return AppPage.Charts
   }
 
-  if (insightsTab === Tabs.Data) {
-    return AppPage.Export
+  if (insightsTab === Tabs.Events) {
+    return AppPage.Events
   }
 
   return AppPage.Summary
@@ -56,8 +56,8 @@ export function getInsightsSectionForPage(page: AppPage): InsightsSection {
     return Tabs.Charts
   }
 
-  if (page === AppPage.Export) {
-    return Tabs.Data
+  if (page === AppPage.Events) {
+    return Tabs.Events
   }
 
   return Tabs.Summary

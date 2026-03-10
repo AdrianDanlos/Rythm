@@ -17,15 +17,7 @@ function MailIcon() {
 export function DeleteAccountPage() {
   return (
     <div className="app delete-account-page">
-      <AppHeader
-        session={null}
-        canManageSubscription={false}
-        isPortalLoading={false}
-        isSignOutLoading={false}
-        onOpenSettings={() => {}}
-        onManageSubscription={() => {}}
-        onSignOut={() => {}}
-      />
+      <AppHeader />
 
       <main className="delete-account-page__main privacy-landing__content">
         <h2 className="delete-account-page__headline">Delete your account and data</h2>

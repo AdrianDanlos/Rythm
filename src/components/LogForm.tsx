@@ -5,6 +5,14 @@ import 'react-day-picker/dist/style.css'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import { Tooltip } from './Tooltip'
 
+const MOOD_FACES: Record<1 | 2 | 3 | 4 | 5, string> = {
+  1: '😢',
+  2: '😕',
+  3: '😐',
+  4: '🙂',
+  5: '😄',
+}
+
 export type LogFormProps = {
   selectedDate: Date
   todayDate: Date
@@ -408,8 +416,9 @@ export const LogForm = ({
                   } as CSSProperties
                 }
                 aria-pressed={mood === value}
+                aria-label={String(value)}
               >
-                {value}
+                {MOOD_FACES[value]}
               </button>
             ))}
           </div>

@@ -4,15 +4,7 @@ import { AppHeader } from '../../components/AppHeader'
 export function Privacy() {
   return (
     <div className="app privacy-page">
-      <AppHeader
-        session={null}
-        canManageSubscription={false}
-        isPortalLoading={false}
-        isSignOutLoading={false}
-        onOpenSettings={() => {}}
-        onManageSubscription={() => {}}
-        onSignOut={() => {}}
-      />
+      <AppHeader />
 
       <div className="privacy-landing">
         <main className="privacy-landing__content">

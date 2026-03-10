@@ -3,16 +3,86 @@
   margin: 0 auto;
   padding: calc(16px + env(safe-area-inset-top, 0px)) 16px
     calc(96px + env(safe-area-inset-bottom, 0px));
+  padding-top: calc(88px + env(safe-area-inset-top, 0px));
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
 .app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 8px;
+}
+
+.app-header-top {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.app-header-eyebrow {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin: 0;
+  max-height: 2em;
+  opacity: 1;
+  overflow: hidden;
+  transition: opacity 0.2s ease, max-height 0.2s ease;
+}
+
+.app-header--scrolled .app-header-eyebrow {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.header-left {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
+}
+
+.app-header-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  margin: -4px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.app-header-menu-btn .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.app-header-menu-btn:hover {
+  background: var(--button-hover-surface);
+}
+
+.app-header-menu-btn:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
 }
 
 .header-actions {
@@ -46,6 +116,16 @@
 
 .app-brand .eyebrow {
   font-size: 0.6rem;
+  max-height: 2em;
+  opacity: 1;
+  overflow: hidden;
+  transition: opacity 0.2s ease, max-height 0.2s ease;
+}
+
+.app-header--scrolled .app-brand .eyebrow {
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
 }
 
 .app-logo {
@@ -173,6 +253,102 @@
   to {
     opacity: 1;
   }
+}
+
+/* Left side panel (menu) */
+.side-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--modal-backdrop);
+  z-index: 35;
+  animation: modalBackdropFadeIn 200ms ease-out;
+}
+
+.side-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(280px, 85vw);
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  z-index: 36;
+  box-shadow: var(--modal-shadow);
+  animation: sidePanelSlideIn 200ms ease-out;
+}
+
+.side-panel__header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.side-panel__logo {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.side-panel__logo--light {
+  display: block;
+}
+.side-panel__logo--dark {
+  display: none;
+}
+:root[data-theme="dark"] .side-panel__logo--light {
+  display: none;
+}
+:root[data-theme="dark"] .side-panel__logo--dark {
+  display: block;
+}
+
+@keyframes sidePanelSlideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.side-panel__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 0;
+}
+
+.side-panel__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.side-panel__item:hover:not(:disabled) {
+  background: var(--selected-bg);
+}
+
+.side-panel__item:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.side-panel__icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--muted);
 }
 
 .modal-header {
@@ -935,6 +1111,8 @@
   min-height: 48px;
   border-radius: 10px;
   font-weight: 600;
+  font-size: 1.75rem;
+  line-height: 1;
   color: var(--text);
   transition:
     transform 160ms ease,
@@ -1263,6 +1441,23 @@
   display: flex;
   flex-direction: column;
   gap: 22px;
+}
+
+.your-daily-events-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.your-daily-events-list li {
+  padding: 8px 12px;
+  background: var(--selected-bg);
+  color: var(--selected-text);
+  border-radius: 8px;
+  font-weight: 500;
 }
 
 .primary-tabs {
@@ -2912,7 +3107,7 @@ button.toggle-group__btn--disabled:disabled {
 
 @media (max-width: 540px) {
   .app-header {
-    align-items: flex-end;
+    align-items: flex-start;
   }
 
   .tabs {

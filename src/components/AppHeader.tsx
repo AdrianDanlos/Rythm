@@ -1,83 +1,43 @@
-import { CreditCard, LogOut, Settings } from 'lucide-react'
+import { Menu } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AppBrand } from './AppBrand'
 import { Tooltip } from './Tooltip'
 
 type AppHeaderProps = {
-  session: { user: { email?: string } } | null
-  canManageSubscription: boolean
-  isPortalLoading: boolean
-  isSignOutLoading: boolean
-  onOpenSettings: () => void
-  onManageSubscription: () => void
-  onSignOut: () => void
+  onOpenMenu?: () => void
 }
 
-export function AppHeader({
-  session,
-  canManageSubscription,
-  isPortalLoading,
-  isSignOutLoading,
-  onOpenSettings,
-  onManageSubscription,
-  onSignOut,
-}: AppHeaderProps) {
+export function AppHeader({ onOpenMenu }: AppHeaderProps) {
   const { t } = useTranslation()
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20)
+    }
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
-    <header className="app-header">
-      <AppBrand />
-      <div className="header-actions">
-        {session
-          ? (
-              <>
-                <Tooltip label={t('nav.settings')}>
-                  <button
-                    className="ghost icon-button"
-                    type="button"
-                    onClick={onOpenSettings}
-                    aria-label={t('nav.settings')}
-                  >
-                    <Settings className="icon" aria-hidden="true" />
-                  </button>
-                </Tooltip>
-
-                {canManageSubscription
-                  ? (
-                      <Tooltip label={t('nav.manageSubscription')}>
-                        <button
-                          className="ghost icon-button"
-                          type="button"
-                          onClick={onManageSubscription}
-                          aria-label={t('nav.manageSubscription')}
-                          disabled={isPortalLoading}
-                        >
-                          <CreditCard className="icon" aria-hidden="true" />
-                        </button>
-                      </Tooltip>
-                    )
-                  : null}
-
-                <Tooltip label={t('nav.signOut')}>
-                  <button
-                    className="ghost icon-button"
-                    onClick={onSignOut}
-                    type="button"
-                    aria-label={isSignOutLoading ? t('nav.signingOut') : t('nav.signOut')}
-                    aria-busy={isSignOutLoading}
-                    disabled={isSignOutLoading}
-                  >
-                    {isSignOutLoading
-                      ? (
-                          <span className="spinner" aria-hidden="true" />
-                        )
-                      : (
-                          <LogOut className="icon" aria-hidden="true" />
-                        )}
-                  </button>
-                </Tooltip>
-              </>
-            )
-          : null}
+    <header className={`app-header${isScrolled ? ' app-header--scrolled' : ''}`}>
+      <div className="app-header-top">
+        <p className="app-header-eyebrow">{t('common.appTagline')}</p>
+      </div>
+      <div className="header-left">
+        <Tooltip label={t('nav.menu')}>
+          <button
+            className="app-header-menu-btn"
+            type="button"
+            onClick={() => onOpenMenu?.()}
+            aria-label={t('nav.menu')}
+          >
+            <Menu className="icon" aria-hidden="true" />
+          </button>
+        </Tooltip>
+        <AppBrand logoOnly />
       </div>
     </header>
   )

@@ -14,6 +14,7 @@ import { PaywallModal } from './billing/shared/PaywallModal'
 import { FeedbackModal } from './components/FeedbackModal'
 import { StreakModal } from './components/StreakModal'
 import { SettingsModal } from './components/SettingsModal'
+import { AppSidePanel } from './components/AppSidePanel'
 import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
 import { useAuthActions } from './hooks/useAuthActions'
@@ -40,6 +41,7 @@ import {
   getTabForPage,
 } from './lib/appTabs'
 import { moodColors } from './lib/colors'
+import { PLAY_STORE_APP_URL } from './lib/constants'
 import { STORAGE_KEYS } from './lib/storageKeys'
 import { DAILY_REMINDER_ID } from './lib/notifications'
 import { Toaster } from 'sonner'
@@ -97,6 +99,7 @@ function App() {
       typeof window !== 'undefined'
       && !window.matchMedia('(min-width: 768px)').matches,
   )
+  const [isMenuPanelOpen, setIsMenuPanelOpen] = useState(false)
 
   const todayDate = useMemo(() => {
     const date = new Date()
@@ -535,13 +538,21 @@ function App() {
     <div
       className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}`}
     >
-      <AppHeader
+      <AppHeader onOpenMenu={() => setIsMenuPanelOpen(true)} />
+
+      <AppSidePanel
+        isOpen={isMenuPanelOpen}
+        onClose={() => setIsMenuPanelOpen(false)}
         session={session}
         canManageSubscription={canManageSubscription}
-        isPortalLoading={isPortalLoading}
         isSignOutLoading={isSignOutLoading}
+        onExportCsv={handleExportCsv}
+        onExportReport={handleExportMonthlyReport}
         onOpenSettings={openSettings}
+        onOpenPaywall={openPaywall}
         onManageSubscription={handleManageSubscription}
+        onReviewApp={() => window.open(PLAY_STORE_APP_URL, '_blank', 'noreferrer')}
+        onOpenFeedback={openFeedback}
         onSignOut={handleSignOut}
       />
 
@@ -640,9 +651,6 @@ function App() {
         tagDrivers={stats.tagDrivers}
         tagSleepDrivers={stats.tagSleepDrivers}
         isPro={isPro}
-        exportError={exportError}
-        onExportCsv={handleExportCsv}
-        onExportMonthlyReport={handleExportMonthlyReport}
         onOpenPaywall={openPaywall}
         onOpenFeedback={openFeedback}
       />

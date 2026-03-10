@@ -100,9 +100,6 @@ type AppMainContentProps = {
   tagDrivers: TagDriver[]
   tagSleepDrivers: TagSleepDriver[]
   isPro: boolean
-  exportError: string | null
-  onExportCsv: () => void
-  onExportMonthlyReport: () => void
   onOpenPaywall: () => void
   onOpenFeedback: () => void
 }
@@ -171,9 +168,6 @@ export function AppMainContent({
   tagDrivers,
   tagSleepDrivers,
   isPro,
-  exportError,
-  onExportCsv,
-  onExportMonthlyReport,
   onOpenPaywall,
   onOpenFeedback,
 }: AppMainContentProps) {
@@ -337,9 +331,6 @@ export function AppMainContent({
                   tagDrivers={tagDrivers}
                   tagSleepDrivers={tagSleepDrivers}
                   isPro={isPro}
-                  exportError={exportError}
-                  onExportCsv={onExportCsv}
-                  onExportMonthlyReport={onExportMonthlyReport}
                   onOpenPaywall={onOpenPaywall}
                   onOpenFeedback={onOpenFeedback}
                   goToLog={() => onNavigateToPage(AppPage.Log)}

@@ -15,7 +15,6 @@ import type {
   WindowStats,
 } from '../lib/types/stats'
 import { InsightsDailyHistory } from './insights/InsightsDailyHistory'
-import { InsightsExport } from './insights/InsightsExport'
 import { InsightsFirstFiveCard } from './insights/InsightsFirstFiveCard'
 import { InsightsFirstTwoCard } from './insights/InsightsFirstTwoCard'
 import { InsightsSummaryIntro } from './InsightsSummaryIntro'
@@ -34,14 +33,11 @@ import rankingBadge3 from '../assets/badges/ranking-badge_3.png'
 import rankingBadge4 from '../assets/badges/ranking-badge_4.png'
 import rankingBadge5 from '../assets/badges/ranking-badge_5.png'
 import rankingBadgeLast from '../assets/badges/ranking-badge_last.png'
-import googleLogo from '../assets/playstore.png?inline'
-import { PLAY_STORE_APP_URL } from '../lib/constants'
 import { buildMockScatterPlottedData } from '../lib/insightsMock'
 import { getMotivationMessage } from '../lib/utils/motivationMessage'
-import { STORAGE_KEYS } from '../lib/storageKeys'
 import { motionTransition } from '../lib/motion'
 
-type InsightsTab = 'summary' | 'charts' | 'data'
+type InsightsTab = 'summary' | 'charts' | 'events'
 type ScatterRange = 'all' | 'last30' | 'last90'
 const SCATTER_RANGE_DAYS: Record<Exclude<ScatterRange, 'all'>, number> = {
   last30: 30,
@@ -85,9 +81,6 @@ type InsightsProps = {
   tagDrivers: TagDriver[]
   tagSleepDrivers: TagSleepDriver[]
   isPro: boolean
-  exportError: string | null
-  onExportCsv: () => void
-  onExportMonthlyReport: () => void
   onOpenPaywall: () => void
   onOpenFeedback: () => void
   activeTab: InsightsTab
@@ -120,29 +113,12 @@ export const Insights = ({
   tagDrivers,
   tagSleepDrivers,
   isPro,
-  exportError,
-  onExportCsv,
-  onExportMonthlyReport,
   onOpenPaywall,
   onOpenFeedback,
   activeTab,
   goToLog,
 }: InsightsProps) => {
   const { t } = useTranslation()
-  const [hasRatedOnPlay, setHasRatedOnPlay] = useState(
-    () => typeof window !== 'undefined'
-      && localStorage.getItem(STORAGE_KEYS.RATED_GOOGLE_PLAY) === 'true',
-  )
-  const reviewUrl = PLAY_STORE_APP_URL
-  const onRateClick = () => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.RATED_GOOGLE_PLAY, 'true')
-    }
-    catch {
-      // ignore
-    }
-    setHasRatedOnPlay(true)
-  }
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
   const hasEnoughEntries = entries.length >= 3
@@ -283,6 +259,28 @@ export const Insights = ({
     return buildMockScatterPlottedData()
   }, [isPro, plottedData])
 
+  const topTags = useMemo(() => {
+    const countByKey = new Map<string, { count: number, display: string }>()
+    entries.forEach((entry) => {
+      const tags = entry.tags ?? []
+      tags.forEach((tag) => {
+        const t = tag.trim()
+        if (!t) return
+        const key = t.toLowerCase()
+        const existing = countByKey.get(key)
+        if (existing) {
+          existing.count += 1
+        } else {
+          countByKey.set(key, { count: 1, display: t })
+        }
+      })
+    })
+    return Array.from(countByKey.entries())
+      .sort((a, b) => b[1].count - a[1].count)
+      .slice(0, 8)
+      .map(([, { display, count }]) => ({ display, count }))
+  }, [entries])
+
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -348,15 +346,6 @@ export const Insights = ({
                   entryCount={entries.length}
                   personalSleepThreshold={personalSleepThreshold}
                   moodByPersonalThreshold={moodByPersonalThreshold}
-                  onOpenPaywall={onOpenPaywall}
-                  goToLog={goToLog}
-                />
-              )}
-              {hasEnoughEntries && (
-                <InsightsTagInsights
-                  isPro={isPro}
-                  tagDrivers={tagDrivers}
-                  tagSleepDrivers={tagSleepDrivers}
                   onOpenPaywall={onOpenPaywall}
                   goToLog={goToLog}
                 />
@@ -492,7 +481,7 @@ export const Insights = ({
             </motion.div>
           )
         : null}
-      {activeTab === 'data'
+      {activeTab === 'events'
         ? (
             <motion.div
               className="insights-panel"
@@ -500,46 +489,33 @@ export const Insights = ({
               animate={{ opacity: 1 }}
               transition={panelTransition}
             >
-              <InsightsExport
-                hasEntries={entries.length > 0}
-                isPro={isPro}
-                exportError={exportError}
-                onExportCsv={onExportCsv}
-                onExportMonthlyReport={onExportMonthlyReport}
-                onOpenPaywall={onOpenPaywall}
-              />
-              {!hasRatedOnPlay && (
-                <div className="review-cta review-cta--standalone">
-                  <div className="review-cta__content">
-                    <div className="review-cta__icon-wrap" aria-hidden="true">
-                      <img className="review-cta__icon" src={googleLogo} alt="" width={24} height={24} />
-                    </div>
-                    <div className="review-cta__text">
-                      <p className="label">{t('insights.enjoyRythm')}</p>
-                      <p className="muted">{t('insights.quickReviewHelps')}</p>
-                    </div>
-                  </div>
-                  <a className="review-cta__link" href={reviewUrl} target="_blank" rel="noreferrer" onClick={onRateClick}>
-                    {t('insights.rateOnGooglePlay')}
-                  </a>
+              <section className="card">
+                <div className="card-header">
+                  <h2>{t('insights.yourDailyEvents')}</h2>
                 </div>
+                {topTags.length > 0
+                  ? (
+                      <ul className="your-daily-events-list">
+                        {topTags.map(({ display, count }) => (
+                          <li key={display}>
+                            {t('insights.dailyEventCount', { tag: display, count })}
+                          </li>
+                        ))}
+                      </ul>
+                    )
+                  : (
+                      <p className="muted">{t('insights.noDailyEventsLogged')}</p>
+                    )}
+              </section>
+              {hasEnoughEntries && (
+                <InsightsTagInsights
+                  isPro={isPro}
+                  tagDrivers={tagDrivers}
+                  tagSleepDrivers={tagSleepDrivers}
+                  onOpenPaywall={onOpenPaywall}
+                  goToLog={goToLog}
+                />
               )}
-              <div className="card review-cta review-cta--standalone feedback-cta">
-                <div className="review-cta__content">
-                  <div className="review-cta__text">
-                    <p className="label">{t('insights.sendFeedback')}</p>
-                    <p className="muted">{t('insights.feedbackCta')}</p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className="review-cta__link"
-                  onClick={onOpenFeedback}
-                  aria-label={t('insights.sendFeedback')}
-                >
-                  {t('insights.sendFeedback')}
-                </button>
-              </div>
             </motion.div>
           )
         : null}
