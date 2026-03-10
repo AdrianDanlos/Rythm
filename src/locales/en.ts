@@ -147,6 +147,12 @@ const en = {
     maxTagsPerEntry: 'Limit {{count}} daily events per entry.',
     addAtLeastOneValue: 'Add at least one value before saving.',
     saveEntryError: 'Unable to save entry.',
+    postSaveSuggestions: {
+      lowSleepNoEventsGoodMood: 'Not much sleep but still feeling good. Worth logging a daily event to see what might be working in your favor.',
+      lowSleepNoEventsLowMood: 'Low sleep and a rough day. Try adding a daily event to help figure out what\'s been getting to you.',
+      normalSleepNoEventsGoodMood: 'Add a daily event to keep track of what made today go smoothly.',
+      normalSleepNoEventsLowMood: 'Adding a daily event might help you figure out what\'s been off.',
+    },
   },
   insights: {
     quickStart: 'Quick start',

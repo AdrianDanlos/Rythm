@@ -90,7 +90,8 @@ export const useLogForm = ({
           suggestions.push(normalized)
         })
       })
-    } else {
+    }
+    else {
       const defaultsLower = DEFAULT_TAG_SUGGESTION_KEYS.map(key =>
         t(key).trim().toLowerCase(),
       )
@@ -259,7 +260,13 @@ export const useLogForm = ({
       setSaved(true)
       if (!options?.silent) {
         if (tagList.length === 0) {
-          toast.info(t('log.saveNoEvents'))
+          const isComplete = parsedSleep !== null && mood !== null
+          const isShortSleep = parsedSleep !== null && parsedSleep < (sleepThreshold - 1)
+          const moodKey = mood == null ? null : mood >= 4 ? 'GoodMood' : mood <= 2 ? 'LowMood' : null
+          const messageKey = isComplete && moodKey
+            ? `log.postSaveSuggestions.${isShortSleep ? 'lowSleep' : 'normalSleep'}NoEvents${moodKey}`
+            : 'log.saveNoEvents'
+          toast.info(t(messageKey))
         }
         else {
           toast.success(getSupportMessage({
