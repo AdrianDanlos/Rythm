@@ -34,7 +34,7 @@ function PanelButton({
   onClick,
   disabled,
 }: {
-  icon: React.ComponentType<{ className?: string; 'aria-hidden'?: boolean }>
+  icon: React.ComponentType<{ 'className'?: string, 'aria-hidden'?: boolean }>
   label: string
   onClick: () => void
   disabled?: boolean
@@ -46,7 +46,7 @@ function PanelButton({
       onClick={onClick}
       disabled={disabled}
     >
-      <Icon className="side-panel__icon" aria-hidden="true" />
+      <Icon className="side-panel__icon" aria-hidden={true} />
       <span>{label}</span>
     </button>
   )
