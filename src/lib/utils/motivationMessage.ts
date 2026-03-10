@@ -4,13 +4,13 @@ import type { StatCounts } from '../stats'
 import type { RollingSummary, WeekdayAveragePoint, WindowStats } from '../types/stats'
 
 const WEEKDAY_FULL_LABEL_KEY: Record<string, string> = {
-  Mon: 'analytics.weekdayMonFull',
-  Tue: 'analytics.weekdayTueFull',
-  Wed: 'analytics.weekdayWedFull',
-  Thu: 'analytics.weekdayThuFull',
-  Fri: 'analytics.weekdayFriFull',
-  Sat: 'analytics.weekdaySatFull',
-  Sun: 'analytics.weekdaySunFull',
+  Mon: 'insights.weekdayMonFull',
+  Tue: 'insights.weekdayTueFull',
+  Wed: 'insights.weekdayWedFull',
+  Thu: 'insights.weekdayThuFull',
+  Fri: 'insights.weekdayFriFull',
+  Sat: 'insights.weekdaySatFull',
+  Sun: 'insights.weekdaySunFull',
 }
 
 export type MotivationContext = {
