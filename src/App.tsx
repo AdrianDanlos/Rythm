@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
+import { LocalNotifications } from '@capacitor/local-notifications'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { exportMonthlyReport } from './lib/reports'
@@ -40,6 +41,7 @@ import {
 } from './lib/appTabs'
 import { moodColors } from './lib/colors'
 import { STORAGE_KEYS } from './lib/storageKeys'
+import { DAILY_REMINDER_ID } from './lib/notifications'
 import { Toaster } from 'sonner'
 import './App.css'
 
@@ -503,6 +505,24 @@ function App() {
       setExportError(t('errors.unableToExportReport'))
     }
   }
+
+  useEffect(() => {
+    if (!isNativeApp) return
+
+    const listenerPromise = LocalNotifications.addListener(
+      'localNotificationActionPerformed',
+      (event) => {
+        const notificationId = event?.notification?.id
+        if (notificationId === DAILY_REMINDER_ID) {
+          navigateToPage(AppPage.Log)
+        }
+      },
+    )
+
+    return () => {
+      void listenerPromise.then(listener => listener.remove())
+    }
+  }, [isNativeApp, navigateToPage])
 
   if (showDeleteAccountPage) {
     return <DeleteAccountPage />

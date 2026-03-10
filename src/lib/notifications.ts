@@ -3,7 +3,7 @@ import { t } from 'i18next'
 import { LocalNotifications } from '@capacitor/local-notifications'
 import { STORAGE_KEYS } from './storageKeys'
 
-const DAILY_REMINDER_ID = 1001
+export const DAILY_REMINDER_ID = 1001
 const DAILY_REMINDER_CHANNEL_ID = 'daily-reminder'
 
 export const getStoredDailyReminderEnabled = () =>
