@@ -451,7 +451,7 @@ const es = {
     shortSleepAware: 'Eres consciente de tu sueño, ese es el primer paso. Esta noche es otra oportunidad.',
     shortSleepLowMood: 'Combinación difícil hoy. Aún así lo anotaste. Eso requiere fuerza.',
     greatSleepGoodMood: 'Buen sueño y buen ánimo, hoy es tu día!',
-    restButLowMood: 'Has descansado bien. No seas duro contigo mismo, algunos días son más difíciles que otros.',
+    restButLowMood: 'Ayer descansaste bien y aún así ha sido un día difícil. No seas duro contigo mismo, algunos días son más difíciles que otros.',
     exerciseGoodMood: 'Ejercicio y buen ánimo! Estás viendo la conexión. Sigue así.',
     loggedPatterns: 'Guardado. Cada día estás mas cerca de entender tus patrones. Sigue así!',
   },

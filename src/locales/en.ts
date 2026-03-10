@@ -451,7 +451,7 @@ const en = {
     shortSleepAware: 'You are aware of your sleep, that is the first step. Tonight is a fresh chance to rest.',
     shortSleepLowMood: 'Tough combo today. You showed up and logged it, that takes strength. Tomorrow is a new day.',
     greatSleepGoodMood: 'Great sleep and a good mood, you are in a strong place today!',
-    restButLowMood: 'You gave your body good rest. Be kind to yourself, some days are just harder.',
+    restButLowMood: 'Despite giving your body good rest last night, today was still tough. Be kind to yourself, some days are just harder.',
     exerciseGoodMood: 'Exercise and a good mood! You are seeing the connection. Keep it up.',
     loggedPatterns: 'Saved. Every entry brings you closer to understanding your patterns. Keep going!',
   },
