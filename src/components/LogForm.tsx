@@ -1,16 +1,17 @@
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type ChangeEvent } from 'react'
+import { useEffect, useRef, useState, type ComponentType, type CSSProperties, type FormEvent, type ChangeEvent } from 'react'
 import { DayPicker } from 'react-day-picker'
 import { useTranslation } from 'react-i18next'
+import { Angry, Frown, Laugh, Meh, Smile } from 'lucide-react'
 import 'react-day-picker/dist/style.css'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import { Tooltip } from './Tooltip'
 
-const MOOD_FACES: Record<1 | 2 | 3 | 4 | 5, string> = {
-  1: '😢',
-  2: '😕',
-  3: '😐',
-  4: '🙂',
-  5: '😄',
+const MOOD_ICONS: Record<1 | 2 | 3 | 4 | 5, ComponentType<{ className?: string; size?: number; 'aria-hidden'?: boolean }>> = {
+  1: Angry,
+  2: Frown,
+  3: Meh,
+  4: Smile,
+  5: Laugh,
 }
 
 export type LogFormProps = {
@@ -404,23 +405,26 @@ export const LogForm = ({
         <div className="field field-mood">
           {t('log.moodQuestion')}
           <div className="mood-row">
-            {([1, 2, 3, 4, 5] as const).map(value => (
-              <button
-                key={value}
-                type="button"
-                className={`mood-button ${mood === value ? 'active' : ''}`}
-                onClick={() => onMoodChange(value)}
-                style={
-                  {
-                    '--mood-color': moodColors[value - 1],
-                  } as CSSProperties
-                }
-                aria-pressed={mood === value}
-                aria-label={String(value)}
-              >
-                {MOOD_FACES[value]}
-              </button>
-            ))}
+            {([1, 2, 3, 4, 5] as const).map(value => {
+              const Icon = MOOD_ICONS[value]
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  className={`mood-button ${mood === value ? 'active' : ''}`}
+                  onClick={() => onMoodChange(value)}
+                  style={
+                    {
+                      '--mood-color': moodColors[value - 1],
+                    } as CSSProperties
+                  }
+                  aria-pressed={mood === value}
+                  aria-label={String(value)}
+                >
+                  <Icon className="mood-button-icon" size={28} aria-hidden />
+                </button>
+              )
+            })}
           </div>
         </div>
         <label className="field">

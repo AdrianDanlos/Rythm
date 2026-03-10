@@ -1111,14 +1111,21 @@
   min-height: 48px;
   border-radius: 10px;
   font-weight: 600;
-  font-size: 1.75rem;
   line-height: 1;
-  color: var(--text);
+  color: var(--mood-color, var(--text));
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition:
     transform 160ms ease,
     box-shadow 160ms ease,
     background 160ms ease,
     border-color 160ms ease;
+}
+
+.mood-button .mood-button-icon {
+  color: var(--mood-color, currentColor);
+  flex-shrink: 0;
 }
 
 .mood-button::after {
