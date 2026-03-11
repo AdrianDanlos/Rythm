@@ -22,7 +22,6 @@ type AppSidePanelProps = {
   onOpenSettings: () => void
   onOpenPaywall: () => void
   onManageSubscription: () => void
-  onRestorePurchases: () => void
   onReviewApp: () => void
   onOpenFeedback: () => void
   onSignOut: () => void
