@@ -3,15 +3,18 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import { initReactI18next } from 'react-i18next'
 import en from './locales/en'
 import es from './locales/es'
+import fr from './locales/fr'
 
-export const SUPPORTED_LANGUAGES = ['en', 'es'] as const
+export const SUPPORTED_LANGUAGES = ['en', 'es', 'fr'] as const
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]
 
 export const LANGUAGE_STORAGE_KEY = 'languagePreference'
 
 const normalizeLng = (raw: string | undefined): SupportedLanguage => {
   const short = raw?.toLowerCase().split('-')[0]
-  return short === 'es' ? 'es' : 'en'
+  if (short === 'es') return 'es'
+  if (short === 'fr') return 'fr'
+  return 'en'
 }
 
 const stored = typeof window !== 'undefined'
@@ -30,6 +33,7 @@ void i18n
     resources: {
       en: { translation: en },
       es: { translation: es },
+      fr: { translation: fr },
     },
     lng: initialLanguage,
     fallbackLng: 'en',

@@ -2,7 +2,7 @@ import { STORAGE_KEYS } from './storageKeys'
 
 export type DateFormatPreference = 'mdy' | 'dmy' | 'ymd'
 export type ThemePreference = 'light' | 'dark'
-export type LanguagePreference = 'en' | 'es'
+export type LanguagePreference = 'en' | 'es' | 'fr'
 
 const DEFAULT_SLEEP_TARGET = 8
 const MIN_SLEEP_TARGET = 4
@@ -102,12 +102,13 @@ const detectSystemTheme = (): ThemePreference => {
 
 export const getStoredLanguage = (): LanguagePreference => {
   const value = readStorage(STORAGE_KEYS.LANGUAGE)
-  if (value === 'es' || value === 'en') {
+  if (value === 'es' || value === 'en' || value === 'fr') {
     return value
   }
   if (typeof navigator !== 'undefined') {
     const browser = navigator.language.toLowerCase().split('-')[0]
     if (browser === 'es') return 'es'
+    if (browser === 'fr') return 'fr'
   }
   return 'en'
 }
