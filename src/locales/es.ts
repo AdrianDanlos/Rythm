@@ -3,6 +3,7 @@ const es = {
     appTagline: 'Seguimiento de sueño y ánimo',
     close: 'Cerrar',
     save: 'Guardar',
+    edit: 'Editar',
     loading: 'Cargando...',
     noEntry: 'Sin registro',
     low: 'Bajo',

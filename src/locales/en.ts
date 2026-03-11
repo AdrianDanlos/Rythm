@@ -3,6 +3,7 @@ const en = {
     appTagline: 'Sleep & Mood Tracker',
     close: 'Close',
     save: 'Save',
+    edit: 'Edit',
     loading: 'Loading...',
     noEntry: 'No entry',
     low: 'Low',

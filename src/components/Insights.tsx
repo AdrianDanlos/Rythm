@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import { Pencil } from 'lucide-react'
 import type { Entry } from '../lib/entries'
 import type { StatCounts } from '../lib/stats'
 import type {
@@ -86,6 +87,7 @@ type InsightsProps = {
   onOpenFeedback: () => void
   activeTab: InsightsTab
   goToLog: () => void
+  onRenameTag: (fromTag: string, toTag: string) => void
 }
 
 export const Insights = ({
@@ -117,6 +119,7 @@ export const Insights = ({
   onOpenPaywall,
   activeTab,
   goToLog,
+  onRenameTag,
 }: InsightsProps) => {
   const { t } = useTranslation()
   const isLoading = entriesLoading
@@ -281,6 +284,31 @@ export const Insights = ({
       .slice(0, 8)
       .map(([, { display, count }]) => ({ display, count }))
   }, [entries])
+  const [editingTag, setEditingTag] = useState<string | null>(null)
+  const [editingValue, setEditingValue] = useState('')
+
+  const startEditingTag = (tag: string) => {
+    setEditingTag(tag)
+    setEditingValue(tag)
+  }
+
+  const commitEditingTag = () => {
+    if (!editingTag) return
+    const trimmed = editingValue.trim()
+    if (!trimmed || trimmed === editingTag) {
+      setEditingTag(null)
+      setEditingValue('')
+      return
+    }
+    onRenameTag(editingTag, trimmed)
+    setEditingTag(null)
+    setEditingValue('')
+  }
+
+  const cancelEditingTag = () => {
+    setEditingTag(null)
+    setEditingValue('')
+  }
 
   const isMobile = useIsMobile()
   const reduceMotion = useReducedMotion()
@@ -483,11 +511,53 @@ export const Insights = ({
                 {topTags.length > 0
                   ? (
                       <ul className="your-daily-events-list">
-                        {topTags.map(({ display, count }) => (
-                          <li key={display}>
-                            {t('insights.dailyEventCount', { tag: display, count })}
-                          </li>
-                        ))}
+                        {topTags.map(({ display, count }) => {
+                          const isEditing = editingTag === display
+                          return (
+                            <li
+                              key={display}
+                              className="your-daily-events-list-item"
+                            >
+                              {isEditing
+                                ? (
+                                    <div className="field your-daily-events-edit-input">
+                                      <input
+                                        type="text"
+                                        value={editingValue}
+                                        onChange={e => setEditingValue(e.target.value)}
+                                        onBlur={commitEditingTag}
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter') {
+                                            e.preventDefault()
+                                            commitEditingTag()
+                                          }
+                                          else if (e.key === 'Escape') {
+                                            e.preventDefault()
+                                            cancelEditingTag()
+                                          }
+                                        }}
+                                        autoFocus
+                                      />
+                                    </div>
+                                  )
+                                : (
+                                    <>
+                                      <span className="your-daily-events-list-label">
+                                        {t('insights.dailyEventCount', { tag: display, count })}
+                                      </span>
+                                      <button
+                                        type="button"
+                                        className="ghost icon-button your-daily-events-edit-button"
+                                        onClick={() => startEditingTag(display)}
+                                        aria-label={t('common.edit')}
+                                      >
+                                        <Pencil className="icon" aria-hidden />
+                                      </button>
+                                    </>
+                                  )}
+                            </li>
+                          )
+                        })}
                       </ul>
                     )
                   : (

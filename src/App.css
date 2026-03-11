@@ -1253,6 +1253,22 @@
   height: 18px;
 }
 
+.your-daily-events-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.your-daily-events-list-label {
+  flex: 1;
+}
+
+.your-daily-events-edit-input {
+  flex: 1;
+  min-width: 0;
+}
+
 .save-button {
   display: inline-flex;
   align-items: center;

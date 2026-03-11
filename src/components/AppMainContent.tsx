@@ -120,6 +120,7 @@ type AppMainContentProps = {
   onSettingsLanguageChange: (value: LanguagePreference) => void
   onSettingsThemeChange: (value: ThemePreference) => void
   onSettingsPersonalSleepTargetChange: (value: number) => void
+  onRenameTag: (fromTag: string, toTag: string) => void
 }
 
 export function AppMainContent({
@@ -200,6 +201,7 @@ export function AppMainContent({
   onSettingsLanguageChange,
   onSettingsThemeChange,
   onSettingsPersonalSleepTargetChange,
+  onRenameTag,
 }: AppMainContentProps) {
   const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
@@ -382,6 +384,7 @@ export function AppMainContent({
                         onOpenFeedback={onOpenFeedback}
                         goToLog={() => onNavigateToPage(AppPage.Log)}
                         activeTab={activeInsightsTab}
+                        onRenameTag={onRenameTag}
                       />
                     </motion.div>
                   )}

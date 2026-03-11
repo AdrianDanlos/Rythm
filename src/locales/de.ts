@@ -7,6 +7,7 @@ const de = {
     appTagline: 'Schlaf- und Stimmungs-Tracker',
     close: 'Schließen',
     save: 'Speichern',
+    edit: 'Bearbeiten',
     loading: 'Lädt...',
     noEntry: 'Kein Eintrag',
     low: 'Niedrig',

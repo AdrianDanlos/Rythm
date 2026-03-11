@@ -45,6 +45,7 @@ import { STORAGE_KEYS } from './lib/storageKeys'
 import { DAILY_REMINDER_ID } from './lib/notifications'
 import { Toaster } from 'sonner'
 import './App.css'
+import { upsertEntry } from './lib/entries'
 
 function getReturningUserStorageKey(userId: string): string {
   return `${STORAGE_KEYS.RETURNING_USER}:${userId}`
@@ -499,6 +500,53 @@ function App() {
     }
   }
 
+  const handleRenameTag = async (fromTag: string, toTag: string) => {
+    if (!userId) return
+    const fromKey = fromTag.trim().toLowerCase()
+    const toLabel = toTag.trim()
+    if (!fromKey || !toLabel) return
+    if (fromKey === toLabel.toLowerCase()) return
+
+    const affectedEntries = entries.filter(entry =>
+      (entry.tags ?? []).some(tag => tag.trim().toLowerCase() === fromKey),
+    )
+    if (!affectedEntries.length) return
+
+    try {
+      const updatedEntries = await Promise.all(
+        affectedEntries.map(async (entry) => {
+          const nextTags = (entry.tags ?? []).map((tag) => {
+            const normalized = tag.trim().toLowerCase()
+            if (!normalized) return tag
+            return normalized === fromKey ? toLabel : tag
+          })
+
+          const saved = await upsertEntry({
+            user_id: userId,
+            entry_date: entry.entry_date,
+            tags: nextTags,
+          })
+
+          return saved
+        }),
+      )
+
+      const updatedByKey = new Map(
+        updatedEntries.map(e => [`${e.user_id}:${e.entry_date}`, e]),
+      )
+
+      const nextEntries = entries.map((entry) => {
+        const key = `${entry.user_id}:${entry.entry_date}`
+        return updatedByKey.get(key) ?? entry
+      })
+
+      setEntries(nextEntries)
+    }
+    catch {
+      // If rename fails, keep existing entries; fetchEntries will retry on next load.
+    }
+  }
+
   useEffect(() => {
     if (!isNativeApp) return
 
@@ -640,6 +688,7 @@ function App() {
         onSettingsLanguageChange={handleLanguageChange}
         onSettingsThemeChange={handleThemeChange}
         onSettingsPersonalSleepTargetChange={handleSleepTargetChange}
+        onRenameTag={handleRenameTag}
       />
 
       {authInitialized

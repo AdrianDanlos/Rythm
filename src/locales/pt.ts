@@ -3,6 +3,7 @@ const pt = {
     appTagline: 'Rastreador de sono e humor',
     close: 'Fechar',
     save: 'Salvar',
+    edit: 'Editar',
     loading: 'Carregando...',
     noEntry: 'Sem registro',
     low: 'Baixo',

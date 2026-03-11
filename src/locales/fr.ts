@@ -3,6 +3,7 @@ const fr = {
     appTagline: 'Suivi du sommeil et de l\'humeur',
     close: 'Fermer',
     save: 'Enregistrer',
+    edit: 'Modifier',
     loading: 'Chargement...',
     noEntry: 'Aucune entrée',
     low: 'Faible',
