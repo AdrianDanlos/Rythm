@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { t } from 'i18next'
 import { toast } from 'sonner'
-import i18n from '../i18n'
 import { upsertEntry, type Entry } from '../lib/entries'
 import { getSupportMessage } from '../lib/supportMessage'
 import { buildStats, type StatsResult } from '../lib/stats'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
+import { formatSleepHoursOption, parseSleepHours } from '../lib/utils/sleepHours'
 
 const DEFAULT_TAG_SUGGESTION_KEYS = [
   'log.defaultTags.caffeine',
@@ -116,40 +116,7 @@ export const useLogForm = ({
       }
     })
     return suggestions
-  }, [entries, tags, i18n.language])
-
-  const parseSleepHours = (value: string) => {
-    const trimmed = value.trim()
-    if (!trimmed) return null
-    if (trimmed.includes(':')) {
-      const match = /^(\d{1,2})\s*:\s*(\d{1,2})$/.exec(trimmed)
-      if (!match) return null
-      const hours = Number(match[1])
-      const minutes = Number(match[2])
-      if (!Number.isFinite(hours) || !Number.isFinite(minutes) || minutes >= 60) {
-        return null
-      }
-      return hours + minutes / 60
-    }
-    if (/[hH]/.test(trimmed)) {
-      const match = /^(\d{1,2})\s*h(?:\s*(\d{1,2})\s*(?:m|min)?)?$/i.exec(trimmed)
-      if (!match) return null
-      const hours = Number(match[1])
-      const minutes = match[2] ? Number(match[2]) : 0
-      if (!Number.isFinite(hours) || !Number.isFinite(minutes) || minutes >= 60) {
-        return null
-      }
-      return hours + minutes / 60
-    }
-    const asNumber = Number(trimmed)
-    if (!Number.isFinite(asNumber)) return null
-    return asNumber
-  }
-
-  const formatSleepHoursOption = (value: number) => {
-    const rounded = Math.round(value * 4) / 4
-    return rounded.toFixed(2).replace(/\.?0+$/, '')
-  }
+  }, [entries, tags])
 
   const showEntriesError = (message: string) => {
     toast.error(message)

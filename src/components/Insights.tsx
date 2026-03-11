@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import type { Entry } from '../lib/entries'
@@ -27,6 +27,7 @@ import { InsightsStats } from './insights/InsightsStats'
 import { InsightsTagInsights } from './insights/InsightsTagInsights'
 import { InsightsMoodDistribution } from './insights/InsightsMoodDistribution'
 import { InsightsWeekdayAverages } from './insights/InsightsWeekdayAverages'
+import { useIsMobile } from '../hooks/useIsMobile'
 import rankingBadge1 from '../assets/badges/ranking-badge_1.png'
 import rankingBadge2 from '../assets/badges/ranking-badge_2.png'
 import rankingBadge3 from '../assets/badges/ranking-badge_3.png'
@@ -281,22 +282,7 @@ export const Insights = ({
       .map(([, { display, count }]) => ({ display, count }))
   }, [entries])
 
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined
-    const media = window.matchMedia('(max-width: 540px)')
-    const handleChange = () => setIsMobile(media.matches)
-    handleChange()
-
-    if (media.addEventListener) {
-      media.addEventListener('change', handleChange)
-      return () => media.removeEventListener('change', handleChange)
-    }
-
-    media.addListener(handleChange)
-    return () => media.removeListener(handleChange)
-  }, [])
+  const isMobile = useIsMobile()
   const reduceMotion = useReducedMotion()
   const panelTransition = reduceMotion ? { duration: 0 } : motionTransition
 
