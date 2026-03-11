@@ -66,16 +66,6 @@
     max-height 0.2s ease;
 }
 
-.app-header--scrolled .app-header-eyebrow {
-  max-height: 0;
-  opacity: 0;
-  visibility: hidden;
-}
-
-.app-header--scrolled::before {
-  background: var(--bg);
-}
-
 .header-left {
   display: flex;
   align-items: center;
