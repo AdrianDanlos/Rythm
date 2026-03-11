@@ -1,16 +1,18 @@
 import { Menu } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { AppBrand } from './AppBrand'
-import { Tooltip } from './Tooltip'
 
 type AppHeaderProps = {
   onOpenMenu?: () => void
   isMenuOpen?: boolean
+  isAuthenticated?: boolean
 }
 
-export function AppHeader({ onOpenMenu, isMenuOpen }: AppHeaderProps) {
-  const { t } = useTranslation()
+export function AppHeader({
+  onOpenMenu,
+  isMenuOpen,
+  isAuthenticated,
+}: AppHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
@@ -33,19 +35,19 @@ export function AppHeader({ onOpenMenu, isMenuOpen }: AppHeaderProps) {
   return (
     <header className={headerClasses}>
       <div className="app-header-top">
-        <p className="app-header-eyebrow">{t('common.appTagline')}</p>
+        <p className="app-header-eyebrow">Rythm</p>
       </div>
       <div className="header-left">
-        <Tooltip label={t('nav.menu')}>
+        {isAuthenticated && (
           <button
             className="app-header-menu-btn"
             type="button"
             onClick={() => onOpenMenu?.()}
-            aria-label={t('nav.menu')}
+            aria-label="Menu"
           >
             <Menu className="icon" aria-hidden="true" />
           </button>
-        </Tooltip>
+        )}
         <AppBrand logoOnly />
       </div>
     </header>

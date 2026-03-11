@@ -740,6 +740,7 @@ function App() {
       <AppHeader
         onOpenMenu={() => setIsMenuPanelOpen(prev => !prev)}
         isMenuOpen={isMenuPanelOpen}
+        isAuthenticated={!!session}
       />
 
       <AppSidePanel

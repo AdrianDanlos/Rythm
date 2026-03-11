@@ -79,7 +79,7 @@
   padding: 4px 4px 4px 0;
   margin: -4px;
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   background: transparent;
   color: var(--text);
   cursor: pointer;
@@ -91,13 +91,12 @@
   height: 32px;
 }
 
-.app-header-menu-btn:hover {
-  background: var(--button-hover-surface);
-}
-
-.app-header-menu-btn:focus-visible {
-  outline: 2px solid var(--text);
-  outline-offset: 2px;
+.app-header-menu-btn:hover,
+.app-header-menu-btn:focus,
+.app-header-menu-btn:active {
+  background: transparent;
+  outline: none;
+  box-shadow: none;
 }
 
 .header-actions {
