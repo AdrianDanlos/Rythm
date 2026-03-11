@@ -68,7 +68,6 @@ export function AppSidePanel({
   onSignOut,
 }: AppSidePanelProps) {
   const { t } = useTranslation()
-
   const runAndClose = (fn: () => void) => {
     fn()
     onClose()
@@ -85,7 +84,7 @@ export function AppSidePanel({
         aria-hidden="true"
       />
       <aside
-        className="side-panel"
+        className="side-panel side-panel--open"
         aria-modal="true"
         aria-label="Menu"
       >
