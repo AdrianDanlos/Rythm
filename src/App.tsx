@@ -829,7 +829,7 @@ function App() {
         onEnsureTagColor={ensureTagColorForTag}
       />
 
-      {authInitialized
+      {authInitialized && session
         ? (
             <AppBottomNav
               session={session}

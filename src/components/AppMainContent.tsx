@@ -213,7 +213,13 @@ export function AppMainContent({
   const reduceMotion = useReducedMotion()
   const tabTransition = reduceMotion ? { duration: 0 } : motionTransition
 
+  // On native apps (Android/iOS), rely on the native splash screen (R logo)
+  // and avoid showing the intermediate "loading account" screen.
   if (!authInitialized) {
+    if (isNativeApp) {
+      return null
+    }
+
     return (
       <div className="app-loading-splash" aria-live="polite">
         <img

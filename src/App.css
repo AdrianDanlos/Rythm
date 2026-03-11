@@ -9,6 +9,12 @@
   gap: 16px;
 }
 
+.app-unauthenticated {
+  /* On the login screen, don't reserve extra space for the fixed bottom nav
+     so the screen can use the full viewport height. */
+  padding-bottom: 16px;
+}
+
 .app-header {
   position: fixed;
   top: 0;
