@@ -582,7 +582,15 @@ export const Insights = ({
                             <button
                               type="button"
                               className="link-button link-button--text your-daily-events-toggle"
-                              onClick={() => setShowAllTags(prev => !prev)}
+                              onClick={() => {
+                                setShowAllTags((prev) => {
+                                  const next = !prev
+                                  if (prev && typeof window !== 'undefined') {
+                                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                                  }
+                                  return next
+                                })
+                              }}
                             >
                               {showAllTags
                                 ? t('insights.showTopTags')
