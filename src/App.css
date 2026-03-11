@@ -1269,6 +1269,14 @@
   min-width: 0;
 }
 
+.your-daily-events-toggle {
+  margin-top: 8px;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .save-button {
   display: inline-flex;
   align-items: center;

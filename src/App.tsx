@@ -500,51 +500,72 @@ function App() {
     }
   }
 
-  const handleRenameTag = async (fromTag: string, toTag: string) => {
-    if (!userId) return
+  const handleRenameTag = (fromTag: string, toTag: string) => {
     const fromKey = fromTag.trim().toLowerCase()
     const toLabel = toTag.trim()
     if (!fromKey || !toLabel) return
     if (fromKey === toLabel.toLowerCase()) return
+
+    // Optimistic UI update: change tags in local state immediately.
+    const nextEntries = entries.map((entry) => {
+      if (!entry.tags?.length) return entry
+      let changed = false
+      const updatedTags = entry.tags.map((tag) => {
+        const normalized = tag.trim().toLowerCase()
+        if (!normalized) return tag
+        if (normalized === fromKey) {
+          changed = true
+          return toLabel
+        }
+        return tag
+      })
+      return changed ? { ...entry, tags: updatedTags } : entry
+    })
+    setEntries(nextEntries)
+
+    // Persist in background; keep UI responsive.
+    if (!userId) return
 
     const affectedEntries = entries.filter(entry =>
       (entry.tags ?? []).some(tag => tag.trim().toLowerCase() === fromKey),
     )
     if (!affectedEntries.length) return
 
-    try {
-      const updatedEntries = await Promise.all(
-        affectedEntries.map(async (entry) => {
-          const nextTags = (entry.tags ?? []).map((tag) => {
-            const normalized = tag.trim().toLowerCase()
-            if (!normalized) return tag
-            return normalized === fromKey ? toLabel : tag
-          })
+    void (async () => {
+      try {
+        const updatedEntries = await Promise.all(
+          affectedEntries.map(async (entry) => {
+            const nextTags = (entry.tags ?? []).map((tag) => {
+              const normalized = tag.trim().toLowerCase()
+              if (!normalized) return tag
+              return normalized === fromKey ? toLabel : tag
+            })
 
-          const saved = await upsertEntry({
-            user_id: userId,
-            entry_date: entry.entry_date,
-            tags: nextTags,
-          })
+            const saved = await upsertEntry({
+              user_id: userId,
+              entry_date: entry.entry_date,
+              tags: nextTags,
+            })
 
-          return saved
-        }),
-      )
+            return saved
+          }),
+        )
 
-      const updatedByKey = new Map(
-        updatedEntries.map(e => [`${e.user_id}:${e.entry_date}`, e]),
-      )
+        const updatedByKey = new Map(
+          updatedEntries.map(e => [`${e.user_id}:${e.entry_date}`, e]),
+        )
 
-      const nextEntries = entries.map((entry) => {
-        const key = `${entry.user_id}:${entry.entry_date}`
-        return updatedByKey.get(key) ?? entry
-      })
-
-      setEntries(nextEntries)
-    }
-    catch {
-      // If rename fails, keep existing entries; fetchEntries will retry on next load.
-    }
+        setEntries(prev =>
+          prev.map((entry) => {
+            const key = `${entry.user_id}:${entry.entry_date}`
+            return updatedByKey.get(key) ?? entry
+          }),
+        )
+      }
+      catch {
+        // If rename fails, keep optimistic UI; next reload will refetch from server.
+      }
+    })()
   }
 
   useEffect(() => {
