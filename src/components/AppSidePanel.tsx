@@ -9,8 +9,6 @@ import {
   Star,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import logo from '../assets/rythm-logo.png'
-import logoBlack from '../assets/rythm-logo-black.png'
 
 type AppSidePanelProps = {
   isOpen: boolean
@@ -92,10 +90,6 @@ export function AppSidePanel({
         aria-modal="true"
         aria-label="Menu"
       >
-        <div className="side-panel__header">
-          <img className="side-panel__logo side-panel__logo--light" src={logoBlack} alt="" />
-          <img className="side-panel__logo side-panel__logo--dark" src={logo} alt="" />
-        </div>
         <nav className="side-panel__nav">
           <PanelButton
             icon={FileDown}

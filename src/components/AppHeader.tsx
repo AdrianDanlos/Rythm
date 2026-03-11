@@ -6,9 +6,10 @@ import { Tooltip } from './Tooltip'
 
 type AppHeaderProps = {
   onOpenMenu?: () => void
+  isMenuOpen?: boolean
 }
 
-export function AppHeader({ onOpenMenu }: AppHeaderProps) {
+export function AppHeader({ onOpenMenu, isMenuOpen }: AppHeaderProps) {
   const { t } = useTranslation()
   const [isScrolled, setIsScrolled] = useState(false)
 
@@ -21,8 +22,16 @@ export function AppHeader({ onOpenMenu }: AppHeaderProps) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const headerClasses = [
+    'app-header',
+    isScrolled ? 'app-header--scrolled' : '',
+    isMenuOpen ? 'app-header--menu-open' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <header className={`app-header${isScrolled ? ' app-header--scrolled' : ''}`}>
+    <header className={headerClasses}>
       <div className="app-header-top">
         <p className="app-header-eyebrow">{t('common.appTagline')}</p>
       </div>

@@ -426,6 +426,20 @@ function App() {
   }, [isNativeApp])
 
   useEffect(() => {
+    if (typeof document === 'undefined') return
+
+    const { overflow } = document.body.style
+
+    if (isMenuPanelOpen) {
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      document.body.style.overflow = overflow
+    }
+  }, [isMenuPanelOpen])
+
+  useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [activePage])
 
@@ -702,14 +716,31 @@ function App() {
     swipeStartXRef.current = null
   }
 
+  const handleAppClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!isMenuPanelOpen) return
+
+    const target = event.target as HTMLElement | null
+    if (!target) return
+
+    if (target.closest('.side-panel') || target.closest('.app-header-menu-btn')) {
+      return
+    }
+
+    setIsMenuPanelOpen(false)
+  }
+
   return (
     <div
       className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}`}
+      onClick={handleAppClick}
       onTouchStart={handleSwipeStart}
       onTouchMove={handleSwipeMove}
       onTouchEnd={handleSwipeEnd}
     >
-      <AppHeader onOpenMenu={() => setIsMenuPanelOpen(true)} />
+      <AppHeader
+        onOpenMenu={() => setIsMenuPanelOpen(prev => !prev)}
+        isMenuOpen={isMenuPanelOpen}
+      />
 
       <AppSidePanel
         isOpen={isMenuPanelOpen}
