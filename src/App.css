@@ -333,7 +333,7 @@
   flex-direction: column;
   gap: 2px;
   padding: 10px 0;
-  border-top: 1px solid #cfcfcf;
+  border-top: 1px solid var(--border);
   margin-top: 20px;
 }
 
@@ -1334,6 +1334,97 @@
     #ffffff 8px
   );
   border-style: dashed;
+}
+
+.tag-color-trigger {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  padding: 0;
+  background-clip: padding-box;
+  background-color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag-color-trigger-inner {
+  width: 70%;
+  height: 70%;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  background: color-mix(in srgb, #ffffff 10%, transparent);
+}
+
+.tag-color-trigger:focus-visible {
+  outline: 2px solid var(--input-focus-border);
+  outline-offset: 2px;
+}
+
+.tag-color-modal-backdrop {
+  padding-top: 72px;
+}
+
+.tag-color-modal {
+  max-width: 420px;
+}
+
+.tag-color-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tag-color-modal-description {
+  margin-top: 4px;
+}
+
+.tag-color-modal-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.tag-color-modal-preview-swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+.tag-color-modal-preview-hex {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.tag-color-modal-body {
+  padding-top: 4px;
+}
+
+.tag-color-modal-actions {
+  margin-top: 18px;
+}
+
+.tag-color-modal .react-colorful {
+  width: 100%;
+  height: 180px;
+}
+
+.tag-color-modal .react-colorful__saturation {
+  border-radius: 14px;
+}
+
+.tag-color-modal .react-colorful__hue {
+  height: 16px;
+  margin-top: 12px;
+  border-radius: 999px;
 }
 
 .save-button {

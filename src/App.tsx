@@ -46,6 +46,7 @@ import { DAILY_REMINDER_ID } from './lib/notifications'
 import { Toaster } from 'sonner'
 import './App.css'
 import { upsertEntry } from './lib/entries'
+import { MAX_TAG_LENGTH } from './lib/utils/stringUtils'
 
 function getReturningUserStorageKey(userId: string): string {
   return `${STORAGE_KEYS.RETURNING_USER}:${userId}`
@@ -580,7 +581,7 @@ function App() {
 
   const handleRenameTag = (fromTag: string, toTag: string) => {
     const fromKey = fromTag.trim().toLowerCase()
-    const toLabel = toTag.trim()
+    const toLabel = toTag.trim().slice(0, MAX_TAG_LENGTH)
     if (!fromKey || !toLabel) return
     if (fromKey === toLabel.toLowerCase()) return
 

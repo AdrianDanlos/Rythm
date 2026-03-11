@@ -29,6 +29,8 @@ import { InsightsTagInsights } from './insights/InsightsTagInsights'
 import { InsightsMoodDistribution } from './insights/InsightsMoodDistribution'
 import { InsightsWeekdayAverages } from './insights/InsightsWeekdayAverages'
 import { useIsMobile } from '../hooks/useIsMobile'
+import { tagColorPalette } from '../lib/colors'
+import { TagColorPicker } from './TagColorPicker'
 import rankingBadge1 from '../assets/badges/ranking-badge_1.png'
 import rankingBadge2 from '../assets/badges/ranking-badge_2.png'
 import rankingBadge3 from '../assets/badges/ranking-badge_3.png'
@@ -38,6 +40,7 @@ import rankingBadgeLast from '../assets/badges/ranking-badge_last.png'
 import { buildMockScatterPlottedData } from '../lib/insightsMock'
 import { getMotivationMessage } from '../lib/utils/motivationMessage'
 import { motionTransition } from '../lib/motion'
+import { MAX_TAG_LENGTH } from '../lib/utils/stringUtils'
 
 type InsightsTab = 'summary' | 'charts' | 'events'
 type ScatterRange = 'all' | 'last30' | 'last90'
@@ -291,21 +294,23 @@ export const Insights = ({
   const [editingValue, setEditingValue] = useState('')
   const [showAllTags, setShowAllTags] = useState(false)
   const visibleTags = showAllTags ? topTags : topTags.slice(0, 6)
+  const [colorPickerTag, setColorPickerTag] = useState<string | null>(null)
 
   const startEditingTag = (tag: string) => {
     setEditingTag(tag)
-    setEditingValue(tag)
+    setEditingValue(tag.slice(0, MAX_TAG_LENGTH))
   }
 
   const commitEditingTag = () => {
     if (!editingTag) return
     const trimmed = editingValue.trim()
-    if (!trimmed || trimmed === editingTag) {
+    const limited = trimmed.slice(0, MAX_TAG_LENGTH)
+    if (!limited || limited === editingTag) {
       setEditingTag(null)
       setEditingValue('')
       return
     }
-    onRenameTag(editingTag, trimmed)
+    onRenameTag(editingTag, limited)
     setEditingTag(null)
     setEditingValue('')
   }
@@ -534,7 +539,7 @@ export const Insights = ({
                                         <input
                                           type="text"
                                           value={editingValue}
-                                          onChange={e => setEditingValue(e.target.value)}
+                                          onChange={e => setEditingValue(e.target.value.slice(0, MAX_TAG_LENGTH))}
                                           onBlur={commitEditingTag}
                                           onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
@@ -555,14 +560,15 @@ export const Insights = ({
                                         <span className="your-daily-events-list-label">
                                           {t('insights.dailyEventCount', { tag: display, count })}
                                         </span>
-                                        <input
-                                          type="color"
-                                          className="your-daily-events-color-input"
-                                          value={tagColor}
-                                          data-unset={hasExplicitColor ? 'false' : 'true'}
-                                          onChange={e => onTagColorChange(display, e.target.value)}
+                                        <button
+                                          type="button"
+                                          className="tag-color-trigger"
+                                          style={{ backgroundColor: tagColor }}
+                                          onClick={() => setColorPickerTag(display)}
                                           aria-label={t('insights.changeTagColor', { tag: display })}
-                                        />
+                                        >
+                                          <span className="tag-color-trigger-inner" />
+                                        </button>
                                         <button
                                           type="button"
                                           className="ghost icon-button your-daily-events-edit-button"
@@ -604,6 +610,25 @@ export const Insights = ({
                       <p className="muted">{t('insights.noDailyEventsLogged')}</p>
                     )}
               </section>
+              <TagColorPicker
+                color={(() => {
+                  if (!colorPickerTag) return '#ffffff'
+                  const key = colorPickerTag.trim().toLowerCase()
+                  return tagColors[key] ?? tagColorPalette[0]
+                })()}
+                isOpen={!!colorPickerTag}
+                title={t('insights.changeTagColorTitle')}
+                description={t('insights.changeTagColorDescription')}
+                confirmLabel={t('common.save')}
+                cancelLabel={t('common.cancel')}
+                onCancel={() => setColorPickerTag(null)}
+                onConfirm={(nextColor) => {
+                  if (colorPickerTag) {
+                    onTagColorChange(colorPickerTag, nextColor)
+                  }
+                  setColorPickerTag(null)
+                }}
+              />
               {hasEnoughEntries && (
                 <InsightsTagInsights
                   isPro={isPro}

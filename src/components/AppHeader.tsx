@@ -1,5 +1,6 @@
 import { Menu } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { AppBrand } from './AppBrand'
 
 type AppHeaderProps = {
@@ -13,6 +14,7 @@ export function AppHeader({
   isMenuOpen,
   isAuthenticated,
 }: AppHeaderProps) {
+  const { t } = useTranslation()
   const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
@@ -35,7 +37,7 @@ export function AppHeader({
   return (
     <header className={headerClasses}>
       <div className="app-header-top">
-        <p className="app-header-eyebrow">Rythm</p>
+        <p className="app-header-eyebrow">{t('common.appTagline')}</p>
       </div>
       <div className="header-left">
         {isAuthenticated && (
