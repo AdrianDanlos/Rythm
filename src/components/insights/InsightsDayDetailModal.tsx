@@ -9,6 +9,7 @@ type InsightsDayDetailModalProps = {
   entry: Entry | null
   moodColors: string[]
   onClose: () => void
+  tagColors?: Record<string, string>
 }
 
 export const InsightsDayDetailModal = ({
@@ -17,6 +18,7 @@ export const InsightsDayDetailModal = ({
   entry,
   moodColors,
   onClose,
+  tagColors,
 }: InsightsDayDetailModalProps) => {
   const { t } = useTranslation()
   if (!isOpen) return null
@@ -86,11 +88,20 @@ export const InsightsDayDetailModal = ({
                   {tags.length
                     ? (
                         <div className="insights-day-modal__tags">
-                          {tags.map((tag, index) => (
-                            <span className="tag-pill" data-color-index={index % 8} key={tag}>
-                              {tag}
-                            </span>
-                          ))}
+                          {tags.map((tag, index) => {
+                            const colorKey = tag.trim().toLowerCase()
+                            const tagColor = tagColors?.[colorKey]
+                            return (
+                              <span
+                                className="tag-pill"
+                                data-color-index={index % 8}
+                                key={tag}
+                                style={tagColor ? { backgroundColor: tagColor } : undefined}
+                              >
+                                {tag}
+                              </span>
+                            )
+                          })}
                         </div>
                       )
                     : <p className="muted">{t('insights.noDailyEventsLogged')}</p>}

@@ -82,12 +82,14 @@ type InsightsProps = {
   moodByPersonalThreshold: { high: number | null, low: number | null }
   tagDrivers: TagDriver[]
   tagSleepDrivers: TagSleepDriver[]
+  tagColors: Record<string, string>
   isPro: boolean
   onOpenPaywall: () => void
   onOpenFeedback: () => void
   activeTab: InsightsTab
   goToLog: () => void
   onRenameTag: (fromTag: string, toTag: string) => void
+  onTagColorChange: (tag: string, color: string) => void
 }
 
 export const Insights = ({
@@ -115,11 +117,13 @@ export const Insights = ({
   moodByPersonalThreshold,
   tagDrivers,
   tagSleepDrivers,
+  tagColors,
   isPro,
   onOpenPaywall,
   activeTab,
   goToLog,
   onRenameTag,
+  onTagColorChange,
 }: InsightsProps) => {
   const { t } = useTranslation()
   const isLoading = entriesLoading
@@ -449,6 +453,7 @@ export const Insights = ({
                 moodColors={moodColors}
                 isMobile={isMobile}
                 entriesLoading={entriesLoading}
+                tagColors={tagColors}
               />
               <InsightsWeekdayAverages
                 weekdayAverages={weekdayAverages}
@@ -515,6 +520,8 @@ export const Insights = ({
                         <ul className="your-daily-events-list">
                           {visibleTags.map(({ display, count }) => {
                             const isEditing = editingTag === display
+                            const colorKey = display.trim().toLowerCase()
+                            const tagColor = tagColors[colorKey] ?? '#4f46e5'
                             return (
                               <li
                                 key={display}
@@ -547,6 +554,13 @@ export const Insights = ({
                                         <span className="your-daily-events-list-label">
                                           {t('insights.dailyEventCount', { tag: display, count })}
                                         </span>
+                                        <input
+                                          type="color"
+                                          className="your-daily-events-color-input"
+                                          value={tagColor}
+                                          onChange={e => onTagColorChange(display, e.target.value)}
+                                          aria-label={t('insights.changeTagColor', { tag: display })}
+                                        />
                                         <button
                                           type="button"
                                           className="ghost icon-button your-daily-events-edit-button"
@@ -585,6 +599,7 @@ export const Insights = ({
                   tagSleepDrivers={tagSleepDrivers}
                   onOpenPaywall={onOpenPaywall}
                   goToLog={goToLog}
+                  tagColors={tagColors}
                 />
               )}
             </motion.div>

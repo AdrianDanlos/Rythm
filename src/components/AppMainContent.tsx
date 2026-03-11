@@ -106,6 +106,7 @@ type AppMainContentProps = {
   moodByPersonalThreshold: { high: number | null, low: number | null }
   tagDrivers: TagDriver[]
   tagSleepDrivers: TagSleepDriver[]
+  tagColors: Record<string, string>
   isPro: boolean
   onOpenPaywall: () => void
   onOpenFeedback: () => void
@@ -121,6 +122,7 @@ type AppMainContentProps = {
   onSettingsThemeChange: (value: ThemePreference) => void
   onSettingsPersonalSleepTargetChange: (value: number) => void
   onRenameTag: (fromTag: string, toTag: string) => void
+  onTagColorChange: (tag: string, color: string) => void
 }
 
 export function AppMainContent({
@@ -187,6 +189,7 @@ export function AppMainContent({
   moodByPersonalThreshold,
   tagDrivers,
   tagSleepDrivers,
+  tagColors,
   isPro,
   onOpenPaywall,
   onOpenFeedback,
@@ -202,6 +205,7 @@ export function AppMainContent({
   onSettingsThemeChange,
   onSettingsPersonalSleepTargetChange,
   onRenameTag,
+  onTagColorChange,
 }: AppMainContentProps) {
   const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
@@ -335,6 +339,7 @@ export function AppMainContent({
                                 moodColors={moodColors}
                                 isMobile={isMobile}
                                 formatLocalDate={formatLocalDate}
+                                tagColors={tagColors}
                                 onEntryDateChange={onEntryDateChange}
                                 onSleepHoursChange={onSleepHoursChange}
                                 onMoodChange={onMoodChange}
@@ -379,12 +384,14 @@ export function AppMainContent({
                         moodByPersonalThreshold={moodByPersonalThreshold}
                         tagDrivers={tagDrivers}
                         tagSleepDrivers={tagSleepDrivers}
+                        tagColors={tagColors}
                         isPro={isPro}
                         onOpenPaywall={onOpenPaywall}
                         onOpenFeedback={onOpenFeedback}
                         goToLog={() => onNavigateToPage(AppPage.Log)}
                         activeTab={activeInsightsTab}
                         onRenameTag={onRenameTag}
+                        onTagColorChange={onTagColorChange}
                       />
                     </motion.div>
                   )}

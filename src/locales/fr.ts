@@ -299,6 +299,7 @@ const fr = {
     dailyEventsInsights: 'Insights des événements quotidiens',
     yourDailyEvents: 'Vos événements quotidiens',
     dailyEventCount: '{{tag}} ({{count}})',
+    changeTagColor: 'Changer la couleur pour {{tag}}',
     eventsInfluence: 'Voyez comment ce qui se passe dans la journée influence votre humeur et votre sommeil au fil du temps.',
     eventsPredictMood: 'Événements quotidiens qui prédisent l\'humeur',
     eventsPredictSleep: 'Événements quotidiens qui prédisent le sommeil',

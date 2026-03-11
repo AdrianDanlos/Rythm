@@ -1277,6 +1277,25 @@
   justify-content: center;
 }
 
+.your-daily-events-color-input {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.your-daily-events-color-input::-webkit-color-swatch {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
+.your-daily-events-color-input::-moz-color-swatch {
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+
 .save-button {
   display: inline-flex;
   align-items: center;

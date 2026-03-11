@@ -201,6 +201,43 @@ function App() {
     formatLocalDate,
   })
 
+  const [tagColors, setTagColors] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    const uid = session?.user?.id
+    if (!uid) {
+      setTagColors({})
+      return
+    }
+    try {
+      const stored = window.localStorage.getItem(`rythm:tagColors:${uid}`)
+      if (stored) {
+        setTagColors(JSON.parse(stored))
+      }
+    }
+    catch {
+      setTagColors({})
+    }
+  }, [session?.user?.id])
+
+  const handleTagColorChange = (tag: string, color: string) => {
+    const key = tag.trim().toLowerCase()
+    if (!key) return
+    setTagColors((prev) => {
+      const next = { ...prev, [key]: color }
+      const uid = session?.user?.id
+      if (uid) {
+        try {
+          window.localStorage.setItem(`rythm:tagColors:${uid}`, JSON.stringify(next))
+        }
+        catch {
+          // ignore storage errors
+        }
+      }
+      return next
+    })
+  }
+
   const {
     setEntryDate,
     selectedDate,
@@ -695,6 +732,7 @@ function App() {
         moodByPersonalThreshold={stats.moodByPersonalThreshold}
         tagDrivers={stats.tagDrivers}
         tagSleepDrivers={stats.tagSleepDrivers}
+        tagColors={tagColors}
         isPro={isPro}
         onOpenPaywall={openPaywall}
         onOpenFeedback={openFeedback}
@@ -710,6 +748,7 @@ function App() {
         onSettingsThemeChange={handleThemeChange}
         onSettingsPersonalSleepTargetChange={handleSleepTargetChange}
         onRenameTag={handleRenameTag}
+        onTagColorChange={handleTagColorChange}
       />
 
       {authInitialized

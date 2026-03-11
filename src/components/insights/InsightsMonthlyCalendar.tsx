@@ -9,6 +9,7 @@ type InsightsMonthlyCalendarProps = {
   moodColors: string[]
   isMobile: boolean
   entriesLoading: boolean
+  tagColors?: Record<string, string>
 }
 
 type CalendarDay = {
@@ -63,6 +64,7 @@ export const InsightsMonthlyCalendar = ({
   moodColors,
   isMobile,
   entriesLoading,
+  tagColors,
 }: InsightsMonthlyCalendarProps) => {
   const { t, i18n } = useTranslation()
   const dateLocale = getDateLocale()
@@ -211,6 +213,7 @@ export const InsightsMonthlyCalendar = ({
         dateKey={selectedDate ?? formatLocalDate(new Date())}
         entry={selectedEntry}
         moodColors={moodColors}
+        tagColors={tagColors}
         onClose={() => setSelectedDate(null)}
       />
     </section>

@@ -299,6 +299,7 @@ const pt = {
     dailyEventsInsights: 'Insights de eventos diários',
     yourDailyEvents: 'Seus eventos diários',
     dailyEventCount: '{{tag}} ({{count}})',
+    changeTagColor: 'Alterar cor de {{tag}}',
     eventsInfluence: 'Veja como o que acontece no seu dia influencia seu humor e sono ao longo do tempo.',
     eventsPredictMood: 'Eventos diários que preveem humor',
     eventsPredictSleep: 'Eventos diários que preveem sono',

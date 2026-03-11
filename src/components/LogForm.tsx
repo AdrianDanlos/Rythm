@@ -6,7 +6,7 @@ import 'react-day-picker/dist/style.css'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import { Tooltip } from './Tooltip'
 
-const MOOD_ICONS: Record<1 | 2 | 3 | 4 | 5, ComponentType<{ className?: string; size?: number; 'aria-hidden'?: boolean }>> = {
+const MOOD_ICONS: Record<1 | 2 | 3 | 4 | 5, ComponentType<{ 'className'?: string, 'size'?: number, 'aria-hidden'?: boolean }>> = {
   1: Angry,
   2: Frown,
   3: Meh,
@@ -31,6 +31,7 @@ export type LogFormProps = {
   moodColors: string[]
   isMobile?: boolean
   formatLocalDate: (date: Date) => string
+  tagColors?: Record<string, string>
   onEntryDateChange: (value: string) => void
   onSleepHoursChange: (value: string) => void
   onMoodChange: (value: number) => void
@@ -56,6 +57,7 @@ export const LogForm = ({
   moodColors,
   isMobile = false,
   formatLocalDate,
+  tagColors,
   onEntryDateChange,
   onSleepHoursChange,
   onMoodChange,
@@ -341,7 +343,7 @@ export const LogForm = ({
               {tagDropdownOpen && (dropdownOptions.length > 0 || !isMobile) && (
                 <div className="tag-suggestions" role="listbox">
                   {dropdownOptions.length > 0
-                    ? dropdownOptions.map(suggestion => {
+                    ? dropdownOptions.map((suggestion) => {
                         const isAdded = usedTagSet.has(suggestion.toLowerCase())
                         return (
                           <button
@@ -381,31 +383,36 @@ export const LogForm = ({
           </div>
           {usedTags.length > 0 && (
             <div className="tag-pills-row">
-              {usedTags.map((tag, index) => (
-                <span
-                  key={tag}
-                  className="tag-pill"
-                  data-color-index={index}
-                >
-                  {tag}
-                  <button
-                    type="button"
-                    className="tag-badge-remove"
-                    aria-label={t('log.removeTag', { tag })}
-                    onMouseDown={e => e.preventDefault()}
-                    onClick={() => removeTag(tag)}
+              {usedTags.map((tag, index) => {
+                const colorKey = tag.trim().toLowerCase()
+                const tagColor = tagColors?.[colorKey]
+                return (
+                  <span
+                    key={tag}
+                    className="tag-pill"
+                    data-color-index={index}
+                    style={tagColor ? { backgroundColor: tagColor } : undefined}
                   >
-                    ×
-                  </button>
-                </span>
-              ))}
+                    {tag}
+                    <button
+                      type="button"
+                      className="tag-badge-remove"
+                      aria-label={t('log.removeTag', { tag })}
+                      onMouseDown={e => e.preventDefault()}
+                      onClick={() => removeTag(tag)}
+                    >
+                      ×
+                    </button>
+                  </span>
+                )
+              })}
             </div>
           )}
         </div>
         <div className="field field-mood">
           {t('log.moodQuestion')}
           <div className="mood-row">
-            {([1, 2, 3, 4, 5] as const).map(value => {
+            {([1, 2, 3, 4, 5] as const).map((value) => {
               const Icon = MOOD_ICONS[value]
               return (
                 <button

@@ -299,6 +299,7 @@ const en = {
     dailyEventsInsights: 'Daily Events Insights',
     yourDailyEvents: 'Your Daily Events',
     dailyEventCount: '{{tag}} ({{count}})',
+    changeTagColor: 'Change color for {{tag}}',
     eventsInfluence: 'See how what happens during the day influences your mood and sleep over time.',
     eventsPredictMood: 'Daily events that predict mood',
     eventsPredictSleep: 'Daily events that predict sleep',
