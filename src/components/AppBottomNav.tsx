@@ -7,6 +7,7 @@ import { AppPage, Tabs, type TabKey, type InsightsSection } from '../lib/appTabs
 
 type AppBottomNavProps = {
   session: { user: { email?: string } } | null
+  activePage: AppPage
   activeTab: TabKey
   activeInsightsTab: InsightsSection
   onNavigateToPage: (page: AppPage) => void
@@ -21,6 +22,7 @@ type AppBottomNavProps = {
 
 export function AppBottomNav({
   session,
+  activePage,
   activeTab,
   activeInsightsTab,
   onNavigateToPage,
@@ -34,6 +36,7 @@ export function AppBottomNav({
 }: AppBottomNavProps) {
   const { t } = useTranslation()
   const lastTouchNavAtMsRef = useRef(0)
+  const showActiveStyles = activePage !== AppPage.Settings
 
   const handleTabInteraction = (navigate: () => void) => ({
     onTouchEnd: () => {
@@ -79,7 +82,7 @@ export function AppBottomNav({
               >
                 <button
                   type="button"
-                  className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Summary ? 'active' : ''}`}
+                  className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Summary ? 'active' : ''}`}
                   {...handleTabInteraction(goToSummary)}
                 >
                   <span className="tab-icon" aria-hidden="true">
@@ -107,7 +110,7 @@ export function AppBottomNav({
                 </button>
                 <button
                   type="button"
-                  className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Charts ? 'active' : ''}`}
+                  className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Charts ? 'active' : ''}`}
                   {...handleTabInteraction(goToCharts)}
                 >
                   <span className="tab-icon" aria-hidden="true">
@@ -130,7 +133,7 @@ export function AppBottomNav({
                 </button>
                 <button
                   type="button"
-                  className={`tab-button ${activeTab === Tabs.Insights && activeInsightsTab === Tabs.Events ? 'active' : ''}`}
+                  className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Events ? 'active' : ''}`}
                   {...handleTabInteraction(goToEvents)}
                 >
                   <span className="tab-icon" aria-hidden="true">
@@ -151,7 +154,7 @@ export function AppBottomNav({
                 </button>
                 <button
                   type="button"
-                  className={`tab-button ${activeTab === Tabs.Log ? 'active' : ''}`}
+                  className={`tab-button ${showActiveStyles && activeTab === Tabs.Log ? 'active' : ''}`}
                   {...handleTabInteraction(goToLog)}
                 >
                   <span className="tab-icon" aria-hidden="true">

@@ -646,6 +646,7 @@ function App() {
         ? (
             <AppBottomNav
               session={session}
+              activePage={activePage}
               activeTab={activeTab}
               activeInsightsTab={activeInsightsTab}
               onNavigateToPage={navigateToPage}
