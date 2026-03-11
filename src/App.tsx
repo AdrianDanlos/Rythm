@@ -13,7 +13,6 @@ import { AppBottomNav } from './components/AppBottomNav'
 import { PaywallModal } from './billing/shared/PaywallModal'
 import { FeedbackModal } from './components/FeedbackModal'
 import { StreakModal } from './components/StreakModal'
-import { SettingsModal } from './components/SettingsModal'
 import { AppSidePanel } from './components/AppSidePanel'
 import { supabase } from './lib/supabaseClient'
 import { useAuth } from './hooks/useAuth'
@@ -127,14 +126,11 @@ function App() {
     isStreakOpen,
     isPaywallOpen,
     isFeedbackOpen,
-    isSettingsOpen,
     saveLogWhenLeaving,
     closeStreak,
     closePaywall,
     openFeedback,
     closeFeedback,
-    openSettings,
-    closeSettings,
     openPaywall,
     goToInsightsSummary,
   } = shell
@@ -310,10 +306,6 @@ function App() {
     if (!isNativeApp || Capacitor.getPlatform() !== 'android') return
 
     const listenerPromise = CapacitorApp.addListener('backButton', () => {
-      if (isSettingsOpen) {
-        closeSettings()
-        return
-      }
       if (isFeedbackOpen) {
         closeFeedback()
         return
@@ -342,11 +334,9 @@ function App() {
     }
   }, [
     isNativeApp,
-    isSettingsOpen,
     isFeedbackOpen,
     isPaywallOpen,
     isStreakOpen,
-    closeSettings,
     closeFeedback,
     closePaywall,
     closeStreak,
@@ -548,7 +538,7 @@ function App() {
         isSignOutLoading={isSignOutLoading}
         onExportCsv={handleExportCsv}
         onExportReport={handleExportMonthlyReport}
-        onOpenSettings={openSettings}
+        onOpenSettings={() => navigateToPage(AppPage.Settings)}
         onOpenPaywall={openPaywall}
         onManageSubscription={handleManageSubscription}
         onReviewApp={() => window.open(PLAY_STORE_APP_URL, '_blank', 'noreferrer')}
@@ -571,23 +561,9 @@ function App() {
         onClose={closeFeedback}
         userEmail={session?.user?.email ?? null}
       />
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={closeSettings}
-        name={profileName}
-        email={session?.user?.email ?? ''}
-        dateFormat={dateFormat}
-        language={language}
-        theme={theme}
-        personalSleepTarget={sleepTarget}
-        onNameChange={handleProfileNameChange}
-        onDateFormatChange={handleDateFormatChange}
-        onLanguageChange={handleLanguageChange}
-        onThemeChange={handleThemeChange}
-        onPersonalSleepTargetChange={handleSleepTargetChange}
-      />
 
       <AppMainContent
+        activePage={activePage}
         authInitialized={authInitialized}
         session={session}
         isNativeApp={isNativeApp}
@@ -653,6 +629,17 @@ function App() {
         isPro={isPro}
         onOpenPaywall={openPaywall}
         onOpenFeedback={openFeedback}
+        settingsName={profileName}
+        settingsEmail={session?.user?.email ?? ''}
+        settingsDateFormat={dateFormat}
+        settingsLanguage={language}
+        settingsTheme={theme}
+        settingsPersonalSleepTarget={sleepTarget}
+        onSettingsNameChange={handleProfileNameChange}
+        onSettingsDateFormatChange={handleDateFormatChange}
+        onSettingsLanguageChange={handleLanguageChange}
+        onSettingsThemeChange={handleThemeChange}
+        onSettingsPersonalSleepTargetChange={handleSleepTargetChange}
       />
 
       {authInitialized
@@ -666,7 +653,7 @@ function App() {
               canManageSubscription={canManageSubscription}
               isPortalLoading={isPortalLoading}
               isSignOutLoading={isSignOutLoading}
-              onOpenSettings={openSettings}
+              onOpenSettings={() => navigateToPage(AppPage.Settings)}
               onManageSubscription={handleManageSubscription}
               onSignOut={handleSignOut}
             />

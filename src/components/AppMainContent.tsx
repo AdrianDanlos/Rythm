@@ -18,7 +18,13 @@ import { AuthForm } from './AuthForm'
 import { InsightsQuickStart } from './InsightsQuickStart'
 import { LogForm } from './LogForm'
 import { Insights } from './Insights'
+import { SettingsPage } from './SettingsPage'
 import { AppPage, Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
+import type {
+  DateFormatPreference,
+  LanguagePreference,
+  ThemePreference,
+} from '../lib/settings'
 import { motionTransition } from '../lib/motion'
 import logo from '../assets/rythm-logo.png'
 
@@ -38,6 +44,7 @@ type AppMainContentProps = {
   activeTab: TabKey
   onNavigateToPage: (page: AppPage) => void
   activeInsightsTab: InsightsSection
+  activePage: AppPage
   saveLogWhenLeaving: (cb: () => void) => void
   entriesSettled: boolean
   entries: Entry[]
@@ -102,6 +109,17 @@ type AppMainContentProps = {
   isPro: boolean
   onOpenPaywall: () => void
   onOpenFeedback: () => void
+  settingsName: string
+  settingsEmail: string
+  settingsDateFormat: DateFormatPreference
+  settingsLanguage: LanguagePreference
+  settingsTheme: ThemePreference
+  settingsPersonalSleepTarget: number
+  onSettingsNameChange: (value: string) => void
+  onSettingsDateFormatChange: (value: DateFormatPreference) => void
+  onSettingsLanguageChange: (value: LanguagePreference) => void
+  onSettingsThemeChange: (value: ThemePreference) => void
+  onSettingsPersonalSleepTargetChange: (value: number) => void
 }
 
 export function AppMainContent({
@@ -120,6 +138,7 @@ export function AppMainContent({
   activeTab,
   onNavigateToPage,
   activeInsightsTab,
+  activePage,
   saveLogWhenLeaving,
   entriesSettled,
   entries,
@@ -170,6 +189,17 @@ export function AppMainContent({
   isPro,
   onOpenPaywall,
   onOpenFeedback,
+  settingsName,
+  settingsEmail,
+  settingsDateFormat,
+  settingsLanguage,
+  settingsTheme,
+  settingsPersonalSleepTarget,
+  onSettingsNameChange,
+  onSettingsDateFormatChange,
+  onSettingsLanguageChange,
+  onSettingsThemeChange,
+  onSettingsPersonalSleepTargetChange,
 }: AppMainContentProps) {
   const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
@@ -238,107 +268,125 @@ export function AppMainContent({
         </button>
       </div>
 
-      <AnimatePresence mode="wait">
-        {activeTab === Tabs.Log
-          ? (
-              <motion.div
-                key="log"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={tabTransition}
-              >
-                {!entriesSettled
-                  ? (
-                      <div className="card auth-loading" aria-live="polite">
-                        <div className="loading-row">
-                          <span className="loading-spinner" aria-hidden="true" />
-                          <span className="muted">{t('log.loading')}</span>
-                        </div>
-                      </div>
-                    )
-                  : (
-                      <>
-                        <InsightsQuickStart
-                          hasNoEntries={entries.length === 0}
-                          goToLog={() =>
-                            document
-                              .getElementById('log-calendar')
-                              ?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                        />
-                        <p className="log-form-tip" role="status">
-                          {t('log.tip')}
-                        </p>
-                        <LogForm
-                          selectedDate={selectedDate}
-                          todayDate={todayDate}
-                          highlightedDates={highlightedDates}
-                          incompleteHighlightedDates={incompleteHighlightedDates}
-                          sleepHours={sleepHours}
-                          mood={mood}
-                          note={note}
-                          tags={tags}
-                          tagSuggestions={tagSuggestions}
-                          maxTagsPerEntry={maxTagsPerEntry}
-                          saving={saving}
-                          saved={saved}
-                          entriesError={entriesError}
-                          moodColors={moodColors}
-                          isMobile={isMobile}
-                          formatLocalDate={formatLocalDate}
-                          onEntryDateChange={onEntryDateChange}
-                          onSleepHoursChange={onSleepHoursChange}
-                          onMoodChange={onMoodChange}
-                          onNoteChange={onNoteChange}
-                          onTagsChange={onTagsChange}
-                          onSave={onSave}
-                        />
-                      </>
-                    )}
-              </motion.div>
-            )
-          : (
-              <motion.div
-                key="insights"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={tabTransition}
-              >
-                <Insights
-                  entries={entries}
-                  entriesLoading={entriesLoading}
-                  chartData={chartData}
-                  averages={averages}
-                  windowAverages={windowAverages}
-                  statCounts={statCounts}
-                  rhythmScore={rhythmScore}
-                  streak={streak}
-                  sleepConsistencyLabel={sleepConsistencyLabel}
-                  sleepConsistencyBadges={sleepConsistencyBadges}
-                  correlationLabel={correlationLabel}
-                  correlationDirection={correlationDirection}
-                  moodBySleepThreshold={moodBySleepThreshold}
-                  moodBySleepBucketCounts={moodBySleepBucketCounts}
-                  sleepThreshold={sleepThreshold}
-                  moodColors={moodColors}
-                  trendSeries={trendSeries}
-                  rollingSeries={rollingSeries}
-                  rollingSummaries={rollingSummaries}
-                  weekdayAverages={weekdayAverages}
-                  personalSleepThreshold={personalSleepThreshold}
-                  moodByPersonalThreshold={moodByPersonalThreshold}
-                  tagDrivers={tagDrivers}
-                  tagSleepDrivers={tagSleepDrivers}
-                  isPro={isPro}
-                  onOpenPaywall={onOpenPaywall}
-                  onOpenFeedback={onOpenFeedback}
-                  goToLog={() => onNavigateToPage(AppPage.Log)}
-                  activeTab={activeInsightsTab}
-                />
-              </motion.div>
-            )}
-      </AnimatePresence>
+      {activePage === AppPage.Settings
+        ? (
+            <SettingsPage
+              name={settingsName}
+              email={settingsEmail}
+              dateFormat={settingsDateFormat}
+              language={settingsLanguage}
+              theme={settingsTheme}
+              personalSleepTarget={settingsPersonalSleepTarget}
+              onNameChange={onSettingsNameChange}
+              onDateFormatChange={onSettingsDateFormatChange}
+              onLanguageChange={onSettingsLanguageChange}
+              onThemeChange={onSettingsThemeChange}
+              onPersonalSleepTargetChange={onSettingsPersonalSleepTargetChange}
+            />
+          )
+        : (
+            <AnimatePresence mode="wait">
+              {activeTab === Tabs.Log
+                ? (
+                    <motion.div
+                      key="log"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={tabTransition}
+                    >
+                      {!entriesSettled
+                        ? (
+                            <div className="card auth-loading" aria-live="polite">
+                              <div className="loading-row">
+                                <span className="loading-spinner" aria-hidden="true" />
+                                <span className="muted">{t('log.loading')}</span>
+                              </div>
+                            </div>
+                          )
+                        : (
+                            <>
+                              <InsightsQuickStart
+                                hasNoEntries={entries.length === 0}
+                                goToLog={() =>
+                                  document
+                                    .getElementById('log-calendar')
+                                    ?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                              />
+                              <p className="log-form-tip" role="status">
+                                {t('log.tip')}
+                              </p>
+                              <LogForm
+                                selectedDate={selectedDate}
+                                todayDate={todayDate}
+                                highlightedDates={highlightedDates}
+                                incompleteHighlightedDates={incompleteHighlightedDates}
+                                sleepHours={sleepHours}
+                                mood={mood}
+                                note={note}
+                                tags={tags}
+                                tagSuggestions={tagSuggestions}
+                                maxTagsPerEntry={maxTagsPerEntry}
+                                saving={saving}
+                                saved={saved}
+                                entriesError={entriesError}
+                                moodColors={moodColors}
+                                isMobile={isMobile}
+                                formatLocalDate={formatLocalDate}
+                                onEntryDateChange={onEntryDateChange}
+                                onSleepHoursChange={onSleepHoursChange}
+                                onMoodChange={onMoodChange}
+                                onNoteChange={onNoteChange}
+                                onTagsChange={onTagsChange}
+                                onSave={onSave}
+                              />
+                            </>
+                          )}
+                    </motion.div>
+                  )
+                : (
+                    <motion.div
+                      key="insights"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={tabTransition}
+                    >
+                      <Insights
+                        entries={entries}
+                        entriesLoading={entriesLoading}
+                        chartData={chartData}
+                        averages={averages}
+                        windowAverages={windowAverages}
+                        statCounts={statCounts}
+                        rhythmScore={rhythmScore}
+                        streak={streak}
+                        sleepConsistencyLabel={sleepConsistencyLabel}
+                        sleepConsistencyBadges={sleepConsistencyBadges}
+                        correlationLabel={correlationLabel}
+                        correlationDirection={correlationDirection}
+                        moodBySleepThreshold={moodBySleepThreshold}
+                        moodBySleepBucketCounts={moodBySleepBucketCounts}
+                        sleepThreshold={sleepThreshold}
+                        moodColors={moodColors}
+                        trendSeries={trendSeries}
+                        rollingSeries={rollingSeries}
+                        rollingSummaries={rollingSummaries}
+                        weekdayAverages={weekdayAverages}
+                        personalSleepThreshold={personalSleepThreshold}
+                        moodByPersonalThreshold={moodByPersonalThreshold}
+                        tagDrivers={tagDrivers}
+                        tagSleepDrivers={tagSleepDrivers}
+                        isPro={isPro}
+                        onOpenPaywall={onOpenPaywall}
+                        onOpenFeedback={onOpenFeedback}
+                        goToLog={() => onNavigateToPage(AppPage.Log)}
+                        activeTab={activeInsightsTab}
+                      />
+                    </motion.div>
+                  )}
+            </AnimatePresence>
+          )}
     </>
   )
 }

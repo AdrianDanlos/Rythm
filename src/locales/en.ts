@@ -81,7 +81,7 @@ const en = {
     unlockPro: 'Unlock Pro features',
     upgradeToAccess: 'Upgrade to access deeper insights.',
     openingCheckout: 'Opening checkout...',
-    upgradeNow: 'Upgrade now',
+    upgradeNow: 'Upgrade to Pro',
     restoring: 'Restoring...',
     restorePurchases: 'Restore purchases',
     notNow: 'Not now',

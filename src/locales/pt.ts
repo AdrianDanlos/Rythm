@@ -81,7 +81,7 @@ const pt = {
     unlockPro: 'Desbloqueie recursos Pro',
     upgradeToAccess: 'Faça upgrade para acessar insights mais profundos.',
     openingCheckout: 'Abrindo checkout...',
-    upgradeNow: 'Fazer upgrade agora',
+    upgradeNow: 'Ativar Pro',
     restoring: 'Restaurando...',
     restorePurchases: 'Restaurar compras',
     notNow: 'Agora não',

@@ -14,6 +14,7 @@ export enum AppPage {
   Charts = 'charts',
   Events = 'events',
   Log = 'log',
+  Settings = 'settings',
 }
 
 export const APP_PAGE_PATHS: Record<AppPage, string> = {
@@ -21,6 +22,7 @@ export const APP_PAGE_PATHS: Record<AppPage, string> = {
   [AppPage.Summary]: '/summary',
   [AppPage.Charts]: '/charts',
   [AppPage.Events]: '/events',
+  [AppPage.Settings]: '/settings',
 }
 
 export function getPathForPage(page: AppPage): string {

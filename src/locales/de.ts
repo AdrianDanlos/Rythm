@@ -74,7 +74,7 @@ const de = {
     unlockPro: 'Pro-Funktionen freischalten',
     upgradeToAccess: 'Upgrade für tiefere Insights.',
     openingCheckout: 'Checkout wird geöffnet...',
-    upgradeNow: 'Jetzt upgraden',
+    upgradeNow: 'Pro aktivieren',
     restorePurchases: 'Käufe wiederherstellen',
     notNow: 'Nicht jetzt',
   },

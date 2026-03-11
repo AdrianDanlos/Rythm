@@ -79,9 +79,9 @@ const es = {
   paywall: {
     premium: 'Premium',
     unlockPro: 'Desbloquea funciones Pro',
-    upgradeToAccess: 'Actualiza para acceder a estadísticas más profundas.',
+    upgradeToAccess: 'Hazte Pro: análisis personalizados y estadísticas que te sorprenderán',
     openingCheckout: 'Abriendo pago...',
-    upgradeNow: 'Actualizar ahora',
+    upgradeNow: 'Activar Pro',
     restoring: 'Restaurando...',
     restorePurchases: 'Restaurar compras',
     notNow: 'Ahora no',

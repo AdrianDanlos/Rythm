@@ -81,7 +81,7 @@ const fr = {
     unlockPro: 'Débloquer les fonctionnalités Pro',
     upgradeToAccess: 'Passez à la version supérieure pour accéder à des insights plus approfondis.',
     openingCheckout: 'Ouverture du paiement...',
-    upgradeNow: 'Mettre à niveau maintenant',
+    upgradeNow: 'Activer Pro',
     restoring: 'Restauration...',
     restorePurchases: 'Restaurer les achats',
     notNow: 'Pas maintenant',
