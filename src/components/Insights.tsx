@@ -576,15 +576,17 @@ export const Insights = ({
                           })}
                         </ul>
                         {topTags.length > 6 && (
-                          <button
-                            type="button"
-                            className="ghost your-daily-events-toggle"
-                            onClick={() => setShowAllTags(prev => !prev)}
-                          >
-                            {showAllTags
-                              ? t('insights.showTopTags')
-                              : t('insights.showAllTags')}
-                          </button>
+                          <div className="tag-insights-show-more">
+                            <button
+                              type="button"
+                              className="link-button link-button--text your-daily-events-toggle"
+                              onClick={() => setShowAllTags(prev => !prev)}
+                            >
+                              {showAllTags
+                                ? t('insights.showTopTags')
+                                : t('insights.showAllTags')}
+                            </button>
+                          </div>
                         )}
                       </>
                     )

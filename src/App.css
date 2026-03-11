@@ -1272,9 +1272,9 @@
 .your-daily-events-toggle {
   margin-top: 8px;
   margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
+  width: fit-content;
+  text-align: right;
 }
 
 .your-daily-events-color-input {
@@ -2091,6 +2091,8 @@ button.toggle-group__btn--disabled:disabled {
 
 .tag-insights-show-more {
   margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .badge-list {
