@@ -57,6 +57,7 @@ export const SettingsModal = ({
     () => getStoredDailyReminderTime(),
   )
   const [isDateFormatOpen, setIsDateFormatOpen] = useState(false)
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false)
   const [sleepTargetInput, setSleepTargetInput] = useState(
     () => String(personalSleepTarget),
   )
@@ -69,8 +70,19 @@ export const SettingsModal = ({
     { value: 'ymd', label: t('settings.yearMonthDay') },
   ]
 
+  const languageOptions: { value: LanguagePreference, label: string }[] = [
+    { value: 'en', label: t('settings.english') },
+    { value: 'es', label: t('settings.spanish') },
+    { value: 'fr', label: t('settings.french') },
+    { value: 'pt', label: t('settings.brazilianPortuguese') },
+    { value: 'de', label: t('settings.german') },
+  ]
+
   const activeDateFormat = dateFormatOptions.find(option => option.value === dateFormat)
     ?? dateFormatOptions[0]
+
+  const activeLanguage = languageOptions.find(option => option.value === language)
+    ?? languageOptions[0]
 
   useEffect(() => {
     setSleepTargetInput(String(personalSleepTarget))
@@ -84,6 +96,16 @@ export const SettingsModal = ({
   const handleDateFormatBlur = (event: FocusEvent<HTMLDivElement>) => {
     if (event.currentTarget.contains(event.relatedTarget as Node | null)) return
     setIsDateFormatOpen(false)
+  }
+
+  const handleLanguageSelect = (value: LanguagePreference) => {
+    onLanguageChange(value)
+    setIsLanguageOpen(false)
+  }
+
+  const handleLanguageBlur = (event: FocusEvent<HTMLDivElement>) => {
+    if (event.currentTarget.contains(event.relatedTarget as Node | null)) return
+    setIsLanguageOpen(false)
   }
 
   useEffect(() => {
@@ -185,6 +207,7 @@ export const SettingsModal = ({
                     aria-haspopup="listbox"
                     aria-expanded={isDateFormatOpen}
                   />
+                  <span className="tag-input-icon" aria-hidden="true">▾</span>
                   {isDateFormatOpen
                     ? (
                         <div className="tag-suggestions" role="listbox">
@@ -246,42 +269,41 @@ export const SettingsModal = ({
 
               <div className="field">
                 <span>{t('settings.language')}</span>
-                <div className="toggle-group">
-                  <button
-                    type="button"
-                    className={`ghost ${language === 'en' ? 'active' : ''}`}
-                    onClick={() => onLanguageChange('en')}
-                  >
-                    {t('settings.english')}
-                  </button>
-                  <button
-                    type="button"
-                    className={`ghost ${language === 'es' ? 'active' : ''}`}
-                    onClick={() => onLanguageChange('es')}
-                  >
-                    {t('settings.spanish')}
-                  </button>
-                  <button
-                    type="button"
-                    className={`ghost ${language === 'fr' ? 'active' : ''}`}
-                    onClick={() => onLanguageChange('fr')}
-                  >
-                    {t('settings.french')}
-                  </button>
-                  <button
-                    type="button"
-                    className={`ghost ${language === 'pt' ? 'active' : ''}`}
-                    onClick={() => onLanguageChange('pt')}
-                  >
-                    {t('settings.brazilianPortuguese')}
-                  </button>
-                  <button
-                    type="button"
-                    className={`ghost ${language === 'de' ? 'active' : ''}`}
-                    onClick={() => onLanguageChange('de')}
-                  >
-                    {t('settings.german')}
-                  </button>
+                <div className="tag-input" onBlur={handleLanguageBlur}>
+                  <input
+                    id="settings-language"
+                    type="text"
+                    readOnly
+                    value={activeLanguage.label}
+                    onClick={() => setIsLanguageOpen(true)}
+                    aria-haspopup="listbox"
+                    aria-expanded={isLanguageOpen}
+                  />
+                  <span className="tag-input-icon" aria-hidden="true">▾</span>
+                  {isLanguageOpen
+                    ? (
+                        <div className="tag-suggestions" role="listbox">
+                          {languageOptions.map(option => (
+                            <button
+                              key={option.value}
+                              type="button"
+                              className="tag-suggestion"
+                              onPointerDown={(event) => {
+                                event.preventDefault()
+                                handleLanguageSelect(option.value)
+                              }}
+                              onClick={(event) => {
+                                if (event.detail === 0) {
+                                  handleLanguageSelect(option.value)
+                                }
+                              }}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      )
+                    : null}
                 </div>
               </div>
 

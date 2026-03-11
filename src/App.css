@@ -969,6 +969,22 @@
 
 .tag-input {
   position: relative;
+  width: 100%;
+}
+
+.tag-input input[type="text"] {
+  width: 100%;
+  padding-right: 32px;
+}
+
+.tag-input-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 
 .tag-suggestions {
