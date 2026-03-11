@@ -110,7 +110,7 @@
   --status-error-soft: #f87171;
   --status-success-soft: #4ade80;
   --badge-icon-unlocked: var(--neutral-900);
-  --badge-progress-fill: #6366f1;
+  --badge-progress-fill: #F6E0A6;
   --review-cta-bg: linear-gradient(135deg, #f8fafc, #eef2ff);
   --review-cta-border: var(--border);
   --review-cta-button-bg: var(--cta-button-bg);
@@ -170,7 +170,7 @@
   --chart-mood: #4ade80;
   --chart-sleep-bar: #818cf8;
   --chart-ideal-sleep: #dadfd8;
-  --badge-progress-fill: #818cf8;
+  --badge-progress-fill: #F6E0A6;
   --streak-icon: #f59e0b;
   --tooltip-bg: #111827;
   --tooltip-border: rgba(56, 189, 248, 0.45);

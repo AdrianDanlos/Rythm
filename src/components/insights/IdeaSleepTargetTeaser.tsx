@@ -64,20 +64,20 @@ export const IdeaSleepTargetTeaser = ({ onOpenPaywall }: IdeaSleepTargetTeaserPr
             aria-label={t('insights.moodBySleepTitle', { threshold: formatSleepHours(MOCK_THRESHOLD) })}
           >
             <div className={`ideal-sleep-mood-comparison__item ${MOCK_ABOVE_TONE_CLASS}`}>
-              <span className="ideal-sleep-mood-comparison__circle">
-                {MOCK_MOOD_HIGH.toFixed(1)}
-              </span>
               <span className="ideal-sleep-mood-comparison__label">
                 {t('insights.moodWhenAbove', { threshold: formatSleepHours(MOCK_THRESHOLD) })}
+              </span>
+              <span className="ideal-sleep-mood-comparison__circle">
+                {MOCK_MOOD_HIGH.toFixed(1)}
               </span>
             </div>
             <span className="ideal-sleep-mood-comparison__divider" aria-hidden="true" />
             <div className={`ideal-sleep-mood-comparison__item ${MOCK_BELOW_TONE_CLASS}`}>
-              <span className="ideal-sleep-mood-comparison__circle">
-                {MOCK_MOOD_LOW.toFixed(1)}
-              </span>
               <span className="ideal-sleep-mood-comparison__label">
                 {t('insights.moodWhenBelow', { threshold: formatSleepHours(MOCK_THRESHOLD) })}
+              </span>
+              <span className="ideal-sleep-mood-comparison__circle">
+                {MOCK_MOOD_LOW.toFixed(1)}
               </span>
             </div>
           </div>

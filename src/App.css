@@ -1884,6 +1884,7 @@
 
 .mood-total .value {
   font-variant-numeric: tabular-nums;
+  margin-right: 2px;
 }
 
 .mood-legend-row {

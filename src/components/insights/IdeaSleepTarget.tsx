@@ -112,20 +112,20 @@ export const IdeaSleepTarget = ({
                       <>
                         <div className="ideal-sleep-mood-comparison" role="group" aria-label={t('insights.moodByPersonalSleepThresholdAria')}>
                           <div className={`ideal-sleep-mood-comparison__item ${aboveMoodToneClass}`}>
-                            <span className="ideal-sleep-mood-comparison__circle">
-                              {highMood.toFixed(1)}
-                            </span>
                             <span className="ideal-sleep-mood-comparison__label">
                               {t('insights.moodWhenAbove', { threshold: formatSleepHours(personalSleepThreshold) })}
+                            </span>
+                            <span className="ideal-sleep-mood-comparison__circle">
+                              {highMood.toFixed(1)}
                             </span>
                           </div>
                           <span className="ideal-sleep-mood-comparison__divider" aria-hidden="true" />
                           <div className={`ideal-sleep-mood-comparison__item ${belowMoodToneClass}`}>
-                            <span className="ideal-sleep-mood-comparison__circle">
-                              {lowMood.toFixed(1)}
-                            </span>
                             <span className="ideal-sleep-mood-comparison__label">
                               {t('insights.moodWhenBelow', { threshold: formatSleepHours(personalSleepThreshold) })}
+                            </span>
+                            <span className="ideal-sleep-mood-comparison__circle">
+                              {lowMood.toFixed(1)}
                             </span>
                           </div>
                         </div>
