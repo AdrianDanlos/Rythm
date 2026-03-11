@@ -211,117 +211,115 @@ export const InsightsStats = ({
         )}
       </section>
 
-      <section className="card stats-stack">
-        {hasMissingStats
+      {hasMissingStats
+        ? (
+            <p className="muted">
+              <button type="button" className="link-button link-button--text" onClick={goToLog}>
+                {t('insights.logFewMoreDays')}
+              </button>
+              {' '}{t('insights.unlockAllStats')}
+            </p>
+          )
+        : null}
+      <div className="stats-stack-grid">
+        {isLoading
           ? (
-              <p className="muted">
-                <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                  {t('insights.logFewMoreDays')}
-                </button>
-                {' '}{t('insights.unlockAllStats')}
-              </p>
+              <>
+                {[1, 2, 3, 4, 5, 6, 7].map(item => (
+                  <div className="stat-tile stat-tile--skeleton" key={item}>
+                    <div className="skeleton-line" />
+                    <div className="skeleton-line short" />
+                    <div className="skeleton-line" />
+                  </div>
+                ))}
+              </>
             )
-          : null}
-        <div className="stats-stack-grid">
-          {isLoading
-            ? (
-                <>
-                  {[1, 2, 3, 4, 5, 6, 7].map(item => (
-                    <div className="stat-tile stat-tile--skeleton" key={item}>
-                      <div className="skeleton-line" />
-                      <div className="skeleton-line short" />
-                      <div className="skeleton-line" />
-                    </div>
-                  ))}
-                </>
-              )
-            : (
-                <>
-                  {renderWindowTile(t('insights.last7Days'), windowAverages.last7)}
-                  {renderWindowTile(t('insights.last30Days'), windowAverages.last30)}
-                  <div className="stat-tile">
-                    <p className="label label--with-tooltip">
-                      {t('insights.rhythmScore')}
-                      <Tooltip label={t('insights.rhythmTooltip')}>
+          : (
+              <>
+                {renderWindowTile(t('insights.last7Days'), windowAverages.last7)}
+                {renderWindowTile(t('insights.last30Days'), windowAverages.last30)}
+                <div className="stat-tile">
+                  <p className="label label--with-tooltip">
+                    {t('insights.rhythmScore')}
+                    <Tooltip label={t('insights.rhythmTooltip')}>
+                      <span className="tooltip-trigger">
+                        <span className="tooltip-icon" aria-hidden="true">i</span>
+                      </span>
+                    </Tooltip>
+                  </p>
+                  <p className="value">{rhythmScore !== null ? `${rhythmScore} / 100` : '—'}</p>
+                  <p className="helper">
+                    {rhythmScore !== null
+                      ? t('insights.sleepStability30')
+                      : t('insights.needsMoreDays', { count: rhythmMore, unit: rhythmMore === 1 ? t('common.day') : t('common.days') })}
+                  </p>
+                </div>
+                <div className="stat-tile">
+                  <p className="label">{t('insights.consistency')}</p>
+                  <p className="value">{sleepConsistencyLabel ? t(`insights.sleepConsistencyLevels.${sleepConsistencyLabel}`) : '—'}</p>
+                  <p className="helper">
+                    {sleepConsistencyLabel
+                      ? t('insights.sleepConsistencyHelper')
+                      : t('insights.needsMoreDays', { count: sleepConsistencyMore, unit: sleepConsistencyMore === 1 ? t('common.day') : t('common.days') })}
+                  </p>
+                </div>
+                <div className="stat-tile">
+                  <p className="label label--pre-line">{t('insights.sleepMoodLink')}</p>
+                  <p className="value">{correlationLabel ? t(`insights.correlationLevels.${correlationLabel}`) : '—'}</p>
+                  {correlationDirection
+                    ? <p className="helper">{t(`insights.correlationDirections.${correlationDirection}`)}</p>
+                    : (
+                        <p className="helper">
+                          {correlationLabel
+                            ? t('insights.correlationStrength')
+                            : correlationMore > 0
+                              ? t('insights.needsMoreDays', { count: correlationMore, unit: correlationMore === 1 ? t('common.day') : t('common.days') })
+                              : t('insights.logDifferentDaysForLink')}
+                        </p>
+                      )}
+                </div>
+                <div className="stat-tile">
+                  <p className="label label--with-tooltip">
+                    <span className="label-nowrap">{t('insights.moodBySleepTitle', { threshold: formatSleepHours(sleepThreshold) })}</span>
+                    {shouldShowIdealSleepTooltip && (
+                      <Tooltip
+                        label={t('insights.moodBySleepTooltip', { threshold: formatSleepHours(sleepThreshold) })}
+                      >
                         <span className="tooltip-trigger">
                           <span className="tooltip-icon" aria-hidden="true">i</span>
                         </span>
                       </Tooltip>
-                    </p>
-                    <p className="value">{rhythmScore !== null ? `${rhythmScore} / 100` : '—'}</p>
-                    <p className="helper">
-                      {rhythmScore !== null
-                        ? t('insights.sleepStability30')
-                        : t('insights.needsMoreDays', { count: rhythmMore, unit: rhythmMore === 1 ? t('common.day') : t('common.days') })}
-                    </p>
-                  </div>
-                  <div className="stat-tile">
-                    <p className="label">{t('insights.consistency')}</p>
-                    <p className="value">{sleepConsistencyLabel ? t(`insights.sleepConsistencyLevels.${sleepConsistencyLabel}`) : '—'}</p>
-                    <p className="helper">
-                      {sleepConsistencyLabel
-                        ? t('insights.sleepConsistencyHelper')
-                        : t('insights.needsMoreDays', { count: sleepConsistencyMore, unit: sleepConsistencyMore === 1 ? t('common.day') : t('common.days') })}
-                    </p>
-                  </div>
-                  <div className="stat-tile">
-                    <p className="label label--pre-line">{t('insights.sleepMoodLink')}</p>
-                    <p className="value">{correlationLabel ? t(`insights.correlationLevels.${correlationLabel}`) : '—'}</p>
-                    {correlationDirection
-                      ? <p className="helper">{t(`insights.correlationDirections.${correlationDirection}`)}</p>
-                      : (
-                          <p className="helper">
-                            {correlationLabel
-                              ? t('insights.correlationStrength')
-                              : correlationMore > 0
-                                ? t('insights.needsMoreDays', { count: correlationMore, unit: correlationMore === 1 ? t('common.day') : t('common.days') })
-                                : t('insights.logDifferentDaysForLink')}
-                          </p>
-                        )}
-                  </div>
-                  <div className="stat-tile">
-                    <p className="label label--with-tooltip">
-                      <span className="label-nowrap">{t('insights.moodBySleepTitle', { threshold: formatSleepHours(sleepThreshold) })}</span>
-                      {shouldShowIdealSleepTooltip && (
-                        <Tooltip
-                          label={t('insights.moodBySleepTooltip', { threshold: formatSleepHours(sleepThreshold) })}
-                        >
-                          <span className="tooltip-trigger">
-                            <span className="tooltip-icon" aria-hidden="true">i</span>
+                    )}
+                  </p>
+                  {moodBySleepDeltaPercent !== null
+                    ? (
+                        <p className="value mood-by-sleep-value">
+                          <span className={isMoodBySleepPositive ? 'mood-by-sleep-percent mood-by-sleep-percent--up' : 'mood-by-sleep-percent mood-by-sleep-percent--down'}>
+                            {Math.abs(moodBySleepDeltaPercent).toFixed(0)}%
                           </span>
-                        </Tooltip>
-                      )}
-                    </p>
-                    {moodBySleepDeltaPercent !== null
-                      ? (
-                          <p className="value mood-by-sleep-value">
-                            <span className={isMoodBySleepPositive ? 'mood-by-sleep-percent mood-by-sleep-percent--up' : 'mood-by-sleep-percent mood-by-sleep-percent--down'}>
-                              {Math.abs(moodBySleepDeltaPercent).toFixed(0)}%
-                            </span>
-                            <span
-                              className={`mood-by-sleep-trend ${isMoodBySleepPositive ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
-                              aria-label={isMoodBySleepPositive ? t('insights.moodTrendUp') : t('insights.moodTrendDown')}
-                              role="img"
-                            >
-                              {isMoodBySleepPositive
-                                ? <TrendingUp size={20} aria-hidden="true" />
-                                : <TrendingDown size={20} aria-hidden="true" />}
-                            </span>
-                          </p>
-                        )
-                      : <p className="value">—</p>}
-                    <p className="helper">
-                      {moodBySleepMessage ?? (moodBySleepBucketCounts.high === 0
-                        ? t('insights.needOneDayMoreThan', { threshold: formatSleepHours(sleepThreshold) })
-                        : moodBySleepBucketCounts.low === 0
-                          ? t('insights.needOneDayLessThan', { threshold: formatSleepHours(sleepThreshold) })
-                          : null)}
-                    </p>
-                  </div>
-                </>
-              )}
-        </div>
-      </section>
+                          <span
+                            className={`mood-by-sleep-trend ${isMoodBySleepPositive ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
+                            aria-label={isMoodBySleepPositive ? t('insights.moodTrendUp') : t('insights.moodTrendDown')}
+                            role="img"
+                          >
+                            {isMoodBySleepPositive
+                              ? <TrendingUp size={20} aria-hidden="true" />
+                              : <TrendingDown size={20} aria-hidden="true" />}
+                          </span>
+                        </p>
+                      )
+                    : <p className="value">—</p>}
+                  <p className="helper">
+                    {moodBySleepMessage ?? (moodBySleepBucketCounts.high === 0
+                      ? t('insights.needOneDayMoreThan', { threshold: formatSleepHours(sleepThreshold) })
+                      : moodBySleepBucketCounts.low === 0
+                        ? t('insights.needOneDayLessThan', { threshold: formatSleepHours(sleepThreshold) })
+                        : null)}
+                  </p>
+                </div>
+              </>
+            )}
+      </div>
     </>
   )
 }
