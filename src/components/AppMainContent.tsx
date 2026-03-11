@@ -123,6 +123,7 @@ type AppMainContentProps = {
   onSettingsPersonalSleepTargetChange: (value: number) => void
   onRenameTag: (fromTag: string, toTag: string) => void
   onTagColorChange: (tag: string, color: string) => void
+  onEnsureTagColor: (tag: string) => void
 }
 
 export function AppMainContent({
@@ -206,6 +207,7 @@ export function AppMainContent({
   onSettingsPersonalSleepTargetChange,
   onRenameTag,
   onTagColorChange,
+  onEnsureTagColor,
 }: AppMainContentProps) {
   const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
@@ -347,6 +349,7 @@ export function AppMainContent({
                             isMobile={isMobile}
                             formatLocalDate={formatLocalDate}
                             tagColors={tagColors}
+                            onEnsureTagColor={onEnsureTagColor}
                             onEntryDateChange={onEntryDateChange}
                             onSleepHoursChange={onSleepHoursChange}
                             onMoodChange={onMoodChange}

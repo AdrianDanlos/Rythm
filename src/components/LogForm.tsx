@@ -14,6 +14,18 @@ const MOOD_ICONS: Record<1 | 2 | 3 | 4 | 5, ComponentType<{ 'className'?: string
   5: Laugh,
 }
 
+const getReadableTextColor = (bg: string | undefined): string | undefined => {
+  if (!bg || !bg.startsWith('#')) return undefined
+  const hex = bg.slice(1)
+  if (hex.length !== 6) return undefined
+  const r = parseInt(hex.slice(0, 2), 16)
+  const g = parseInt(hex.slice(2, 4), 16)
+  const b = parseInt(hex.slice(4, 6), 16)
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return undefined
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000
+  return brightness > 140 ? '#000000' : '#ffffff'
+}
+
 export type LogFormProps = {
   selectedDate: Date
   todayDate: Date
@@ -32,6 +44,7 @@ export type LogFormProps = {
   isMobile?: boolean
   formatLocalDate: (date: Date) => string
   tagColors?: Record<string, string>
+  onEnsureTagColor?: (tag: string) => void
   onEntryDateChange: (value: string) => void
   onSleepHoursChange: (value: string) => void
   onMoodChange: (value: number) => void
@@ -58,6 +71,7 @@ export const LogForm = ({
   isMobile = false,
   formatLocalDate,
   tagColors,
+  onEnsureTagColor,
   onEntryDateChange,
   onSleepHoursChange,
   onMoodChange,
@@ -153,6 +167,11 @@ export const LogForm = ({
       || usedTagSet.has(normalized)
       || atMaxTags
     ) return
+
+    if (!tagColors?.[normalized]) {
+      onEnsureTagColor?.(normalized)
+    }
+
     const nextList = [...usedTags, normalized]
     onTagsChange(nextList.join(', '))
     setTagInputValue('')
@@ -386,12 +405,13 @@ export const LogForm = ({
               {usedTags.map((tag, index) => {
                 const colorKey = tag.trim().toLowerCase()
                 const tagColor = tagColors?.[colorKey]
+                const textColor = getReadableTextColor(tagColor)
                 return (
                   <span
                     key={tag}
                     className="tag-pill"
                     data-color-index={index}
-                    style={tagColor ? { backgroundColor: tagColor } : undefined}
+                    style={tagColor ? { backgroundColor: tagColor, color: textColor } : undefined}
                   >
                     {tag}
                     <button

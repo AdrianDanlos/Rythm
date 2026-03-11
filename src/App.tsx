@@ -39,7 +39,7 @@ import {
   getPathForPage,
   getTabForPage,
 } from './lib/appTabs'
-import { moodColors } from './lib/colors'
+import { moodColors, tagColorPalette } from './lib/colors'
 import { PLAY_STORE_APP_URL } from './lib/constants'
 import { STORAGE_KEYS } from './lib/storageKeys'
 import { DAILY_REMINDER_ID } from './lib/notifications'
@@ -100,6 +100,7 @@ function App() {
       && !window.matchMedia('(min-width: 768px)').matches,
   )
   const [isMenuPanelOpen, setIsMenuPanelOpen] = useState(false)
+  const swipeStartXRef = useRef<number | null>(null)
 
   const todayDate = useMemo(() => {
     const date = new Date()
@@ -219,6 +220,32 @@ function App() {
       setTagColors({})
     }
   }, [session?.user?.id])
+
+  const ensureTagColorForTag = (tag: string) => {
+    const key = tag.trim().toLowerCase()
+    if (!key) return
+    setTagColors((prev) => {
+      if (prev[key]) return prev
+
+      const existingColors = new Set(Object.values(prev))
+      const available = tagColorPalette.filter(color => !existingColors.has(color))
+      const pool = available.length > 0 ? available : tagColorPalette
+      const randomIndex = Math.floor(Math.random() * pool.length)
+      const color = pool[randomIndex]
+
+      const next = { ...prev, [key]: color }
+      const uid = session?.user?.id
+      if (uid) {
+        try {
+          window.localStorage.setItem(`rythm:tagColors:${uid}`, JSON.stringify(next))
+        }
+        catch {
+          // ignore storage errors
+        }
+      }
+      return next
+    })
+  }
 
   const handleTagColorChange = (tag: string, color: string) => {
     const key = tag.trim().toLowerCase()
@@ -799,6 +826,7 @@ function App() {
         onSettingsPersonalSleepTargetChange={handleSleepTargetChange}
         onRenameTag={handleRenameTag}
         onTagColorChange={handleTagColorChange}
+        onEnsureTagColor={ensureTagColorForTag}
       />
 
       {authInitialized

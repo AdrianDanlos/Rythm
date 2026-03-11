@@ -1253,11 +1253,28 @@
   height: 18px;
 }
 
+.your-daily-events-edit-button {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
 .your-daily-events-list-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #e4e4e4;
+  border-radius: 8px;
+}
+
+:root[data-theme="dark"] .your-daily-events-list-item {
+  background: var(--selected-bg);
+  color: var(--selected-text);
+  border: none;
 }
 
 .your-daily-events-list-label {
@@ -1283,7 +1300,14 @@
   padding: 0;
   border: none;
   background: transparent;
+  border-radius: 999px;
+  overflow: hidden;
   cursor: pointer;
+}
+
+.your-daily-events-color-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 999px;
 }
 
 .your-daily-events-color-input::-webkit-color-swatch {
@@ -1294,6 +1318,19 @@
 .your-daily-events-color-input::-moz-color-swatch {
   border-radius: 999px;
   border: 1px solid var(--border);
+}
+
+.your-daily-events-color-input[data-unset="true"]::-webkit-color-swatch,
+.your-daily-events-color-input[data-unset="true"]::-moz-color-swatch {
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #e5e7eb,
+      #e5e7eb 4px,
+      #ffffff 4px,
+      #ffffff 8px
+    );
+  border-style: dashed;
 }
 
 .save-button {
@@ -1533,10 +1570,6 @@
 }
 
 .your-daily-events-list li {
-  padding: 8px 12px;
-  background: var(--selected-bg);
-  color: var(--selected-text);
-  border-radius: 8px;
   font-weight: 500;
 }
 

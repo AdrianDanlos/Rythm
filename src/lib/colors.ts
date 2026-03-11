@@ -6,3 +6,15 @@ export const rollingTrendColors = {
   mid: '#2563eb',
   long: '#f97316',
 }
+
+// Palette for tag/event colors – mirrors CSS variables --tag-pill-0..7
+export const tagColorPalette = [
+  '#4f46e5', // --tag-pill-0
+  '#059669', // --tag-pill-1
+  '#d97706', // --tag-pill-2
+  '#db2777', // --tag-pill-3
+  '#0284c7', // --tag-pill-4
+  '#7c3aed', // --tag-pill-5
+  '#16a34a', // --tag-pill-6
+  '#ea580c', // --tag-pill-7
+]

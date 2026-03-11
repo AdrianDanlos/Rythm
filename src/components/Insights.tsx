@@ -521,7 +521,8 @@ export const Insights = ({
                           {visibleTags.map(({ display, count }) => {
                             const isEditing = editingTag === display
                             const colorKey = display.trim().toLowerCase()
-                            const tagColor = tagColors[colorKey] ?? '#4f46e5'
+                            const hasExplicitColor = !!tagColors[colorKey]
+                            const tagColor = hasExplicitColor ? tagColors[colorKey] : '#ffffff'
                             return (
                               <li
                                 key={display}
@@ -558,6 +559,7 @@ export const Insights = ({
                                           type="color"
                                           className="your-daily-events-color-input"
                                           value={tagColor}
+                                          data-unset={hasExplicitColor ? 'false' : 'true'}
                                           onChange={e => onTagColorChange(display, e.target.value)}
                                           aria-label={t('insights.changeTagColor', { tag: display })}
                                         />
