@@ -16,6 +16,7 @@ type AppSidePanelProps = {
   isOpen: boolean
   onClose: () => void
   session: { user: { email?: string } } | null
+  isPro: boolean
   canManageSubscription: boolean
   isSignOutLoading: boolean
   onExportCsv: () => void
@@ -23,6 +24,7 @@ type AppSidePanelProps = {
   onOpenSettings: () => void
   onOpenPaywall: () => void
   onManageSubscription: () => void
+  onRestorePurchases: () => void
   onReviewApp: () => void
   onOpenFeedback: () => void
   onSignOut: () => void
@@ -56,6 +58,7 @@ export function AppSidePanel({
   isOpen,
   onClose,
   session,
+  isPro,
   canManageSubscription,
   isSignOutLoading,
   onExportCsv,
@@ -63,6 +66,7 @@ export function AppSidePanel({
   onOpenSettings,
   onOpenPaywall,
   onManageSubscription,
+  onRestorePurchases,
   onReviewApp,
   onOpenFeedback,
   onSignOut,
@@ -108,11 +112,21 @@ export function AppSidePanel({
             label={t('nav.settings')}
             onClick={() => runAndClose(onOpenSettings)}
           />
-          <PanelButton
-            icon={Sparkles}
-            label={t('insights.upgradeToPro')}
-            onClick={() => runAndClose(onOpenPaywall)}
-          />
+          {!isPro
+            ? (
+                <PanelButton
+                  icon={Sparkles}
+                  label={t('insights.upgradeToPro')}
+                  onClick={() => runAndClose(onOpenPaywall)}
+                />
+              )
+            : (
+                <PanelButton
+                  icon={CreditCard}
+                  label={t('nav.manageSubscription')}
+                  onClick={() => runAndClose(onRestorePurchases)}
+                />
+              )}
           {canManageSubscription && (
             <PanelButton
               icon={CreditCard}

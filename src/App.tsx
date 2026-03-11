@@ -654,9 +654,33 @@ function App() {
     return <Privacy />
   }
 
+  const handleSwipeStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0]
+    // Only start a swipe if it begins near the left edge to avoid conflicts
+    swipeStartXRef.current = touch.clientX <= 32 ? touch.clientX : null
+  }
+
+  const handleSwipeMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (swipeStartXRef.current == null || isMenuPanelOpen) return
+    const touch = event.touches[0]
+    const deltaX = touch.clientX - swipeStartXRef.current
+    // Simple threshold: a rightward swipe of at least 40px from the edge opens the menu
+    if (deltaX > 40) {
+      swipeStartXRef.current = null
+      setIsMenuPanelOpen(true)
+    }
+  }
+
+  const handleSwipeEnd = () => {
+    swipeStartXRef.current = null
+  }
+
   return (
     <div
       className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}`}
+      onTouchStart={handleSwipeStart}
+      onTouchMove={handleSwipeMove}
+      onTouchEnd={handleSwipeEnd}
     >
       <AppHeader onOpenMenu={() => setIsMenuPanelOpen(true)} />
 
@@ -664,6 +688,7 @@ function App() {
         isOpen={isMenuPanelOpen}
         onClose={() => setIsMenuPanelOpen(false)}
         session={session}
+        isPro={isPro}
         canManageSubscription={canManageSubscription}
         isSignOutLoading={isSignOutLoading}
         onExportCsv={handleExportCsv}
@@ -671,6 +696,7 @@ function App() {
         onOpenSettings={() => navigateToPage(AppPage.Settings)}
         onOpenPaywall={openPaywall}
         onManageSubscription={handleManageSubscription}
+        onRestorePurchases={handleRestorePurchases}
         onReviewApp={() => window.open(PLAY_STORE_APP_URL, '_blank', 'noreferrer')}
         onOpenFeedback={openFeedback}
         onSignOut={handleSignOut}
@@ -683,7 +709,7 @@ function App() {
         onUpgrade={handleStartCheckout}
         priceLabel={priceLabel}
         onRestore={handleRestorePurchases}
-        showRestore={isNativeApp && Capacitor.getPlatform() === 'android'}
+        showRestore={false}
       />
       <StreakModal isOpen={isStreakOpen} onClose={closeStreak} />
       <FeedbackModal
