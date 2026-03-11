@@ -71,12 +71,20 @@ const de = {
   },
   paywall: {
     ...en.paywall,
-    unlockPro: 'Pro-Funktionen freischalten',
-    upgradeToAccess: 'Upgrade für tiefere Insights.',
+    unlockPro: 'Rythm Pro',
+    upgradeToAccess: 'Werde Pro: personalisierte Analysen und Statistiken, die dich überraschen.',
     openingCheckout: 'Checkout wird geöffnet...',
     upgradeNow: 'Pro aktivieren',
     restorePurchases: 'Käufe wiederherstellen',
     notNow: 'Nicht jetzt',
+    features: {
+      dailyImpact: 'Entdecke, wie dein Tagverlauf deinen Schlaf und deine Stimmung beeinflusst',
+      sleepTarget: 'Dein empfohlenes Schlafziel basierend auf deiner Historie',
+      sleepMoodChart: 'Sieh in einem einfachen Diagramm, wie Schlaf und Stimmung zusammenhängen',
+      weeklyMonthlyTrends: 'Wöchentliche und monatliche Trends',
+      historyRanges: 'Verlauf über 30/90/365 Tage',
+      exportReports: 'Exportiere die individuellen PDF‑Berichte von Rythm',
+    },
   },
   feedback: {
     ...en.feedback,

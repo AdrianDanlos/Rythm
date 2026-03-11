@@ -78,7 +78,7 @@ const es = {
   },
   paywall: {
     premium: 'Premium',
-    unlockPro: 'Desbloquea funciones Pro',
+    unlockPro: 'Rythm Pro',
     upgradeToAccess: 'Hazte Pro: análisis personalizados y estadísticas que te sorprenderán',
     openingCheckout: 'Abriendo pago...',
     upgradeNow: 'Activar Pro',
@@ -86,6 +86,14 @@ const es = {
     restorePurchases: 'Restaurar compras',
     notNow: 'Ahora no',
     configureUpgradeUrl: 'Configura VITE_UPGRADE_URL para habilitar el enlace de compra.',
+    features: {
+      dailyImpact: 'Descubre cómo lo que pasa en tu día influye en tu sueño y ánimo',
+      sleepTarget: 'Tu objetivo de sueño recomendado según tu historial',
+      sleepMoodChart: 'Ve en una sola gráfica cómo se conectan sueño y ánimo',
+      weeklyMonthlyTrends: 'Tendencias semanales y mensuales',
+      historyRanges: 'Historial de 30/90/365 días',
+      exportReports: 'Exporta los reportes personalizados de Rythm en PDF',
+    },
   },
   feedback: {
     title: 'Comparte tus ideas',
@@ -268,7 +276,7 @@ const es = {
     noCompleteLogsRange: 'Aún no hay registros completos de sueño y ánimo en este periodo.',
     loadingEntries: 'Cargando datos...',
     entriesCount: '{{count}} días',
-    upgradeToPro: 'Pasar a Pro',
+    upgradeToPro: 'Rythm Pro',
     sleepAxis: 'Horas de sueño',
     moodTrendUp: 'La tendencia de ánimo sube',
     moodTrendDown: 'La tendencia de ánimo baja',

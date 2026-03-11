@@ -12,12 +12,12 @@ type PaywallModalProps = {
 }
 
 const premiumFeatures = [
-  'Discover how what happens during the day influences your mood and sleep',
-  'Your recommended sleep target based on your history',
-  'See how sleep and mood connect in one simple chart',
-  'Weekly and monthly trends',
-  '30/90/365 day history',
-  'Export Rythm\'s custom PDF reports',
+  'dailyImpact',
+  'sleepTarget',
+  'sleepMoodChart',
+  'weeklyMonthlyTrends',
+  'historyRanges',
+  'exportReports',
 ]
 
 export const PaywallModal = ({
@@ -99,19 +99,11 @@ export const PaywallModal = ({
           {t('paywall.upgradeToAccess')}
         </p>
         <ul className="paywall-list">
-          {premiumFeatures.map(feature => (
-            <li key={feature}>{feature}</li>
+          {premiumFeatures.map(key => (
+            <li key={key}>{t(`paywall.features.${key}`)}</li>
           ))}
         </ul>
         <div className="modal-actions">
-          <button
-            type="button"
-            className="primary-button cta-button"
-            disabled={!canUpgrade || isLoading}
-            onClick={handleUpgrade}
-          >
-            {isLoading ? t('paywall.openingCheckout') : t('paywall.upgradeNow')}
-          </button>
           {showRestore && onRestore
             ? (
                 <button
@@ -124,8 +116,13 @@ export const PaywallModal = ({
                 </button>
               )
             : null}
-          <button type="button" className="ghost" onClick={onClose}>
-            {t('paywall.notNow')}
+          <button
+            type="button"
+            className="primary-button cta-button"
+            disabled={!canUpgrade || isLoading}
+            onClick={handleUpgrade}
+          >
+            {isLoading ? t('paywall.openingCheckout') : t('paywall.upgradeNow')}
           </button>
         </div>
         {!canUpgrade
