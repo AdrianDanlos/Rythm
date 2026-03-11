@@ -416,7 +416,7 @@ export function getMonthlyMilestoneBadge(entries: Entry[]): Badge {
   const progressValue = Math.min(count, 30)
   const progressTotal = 30
   const progressText = unlocked
-    ? `30/30 ${getUnitLabel('days', 30)}`
+    ? t('badges.maxLevel')
     : `${count}/30 ${getUnitLabel('days', 30)}`
   return {
     id: 'monthly-milestone',
