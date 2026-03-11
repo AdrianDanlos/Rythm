@@ -22,6 +22,7 @@ type AppSidePanelProps = {
   onOpenSettings: () => void
   onOpenPaywall: () => void
   onManageSubscription: () => void
+  onRestorePurchases: () => void
   onReviewApp: () => void
   onOpenFeedback: () => void
   onSignOut: () => void
@@ -51,22 +52,23 @@ function PanelButton({
   )
 }
 
-export function AppSidePanel({
-  isOpen,
-  onClose,
-  session,
-  isPro,
-  canManageSubscription,
-  isSignOutLoading,
-  onExportCsv,
-  onExportReport,
-  onOpenSettings,
-  onOpenPaywall,
-  onManageSubscription,
-  onReviewApp,
-  onOpenFeedback,
-  onSignOut,
-}: AppSidePanelProps) {
+export function AppSidePanel(props: AppSidePanelProps) {
+  const {
+    isOpen,
+    onClose,
+    session,
+    isPro,
+    canManageSubscription,
+    isSignOutLoading,
+    onExportCsv,
+    onExportReport,
+    onOpenSettings,
+    onOpenPaywall,
+    onManageSubscription,
+    onReviewApp,
+    onOpenFeedback,
+    onSignOut,
+  } = props
   const { t } = useTranslation()
   const runAndClose = (fn: () => void) => {
     fn()
