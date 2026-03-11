@@ -288,7 +288,7 @@
   left: 0;
   bottom: 0;
   width: min(280px, 85vw);
-  background: var(--card);
+  background: var(--bg);
   border-right: 1px solid var(--border);
   z-index: 36;
   box-shadow: var(--modal-shadow);
@@ -1362,7 +1362,7 @@
   position: relative;
   display: flex;
   justify-content: space-around;
-  gap: 32px;
+  gap: 28px;
 }
 
 .streak-card {
@@ -1711,8 +1711,8 @@
   --stat-progress: 0%;
   --stat-ring-color: var(--chart-sleep);
   --stat-ring-track: color-mix(in srgb, var(--border) 70%, transparent);
-  width: 154px;
-  height: 154px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   background: conic-gradient(
     var(--stat-ring-color) var(--stat-progress),
@@ -1729,14 +1729,14 @@
 
 .stat-block--mood .stat-ring {
   --stat-ring-color: var(--chart-mood);
-  width: 164px;
-  height: 164px;
+  width: 150px;
+  height: 150px;
 }
 
 .stat-block--sleep .stat-ring {
   --stat-ring-color: var(--chart-sleep-bar, var(--chart-sleep));
-  width: 164px;
-  height: 164px;
+  width: 150px;
+  height: 150px;
 }
 
 .stat-ring::before {
@@ -3266,8 +3266,8 @@ button.toggle-group__btn--disabled:disabled {
 
   .stat-block--mood .stat-ring,
   .stat-block--sleep .stat-ring {
-    width: 136px;
-    height: 136px;
+    width: 130px;
+    height: 130px;
   }
 
   .mood-distribution {
