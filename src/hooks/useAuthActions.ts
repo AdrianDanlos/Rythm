@@ -77,7 +77,15 @@ export const useAuthActions = ({
           },
         })
 
-        const idToken = response?.idToken
+        if (response.provider !== 'google') {
+          throw new Error('Unexpected provider returned from Google login')
+        }
+
+        const googleResult = response.result
+        const idToken = googleResult.responseType === 'online'
+          ? googleResult.idToken
+          : null
+
         if (!idToken) {
           throw new Error('No ID token returned from Google')
         }
