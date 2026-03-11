@@ -77,14 +77,20 @@ export const useAuthActions = ({
           },
         })
 
-        if (response.provider !== 'google') {
-          throw new Error('Unexpected provider returned from Google login')
+        type GoogleLoginResponseOnline = {
+          result: {
+            responseType: 'online'
+            idToken?: string
+          }
         }
 
-        const googleResult = response.result
-        const idToken = googleResult.responseType === 'online'
-          ? googleResult.idToken
-          : null
+        const onlineResult = (response as GoogleLoginResponseOnline).result
+
+        if (!onlineResult || onlineResult.responseType !== 'online') {
+          throw new Error('Google login did not return an online response')
+        }
+
+        const { idToken } = onlineResult
 
         if (!idToken) {
           throw new Error('No ID token returned from Google')
@@ -114,8 +120,10 @@ export const useAuthActions = ({
         }
       }
     }
-    catch {
-      toast.error(t('errors.googleSignInStartFailed'))
+    catch (error) {
+      console.error('Google sign-in failed', error)
+      const message = error instanceof Error ? error.message : String(error)
+      toast.error(`${t('errors.googleSignInStartFailed')}: ${message}`)
       setAuthError(null)
     }
   }
