@@ -101,7 +101,7 @@ export const FeedbackModal = ({
             rows={5}
             disabled={!userEmail || isLoading}
           />
-          <div className="modal-actions">
+          <div className="modal-actions modal-actions-right">
             <button
               type="submit"
               className="primary-button"

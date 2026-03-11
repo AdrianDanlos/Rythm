@@ -75,20 +75,21 @@ export function AppSidePanel({
     onClose()
   }
 
-  if (!isOpen) return null
-
   return (
     <>
-      <div
-        className="side-panel-backdrop"
-        role="presentation"
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      {isOpen && (
+        <div
+          className="side-panel-backdrop"
+          role="presentation"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
       <aside
-        className="side-panel side-panel--open"
+        className={`side-panel${isOpen ? ' side-panel--open' : ''}`}
         aria-modal="true"
         aria-label="Menu"
+        aria-hidden={!isOpen}
       >
         <nav className="side-panel__nav">
           <PanelButton
@@ -106,21 +107,13 @@ export function AppSidePanel({
             label={t('nav.settings')}
             onClick={() => runAndClose(onOpenSettings)}
           />
-          {!isPro
-            ? (
-                <PanelButton
-                  icon={Sparkles}
-                  label={t('insights.upgradeToPro')}
-                  onClick={() => runAndClose(onOpenPaywall)}
-                />
-              )
-            : (
-                <PanelButton
-                  icon={CreditCard}
-                  label={t('nav.manageSubscription')}
-                  onClick={() => runAndClose(onRestorePurchases)}
-                />
-              )}
+          {!isPro && (
+            <PanelButton
+              icon={Sparkles}
+              label={t('insights.upgradeToPro')}
+              onClick={() => runAndClose(onOpenPaywall)}
+            />
+          )}
           {canManageSubscription && (
             <PanelButton
               icon={CreditCard}

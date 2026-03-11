@@ -1544,6 +1544,7 @@
   flex-direction: column;
   gap: 6px;
   background: var(--card);
+  box-shadow: var(--card-shadow);
 }
 
 .stat-tile .value {
@@ -1884,7 +1885,6 @@
 
 .mood-total .value {
   font-variant-numeric: tabular-nums;
-  margin-right: 2px;
 }
 
 .mood-legend-row {
@@ -1927,7 +1927,7 @@
 .mood-legend-percent {
   color: var(--muted);
   font-variant-numeric: tabular-nums;
-  text-align: left;
+  text-align: right;
   display: inline-block;
 }
 
