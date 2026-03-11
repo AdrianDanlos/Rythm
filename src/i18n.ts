@@ -5,8 +5,9 @@ import en from './locales/en'
 import es from './locales/es'
 import fr from './locales/fr'
 import pt from './locales/pt'
+import de from './locales/de'
 
-export const SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'pt'] as const
+export const SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'pt', 'de'] as const
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number]
 
 export const LANGUAGE_STORAGE_KEY = 'languagePreference'
@@ -16,6 +17,7 @@ const normalizeLng = (raw: string | undefined): SupportedLanguage => {
   if (short === 'es') return 'es'
   if (short === 'fr') return 'fr'
   if (short === 'pt') return 'pt'
+  if (short === 'de') return 'de'
   return 'en'
 }
 
@@ -37,6 +39,7 @@ void i18n
       es: { translation: es },
       fr: { translation: fr },
       pt: { translation: pt },
+      de: { translation: de },
     },
     lng: initialLanguage,
     fallbackLng: 'en',

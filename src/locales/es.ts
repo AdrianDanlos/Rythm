@@ -72,6 +72,7 @@ const es = {
     spanish: 'Español',
     french: 'Francés',
     brazilianPortuguese: 'Portugués (Brasil)',
+    german: 'Alemán',
     appleHealthAlt: 'Apple Health',
     fitbitAlt: 'Fitbit',
   },

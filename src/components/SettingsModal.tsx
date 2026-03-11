@@ -275,6 +275,13 @@ export const SettingsModal = ({
                   >
                     {t('settings.brazilianPortuguese')}
                   </button>
+                  <button
+                    type="button"
+                    className={`ghost ${language === 'de' ? 'active' : ''}`}
+                    onClick={() => onLanguageChange('de')}
+                  >
+                    {t('settings.german')}
+                  </button>
                 </div>
               </div>
 
