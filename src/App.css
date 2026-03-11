@@ -1530,12 +1530,6 @@
   transform: translateX(-0.5px);
 }
 
-.stats-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 .stats-stack-grid {
   display: grid;
   grid-template-columns: 1fr;
