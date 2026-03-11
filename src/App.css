@@ -2903,16 +2903,119 @@ button.toggle-group__btn--disabled:disabled {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  align-items: center;
+  align-items: stretch;
   margin-top: 20px;
 }
 
-.ideal-sleep-target-ring {
-  margin: 0 auto;
+.ideal-sleep-target-card__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.ideal-sleep-target-ring .stat-ring {
-  --stat-ring-color: var(--chart-ideal-sleep);
+.ideal-sleep-target-card__header,
+.ideal-sleep-target-card__progress,
+.ideal-sleep-target-card__message {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.ideal-sleep-target-card__icon {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  padding: 0;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, #818cf8 22%, var(--card));
+  color: #818cf8;
+}
+
+.ideal-sleep-target-card__icon .streak-card__icon {
+  width: 32px;
+  height: 32px;
+  color: inherit;
+}
+
+.ideal-sleep-target-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ideal-sleep-target-card__title {
+  font-weight: 600;
+}
+
+.ideal-sleep-target-card__value {
+  margin-left: auto;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #818cf8;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.ideal-sleep-target-card__progress {
+  width: 100%;
+}
+
+.ideal-sleep-target-card__progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+}
+
+.ideal-sleep-target-card__progress-label {
+  color: var(--muted);
+}
+
+.ideal-sleep-target-card__progress-value {
+  font-weight: 600;
+  color: #818cf8;
+}
+
+.ideal-sleep-target-card__progress-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border) 60%, transparent);
+  overflow: hidden;
+}
+
+.ideal-sleep-target-card__progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #818cf8;
+}
+
+.ideal-sleep-target-card__message {
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.ideal-sleep-target-card__message--success {
+  background: color-mix(in srgb, #818cf8 12%, transparent);
+  border: 1px solid color-mix(in srgb, #818cf8 35%, transparent);
+}
+
+.ideal-sleep-target-card__message-title {
+  font-weight: 600;
+}
+
+.ideal-sleep-target-card__message-body {
+  margin-top: 2px;
+  color: var(--muted);
 }
 
 .ideal-sleep-mood-comparison {

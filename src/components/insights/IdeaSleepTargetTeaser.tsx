@@ -1,6 +1,6 @@
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { useTranslation } from 'react-i18next'
-import { TrendingUp } from 'lucide-react'
+import { MoonStar, TrendingUp } from 'lucide-react'
 
 type IdeaSleepTargetTeaserProps = {
   onOpenPaywall: () => void
@@ -24,16 +24,39 @@ export const IdeaSleepTargetTeaser = ({ onOpenPaywall }: IdeaSleepTargetTeaserPr
     <div className="ideal-sleep-target-teaser premium-preview">
       <div className="premium-preview__blur">
         <div className="ideal-sleep-target-content">
-          <div className="stat-block stat-block--ring stat-block--sleep ideal-sleep-target-ring">
-            <div
-              className="stat-ring"
-              style={{ ['--stat-progress' as string]: '100%' }}
-            >
-              <div className="stat-ring__inner">
-                <p className="label">{t('insights.target')}</p>
-                <p className="value">{formatSleepHours(MOCK_THRESHOLD)}</p>
-              </div>
+          <div className="ideal-sleep-target-card__header">
+            <div className="ideal-sleep-target-card__icon streak-card__image" aria-hidden="true">
+              <MoonStar className="streak-card__icon" />
             </div>
+            <div className="ideal-sleep-target-card__text">
+              <p className="ideal-sleep-target-card__title">
+                {t('common.recommended')}
+              </p>
+            </div>
+            <p className="ideal-sleep-target-card__value">
+              {formatSleepHours(MOCK_THRESHOLD)}
+            </p>
+          </div>
+          <div className="ideal-sleep-target-card__progress">
+            <div className="ideal-sleep-target-card__progress-header">
+              <p className="ideal-sleep-target-card__progress-label">
+                {t('insights.progressToTargetLabel')}
+              </p>
+              <p className="ideal-sleep-target-card__progress-value">
+                88%
+              </p>
+            </div>
+            <div className="ideal-sleep-target-card__progress-track">
+              <div className="ideal-sleep-target-card__progress-fill" />
+            </div>
+          </div>
+          <div className="ideal-sleep-target-card__message ideal-sleep-target-card__message--success">
+            <p className="ideal-sleep-target-card__message-title">
+              {t('insights.optimalRangeTitle')}
+            </p>
+            <p className="ideal-sleep-target-card__message-body">
+              {t('insights.optimalRangeBody')}
+            </p>
           </div>
           <div
             className="ideal-sleep-mood-comparison"

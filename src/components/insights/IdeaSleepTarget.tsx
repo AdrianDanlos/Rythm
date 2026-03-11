@@ -1,12 +1,13 @@
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { useTranslation } from 'react-i18next'
-import { TrendingDown, TrendingUp } from 'lucide-react'
+import { MoonStar, TrendingDown, TrendingUp } from 'lucide-react'
 import { IdeaSleepTargetTeaser } from './IdeaSleepTargetTeaser'
 
 type IdeaSleepTargetProps = {
   isPro: boolean
   entryCount: number
   personalSleepThreshold: number | null
+  averageSleep: number | null
   moodByPersonalThreshold: { high: number | null, low: number | null }
   onOpenPaywall: () => void
   goToLog: () => void
@@ -16,6 +17,7 @@ export const IdeaSleepTarget = ({
   isPro,
   entryCount,
   personalSleepThreshold,
+  averageSleep,
   moodByPersonalThreshold,
   onOpenPaywall,
   goToLog,
@@ -40,6 +42,16 @@ export const IdeaSleepTarget = ({
   const shouldShowReduceSleepMessage = moodDeltaPercent !== null
     && moodDeltaPercent < 0
     && entryCount > 21
+  const progressToTarget = hasThreshold && averageSleep !== null
+    ? Math.min(100, (averageSleep / personalSleepThreshold) * 100)
+    : null
+  const isInOptimalRange = progressToTarget !== null && progressToTarget >= 100
+  const optimalRangeTitle = isInOptimalRange
+    ? t('insights.optimalRangeTitle')
+    : t('insights.notOptimalRangeTitle')
+  const optimalRangeBody = isInOptimalRange
+    ? t('insights.optimalRangeBody')
+    : t('insights.notOptimalRangeBody')
 
   return (
     <section className={`card ${!isPro ? 'pro-locked' : ''}`}>
@@ -58,16 +70,42 @@ export const IdeaSleepTarget = ({
         : hasThreshold
           ? (
               <div className="ideal-sleep-target-content">
-                <div className="stat-block stat-block--ring stat-block--sleep ideal-sleep-target-ring">
-                  <div
-                    className="stat-ring"
-                    style={{ ['--stat-progress' as string]: '100%' }}
-                  >
-                    <div className="stat-ring__inner">
-                      <p className="label">{t('insights.target')}</p>
-                      <p className="value">{formatSleepHours(personalSleepThreshold)}</p>
-                    </div>
+                <div className="ideal-sleep-target-card__header">
+                  <div className="ideal-sleep-target-card__icon streak-card__image" aria-hidden="true">
+                    <MoonStar className="streak-card__icon" />
                   </div>
+                  <div className="ideal-sleep-target-card__text">
+                    <p className="ideal-sleep-target-card__title">
+                      {t('common.recommended')}
+                    </p>
+                  </div>
+                  <p className="ideal-sleep-target-card__value">
+                    {formatSleepHours(personalSleepThreshold)}
+                  </p>
+                </div>
+                <div className="ideal-sleep-target-card__progress">
+                  <div className="ideal-sleep-target-card__progress-header">
+                    <p className="ideal-sleep-target-card__progress-label">
+                      {t('insights.progressToTargetLabel')}
+                    </p>
+                    <p className="ideal-sleep-target-card__progress-value">
+                      {progressToTarget !== null ? `${Math.round(progressToTarget)}%` : '—'}
+                    </p>
+                  </div>
+                  <div className="ideal-sleep-target-card__progress-track">
+                    <div
+                      className="ideal-sleep-target-card__progress-fill"
+                      style={{ width: `${progressToTarget !== null ? progressToTarget : 0}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="ideal-sleep-target-card__message ideal-sleep-target-card__message--success">
+                  <p className="ideal-sleep-target-card__message-title">
+                    {optimalRangeTitle}
+                  </p>
+                  <p className="ideal-sleep-target-card__message-body">
+                    {optimalRangeBody}
+                  </p>
                 </div>
                 {hasMoodAverages
                   ? (

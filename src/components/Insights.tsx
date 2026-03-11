@@ -369,6 +369,7 @@ export const Insights = ({
                   isPro={isPro}
                   entryCount={entries.length}
                   personalSleepThreshold={personalSleepThreshold}
+                  averageSleep={averages.sleep}
                   moodByPersonalThreshold={moodByPersonalThreshold}
                   onOpenPaywall={onOpenPaywall}
                   goToLog={goToLog}
@@ -407,7 +408,7 @@ export const Insights = ({
                               </div>
                               <p className="badge-helper">{badge.description}</p>
                             </div>
-                            {badge.progressTotal > 0 && (
+                            {badge.progressTotal > 0 && !isMaxTier && (
                               <div className="badge-progress-track" aria-hidden="true">
                                 <span
                                   className="badge-progress-fill"
