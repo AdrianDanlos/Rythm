@@ -543,6 +543,30 @@ function App() {
     if (!fromKey || !toLabel) return
     if (fromKey === toLabel.toLowerCase()) return
 
+    // Preserve any custom color when renaming.
+    setTagColors((prev) => {
+      const fromColor = prev[fromKey]
+      if (!fromColor) return prev
+      const toKey = toLabel.toLowerCase()
+      if (toKey === fromKey) return prev
+      const next: Record<string, string> = { ...prev }
+      // Only move color if new key doesn't already have one.
+      if (!next[toKey]) {
+        next[toKey] = fromColor
+      }
+      delete next[fromKey]
+      const uid = session?.user?.id
+      if (uid) {
+        try {
+          window.localStorage.setItem(`rythm:tagColors:${uid}`, JSON.stringify(next))
+        }
+        catch {
+          // ignore storage errors
+        }
+      }
+      return next
+    })
+
     // Optimistic UI update: change tags in local state immediately.
     const nextEntries = entries.map((entry) => {
       if (!entry.tags?.length) return entry
