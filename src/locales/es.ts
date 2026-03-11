@@ -296,7 +296,7 @@ const es = {
     logMoreForAboveBelow: 'Registra más días para ver ánimo promedio por encima y por debajo de {{threshold}}',
     notEnoughDataYet: 'Aún no hay suficientes datos.',
     estimateThreshold: 'para estimar tu umbral personal.',
-    dailyEventsInsights: 'Información de eventos diarios',
+    dailyEventsInsights: 'Análisis de eventos diarios',
     yourDailyEvents: 'Tus eventos diarios',
     dailyEventCount: '{{tag}} ({{count}})',
     changeTagColor: 'Cambiar color para {{tag}}',
