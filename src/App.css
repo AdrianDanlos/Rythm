@@ -889,14 +889,13 @@
   margin-top: 8px;
   padding: 20px 16px 28px;
   border-radius: 24px;
-  border: 1px solid #e8edf5;
+  border: none;
   background: #ffffff;
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
   text-align: center;
 }
 
 :root[data-theme="dark"] .log-reflection-card {
-  border-color: rgba(133, 168, 255, 0.24);
   background:
     radial-gradient(
       circle at 15% 8%,
@@ -914,7 +913,7 @@
 
 /* Reflection card: soft wash from selected mood (palette-aligned, not pink) */
 .log-reflection-card.log-reflection-block.log-reflection-card--mood-selected {
-  border-color: color-mix(in srgb, var(--reflection-mood-tint) 32%, #e8edf5);
+  border: none;
   background:
     linear-gradient(
       165deg,
@@ -922,13 +921,11 @@
       #f4f6f9 52%,
       #ffffff 100%
     );
-  box-shadow:
-    0 10px 28px rgba(15, 23, 42, 0.07),
-    0 0 0 1px color-mix(in srgb, var(--reflection-mood-tint) 12%, transparent);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
 }
 
 :root[data-theme="dark"] .log-reflection-card.log-reflection-block.log-reflection-card--mood-selected {
-  border-color: color-mix(in srgb, var(--reflection-mood-tint) 38%, rgba(133, 168, 255, 0.28));
+  border: none;
   background:
     radial-gradient(
       circle at 22% 10%,
@@ -941,9 +938,7 @@
       transparent 46%
     ),
     linear-gradient(180deg, #101b31 0%, #0b1427 100%);
-  box-shadow:
-    0 16px 34px rgba(0, 0, 0, 0.32),
-    0 0 40px color-mix(in srgb, var(--reflection-mood-tint) 14%, transparent);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
 }
 
 .log-reflection-block {
@@ -1368,14 +1363,13 @@
   margin-top: 8px;
   padding: 20px 16px 25px;
   border-radius: 24px;
-  border: 1px solid #e8edf5;
+  border: none;
   background: #ffffff;
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
   text-align: center;
 }
 
 :root[data-theme="dark"] .sleep-duration-picker {
-  border-color: rgba(133, 168, 255, 0.24);
   background:
     radial-gradient(
       circle at 15% 10%,
@@ -1730,7 +1724,6 @@
 
 .tag-add-button:hover:not(:disabled) {
   background: var(--button-hover-surface);
-  border-color: var(--input-focus-border);
 }
 
 .tag-add-button:disabled {
@@ -1961,10 +1954,6 @@
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.log-date-picker-collapsed:hover {
-  border-color: var(--input-focus-border);
-}
-
 .log-date-picker-collapsed:focus {
   outline: none;
 }
@@ -1972,14 +1961,6 @@
 .log-date-picker-collapsed:focus-visible {
   outline: 2px solid var(--input-focus-border);
   outline-offset: 2px;
-}
-
-:root[data-theme="dark"] .log-date-picker-collapsed:focus-visible {
-  outline: none;
-  box-shadow:
-    0 0 0 2px var(--toggle-segment-focus-gap),
-    0 0 0 4px var(--toggle-segment-focus-ring),
-    var(--card-shadow);
 }
 
 .log-date-picker-date {
@@ -2048,9 +2029,13 @@
   justify-content: center;
 }
 
+/* v9 uses .rdp-root; default library accent is blue */
+.date-picker .rdp-root,
 .date-picker .rdp {
-  --rdp-accent-color: var(--selected-bg);
-  --rdp-background-color: var(--selected-bg);
+  --rdp-accent-color: var(--text);
+  --rdp-accent-background-color: var(--selected-bg);
+  --rdp-selected-border: 2px solid color-mix(in srgb, var(--text) 32%, var(--border));
+  --rdp-today-color: var(--muted);
   margin: 0;
 }
 
@@ -2062,6 +2047,10 @@
   color: var(--text);
 }
 
+.date-picker .rdp-caption_label {
+  margin-left: 8px;
+}
+
 .date-picker .rdp-chevron {
   color: var(--text);
   fill: var(--text);
@@ -2071,27 +2060,28 @@
   color: var(--text);
 }
 
-.date-picker .rdp-day-logged:not(.rdp-day_selected) .rdp-day_button {
+.date-picker .rdp-day-logged:not(.rdp-day_selected):not(.rdp-selected) .rdp-day_button {
   background: var(--day-logged-bg);
   color: var(--day-logged-text);
   border-radius: 6px;
 }
 
 .date-picker
-  .rdp-day-incomplete:not(.rdp-day_selected):not(.rdp-day-logged)
+  .rdp-day-incomplete:not(.rdp-day_selected):not(.rdp-selected):not(.rdp-day-logged)
   .rdp-day_button {
   background: var(--day-incomplete-bg);
   color: var(--day-incomplete-text);
   border-radius: 6px;
 }
 
-.date-picker .rdp-day_selected .rdp-day_button {
+.date-picker .rdp-day_selected .rdp-day_button,
+.date-picker .rdp-selected .rdp-day_button {
   background: var(--selected-bg);
   color: var(--selected-text);
 }
 
 .date-picker .rdp-selected .rdp-day_button {
-  border: 1px solid var(--selected-border);
+  border: var(--rdp-selected-border);
 }
 
 .date-picker .rdp-day_button {
@@ -2425,6 +2415,39 @@
   min-height: 40px;
   padding: 10px 14px;
   line-height: 1;
+}
+
+/* Log form save — sleep accent in dark mode (matches chart / sleep UI) */
+:root[data-theme="dark"] .log-form-stack .save-button:not(:disabled) {
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--chart-sleep) 88%, var(--chart-sleep-bar)),
+    var(--chart-sleep)
+  );
+  color: #082f49;
+  border-color: color-mix(in srgb, var(--chart-sleep-bar) 35%, var(--chart-sleep));
+  box-shadow:
+    0 10px 22px rgba(125, 211, 252, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :root[data-theme="dark"] .log-form-stack .save-button:not(:disabled):hover {
+    box-shadow:
+      0 12px 26px rgba(125, 211, 252, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    filter: brightness(1.05);
+  }
+}
+
+:root[data-theme="dark"] .log-form-stack .save-button:not(:disabled):focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--chart-sleep) 65%, white);
+  outline-offset: 2px;
+}
+
+:root[data-theme="dark"] .log-form-stack .save-button:not(:disabled) .spinner {
+  border-color: rgba(8, 47, 73, 0.22);
+  border-top-color: rgba(8, 47, 73, 0.85);
 }
 
 .spinner {
@@ -3021,14 +3044,9 @@
   border-color: var(--selected-border);
 }
 
-/* Dark: heatmap / scatter / trends / daily history / settings appearance toggles */
-:root[data-theme="dark"] .toggle-group .ghost:focus-visible:not(:disabled) {
-  outline: none;
-  box-shadow:
-    0 0 0 2px var(--toggle-segment-focus-gap),
-    0 0 0 4px var(--toggle-segment-focus-ring);
-  position: relative;
-  z-index: 1;
+.toggle-group .ghost:focus-visible:not(:disabled) {
+  outline: 2px solid var(--input-focus-border);
+  outline-offset: 2px;
 }
 
 .toggle-group--thirds {
@@ -4824,13 +4842,6 @@ button.toggle-group__btn--disabled:disabled {
   .insights-bottom-nav__tabs .tab-button:focus-visible {
     outline: 2px solid var(--nav-focus-border);
     outline-offset: 3px;
-  }
-
-  :root[data-theme="dark"] .insights-bottom-nav__tabs .tab-button:focus-visible {
-    outline: none;
-    box-shadow:
-      0 0 0 2px var(--toggle-segment-focus-gap),
-      0 0 0 4px var(--toggle-segment-focus-ring);
   }
 
   .insights-bottom-nav__tabs .tab-button.active {
