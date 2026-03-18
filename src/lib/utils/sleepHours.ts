@@ -1,3 +1,6 @@
+/** Hours shown in the log form when sleep hasn’t been set; also saved on submit if still unset. */
+export const DEFAULT_LOG_SLEEP_HOURS = 8
+
 /**
  * Parse a variety of human-friendly sleep hour inputs into a numeric value.
  *

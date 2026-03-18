@@ -98,6 +98,7 @@ export const InsightsStats = ({
     label: string,
     window: WindowStats,
   ) => {
+    const canShowEqualsVsAverage = statCounts.totalEntries >= 30
     const buildDeltaPercent = (value: number | null, avg: number | null) => {
       if (value === null || avg === null || avg <= 0) {
         return null
@@ -109,8 +110,15 @@ export const InsightsStats = ({
       window.sleep !== null && averages.sleep !== null
         ? Math.round((window.sleep - averages.sleep) * 60)
         : null
+    const showSleepDelta =
+      sleepDeltaMinutes !== null
+      && (sleepDeltaMinutes !== 0 || canShowEqualsVsAverage)
     const moodDeltaPercent = buildDeltaPercent(window.mood, averages.mood)
     const moodDeltaRounded = moodDeltaPercent !== null ? Math.round(Math.abs(moodDeltaPercent)) : null
+    const showMoodDelta =
+      moodDeltaPercent !== null
+      && moodDeltaRounded !== null
+      && (moodDeltaRounded !== 0 || canShowEqualsVsAverage)
 
     return (
       <div className="stat-tile">
@@ -123,13 +131,14 @@ export const InsightsStats = ({
                 ? (
                     <>
                       <span>{formatSleepHours(window.sleep)}</span>
-                      {sleepDeltaMinutes !== null && (
+                      {showSleepDelta && (
                         <span
                           className={
                             sleepDeltaMinutes === 0
                               ? 'window-average-delta window-average-delta--flat'
                               : `window-average-delta ${sleepDeltaMinutes > 0 ? 'window-average-delta--up' : 'window-average-delta--down'}`
                           }
+                          aria-label={sleepDeltaMinutes === 0 ? t('insights.sameAsOverallAverage') : undefined}
                         >
                           {sleepDeltaMinutes === 0
                             ? (
@@ -138,7 +147,9 @@ export const InsightsStats = ({
                             : sleepDeltaMinutes > 0
                               ? <TrendingUp size={16} aria-hidden="true" />
                               : <TrendingDown size={16} aria-hidden="true" />}
-                          <span>{t('insights.sleepDeltaMinutes', { count: Math.abs(sleepDeltaMinutes) })}</span>
+                          {sleepDeltaMinutes !== 0 && (
+                            <span>{t('insights.sleepDeltaMinutes', { count: Math.abs(sleepDeltaMinutes) })}</span>
+                          )}
                         </span>
                       )}
                     </>
@@ -153,13 +164,14 @@ export const InsightsStats = ({
                 ? (
                     <>
                       <span>{window.mood.toFixed(1)} / 5</span>
-                      {moodDeltaPercent !== null && moodDeltaRounded !== null && (
+                      {showMoodDelta && (
                         <span
                           className={
                             moodDeltaRounded === 0
                               ? 'window-average-delta window-average-delta--flat'
                               : `window-average-delta ${moodDeltaPercent > 0 ? 'window-average-delta--up' : 'window-average-delta--down'}`
                           }
+                          aria-label={moodDeltaRounded === 0 ? t('insights.sameAsOverallAverage') : undefined}
                         >
                           {moodDeltaRounded === 0
                             ? (
@@ -168,7 +180,7 @@ export const InsightsStats = ({
                             : moodDeltaPercent > 0
                               ? <TrendingUp size={16} aria-hidden="true" />
                               : <TrendingDown size={16} aria-hidden="true" />}
-                          <span>{moodDeltaRounded}%</span>
+                          {moodDeltaRounded !== 0 && <span>{moodDeltaRounded}%</span>}
                         </span>
                       )}
                     </>

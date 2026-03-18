@@ -380,6 +380,7 @@ const fr = {
     last30Days: '30 derniers jours',
     last90Days: '90 derniers jours',
     sleepDeltaMinutes: '{{count}}m',
+    sameAsOverallAverage: 'Identique à la moyenne globale',
     scatterRange30Days: '30 jours',
     scatterRange90Days: '90 jours',
     rhythmScore: 'Score Rhythm',

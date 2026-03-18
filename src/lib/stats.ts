@@ -24,6 +24,8 @@ export type StatCounts = {
   sleepEntries: number
   /** All entries with both sleep and mood (for correlation and mood-by-sleep) */
   completeEntries: number
+  /** Total journal rows; used for meaningful “vs all-time average” comparisons */
+  totalEntries: number
 }
 
 export type StatsResult = {
@@ -377,6 +379,7 @@ export const buildStats = (
     last30WithSleep,
     sleepEntries,
     completeEntries: completeEntries.length,
+    totalEntries: entries.length,
   }
 
   return {

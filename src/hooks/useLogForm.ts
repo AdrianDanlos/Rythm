@@ -5,7 +5,11 @@ import { upsertEntry, type Entry } from '../lib/entries'
 import { getSupportMessage } from '../lib/supportMessage'
 import { buildStats, type StatsResult } from '../lib/stats'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
-import { formatSleepHoursOption, parseSleepHours } from '../lib/utils/sleepHours'
+import {
+  DEFAULT_LOG_SLEEP_HOURS,
+  formatSleepHoursOption,
+  parseSleepHours,
+} from '../lib/utils/sleepHours'
 
 const DEFAULT_TAG_SUGGESTION_KEYS = [
   'log.defaultTags.caffeine',
@@ -167,7 +171,8 @@ export const useLogForm = ({
       if (!options?.silent) showEntriesError(t('log.invalidSleep'))
       return
     }
-    if (parsedSleep !== null && (parsedSleep < 0 || parsedSleep > 12)) {
+    const sleepHoursToSave = hasSleepInput ? parsedSleep! : DEFAULT_LOG_SLEEP_HOURS
+    if (sleepHoursToSave < 0 || sleepHoursToSave > 12) {
       if (!options?.silent) showEntriesError(t('log.sleepRange'))
       return
     }
@@ -191,17 +196,17 @@ export const useLogForm = ({
     }
 
     const normalizedNote = note.trim() ? note.trim() : null
-    const hasAnyValue = parsedSleep !== null
-      || mood !== null
+    const hasAnyValue = mood !== null
       || normalizedNote !== null
       || tagList.length > 0
+      || hasSleepInput
     if (!hasAnyValue) {
       if (!options?.silent) showEntriesError(t('log.addAtLeastOneValue'))
       return
     }
 
     const existing = entries.find(item => item.entry_date === entryDate)
-    const isComplete = parsedSleep !== null && mood !== null
+    const isComplete = mood !== null
     const completedAt = isComplete
       ? (existing?.is_complete && existing.completed_at
           ? existing.completed_at
@@ -214,7 +219,7 @@ export const useLogForm = ({
       const savedEntry = await upsertEntry({
         user_id: userId,
         entry_date: entryDate,
-        sleep_hours: parsedSleep,
+        sleep_hours: sleepHoursToSave,
         mood,
         note: normalizedNote,
         ...(tagList.length ? { tags: tagList } : { tags: null }),
@@ -236,17 +241,17 @@ export const useLogForm = ({
       setSaved(true)
       if (!options?.silent) {
         if (tagList.length === 0) {
-          const isComplete = parsedSleep !== null && mood !== null
-          const isShortSleep = parsedSleep !== null && parsedSleep < (sleepThreshold - 1)
+          const isCompleteAfterSave = mood !== null
+          const isShortSleep = sleepHoursToSave < (sleepThreshold - 1)
           const moodKey = mood == null ? null : mood >= 4 ? 'GoodMood' : mood <= 2 ? 'LowMood' : null
-          const messageKey = isComplete && moodKey
+          const messageKey = isCompleteAfterSave && moodKey
             ? `log.postSaveSuggestions.${isShortSleep ? 'lowSleep' : 'normalSleep'}NoEvents${moodKey}`
             : 'log.saveNoEvents'
           toast.info(t(messageKey))
         }
         else {
           toast.success(getSupportMessage({
-            sleepHours: parsedSleep,
+            sleepHours: sleepHoursToSave,
             mood,
             sleepThreshold,
             tags: tagList,

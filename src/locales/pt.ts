@@ -380,6 +380,7 @@ const pt = {
     last30Days: 'Últimos 30 dias',
     last90Days: 'Últimos 90 dias',
     sleepDeltaMinutes: '{{count}}m',
+    sameAsOverallAverage: 'Igual à média geral',
     scatterRange30Days: '30 dias',
     scatterRange90Days: '90 dias',
     rhythmScore: 'Score Rhythm',

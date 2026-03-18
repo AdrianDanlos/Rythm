@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Angry, ChevronDown, Frown, Info, Laugh, Meh, Moon, Smile, Sun } from 'lucide-react'
 import 'react-day-picker/dist/style.css'
 import { formatLongDate } from '../lib/utils/dateFormatters'
+import { DEFAULT_LOG_SLEEP_HOURS } from '../lib/utils/sleepHours'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import { Tooltip } from './Tooltip'
 
@@ -87,7 +88,9 @@ export const LogForm = ({
   const { t } = useTranslation()
   const parsedSleepHours = Number(sleepHours)
   const hasSleepValue = sleepHours.trim().length > 0 && Number.isFinite(parsedSleepHours)
-  const totalSleepMinutes = hasSleepValue ? Math.round(parsedSleepHours * 60) : 8 * 60
+  const totalSleepMinutes = hasSleepValue
+    ? Math.round(parsedSleepHours * 60)
+    : DEFAULT_LOG_SLEEP_HOURS * 60
   const sleepHourNumber = Math.floor(totalSleepMinutes / 60)
   const sleepMinuteNumber = totalSleepMinutes % 60
   const noteTextareaRef = useRef<HTMLTextAreaElement | null>(null)
