@@ -1160,36 +1160,26 @@
   text-align: center;
 }
 
+/* No mood wash until a mood is chosen — mood-selected rule below adds tint + gradients */
 :root[data-theme="dark"] .log-reflection-card {
-  background:
-    radial-gradient(
-      circle at 15% 8%,
-      rgba(251, 191, 36, 0.1),
-      transparent 42%
-    ),
-    radial-gradient(
-      circle at 15% 10%,
-      rgba(110, 157, 255, 0.22),
-      transparent 45%
-    ),
-    linear-gradient(180deg, #101b31 0%, #0b1427 100%);
+  background: #101b31;
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
 }
 
 /* Reflection card: soft wash from selected mood (palette-aligned, not pink) */
 .log-reflection-card.log-reflection-block.log-reflection-card--mood-selected {
   border: none;
-  background:
-    linear-gradient(
-      165deg,
-      color-mix(in srgb, var(--reflection-mood-tint) 10%, #ffffff) 0%,
-      #f4f6f9 52%,
-      #ffffff 100%
-    );
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--reflection-mood-tint) 10%, #ffffff) 0%,
+    #f4f6f9 52%,
+    #ffffff 100%
+  );
   box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
 }
 
-:root[data-theme="dark"] .log-reflection-card.log-reflection-block.log-reflection-card--mood-selected {
+:root[data-theme="dark"]
+  .log-reflection-card.log-reflection-block.log-reflection-card--mood-selected {
   border: none;
   background:
     radial-gradient(
@@ -1252,7 +1242,13 @@
   display: grid;
   place-items: center;
   color: #b45309;
-  background: linear-gradient(155deg, #fef9c3 0%, #fde047 38%, #facc15 72%, #f59e0b 100%);
+  background: linear-gradient(
+    155deg,
+    #fef9c3 0%,
+    #fde047 38%,
+    #facc15 72%,
+    #f59e0b 100%
+  );
   box-shadow:
     0 12px 28px rgba(245, 158, 11, 0.38),
     0 0 0 1px rgba(255, 255, 255, 0.55) inset,
@@ -1468,7 +1464,8 @@
 .log-reflection-block .mood-button:focus-visible {
   outline: none;
   border-color: var(--mood-color, var(--text));
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--mood-color, var(--text)) 28%, transparent);
+  box-shadow: 0 0 0 2px
+    color-mix(in srgb, var(--mood-color, var(--text)) 28%, transparent);
 }
 
 .log-reflection-block .mood-button.active {
@@ -1477,7 +1474,8 @@
   border-color: var(--mood-color);
   border-width: 2px;
   box-shadow:
-    0 10px 22px color-mix(in srgb, var(--mood-color) 18%, rgba(15, 23, 42, 0.06)),
+    0 10px 22px
+      color-mix(in srgb, var(--mood-color) 18%, rgba(15, 23, 42, 0.06)),
     inset 0 1px 0 color-mix(in srgb, #ffffff 35%, transparent);
 }
 
@@ -2224,7 +2222,9 @@
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .log-date-picker-collapsed:focus {
@@ -2307,7 +2307,8 @@
 .date-picker .rdp {
   --rdp-accent-color: var(--text);
   --rdp-accent-background-color: var(--selected-bg);
-  --rdp-selected-border: 2px solid color-mix(in srgb, var(--text) 32%, var(--border));
+  --rdp-selected-border: 2px solid
+    color-mix(in srgb, var(--text) 32%, var(--border));
   --rdp-today-color: var(--muted);
   margin: 0;
 }
@@ -2333,14 +2334,18 @@
   color: var(--text);
 }
 
-.date-picker .rdp-day-logged:not(.rdp-day_selected):not(.rdp-selected) .rdp-day_button {
+.date-picker
+  .rdp-day-logged:not(.rdp-day_selected):not(.rdp-selected)
+  .rdp-day_button {
   background: var(--day-logged-bg);
   color: var(--day-logged-text);
   border-radius: 6px;
 }
 
 .date-picker
-  .rdp-day-incomplete:not(.rdp-day_selected):not(.rdp-selected):not(.rdp-day-logged)
+  .rdp-day-incomplete:not(.rdp-day_selected):not(.rdp-selected):not(
+    .rdp-day-logged
+  )
   .rdp-day_button {
   background: var(--day-incomplete-bg);
   color: var(--day-incomplete-text);
@@ -2715,7 +2720,9 @@
   }
 }
 
-:root[data-theme="dark"] .log-form-stack .save-button:not(:disabled):focus-visible {
+:root[data-theme="dark"]
+  .log-form-stack
+  .save-button:not(:disabled):focus-visible {
   outline: 2px solid color-mix(in srgb, #564eff 75%, white);
   outline-offset: 2px;
 }
