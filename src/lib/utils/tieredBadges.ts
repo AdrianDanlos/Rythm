@@ -373,51 +373,18 @@ export function getBalancedWeekBadge(entries: Entry[]): Badge {
   )
 }
 
-// --- Non-incremental badge 2: Monthly Milestone (30 logged days in a row) ---
-/** 30-day window ending on the most recent entry date (aligns with streak: "days in a row"). */
-function getLast30DaysRange(entries: Entry[]): { start: Date, end: Date } | null {
-  if (!entries.length) return null
-  const sorted = [...entries].sort((a, b) => b.entry_date.localeCompare(a.entry_date))
-  const latestDate = parseEntryDate(sorted[0])
-  const end = new Date(latestDate)
-  end.setHours(23, 59, 59, 999)
-  const start = new Date(latestDate)
-  start.setDate(start.getDate() - 29)
-  start.setHours(0, 0, 0, 0)
-  return { start, end }
-}
-
-export function getMonthlyMilestoneBadge(entries: Entry[]): Badge {
-  const range = getLast30DaysRange(entries)
-  if (!range) {
-    return {
-      id: 'monthly-milestone',
-      title: t('badges.monthlyMilestone.title'),
-      description: t('badges.monthlyMilestone.description'),
-      unlocked: false,
-      progressText: `0/30 ${getUnitLabel('days', 30)}`,
-      progressValue: 0,
-      progressTotal: 30,
-      currentTierIndex: 0,
-      tierCount: 1,
-    }
-  }
-  const { start, end } = range
-  const uniqueDatesInRange = new Set(
-    entries
-      .filter((e) => {
-        const d = parseEntryDate(e)
-        return d >= start && d <= end
-      })
-      .map(e => e.entry_date),
-  )
-  const count = uniqueDatesInRange.size
-  const unlocked = count >= 30
-  const progressValue = Math.min(count, 30)
+// --- Non-incremental badge 2: Monthly Milestone (30 complete days in a row) ---
+export function getMonthlyMilestoneBadge(
+  currentCompleteStreak: number,
+  longestCompleteStreak: number,
+): Badge {
+  const unlocked = longestCompleteStreak >= 30
+  const cappedCurrent = Math.min(currentCompleteStreak, 30)
   const progressTotal = 30
+  const progressValue = unlocked ? 30 : cappedCurrent
   const progressText = unlocked
     ? t('badges.maxLevel')
-    : `${count}/30 ${getUnitLabel('days', 30)}`
+    : `${cappedCurrent}/30 ${getUnitLabel('days', 30)}`
   return {
     id: 'monthly-milestone',
     title: t('badges.monthlyMilestone.title'),
@@ -473,7 +440,11 @@ export function getBounceBackBadge(entries: Entry[]): Badge {
   )
 }
 
-export function getTieredBadges(entries: Entry[]): Badge[] {
+export function getTieredBadges(
+  entries: Entry[],
+  currentCompleteStreak: number,
+  longestCompleteStreak: number,
+): Badge[] {
   return [
     getLoggerBadge(entries),
     getEightHourEliteBadge(entries),
@@ -483,7 +454,7 @@ export function getTieredBadges(entries: Entry[]): Badge[] {
     getReflectorBadge(entries),
     getMoodSteadyBadge(entries),
     getBalancedWeekBadge(entries),
-    getMonthlyMilestoneBadge(entries),
+    getMonthlyMilestoneBadge(currentCompleteStreak, longestCompleteStreak),
     getBounceBackBadge(entries),
   ]
 }

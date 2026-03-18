@@ -12,6 +12,7 @@ import type {
 import { calculateAverages } from './utils/averages'
 import { getCorrelationInsight } from './utils/correlation'
 import { getTieredBadges } from './utils/tieredBadges'
+import { getCurrentCompleteStreak, getLongestCompleteStreak } from './utils/streak'
 import { getSleepConsistencyLabel } from './utils/sleepConsistency'
 import type { SleepConsistencyLevel } from './utils/sleepConsistency'
 import { buildTagDrivers, buildTagSleepDrivers } from './utils/tagInsights'
@@ -152,26 +153,11 @@ export const buildStats = (
     return Math.round(Math.max(0, Math.min(1, normalized)) * 100)
   })()
 
-  let streak = 0
-  const completeEntriesWithDate = entriesWithDate.filter(entry => entry.is_complete)
-  if (completeEntriesWithDate.length) {
-    const dateSet = new Set(completeEntriesWithDate.map(entry => entry.entry_date))
-    const latestDate = completeEntriesWithDate.reduce(
-      (max, entry) => (entry.entry_date > max ? entry.entry_date : max),
-      completeEntriesWithDate[0].entry_date,
-    )
-
-    const current = new Date(`${latestDate}T00:00:00`)
-    while (true) {
-      const key = formatLocalDate(current)
-      if (!dateSet.has(key)) break
-      streak += 1
-      current.setDate(current.getDate() - 1)
-    }
-  }
+  const streak = getCurrentCompleteStreak(entries, formatLocalDate)
+  const longestCompleteStreak = getLongestCompleteStreak(entries)
 
   const sleepConsistencyLabel = getSleepConsistencyLabel(entries)
-  const sleepConsistencyBadges = getTieredBadges(entries)
+  const sleepConsistencyBadges = getTieredBadges(entries, streak, longestCompleteStreak)
   const {
     label: correlationLabel,
     direction: correlationDirection,
