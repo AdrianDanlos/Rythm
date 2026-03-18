@@ -814,21 +814,31 @@
 }
 
 .paywall-page__header {
+  position: relative;
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 8px;
   padding-top: 4px;
+  min-height: 44px;
 }
 
 .paywall-page__back {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
   flex-shrink: 0;
-  margin: -4px 0 0 -8px;
+  margin: 0;
 }
 
 .paywall-page__header-text {
-  flex: 1;
+  width: 100%;
   min-width: 0;
+  padding-inline: 48px;
+  box-sizing: border-box;
+  text-align: center;
 }
 
 .paywall-page__title {
