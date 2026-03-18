@@ -41,6 +41,7 @@
   --button-primary-border: var(--neutral-900);
   --input-focus-border: var(--neutral-900);
   --input-focus-shadow: 0 0 0 2px rgba(15, 23, 42, 0.12);
+  --nav-focus-border: #0f172a;
   --modal-backdrop: rgba(15, 23, 42, 0.55);
   --chart-sleep: #7dd3fc;
   --chart-mood: #22c55e;
@@ -165,6 +166,9 @@
   --button-primary-border: rgba(56, 189, 248, 0.7);
   --input-focus-border: rgba(56, 189, 248, 0.8);
   --input-focus-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+  /* Segment / pill focus: warm neutral halo, not system blue */
+  --toggle-segment-focus-gap: var(--bg);
+  --toggle-segment-focus-ring: rgba(214, 211, 206, 0.55);
   --modal-backdrop: rgba(2, 6, 23, 0.78);
   --chart-sleep: #7dd3fc;
   --chart-mood: #4ade80;

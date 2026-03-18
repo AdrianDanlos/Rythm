@@ -876,7 +876,7 @@
 .log-form-stack {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 16px;
   margin: 0;
   padding: 0;
   border: none;
@@ -1974,6 +1974,14 @@
   outline-offset: 2px;
 }
 
+:root[data-theme="dark"] .log-date-picker-collapsed:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--toggle-segment-focus-gap),
+    0 0 0 4px var(--toggle-segment-focus-ring),
+    var(--card-shadow);
+}
+
 .log-date-picker-date {
   display: flex;
   flex-direction: column;
@@ -3011,6 +3019,16 @@
   background: var(--selected-bg);
   color: var(--selected-text);
   border-color: var(--selected-border);
+}
+
+/* Dark: heatmap / scatter / trends / daily history / settings appearance toggles */
+:root[data-theme="dark"] .toggle-group .ghost:focus-visible:not(:disabled) {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--toggle-segment-focus-gap),
+    0 0 0 4px var(--toggle-segment-focus-ring);
+  position: relative;
+  z-index: 1;
 }
 
 .toggle-group--thirds {
@@ -4806,6 +4824,13 @@ button.toggle-group__btn--disabled:disabled {
   .insights-bottom-nav__tabs .tab-button:focus-visible {
     outline: 2px solid var(--nav-focus-border);
     outline-offset: 3px;
+  }
+
+  :root[data-theme="dark"] .insights-bottom-nav__tabs .tab-button:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--toggle-segment-focus-gap),
+      0 0 0 4px var(--toggle-segment-focus-ring);
   }
 
   .insights-bottom-nav__tabs .tab-button.active {
