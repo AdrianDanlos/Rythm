@@ -149,7 +149,7 @@ const pt = {
     reflectionTitle: 'Como foi seu dia?',
     reflectionSubtitle: 'Registre seu humor e pensamentos',
     sectionMood: 'SEU HUMOR',
-    sectionTags: 'EVENTOS DO DIA',
+    sectionTags: 'Eventos de hoje',
     sectionThoughts: 'PENSAMENTOS DE HOJE',
     tagInputPlaceholder: 'Digite uma etiqueta e pressione Enter...',
     journalThoughtsPlaceholder:

@@ -117,7 +117,7 @@ const de = {
     reflectionTitle: 'Wie war dein Tag?',
     reflectionSubtitle: 'Stimmung und Gedanken festhalten',
     sectionMood: 'DEINE STIMMUNG',
-    sectionTags: 'EREIGNISSE DES TAGES',
+    sectionTags: 'Ereignisse von heute',
     sectionThoughts: 'GEDANKEN DES TAGES',
     tagInputPlaceholder: 'Tag eingeben und Enter drücken...',
     journalThoughtsPlaceholder:

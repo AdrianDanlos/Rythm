@@ -149,7 +149,7 @@ const en = {
     reflectionTitle: 'How was your day?',
     reflectionSubtitle: 'Track your mood & thoughts',
     sectionMood: 'YOUR MOOD',
-    sectionTags: 'DAY EVENTS',
+    sectionTags: "Today's events",
     sectionThoughts: 'TODAY\'S THOUGHTS',
     tagInputPlaceholder: 'Type a tag and press Enter...',
     journalThoughtsPlaceholder:

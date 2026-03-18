@@ -149,7 +149,7 @@ const es = {
     reflectionTitle: '¿Cómo fue tu día?',
     reflectionSubtitle: 'Registra tu ánimo y tus pensamientos',
     sectionMood: 'TU ÁNIMO',
-    sectionTags: 'EVENTOS DE DÍA',
+    sectionTags: 'Eventos de hoy',
     sectionThoughts: 'PENSAMIENTOS DE HOY',
     tagInputPlaceholder: 'Escribe una etiqueta y pulsa Enter...',
     journalThoughtsPlaceholder:

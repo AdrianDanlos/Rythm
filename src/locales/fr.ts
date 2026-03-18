@@ -149,7 +149,7 @@ const fr = {
     reflectionTitle: 'Comment s\'est passée votre journée ?',
     reflectionSubtitle: 'Suivez votre humeur et vos pensées',
     sectionMood: 'VOTRE HUMEUR',
-    sectionTags: 'ÉVÉNEMENTS DU JOUR',
+    sectionTags: "Événements d'aujourd'hui",
     sectionThoughts: 'PENSÉES DU JOUR',
     tagInputPlaceholder: 'Tapez une étiquette et appuyez sur Entrée...',
     journalThoughtsPlaceholder:
