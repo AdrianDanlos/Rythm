@@ -299,7 +299,8 @@ const es = {
     approx90Days: '~90 días',
     sleepAndMood: 'Sueño y ánimo',
     scatterTooltip: '¿Qué es esto? Un gráfico de dispersión de sueño diario vs ánimo; toca los puntos para ver más detalles.',
-    scatterSubtitle: 'Cada punto representa un día.',
+    scatterSubtitle:
+      'La conexión sueño–ánimo visualizada para descubrir patrones que no se ven a simple vista en el calendario.',
     bestSleepRange: 'Rango de sueño óptimo en la franja {{from}}-{{to}}.',
     sleepAndMoodTimeframe: 'Periodo de sueño y ánimo',
     logAtLeast30: 'Registra al menos 30 días para ver el rango de 90 días.',

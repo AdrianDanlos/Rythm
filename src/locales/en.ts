@@ -299,7 +299,8 @@ const en = {
     approx90Days: '~90 days',
     sleepAndMood: 'Sleep & Mood',
     scatterTooltip: 'What is this? A scatter plot of daily sleep vs mood; click dots for details.',
-    scatterSubtitle: 'Each dot is one day: more sleep is right, better mood is higher.',
+    scatterSubtitle:
+      'The sleep–mood connection visualized to surface patterns you can’t see at a glance on the calendar.',
     bestSleepRange: 'Best sleep range in timeframe: {{from}}-{{to}}.',
     sleepAndMoodTimeframe: 'Sleep and mood timeframe',
     logAtLeast30: 'Log at least 30 days to view 90-day range.',

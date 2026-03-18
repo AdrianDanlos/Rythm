@@ -51,5 +51,6 @@ export const formatSleepHours = (value: number) => {
   const hours = Math.floor(totalMinutes / 60)
   const minutes = totalMinutes % 60
   if (minutes === 0) return `${hours}h`
-  return `${hours}h ${minutes}m`
+  /* NBSP so e.g. "7h 30m" never wraps mid-duration in titles/labels */
+  return `${hours}h\u00A0${minutes}m`
 }

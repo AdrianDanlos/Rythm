@@ -299,7 +299,8 @@ const pt = {
     approx90Days: '~90 dias',
     sleepAndMood: 'Sono e humor',
     scatterTooltip: 'O que é isso? Um gráfico de dispersão de sono diário vs humor; clique nos pontos para detalhes.',
-    scatterSubtitle: 'Cada ponto é um dia: mais sono à direita, melhor humor mais acima.',
+    scatterSubtitle:
+      'A ligação sono–humor visualizada para descobrir padrões que não aparecem à primeira vista no calendário.',
     bestSleepRange: 'Melhor faixa de sono no período: {{from}}-{{to}}.',
     sleepAndMoodTimeframe: 'Período de sono e humor',
     logAtLeast30: 'Registre pelo menos 30 dias para ver intervalo de 90 dias.',

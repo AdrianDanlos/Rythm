@@ -4053,6 +4053,8 @@ button.toggle-group__btn--disabled:disabled {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .ideal-sleep-target-card__progress {

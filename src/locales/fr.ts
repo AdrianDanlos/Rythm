@@ -299,7 +299,8 @@ const fr = {
     approx90Days: '~90 jours',
     sleepAndMood: 'Sommeil et humeur',
     scatterTooltip: 'Qu\'est-ce que c\'est ? Un nuage de points sommeil/humeur par jour ; cliquez sur les points pour voir les détails.',
-    scatterSubtitle: 'Chaque point représente un jour : plus de sommeil à droite, meilleure humeur en haut.',
+    scatterSubtitle:
+      'Le lien sommeil–humeur visualisé pour révéler des motifs invisibles d’un simple coup d’œil au calendrier.',
     bestSleepRange: 'Meilleure plage de sommeil sur la période : {{from}}-{{to}}.',
     sleepAndMoodTimeframe: 'Période sommeil et humeur',
     logAtLeast30: 'Enregistrez au moins 30 jours pour voir la plage 90 jours.',
