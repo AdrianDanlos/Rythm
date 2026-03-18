@@ -73,10 +73,13 @@ export const exportMonthlyReport = async (
     allTimeTagSleepDrivers: reportData.allTimeTagSleepDrivers,
   })
 
-  const pdfBuffer = doc.output('arraybuffer') as ArrayBuffer
+  const dataUri = doc.output('datauristring') as string
+  const comma = dataUri.indexOf(',')
+  const base64Pdf = comma >= 0 ? dataUri.slice(comma + 1) : dataUri
   await exportFile({
     filename: t('reports.fileName'),
     mimeType: 'application/pdf',
-    data: pdfBuffer,
+    data: base64Pdf,
+    dataIsBase64: true,
   })
 }
