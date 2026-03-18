@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ComponentType, type CSSProperties, type FormEvent, type ChangeEvent } from 'react'
 import { DayPicker } from 'react-day-picker'
 import { useTranslation } from 'react-i18next'
-import { Angry, Frown, Laugh, Meh, Smile } from 'lucide-react'
+import { Angry, Frown, Laugh, Meh, Moon, Smile } from 'lucide-react'
 import 'react-day-picker/dist/style.css'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import { Tooltip } from './Tooltip'
@@ -13,6 +13,9 @@ const MOOD_ICONS: Record<1 | 2 | 3 | 4 | 5, ComponentType<{ 'className'?: string
   4: Smile,
   5: Laugh,
 }
+
+const QUICK_SLEEP_HOUR_OPTIONS = [4, 5, 6, 7, 8, 9, 10]
+const MAX_SLEEP_MINUTES = 12 * 60
 
 const getReadableTextColor = (bg: string | undefined): string | undefined => {
   if (!bg || !bg.startsWith('#')) return undefined
@@ -80,47 +83,12 @@ export const LogForm = ({
   onSave,
 }: LogFormProps) => {
   const { t } = useTranslation()
-  const sleepHourOptions = Array.from({ length: 13 }, (_, index) => index)
-  const sleepMinuteOptions = [0, 15, 30, 45]
   const parsedSleepHours = Number(sleepHours)
   const hasSleepValue = sleepHours.trim().length > 0 && Number.isFinite(parsedSleepHours)
-  const totalSleepMinutes = hasSleepValue ? Math.round(parsedSleepHours * 60) : 0
-  const sleepHourValue = hasSleepValue ? String(Math.floor(totalSleepMinutes / 60)) : ''
-  const sleepMinuteValue = hasSleepValue ? String(totalSleepMinutes % 60) : ''
-  const sleepMenuRef = useRef<HTMLDivElement | null>(null)
-  const focusedSleepHourRef = useRef<HTMLButtonElement | null>(null)
+  const totalSleepMinutes = hasSleepValue ? Math.round(parsedSleepHours * 60) : 8 * 60
+  const sleepHourNumber = Math.floor(totalSleepMinutes / 60)
+  const sleepMinuteNumber = totalSleepMinutes % 60
   const noteTextareaRef = useRef<HTMLTextAreaElement | null>(null)
-  const [sleepMenu, setSleepMenu] = useState<'hours' | 'minutes' | null>(null)
-  const preferredFocusedHour = sleepHourValue ? Number(sleepHourValue) : 8
-
-  const updateSleepHours = (hourValue: string, minuteValue: string) => {
-    if (!hourValue) {
-      onSleepHoursChange('')
-      return
-    }
-    const minutes = minuteValue ? Number(minuteValue) : 0
-    const nextValue = Number(hourValue) + minutes / 60
-    const formatted = nextValue.toFixed(2).replace(/\.?0+$/, '')
-    onSleepHoursChange(formatted)
-  }
-
-  useEffect(() => {
-    const handleClick = (event: MouseEvent) => {
-      if (!sleepMenuRef.current) return
-      if (event.target instanceof Node && sleepMenuRef.current.contains(event.target)) {
-        return
-      }
-      setSleepMenu(null)
-    }
-
-    document.addEventListener('mousedown', handleClick)
-    return () => document.removeEventListener('mousedown', handleClick)
-  }, [])
-
-  useEffect(() => {
-    if (sleepMenu !== 'hours') return
-    focusedSleepHourRef.current?.focus()
-  }, [sleepMenu, preferredFocusedHour])
   const tagDropdownWrapRef = useRef<HTMLDivElement | null>(null)
   const tagInputRef = useRef<HTMLInputElement | null>(null)
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false)
@@ -146,6 +114,13 @@ export const LogForm = ({
       ]
     : allMatchingSuggestions
   const atMaxTags = usedTags.length >= maxTagsPerEntry
+
+  const updateSleepFromMinutes = (nextMinutes: number) => {
+    const clampedMinutes = Math.max(0, Math.min(MAX_SLEEP_MINUTES, nextMinutes))
+    const nextValue = clampedMinutes / 60
+    const formatted = nextValue.toFixed(2).replace(/\.?0+$/, '')
+    onSleepHoursChange(formatted)
+  }
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -236,82 +211,106 @@ export const LogForm = ({
           </div>
         </div>
         <div className="field">
-          <span className="label--with-tooltip">
-            <label htmlFor="log-form-sleep-hours">{t('log.sleepQuestion')}</label>
-            <Tooltip label={t('log.sleepTooltip')}>
-              <span className="tooltip-trigger">
-                <span className="tooltip-icon" aria-hidden="true">i</span>
-              </span>
-            </Tooltip>
-          </span>
-          <div className="sleep-hours-row" ref={sleepMenuRef}>
-            <div className="sleep-select">
-              <button
-                id="log-form-sleep-hours"
-                type="button"
-                className="sleep-select-button"
-                aria-haspopup="listbox"
-                aria-expanded={sleepMenu === 'hours'}
-                onClick={() => setSleepMenu(sleepMenu === 'hours' ? null : 'hours')}
-              >
-                {sleepHourValue ? `${sleepHourValue}h` : t('log.hours')}
-              </button>
-              {sleepMenu === 'hours'
-                ? (
-                    <div className="tag-suggestions sleep-select-menu" role="listbox">
-                      {sleepHourOptions.map(value => (
-                        <button
-                          key={value}
-                          ref={value === preferredFocusedHour ? focusedSleepHourRef : null}
-                          type="button"
-                          className="tag-suggestion"
-                          onMouseDown={(event) => {
-                            event.preventDefault()
-                            event.stopPropagation()
-                            updateSleepHours(String(value), sleepMinuteValue)
-                            setSleepMenu('minutes')
-                          }}
-                        >
-                          {value}h
-                        </button>
-                      ))}
-                    </div>
-                  )
-                : null}
+          <div className="sleep-duration-picker">
+            <div className="sleep-duration-picker__hero" aria-hidden="true">
+              <Moon size={20} />
             </div>
-            <div className="sleep-select">
-              <button
-                type="button"
-                className="sleep-select-button"
-                aria-haspopup="listbox"
-                aria-expanded={sleepMenu === 'minutes'}
-                onClick={() => setSleepMenu(sleepMenu === 'minutes' ? null : 'minutes')}
-                disabled={!sleepHourValue}
-              >
-                {sleepMinuteValue ? `${String(sleepMinuteValue).padStart(2, '0')}m` : t('log.minutes')}
-              </button>
-              {sleepMenu === 'minutes' && sleepHourValue
-                ? (
-                    <div className="tag-suggestions sleep-select-menu" role="listbox">
-                      {sleepMinuteOptions.map(value => (
-                        <button
-                          key={value}
-                          type="button"
-                          className="tag-suggestion"
-                          onMouseDown={(event) => {
-                            event.preventDefault()
-                            event.stopPropagation()
-                            updateSleepHours(sleepHourValue, String(value))
-                            setSleepMenu(null)
-                          }}
-                        >
-                          {String(value).padStart(2, '0')}m
-                        </button>
-                      ))}
-                    </div>
-                  )
-                : null}
+            <div className="sleep-duration-picker__title-row">
+              <p className="sleep-duration-picker__title">{t('log.sleepQuestion')}</p>
+              <Tooltip label={t('log.sleepTooltip')}>
+                <span className="tooltip-trigger">
+                  <span className="tooltip-icon" aria-hidden="true">i</span>
+                </span>
+              </Tooltip>
             </div>
+            <p className="sleep-duration-picker__subtitle">
+              {t('log.sleepSubtitle', { defaultValue: 'Track your rest' })}
+            </p>
+            <div className="sleep-duration-picker__value" role="status" aria-live="polite">
+              <span className="sleep-duration-picker__value-main">{sleepHourNumber}</span>
+              <span className="sleep-duration-picker__value-unit">{t('log.hours').charAt(0).toLowerCase()}</span>
+              <span className="sleep-duration-picker__value-main">{String(sleepMinuteNumber).padStart(2, '0')}</span>
+              <span className="sleep-duration-picker__value-unit">{t('log.minutes').charAt(0).toLowerCase()}</span>
+            </div>
+            <div className="sleep-duration-picker__section">
+              <p className="sleep-duration-picker__section-label">
+                {t('log.quickSelect', { defaultValue: 'Quick select' })}
+              </p>
+              <div className="sleep-duration-picker__quick-grid">
+                {QUICK_SLEEP_HOUR_OPTIONS.map(hours => (
+                  <button
+                    key={hours}
+                    type="button"
+                    className={`sleep-duration-picker__quick-option${sleepHourNumber === hours && sleepMinuteNumber === 0 ? ' is-active' : ''}`}
+                    onClick={() => updateSleepFromMinutes(hours * 60)}
+                  >
+                    {hours}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="sleep-duration-picker__section">
+              <p className="sleep-duration-picker__section-label">
+                {t('log.fineTune', { defaultValue: 'Fine-tune' })}
+              </p>
+              <div className="sleep-duration-picker__fine-tune-grid">
+                <div className="sleep-duration-picker__fine-tune-block">
+                  <span className="sleep-duration-picker__fine-tune-label">{t('log.hours')}</span>
+                  <div className="sleep-duration-picker__stepper">
+                    <button
+                      type="button"
+                      className="sleep-duration-picker__stepper-button"
+                      onClick={() => updateSleepFromMinutes(totalSleepMinutes - 60)}
+                      aria-label={t('log.decreaseHours', { defaultValue: 'Decrease hours slept' })}
+                    >
+                      -
+                    </button>
+                    <button
+                      type="button"
+                      className="sleep-duration-picker__stepper-button"
+                      onClick={() => updateSleepFromMinutes(totalSleepMinutes + 60)}
+                      aria-label={t('log.increaseHours', { defaultValue: 'Increase hours slept' })}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div className="sleep-duration-picker__fine-tune-block">
+                  <span className="sleep-duration-picker__fine-tune-label">
+                    {t('log.minutesStep', { defaultValue: 'Minutes (+15)' })}
+                  </span>
+                  <div className="sleep-duration-picker__stepper">
+                    <button
+                      type="button"
+                      className="sleep-duration-picker__stepper-button"
+                      onClick={() => updateSleepFromMinutes(totalSleepMinutes - 15)}
+                      aria-label={t('log.decreaseMinutes', { defaultValue: 'Decrease minutes slept' })}
+                    >
+                      -
+                    </button>
+                    <button
+                      type="button"
+                      className="sleep-duration-picker__stepper-button"
+                      onClick={() => updateSleepFromMinutes(totalSleepMinutes + 15)}
+                      aria-label={t('log.increaseMinutes', { defaultValue: 'Increase minutes slept' })}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {!hasSleepValue
+              ? (
+                  <button
+                    type="button"
+                    className="sleep-duration-picker__use-default"
+                    onClick={() => updateSleepFromMinutes(totalSleepMinutes)}
+                  >
+                    {t('log.useDefaultSleep', { defaultValue: 'Use 8h 00m' })}
+                  </button>
+                )
+              : null}
           </div>
         </div>
         <div className="field field--tags">

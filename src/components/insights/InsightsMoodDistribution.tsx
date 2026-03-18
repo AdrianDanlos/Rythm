@@ -58,12 +58,13 @@ export const InsightsMoodDistribution = ({
       {total
         ? (
             <div className="mood-distribution">
-              <div className="mood-pie" style={pieStyle} aria-hidden="true" />
+              <div className="mood-pie" style={pieStyle}>
+                <div className="mood-pie-center">
+                  <span className="mood-pie-center-label">{t('insights.total')}</span>
+                  <span className="mood-pie-center-value">{total}</span>
+                </div>
+              </div>
               <div className="mood-legend">
-                <p className="mood-total">
-                  <span className="label">{t('insights.totalLogs')}</span>
-                  <span className="value">{total}</span>
-                </p>
                 {moodCounts.map((count, index) => {
                   const percent = total ? Math.round((count / total) * 100) : 0
                   return (

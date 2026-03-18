@@ -304,8 +304,8 @@ export const Insights = ({
   const commitEditingTag = () => {
     if (!editingTag) return
     const trimmed = editingValue.trim()
-    const limited = trimmed.slice(0, MAX_TAG_LENGTH)
-    if (!limited || limited === editingTag) {
+    const limited = trimmed.slice(0, MAX_TAG_LENGTH).toLowerCase()
+    if (!limited || limited === editingTag.toLowerCase()) {
       setEditingTag(null)
       setEditingValue('')
       return

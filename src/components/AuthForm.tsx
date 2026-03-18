@@ -1,6 +1,8 @@
 import type { FormEvent } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Capacitor } from '@capacitor/core'
+import { Trans, useTranslation } from 'react-i18next'
 import googleLogo from '../assets/google-logo.png'
+import { ROUTES } from '../billing/stripe/routes'
 
 type AuthFormProps = {
   authMode: 'signin' | 'signup'
@@ -13,6 +15,74 @@ type AuthFormProps = {
   onSubmit: (event: FormEvent) => void
   onGoogleSignIn: () => void
   onToggleMode: () => void
+}
+
+function NativeGoogleLoginScreen({ onGoogleSignIn }: { onGoogleSignIn: () => void }) {
+  const { t } = useTranslation()
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const termsUrl = `${origin}${ROUTES.privacyPage}#terms`
+  const privacyUrl = `${origin}${ROUTES.privacyPage}#privacy`
+
+  return (
+    <div className="native-auth-screen">
+      <div className="native-auth-screen__inner">
+        <div className="native-auth-screen__icon-wrap" aria-hidden="true">
+          <div className="native-auth-screen__icon-gradient">
+            <svg
+              className="native-auth-screen__padlock"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="5" y="11" width="14" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+          </div>
+        </div>
+        <h1 className="native-auth-screen__title">{t('auth.welcome')}</h1>
+        <p className="native-auth-screen__subtitle">{t('auth.signInToContinue')}</p>
+        <button
+          className="native-auth-screen__google-btn"
+          type="button"
+          onClick={onGoogleSignIn}
+        >
+          <img className="native-auth-screen__google-logo" src={googleLogo} alt="" />
+          <span>{t('auth.continueWithGoogle')}</span>
+        </button>
+        <div className="native-auth-screen__divider" role="presentation">
+          <span className="native-auth-screen__divider-line" />
+          <span className="native-auth-screen__divider-text">{t('auth.secureSignIn')}</span>
+          <span className="native-auth-screen__divider-line" />
+        </div>
+        <p className="native-auth-screen__legal">
+          <Trans
+            i18nKey="auth.legalAgreement"
+            components={{
+              terms: (
+                <a
+                  className="native-auth-screen__legal-link"
+                  href={termsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                />
+              ),
+              privacy: (
+                <a
+                  className="native-auth-screen__legal-link"
+                  href={privacyUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                />
+              ),
+            }}
+          />
+        </p>
+      </div>
+    </div>
+  )
 }
 
 export const AuthForm = ({
@@ -29,6 +99,9 @@ export const AuthForm = ({
 }: AuthFormProps) => {
   const { t } = useTranslation()
   if (!showEmailPassword) {
+    if (Capacitor.getPlatform() === 'android') {
+      return <NativeGoogleLoginScreen onGoogleSignIn={onGoogleSignIn} />
+    }
     return (
       <button
         className="ghost oauth-button oauth-button--standalone"

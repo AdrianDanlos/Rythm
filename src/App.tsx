@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
 import { LocalNotifications } from '@capacitor/local-notifications'
@@ -579,15 +579,14 @@ function App() {
 
   const handleRenameTag = (fromTag: string, toTag: string) => {
     const fromKey = fromTag.trim().toLowerCase()
-    const toLabel = toTag.trim().slice(0, MAX_TAG_LENGTH)
-    if (!fromKey || !toLabel) return
-    if (fromKey === toLabel.toLowerCase()) return
+    const toKey = toTag.trim().slice(0, MAX_TAG_LENGTH).toLowerCase()
+    if (!fromKey || !toKey) return
+    if (fromKey === toKey) return
 
     // Preserve any custom color when renaming.
     setTagColors((prev) => {
       const fromColor = prev[fromKey]
       if (!fromColor) return prev
-      const toKey = toLabel.toLowerCase()
       if (toKey === fromKey) return prev
       const next: Record<string, string> = { ...prev }
       // Only move color if new key doesn't already have one.
@@ -616,7 +615,7 @@ function App() {
         if (!normalized) return tag
         if (normalized === fromKey) {
           changed = true
-          return toLabel
+          return toKey
         }
         return tag
       })
@@ -639,7 +638,7 @@ function App() {
             const nextTags = (entry.tags ?? []).map((tag) => {
               const normalized = tag.trim().toLowerCase()
               if (!normalized) return tag
-              return normalized === fromKey ? toLabel : tag
+              return normalized === fromKey ? toKey : tag
             })
 
             const saved = await upsertEntry({
@@ -730,7 +729,7 @@ function App() {
 
   return (
     <div
-      className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}`}
+      className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}${!session && isNativeApp && Capacitor.getPlatform() === 'android' ? ' app-native-login' : ''}`}
       onClick={handleAppClick}
       onTouchStart={handleSwipeStart}
       onTouchMove={handleSwipeMove}

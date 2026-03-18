@@ -43,6 +43,11 @@ const de = {
     alreadyHaveAccount: 'Schon ein Konto? Anmelden',
     loadingAccount: 'Lade dein Konto',
     checkingSession: 'Sitzung wird geprüft...',
+    welcome: 'Willkommen',
+    signInToContinue: 'Melde dich an, um fortzufahren',
+    secureSignIn: 'Sichere Anmeldung',
+    legalAgreement:
+      'Wenn du fortfährst, stimmst du unseren <terms>Nutzungsbedingungen</terms> und der <privacy>Datenschutzerklärung</privacy> zu.',
   },
   settings: {
     ...en.settings,
@@ -102,6 +107,12 @@ const de = {
     title: 'Glückwunsch — 1 Woche am Stück!',
     body: 'Du hast 7 Tage in Folge eingetragen. Bleib dran.',
     cta: 'Super!',
+  },
+  log: {
+    ...en.log,
+    sleepSubtitle: 'Verfolge deine Erholung',
+    quickSelect: 'Schnellauswahl',
+    fineTune: 'Feinabstimmung',
   },
   reports: {
     ...en.reports,
