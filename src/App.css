@@ -818,6 +818,307 @@
   gap: 32px;
 }
 
+/* Mood / tags / diary — same card shell as sleep picker */
+.log-reflection-card {
+  margin-top: 8px;
+  padding: 20px 16px 28px;
+  border-radius: 24px;
+  border: 1px solid #e8edf5;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+  text-align: center;
+}
+
+:root[data-theme="dark"] .log-reflection-card {
+  border-color: rgba(133, 168, 255, 0.24);
+  background:
+    radial-gradient(
+      circle at 15% 8%,
+      rgba(236, 72, 153, 0.14),
+      transparent 42%
+    ),
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(110, 157, 255, 0.22),
+      transparent 45%
+    ),
+    linear-gradient(180deg, #101b31 0%, #0b1427 100%);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+}
+
+.log-reflection-block {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  --log-surface: #f0f2f6;
+  --log-surface-border: rgba(15, 23, 42, 0.1);
+  --log-mood-bg: #eef0f4;
+  --log-mood-border: rgba(15, 23, 42, 0.09);
+}
+
+:root[data-theme="dark"] .log-reflection-block {
+  --log-surface: rgba(10, 20, 40, 0.72);
+  --log-surface-border: rgba(148, 163, 184, 0.22);
+  --log-mood-bg: rgba(12, 22, 44, 0.88);
+  --log-mood-border: rgba(148, 163, 184, 0.2);
+}
+
+.log-reflection-section--mood .log-reflection-section-label {
+  text-align: left;
+}
+
+.log-reflection-section--mood .mood-selected-name {
+  text-align: center;
+}
+
+.log-reflection-tags,
+.log-reflection-diary {
+  text-align: left;
+}
+
+.log-reflection-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding-bottom: 4px;
+}
+
+.log-reflection-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #b45309;
+  background: linear-gradient(155deg, #fef9c3 0%, #fde047 38%, #facc15 72%, #f59e0b 100%);
+  box-shadow:
+    0 12px 28px rgba(245, 158, 11, 0.38),
+    0 0 0 1px rgba(255, 255, 255, 0.55) inset,
+    0 -2px 12px rgba(255, 237, 150, 0.9) inset;
+}
+
+:root[data-theme="dark"] .log-reflection-icon {
+  color: #fef3c7;
+  background: linear-gradient(155deg, #ca8a04 0%, #eab308 42%, #fbbf24 100%);
+  box-shadow:
+    0 0 0 1px rgba(254, 243, 199, 0.2),
+    0 14px 36px rgba(234, 179, 8, 0.35),
+    0 0 40px rgba(251, 191, 36, 0.22),
+    inset 0 1px 0 rgba(255, 252, 232, 0.35);
+}
+
+.log-reflection-title {
+  margin: 4px 0 0;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .log-reflection-title {
+  color: #f8fbff;
+}
+
+.log-reflection-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #93a1b5;
+  line-height: 1.35;
+  max-width: 280px;
+}
+
+:root[data-theme="dark"] .log-reflection-subtitle {
+  color: #95a8c8;
+}
+
+.log-reflection-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.log-reflection-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.log-reflection-label-tip {
+  margin: 0;
+  opacity: 0.85;
+}
+
+.log-reflection-tags.field {
+  gap: 10px;
+}
+
+.tag-control-row--reflection {
+  align-items: stretch;
+}
+
+.log-reflection-input.tag-dropdown-trigger {
+  background: var(--log-surface) !important;
+  border: 1px solid var(--log-surface-border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 1rem;
+}
+
+.log-reflection-input.tag-dropdown-trigger:focus {
+  border-color: color-mix(in srgb, #ec4899 45%, var(--log-surface-border));
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.12);
+}
+
+.log-reflection-done.tag-add-button {
+  border-radius: 14px;
+  background: var(--log-surface);
+  border: 1px solid var(--log-surface-border);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 12px 14px;
+}
+
+.log-reflection-done.tag-add-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--log-surface) 88%, var(--text));
+}
+
+.log-reflection-block .tag-pills-row {
+  margin-top: 4px;
+}
+
+.log-diary-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 132px;
+  background: var(--log-surface) !important;
+  border: 1px solid var(--log-surface-border) !important;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--text);
+  font-family: inherit;
+  resize: none;
+  overflow-y: auto;
+}
+
+.log-diary-textarea::placeholder {
+  color: color-mix(in srgb, var(--muted) 82%, transparent);
+}
+
+.log-diary-textarea:focus {
+  outline: none;
+  border-color: color-mix(in srgb, #ec4899 40%, var(--log-surface-border));
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+}
+
+.log-diary-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.mood-selected-name {
+  text-align: center;
+  margin: 14px 0 0;
+  min-height: 1.35em;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.mood-selected-name--placeholder {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Mood cards (reflection) */
+.log-reflection-block .mood-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.log-reflection-block .mood-button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 4px 8px;
+  min-height: 72px;
+  aspect-ratio: 1;
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--log-mood-border);
+  background: var(--log-mood-bg);
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    border-color 0.15s ease,
+    background 0.2s ease;
+}
+
+.log-reflection-block .mood-button::after {
+  display: none;
+}
+
+.log-reflection-block .mood-button .mood-button-icon {
+  flex-shrink: 0;
+  color: var(--mood-color, var(--text));
+}
+
+.log-reflection-block .mood-button .mood-button-num {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.log-reflection-block .mood-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+:root[data-theme="dark"] .log-reflection-block .mood-button:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.log-reflection-block .mood-button:focus-visible {
+  outline: 2px solid #ec4899;
+  outline-offset: 2px;
+}
+
+.log-reflection-block .mood-button.active {
+  background: linear-gradient(145deg, #fb7185 0%, #e11d48 50%, #be185d 100%);
+  border-color: transparent;
+  box-shadow:
+    0 12px 28px rgba(236, 72, 153, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+.log-reflection-block .mood-button.active .mood-button-icon,
+.log-reflection-block .mood-button.active .mood-button-num {
+  color: #ffffff !important;
+}
+
 .auth-title {
   margin-bottom: 16px;
 }
@@ -920,11 +1221,6 @@
   gap: 6px;
   font-size: 0.95rem;
   color: var(--text);
-}
-
-/* Pull notes closer to tags; log-form-stack gap + this = desired 10px from tags */
-.field-mood {
-  margin-top: -10px;
 }
 
 .field input,
@@ -1215,6 +1511,12 @@
 
 @media (max-width: 430px) {
   .sleep-duration-picker {
+    border-radius: 20px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .log-reflection-card {
     border-radius: 20px;
     padding-left: 12px;
     padding-right: 12px;
@@ -1517,6 +1819,89 @@
   flex-shrink: 0;
   font-size: 0.9em;
   opacity: 0.9;
+}
+
+.log-date-picker-wrap {
+  position: relative;
+}
+
+.log-date-picker-collapsed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  box-shadow: var(--card-shadow);
+}
+
+.log-date-picker-date {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  text-align: left;
+}
+
+.log-date-picker-date:has(.log-date-picker-date-primary:only-child) {
+  justify-content: center;
+}
+
+.log-date-picker-date-primary {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.log-date-picker-date-sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.log-date-picker-toggle {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -6px -8px -6px 0;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.log-date-picker-toggle:hover {
+  background: var(--button-hover-surface);
+}
+
+.log-date-picker-toggle:focus-visible {
+  outline: 2px solid var(--input-focus-border);
+  outline-offset: 2px;
+}
+
+.log-date-picker-chevron {
+  transition: transform 0.2s ease;
+}
+
+.log-date-picker-chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.log-date-picker-panel.date-picker {
+  margin-top: 10px;
+  padding: 12px 10px 16px;
+  border-radius: 16px;
+  border: none;
+  background: var(--card);
+  box-shadow: var(--card-shadow);
 }
 
 .date-picker {

@@ -31,6 +31,7 @@ import { InsightsWeekdayAverages } from './insights/InsightsWeekdayAverages'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { tagColorPalette } from '../lib/colors'
 import { TagColorPicker } from './TagColorPicker'
+import { Tooltip } from './Tooltip'
 import rankingBadge1 from '../assets/badges/ranking-badge_1.png'
 import rankingBadge2 from '../assets/badges/ranking-badge_2.png'
 import rankingBadge3 from '../assets/badges/ranking-badge_3.png'
@@ -519,6 +520,15 @@ export const Insights = ({
               <section className="card">
                 <div className="card-header">
                   <h2>{t('insights.yourDailyEvents')}</h2>
+                  <Tooltip label={t('insights.tagColorRandomTooltip')}>
+                    <span
+                      className="tooltip-trigger"
+                      tabIndex={0}
+                      aria-label={t('insights.tagColorRandomTooltip')}
+                    >
+                      <span className="tooltip-icon" aria-hidden="true">i</span>
+                    </span>
+                  </Tooltip>
                 </div>
                 {topTags.length > 0
                   ? (
@@ -637,7 +647,6 @@ export const Insights = ({
                   tagSleepDrivers={tagSleepDrivers}
                   onOpenPaywall={onOpenPaywall}
                   goToLog={goToLog}
-                  tagColors={tagColors}
                 />
               )}
             </motion.div>
