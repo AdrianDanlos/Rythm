@@ -72,14 +72,14 @@ export const Tooltip = ({ label, children, className }: TooltipProps) => {
     const triggerRect = trigger.getBoundingClientRect()
     const bubbleRect = bubble.getBoundingClientRect()
 
-    // Prefer above, flip to below if not enough space
+    // Prefer below, flip to above if not enough space
     let top: number
     const spaceAbove = triggerRect.top - appRect.top
     const spaceBelow = appRect.bottom - triggerRect.bottom
-    if (spaceAbove >= bubbleRect.height + PADDING || spaceAbove >= spaceBelow) {
-      top = triggerRect.top - bubbleRect.height - PADDING
-    } else {
+    if (spaceBelow >= bubbleRect.height + PADDING || spaceBelow >= spaceAbove) {
       top = triggerRect.bottom + PADDING
+    } else {
+      top = triggerRect.top - bubbleRect.height - PADDING
     }
 
     // Center horizontally, clamped to app

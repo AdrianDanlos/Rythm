@@ -211,379 +211,373 @@ export const LogForm = ({
   }
 
   return (
-    <form onSubmit={onSave} className="stack log-form-stack">
-      <div className="field">
-        <div id="log-calendar" ref={calendarWrapRef} className="log-date-picker-wrap">
-          <div className="log-date-picker-collapsed">
-            <span
-              className="log-date-picker-date"
-              aria-label={formatLongDate(selectedDate)}
-            >
-              {isEntryToday
-                ? (
-                    <>
-                      <span className="log-date-picker-date-primary">{t('insights.today')}</span>
-                      <span className="log-date-picker-date-sub">{formatLongDate(selectedDate)}</span>
-                    </>
-                  )
-                : (
-                    <span className="log-date-picker-date-primary">{formatLongDate(selectedDate)}</span>
-                  )}
-            </span>
-            <button
-              type="button"
-              className="log-date-picker-toggle"
-              aria-expanded={calendarOpen}
-              aria-controls="log-daypicker-panel"
-              aria-label={
-                calendarOpen ? t('log.closeDatePicker') : t('log.openDatePicker')
-              }
-              onClick={() => setCalendarOpen(o => !o)}
-            >
-              <ChevronDown
-                className={`log-date-picker-chevron${calendarOpen ? ' is-open' : ''}`}
-                size={22}
-                aria-hidden
-              />
-            </button>
-          </div>
-          <AnimatePresence initial={false}>
-            {calendarOpen
+    <form onSubmit={onSave} className="log-form-stack">
+      <div id="log-calendar" ref={calendarWrapRef} className="log-date-picker-wrap">
+        <div className="log-date-picker-collapsed">
+          <span
+            className="log-date-picker-date"
+            aria-label={formatLongDate(selectedDate)}
+          >
+            {isEntryToday
               ? (
-                  <motion.div
-                    key="log-daypicker-panel"
-                    id="log-daypicker-panel"
-                    role="region"
-                    aria-label={t('log.openDatePicker')}
-                    className="log-date-picker-panel-motion"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{
-                      height: {
-                        duration: 0.32,
-                        ease: [0.4, 0, 0.2, 1],
-                      },
-                      opacity: {
-                        duration: 0.22,
-                        ease: 'easeOut',
-                      },
-                    }}
-                    style={{ overflow: 'hidden' }}
-                  >
-                    <div className="date-picker log-date-picker-panel">
-                      <DayPicker
-                        mode="single"
-                        weekStartsOn={1}
-                        selected={selectedDate}
-                        defaultMonth={selectedDate}
-                        onSelect={(date: Date | undefined) => {
-                          if (!date) return
-                          onEntryDateChange(formatLocalDate(date))
-                          setCalendarOpen(false)
-                        }}
-                        disabled={{ after: todayDate }}
-                        modifiers={{
-                          logged: highlightedDates,
-                          incomplete: incompleteHighlightedDates,
-                        }}
-                        modifiersClassNames={{
-                          logged: 'rdp-day-logged',
-                          incomplete: 'rdp-day-incomplete',
-                        }}
-                      />
-                    </div>
-                  </motion.div>
+                  <>
+                    <span className="log-date-picker-date-primary">{t('insights.today')}</span>
+                    <span className="log-date-picker-date-sub">{formatLongDate(selectedDate)}</span>
+                  </>
                 )
-              : null}
-          </AnimatePresence>
+              : (
+                  <span className="log-date-picker-date-primary">{formatLongDate(selectedDate)}</span>
+                )}
+          </span>
+          <button
+            type="button"
+            className="log-date-picker-toggle"
+            aria-expanded={calendarOpen}
+            aria-controls="log-daypicker-panel"
+            aria-label={
+              calendarOpen ? t('log.closeDatePicker') : t('log.openDatePicker')
+            }
+            onClick={() => setCalendarOpen(o => !o)}
+          >
+            <ChevronDown
+              className={`log-date-picker-chevron${calendarOpen ? ' is-open' : ''}`}
+              size={22}
+              aria-hidden
+            />
+          </button>
+        </div>
+        <AnimatePresence initial={false}>
+          {calendarOpen
+            ? (
+                <motion.div
+                  key="log-daypicker-panel"
+                  id="log-daypicker-panel"
+                  role="region"
+                  aria-label={t('log.openDatePicker')}
+                  className="log-date-picker-panel-motion"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{
+                    height: {
+                      duration: 0.32,
+                      ease: [0.4, 0, 0.2, 1],
+                    },
+                    opacity: {
+                      duration: 0.22,
+                      ease: 'easeOut',
+                    },
+                  }}
+                  style={{ overflow: 'hidden' }}
+                >
+                  <div className="date-picker log-date-picker-panel">
+                    <DayPicker
+                      mode="single"
+                      weekStartsOn={1}
+                      selected={selectedDate}
+                      defaultMonth={selectedDate}
+                      onSelect={(date: Date | undefined) => {
+                        if (!date) return
+                        onEntryDateChange(formatLocalDate(date))
+                        setCalendarOpen(false)
+                      }}
+                      disabled={{ after: todayDate }}
+                      modifiers={{
+                        logged: highlightedDates,
+                        incomplete: incompleteHighlightedDates,
+                      }}
+                      modifiersClassNames={{
+                        logged: 'rdp-day-logged',
+                        incomplete: 'rdp-day-incomplete',
+                      }}
+                    />
+                  </div>
+                </motion.div>
+              )
+            : null}
+        </AnimatePresence>
+      </div>
+      <div className="sleep-duration-picker">
+        <div className="sleep-duration-picker__hero" aria-hidden="true">
+          <Moon size={20} />
+        </div>
+        <div className="sleep-duration-picker__title-row">
+          <p className="sleep-duration-picker__title">{t('log.sleepQuestion')}</p>
+          <Tooltip label={t('log.sleepTooltip')}>
+            <span className="tooltip-trigger">
+              <span className="tooltip-icon" aria-hidden="true">i</span>
+            </span>
+          </Tooltip>
+        </div>
+        <p className="sleep-duration-picker__subtitle">
+          {t('log.sleepSubtitle', { defaultValue: 'Track your rest' })}
+        </p>
+        <div className="sleep-duration-picker__value" role="status" aria-live="polite">
+          <span className="sleep-duration-picker__value-main">{sleepHourNumber}</span>
+          <span className="sleep-duration-picker__value-unit">{t('log.hours').charAt(0).toLowerCase()}</span>
+          <span className="sleep-duration-picker__value-main">{String(sleepMinuteNumber).padStart(2, '0')}</span>
+          <span className="sleep-duration-picker__value-unit">{t('log.minutes').charAt(0).toLowerCase()}</span>
+        </div>
+        <div className="sleep-duration-picker__section">
+          <p className="sleep-duration-picker__section-label">
+            {t('log.quickSelect', { defaultValue: 'Quick select' })}
+          </p>
+          <div className="sleep-duration-picker__quick-grid">
+            {QUICK_SLEEP_HOUR_OPTIONS.map(hours => (
+              <button
+                key={hours}
+                type="button"
+                className={`sleep-duration-picker__quick-option${sleepHourNumber === hours ? ' is-active' : ''}`}
+                onClick={() => updateSleepFromMinutes(hours * 60)}
+              >
+                {hours}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="sleep-duration-picker__section">
+          <p className="sleep-duration-picker__section-label">
+            {t('log.fineTune', { defaultValue: 'Fine-tune' })}
+          </p>
+          <div className="sleep-duration-picker__fine-tune-grid">
+            <div className="sleep-duration-picker__fine-tune-block">
+              <span className="sleep-duration-picker__fine-tune-label">{t('log.hours')}</span>
+              <div className="sleep-duration-picker__stepper">
+                <button
+                  type="button"
+                  className="sleep-duration-picker__stepper-button"
+                  onClick={() => updateSleepFromMinutes(totalSleepMinutes - 60)}
+                  aria-label={t('log.decreaseHours', { defaultValue: 'Decrease hours slept' })}
+                >
+                  -
+                </button>
+                <button
+                  type="button"
+                  className="sleep-duration-picker__stepper-button"
+                  onClick={() => updateSleepFromMinutes(totalSleepMinutes + 60)}
+                  aria-label={t('log.increaseHours', { defaultValue: 'Increase hours slept' })}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <div className="sleep-duration-picker__fine-tune-block">
+              <span className="sleep-duration-picker__fine-tune-label">
+                {t('log.minutesStep', { defaultValue: 'Minutes (+15)' })}
+              </span>
+              <div className="sleep-duration-picker__stepper">
+                <button
+                  type="button"
+                  className="sleep-duration-picker__stepper-button"
+                  onClick={() => updateSleepFromMinutes(totalSleepMinutes - 15)}
+                  aria-label={t('log.decreaseMinutes', { defaultValue: 'Decrease minutes slept' })}
+                >
+                  -
+                </button>
+                <button
+                  type="button"
+                  className="sleep-duration-picker__stepper-button"
+                  onClick={() => updateSleepFromMinutes(totalSleepMinutes + 15)}
+                  aria-label={t('log.increaseMinutes', { defaultValue: 'Increase minutes slept' })}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="field">
-        <div className="sleep-duration-picker">
-          <div className="sleep-duration-picker__hero" aria-hidden="true">
-            <Moon size={20} />
+      <div className="log-reflection-card log-reflection-block">
+        <header className="log-reflection-header">
+          <div className="log-reflection-icon" aria-hidden="true">
+            <Sun size={28} strokeWidth={2} />
           </div>
-          <div className="sleep-duration-picker__title-row">
-            <p className="sleep-duration-picker__title">{t('log.sleepQuestion')}</p>
-            <Tooltip label={t('log.sleepTooltip')}>
-              <span className="tooltip-trigger">
+          <h2 className="log-reflection-title">{t('log.reflectionTitle')}</h2>
+          <p className="log-reflection-subtitle">{t('log.reflectionSubtitle')}</p>
+        </header>
+
+        <div className="log-reflection-section log-reflection-section--mood">
+          <div className="log-reflection-section-label">
+            {t('log.sectionMood')}
+          </div>
+          <div className="mood-row" role="group" aria-label={t('log.moodQuestion')}>
+            {([1, 2, 3, 4, 5] as const).map((value) => {
+              const Icon = MOOD_ICONS[value]
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  className={`mood-button ${mood === value ? 'active' : ''}`}
+                  onClick={() => onMoodChange(value)}
+                  style={
+                    {
+                      '--mood-color': moodColors[value - 1],
+                    } as CSSProperties
+                  }
+                  aria-pressed={mood === value}
+                  aria-label={
+                    [
+                      t('log.moodName1'),
+                      t('log.moodName2'),
+                      t('log.moodName3'),
+                      t('log.moodName4'),
+                      t('log.moodName5'),
+                    ][value - 1]!
+                  }
+                >
+                  <Icon className="mood-button-icon" size={26} aria-hidden />
+                  <span className="mood-button-num">{value}</span>
+                </button>
+              )
+            })}
+          </div>
+          <p
+            className={`mood-selected-name${mood == null ? ' mood-selected-name--placeholder' : ''}`}
+            aria-live="polite"
+          >
+            {mood != null
+              ? t(`log.moodName${mood}` as 'log.moodName1')
+              : t('log.selectMoodHint')}
+          </p>
+        </div>
+
+        <div className="field field--tags log-reflection-tags">
+          <div className="log-reflection-section-label">
+            {t('log.sectionTags')}
+            <Tooltip label={t('log.eventsTooltip')}>
+              <span className="tooltip-trigger log-reflection-label-tip">
                 <span className="tooltip-icon" aria-hidden="true">i</span>
               </span>
             </Tooltip>
           </div>
-          <p className="sleep-duration-picker__subtitle">
-            {t('log.sleepSubtitle', { defaultValue: 'Track your rest' })}
-          </p>
-          <div className="sleep-duration-picker__value" role="status" aria-live="polite">
-            <span className="sleep-duration-picker__value-main">{sleepHourNumber}</span>
-            <span className="sleep-duration-picker__value-unit">{t('log.hours').charAt(0).toLowerCase()}</span>
-            <span className="sleep-duration-picker__value-main">{String(sleepMinuteNumber).padStart(2, '0')}</span>
-            <span className="sleep-duration-picker__value-unit">{t('log.minutes').charAt(0).toLowerCase()}</span>
-          </div>
-          <div className="sleep-duration-picker__section">
-            <p className="sleep-duration-picker__section-label">
-              {t('log.quickSelect', { defaultValue: 'Quick select' })}
-            </p>
-            <div className="sleep-duration-picker__quick-grid">
-              {QUICK_SLEEP_HOUR_OPTIONS.map(hours => (
-                <button
-                  key={hours}
-                  type="button"
-                  className={`sleep-duration-picker__quick-option${sleepHourNumber === hours ? ' is-active' : ''}`}
-                  onClick={() => updateSleepFromMinutes(hours * 60)}
-                >
-                  {hours}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="sleep-duration-picker__section">
-            <p className="sleep-duration-picker__section-label">
-              {t('log.fineTune', { defaultValue: 'Fine-tune' })}
-            </p>
-            <div className="sleep-duration-picker__fine-tune-grid">
-              <div className="sleep-duration-picker__fine-tune-block">
-                <span className="sleep-duration-picker__fine-tune-label">{t('log.hours')}</span>
-                <div className="sleep-duration-picker__stepper">
-                  <button
-                    type="button"
-                    className="sleep-duration-picker__stepper-button"
-                    onClick={() => updateSleepFromMinutes(totalSleepMinutes - 60)}
-                    aria-label={t('log.decreaseHours', { defaultValue: 'Decrease hours slept' })}
-                  >
-                    -
-                  </button>
-                  <button
-                    type="button"
-                    className="sleep-duration-picker__stepper-button"
-                    onClick={() => updateSleepFromMinutes(totalSleepMinutes + 60)}
-                    aria-label={t('log.increaseHours', { defaultValue: 'Increase hours slept' })}
-                  >
-                    +
-                  </button>
+          <div className="tag-control-row tag-control-row--reflection">
+            <div className="tag-dropdown-wrap" ref={tagDropdownWrapRef}>
+              <input
+                ref={tagInputRef}
+                type="text"
+                className="tag-dropdown-trigger log-reflection-input"
+                aria-haspopup="listbox"
+                aria-expanded={tagDropdownOpen}
+                aria-label={t('log.addEventsAria')}
+                placeholder={
+                  atMaxTags
+                    ? t('log.maxReached', { count: maxTagsPerEntry })
+                    : tagPlaceholderOverride ?? t('log.tagInputPlaceholder')
+                }
+                value={tagInputValue}
+                disabled={atMaxTags}
+                onChange={(e) => {
+                  if (tagPlaceholderOverride) {
+                    setTagPlaceholderOverride(null)
+                  }
+                  setTagInputValue(e.target.value.slice(0, MAX_TAG_LENGTH))
+                  setTagDropdownOpen(true)
+                }}
+                maxLength={MAX_TAG_LENGTH}
+                onFocus={() => setTagDropdownOpen(true)}
+                onClick={() => setTagDropdownOpen(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    submitTagInput()
+                  }
+                }}
+              />
+              {tagDropdownOpen && (dropdownOptions.length > 0 || !isMobile) && (
+                <div className="tag-suggestions" role="listbox">
+                  {dropdownOptions.length > 0
+                    ? dropdownOptions.map((suggestion) => {
+                        const isAdded = usedTagSet.has(suggestion.toLowerCase())
+                        return (
+                          <button
+                            key={suggestion}
+                            type="button"
+                            className={`tag-suggestion${isAdded ? ' tag-suggestion--added' : ''}`}
+                            aria-label={isAdded ? t('log.removeTag', { tag: suggestion }) : undefined}
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => isAdded ? removeTag(suggestion.toLowerCase()) : addTag(suggestion)}
+                          >
+                            {isAdded
+                              ? (
+                                  <>
+                                    <span className="tag-suggestion-check" aria-hidden="true">✓</span>
+                                    <span className="tag-suggestion-label">{suggestion}</span>
+                                  </>
+                                )
+                              : (
+                                  suggestion
+                                )}
+                          </button>
+                        )
+                      })
+                    : (
+                        <span className="tag-suggestions-empty">
+                          {token
+                            ? t('log.pressEnterForNew')
+                            : t('log.noSuggestions')}
+                        </span>
+                      )}
                 </div>
-              </div>
-              <div className="sleep-duration-picker__fine-tune-block">
-                <span className="sleep-duration-picker__fine-tune-label">
-                  {t('log.minutesStep', { defaultValue: 'Minutes (+15)' })}
-                </span>
-                <div className="sleep-duration-picker__stepper">
-                  <button
-                    type="button"
-                    className="sleep-duration-picker__stepper-button"
-                    onClick={() => updateSleepFromMinutes(totalSleepMinutes - 15)}
-                    aria-label={t('log.decreaseMinutes', { defaultValue: 'Decrease minutes slept' })}
-                  >
-                    -
-                  </button>
-                  <button
-                    type="button"
-                    className="sleep-duration-picker__stepper-button"
-                    onClick={() => updateSleepFromMinutes(totalSleepMinutes + 15)}
-                    aria-label={t('log.increaseMinutes', { defaultValue: 'Increase minutes slept' })}
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
+              )}
+            </div>
+            <div className="tag-add-wrap">
+              <button
+                type="button"
+                className="tag-add-button log-reflection-done"
+                onClick={() => setTagDropdownOpen(false)}
+              >
+                {t('log.done')}
+              </button>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="field">
-        <div className="log-reflection-card log-reflection-block">
-          <header className="log-reflection-header">
-            <div className="log-reflection-icon" aria-hidden="true">
-              <Sun size={28} strokeWidth={2} />
-            </div>
-            <h2 className="log-reflection-title">{t('log.reflectionTitle')}</h2>
-            <p className="log-reflection-subtitle">{t('log.reflectionSubtitle')}</p>
-          </header>
-
-          <div className="log-reflection-section log-reflection-section--mood">
-            <div className="log-reflection-section-label">
-              {t('log.sectionMood')}
-            </div>
-            <div className="mood-row" role="group" aria-label={t('log.moodQuestion')}>
-              {([1, 2, 3, 4, 5] as const).map((value) => {
-                const Icon = MOOD_ICONS[value]
+          {usedTags.length > 0 && (
+            <div className="tag-pills-row">
+              {usedTags.map((tag, index) => {
+                const colorKey = tag.trim().toLowerCase()
+                const tagColor = tagColors?.[colorKey]
+                const textColor = getReadableTextColor(tagColor)
                 return (
-                  <button
-                    key={value}
-                    type="button"
-                    className={`mood-button ${mood === value ? 'active' : ''}`}
-                    onClick={() => onMoodChange(value)}
-                    style={
-                      {
-                        '--mood-color': moodColors[value - 1],
-                      } as CSSProperties
-                    }
-                    aria-pressed={mood === value}
-                    aria-label={
-                      [
-                        t('log.moodName1'),
-                        t('log.moodName2'),
-                        t('log.moodName3'),
-                        t('log.moodName4'),
-                        t('log.moodName5'),
-                      ][value - 1]!
-                    }
+                  <span
+                    key={tag}
+                    className="tag-pill"
+                    data-color-index={index}
+                    style={tagColor ? { backgroundColor: tagColor, color: textColor } : undefined}
                   >
-                    <Icon className="mood-button-icon" size={26} aria-hidden />
-                    <span className="mood-button-num">{value}</span>
-                  </button>
+                    {tag}
+                    <button
+                      type="button"
+                      className="tag-badge-remove"
+                      aria-label={t('log.removeTag', { tag })}
+                      onMouseDown={e => e.preventDefault()}
+                      onClick={() => removeTag(tag)}
+                    >
+                      ×
+                    </button>
+                  </span>
                 )
               })}
             </div>
-            <p
-              className={`mood-selected-name${mood == null ? ' mood-selected-name--placeholder' : ''}`}
-              aria-live="polite"
-            >
-              {mood != null
-                ? t(`log.moodName${mood}` as 'log.moodName1')
-                : t('log.selectMoodHint')}
-            </p>
-          </div>
+          )}
+        </div>
 
-          <div className="field field--tags log-reflection-tags">
-            <div className="log-reflection-section-label">
-              {t('log.sectionTags')}
-              <Tooltip label={t('log.eventsTooltip')}>
-                <span className="tooltip-trigger log-reflection-label-tip">
-                  <span className="tooltip-icon" aria-hidden="true">i</span>
-                </span>
-              </Tooltip>
-            </div>
-            <div className="tag-control-row tag-control-row--reflection">
-              <div className="tag-dropdown-wrap" ref={tagDropdownWrapRef}>
-                <input
-                  ref={tagInputRef}
-                  type="text"
-                  className="tag-dropdown-trigger log-reflection-input"
-                  aria-haspopup="listbox"
-                  aria-expanded={tagDropdownOpen}
-                  aria-label={t('log.addEventsAria')}
-                  placeholder={
-                    atMaxTags
-                      ? t('log.maxReached', { count: maxTagsPerEntry })
-                      : tagPlaceholderOverride ?? t('log.tagInputPlaceholder')
-                  }
-                  value={tagInputValue}
-                  disabled={atMaxTags}
-                  onChange={(e) => {
-                    if (tagPlaceholderOverride) {
-                      setTagPlaceholderOverride(null)
-                    }
-                    setTagInputValue(e.target.value.slice(0, MAX_TAG_LENGTH))
-                    setTagDropdownOpen(true)
-                  }}
-                  maxLength={MAX_TAG_LENGTH}
-                  onFocus={() => setTagDropdownOpen(true)}
-                  onClick={() => setTagDropdownOpen(true)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault()
-                      submitTagInput()
-                    }
-                  }}
-                />
-                {tagDropdownOpen && (dropdownOptions.length > 0 || !isMobile) && (
-                  <div className="tag-suggestions" role="listbox">
-                    {dropdownOptions.length > 0
-                      ? dropdownOptions.map((suggestion) => {
-                          const isAdded = usedTagSet.has(suggestion.toLowerCase())
-                          return (
-                            <button
-                              key={suggestion}
-                              type="button"
-                              className={`tag-suggestion${isAdded ? ' tag-suggestion--added' : ''}`}
-                              aria-label={isAdded ? t('log.removeTag', { tag: suggestion }) : undefined}
-                              onMouseDown={e => e.preventDefault()}
-                              onClick={() => isAdded ? removeTag(suggestion.toLowerCase()) : addTag(suggestion)}
-                            >
-                              {isAdded
-                                ? (
-                                    <>
-                                      <span className="tag-suggestion-check" aria-hidden="true">✓</span>
-                                      <span className="tag-suggestion-label">{suggestion}</span>
-                                    </>
-                                  )
-                                : (
-                                    suggestion
-                                  )}
-                            </button>
-                          )
-                        })
-                      : (
-                          <span className="tag-suggestions-empty">
-                            {token
-                              ? t('log.pressEnterForNew')
-                              : t('log.noSuggestions')}
-                          </span>
-                        )}
-                  </div>
-                )}
-              </div>
-              <div className="tag-add-wrap">
-                <button
-                  type="button"
-                  className="tag-add-button log-reflection-done"
-                  onClick={() => setTagDropdownOpen(false)}
-                >
-                  {t('log.done')}
-                </button>
-              </div>
-            </div>
-            {usedTags.length > 0 && (
-              <div className="tag-pills-row">
-                {usedTags.map((tag, index) => {
-                  const colorKey = tag.trim().toLowerCase()
-                  const tagColor = tagColors?.[colorKey]
-                  const textColor = getReadableTextColor(tagColor)
-                  return (
-                    <span
-                      key={tag}
-                      className="tag-pill"
-                      data-color-index={index}
-                      style={tagColor ? { backgroundColor: tagColor, color: textColor } : undefined}
-                    >
-                      {tag}
-                      <button
-                        type="button"
-                        className="tag-badge-remove"
-                        aria-label={t('log.removeTag', { tag })}
-                        onMouseDown={e => e.preventDefault()}
-                        onClick={() => removeTag(tag)}
-                      >
-                        ×
-                      </button>
-                    </span>
-                  )
-                })}
-              </div>
-            )}
+        <div className="log-reflection-section log-reflection-diary">
+          <div className="log-reflection-section-label">
+            {t('log.sectionThoughts')}
           </div>
-
-          <div className="log-reflection-section log-reflection-diary">
-            <div className="log-reflection-section-label">
-              {t('log.sectionThoughts')}
-            </div>
-            <textarea
-              ref={noteTextareaRef}
-              className="log-diary-textarea"
-              value={note}
-              onChange={handleNoteChange}
-              onInput={autoResizeNote}
-              placeholder={t('log.journalThoughtsPlaceholder')}
-              maxLength={300}
-              rows={5}
-              aria-label={t('log.journalOptional')}
-            />
-            <div className="log-diary-footer">
-              <span>{t('log.characterCount', { count: note.length })}</span>
-              <span>{t('log.optionalShort')}</span>
-            </div>
+          <textarea
+            ref={noteTextareaRef}
+            className="log-diary-textarea"
+            value={note}
+            onChange={handleNoteChange}
+            onInput={autoResizeNote}
+            placeholder={t('log.journalThoughtsPlaceholder')}
+            maxLength={300}
+            rows={5}
+            aria-label={t('log.journalOptional')}
+          />
+          <div className="log-diary-footer">
+            <span>{t('log.characterCount', { count: note.length })}</span>
+            <span>{t('log.optionalShort')}</span>
           </div>
         </div>
       </div>

@@ -141,6 +141,11 @@ const de = {
     title: 'Neue Version verfügbar',
     updateNow: 'Aktualisieren',
   },
+  insights: {
+    ...en.insights,
+    tagColorRandomTooltip:
+      'Bis du eine Farbe speicherst, bekommt jedes Ereignis eine zufällige Farbe aus der Palette. Tippe auf das Farbfeld, um deine zu wählen.',
+  },
   errors: {
     ...en.errors,
     unableToLoadEntries: 'Einträge konnten nicht geladen werden.',

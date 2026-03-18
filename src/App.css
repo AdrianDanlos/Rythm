@@ -815,7 +815,14 @@
 }
 
 .log-form-stack {
+  display: flex;
+  flex-direction: column;
   gap: 32px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
 /* Mood / tags / diary — same card shell as sleep picker */
@@ -2090,6 +2097,21 @@
 .icon-button .icon {
   width: 18px;
   height: 18px;
+}
+
+.your-daily-events-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.your-daily-events-heading h2 {
+  margin: 0;
+}
+
+.your-daily-events-heading .tooltip-trigger {
+  flex-shrink: 0;
 }
 
 .your-daily-events-edit-button {
@@ -4248,7 +4270,8 @@ button.toggle-group__btn--disabled:disabled {
 .app-tooltip-bubble {
   position: absolute;
   left: 50%;
-  bottom: calc(100% + 8px);
+  top: calc(100% + 8px);
+  bottom: auto;
   transform: translateX(-50%);
   background: var(--tooltip-bg);
   border: 1px solid var(--tooltip-border);

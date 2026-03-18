@@ -519,16 +519,18 @@ export const Insights = ({
             >
               <section className="card">
                 <div className="card-header">
-                  <h2>{t('insights.yourDailyEvents')}</h2>
-                  <Tooltip label={t('insights.tagColorRandomTooltip')}>
-                    <span
-                      className="tooltip-trigger"
-                      tabIndex={0}
-                      aria-label={t('insights.tagColorRandomTooltip')}
-                    >
-                      <span className="tooltip-icon" aria-hidden="true">i</span>
-                    </span>
-                  </Tooltip>
+                  <div className="your-daily-events-heading">
+                    <h2>{t('insights.yourDailyEvents')}</h2>
+                    <Tooltip label={t('insights.tagColorRandomTooltip')}>
+                      <span
+                        className="tooltip-trigger"
+                        tabIndex={0}
+                        aria-label={t('insights.tagColorRandomTooltip')}
+                      >
+                        <span className="tooltip-icon" aria-hidden="true">i</span>
+                      </span>
+                    </Tooltip>
+                  </div>
                 </div>
                 {topTags.length > 0
                   ? (
