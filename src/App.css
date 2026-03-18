@@ -1267,7 +1267,7 @@
 
 .log-reflection-title {
   margin: 4px 0 0;
-  font-size: 1.45rem;
+  font-size: 1.8rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -1312,10 +1312,6 @@
   opacity: 0.85;
 }
 
-.log-reflection-tags.field {
-  gap: 10px;
-}
-
 .tag-control-row--reflection {
   align-items: stretch;
 }
@@ -1348,6 +1344,42 @@
 
 :root[data-theme="dark"] .log-reflection-done.tag-add-button {
   border-color: transparent;
+}
+
+/* Done: no lift from global button:hover; no pressed/focus flash on click */
+@media (hover: hover) and (pointer: fine) {
+  .log-reflection-done.tag-add-button:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.log-reflection-done.tag-add-button:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.log-reflection-done.tag-add-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--log-surface), 0 0 0 4px color-mix(in srgb, var(--text) 28%, transparent);
+}
+
+.log-reflection-done.tag-add-button:active {
+  transform: none !important;
+  box-shadow: none !important;
+  background: var(--log-surface) !important;
+  border-color: var(--log-surface-border) !important;
+}
+
+:root[data-theme="dark"] .log-reflection-done.tag-add-button:active {
+  border-color: transparent !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .log-reflection-done.tag-add-button:hover:active {
+    background: color-mix(in srgb, var(--log-surface) 88%, var(--text)) !important;
+    box-shadow: none !important;
+  }
 }
 
 .log-reflection-block .tag-pills-row {
@@ -1898,7 +1930,8 @@
     padding-right: 12px;
   }
 
-  .sleep-duration-picker__title {
+  .sleep-duration-picker__title,
+  .log-reflection-title {
     font-size: 1.55rem;
   }
 
@@ -2695,39 +2728,52 @@
   line-height: 1;
 }
 
-/* Log form save — flat, no border/shadow (both themes) */
+/* Log form save — same CTA blue as Registrar hoy / Enviar comentario */
 .log-form-stack .save-button {
   border: none;
+  box-shadow: var(--cta-button-shadow);
+  background: var(--cta-button-bg);
+  color: #fff;
+  border-radius: 12px;
+  font-weight: 600;
+  min-width: 140px;
+  letter-spacing: 0.01em;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    filter 160ms ease;
+}
+
+.log-form-stack .save-button:disabled:has(.spinner) {
+  background: var(--cta-button-bg);
+  color: #fff;
+  opacity: 0.9;
+  cursor: wait;
+}
+
+.log-form-stack .save-button:disabled:not(:has(.spinner)) {
+  background: var(--button-disabled-bg);
+  color: var(--button-disabled-text);
   box-shadow: none;
+  opacity: 1;
+  cursor: not-allowed;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .log-form-stack .save-button:hover:not(:disabled) {
-    box-shadow: none;
+    transform: translateY(-1px);
+    box-shadow: var(--button-hover-shadow-strong), var(--cta-button-shadow-hover);
+    filter: brightness(1.03);
   }
 }
 
-/* Dark mode: accent purple, white label */
-:root[data-theme="dark"] .log-form-stack .save-button:not(:disabled) {
-  background: #564eff;
-  color: #fff;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  :root[data-theme="dark"] .log-form-stack .save-button:not(:disabled):hover {
-    box-shadow: none;
-    filter: brightness(1.06);
-  }
-}
-
-:root[data-theme="dark"]
-  .log-form-stack
-  .save-button:not(:disabled):focus-visible {
-  outline: 2px solid color-mix(in srgb, #564eff 75%, white);
+.log-form-stack .save-button:not(:disabled):focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--cta-button-bg) 72%, #fff);
   outline-offset: 2px;
 }
 
-:root[data-theme="dark"] .log-form-stack .save-button:not(:disabled) .spinner {
+.log-form-stack .save-button:not(:disabled) .spinner,
+.log-form-stack .save-button:disabled:has(.spinner) .spinner {
   border-color: rgba(255, 255, 255, 0.25);
   border-top-color: rgba(255, 255, 255, 0.95);
 }
@@ -4164,7 +4210,6 @@ button.toggle-group__btn--disabled:disabled {
   display: grid;
   grid-template-columns: 1fr 80px;
   grid-template-rows: auto auto auto;
-  gap: 10px 10px;
   align-items: center;
   width: 100%;
   min-width: 0;

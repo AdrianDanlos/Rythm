@@ -104,7 +104,7 @@ export const FeedbackModal = ({
           <div className="modal-actions modal-actions-right">
             <button
               type="submit"
-              className="primary-button"
+              className="primary-button cta-button"
               disabled={!canSubmit}
             >
               {isLoading ? t('feedback.sending') : t('feedback.send')}

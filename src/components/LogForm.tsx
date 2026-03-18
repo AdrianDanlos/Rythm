@@ -402,51 +402,6 @@ export const LogForm = ({
           <p className="log-reflection-subtitle">{t('log.reflectionSubtitle')}</p>
         </header>
 
-        <div className="log-reflection-section log-reflection-section--mood">
-          <div className="log-reflection-section-label">
-            {t('log.sectionMood')}
-          </div>
-          <div className="mood-row" role="group" aria-label={t('log.moodQuestion')}>
-            {([1, 2, 3, 4, 5] as const).map((value) => {
-              const Icon = MOOD_ICONS[value]
-              return (
-                <button
-                  key={value}
-                  type="button"
-                  className={`mood-button ${mood === value ? 'active' : ''}`}
-                  onClick={() => onMoodChange(value)}
-                  style={
-                    {
-                      '--mood-color': moodColors[value - 1],
-                    } as CSSProperties
-                  }
-                  aria-pressed={mood === value}
-                  aria-label={
-                    [
-                      t('log.moodName1'),
-                      t('log.moodName2'),
-                      t('log.moodName3'),
-                      t('log.moodName4'),
-                      t('log.moodName5'),
-                    ][value - 1]!
-                  }
-                >
-                  <Icon className="mood-button-icon" size={26} aria-hidden />
-                  <span className="mood-button-num">{value}</span>
-                </button>
-              )
-            })}
-          </div>
-          <p
-            className={`mood-selected-name${mood == null ? ' mood-selected-name--placeholder' : ''}`}
-            aria-live="polite"
-          >
-            {mood != null
-              ? t(`log.moodName${mood}` as 'log.moodName1')
-              : t('log.selectMoodHint')}
-          </p>
-        </div>
-
         <div className="field field--tags log-reflection-tags">
           <div className="log-reflection-section-label">
             {t('log.sectionTags')}
@@ -532,6 +487,7 @@ export const LogForm = ({
               <button
                 type="button"
                 className="tag-add-button log-reflection-done"
+                onMouseDown={e => e.preventDefault()}
                 onClick={() => setTagDropdownOpen(false)}
               >
                 {t('log.done')}
@@ -566,6 +522,51 @@ export const LogForm = ({
               })}
             </div>
           )}
+        </div>
+
+        <div className="log-reflection-section log-reflection-section--mood">
+          <div className="log-reflection-section-label">
+            {t('log.sectionMood')}
+          </div>
+          <div className="mood-row" role="group" aria-label={t('log.moodQuestion')}>
+            {([1, 2, 3, 4, 5] as const).map((value) => {
+              const Icon = MOOD_ICONS[value]
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  className={`mood-button ${mood === value ? 'active' : ''}`}
+                  onClick={() => onMoodChange(value)}
+                  style={
+                    {
+                      '--mood-color': moodColors[value - 1],
+                    } as CSSProperties
+                  }
+                  aria-pressed={mood === value}
+                  aria-label={
+                    [
+                      t('log.moodName1'),
+                      t('log.moodName2'),
+                      t('log.moodName3'),
+                      t('log.moodName4'),
+                      t('log.moodName5'),
+                    ][value - 1]!
+                  }
+                >
+                  <Icon className="mood-button-icon" size={26} aria-hidden />
+                  <span className="mood-button-num">{value}</span>
+                </button>
+              )
+            })}
+          </div>
+          <p
+            className={`mood-selected-name${mood == null ? ' mood-selected-name--placeholder' : ''}`}
+            aria-live="polite"
+          >
+            {mood != null
+              ? t(`log.moodName${mood}` as 'log.moodName1')
+              : t('log.selectMoodHint')}
+          </p>
         </div>
 
         <div className="log-reflection-section log-reflection-diary">
