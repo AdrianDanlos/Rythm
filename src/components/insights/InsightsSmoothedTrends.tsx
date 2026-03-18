@@ -17,7 +17,7 @@ import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
 import { rollingTrendColors } from '../../lib/colors'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
-import { TrendingDown, TrendingUp } from 'lucide-react'
+import { Equal, TrendingDown, TrendingUp } from 'lucide-react'
 
 const ENTRY_THRESHOLD_30 = 7
 const ENTRY_THRESHOLD_90 = 30
@@ -417,18 +417,20 @@ export const InsightsSmoothedTrends = ({
                         }}
                       />
                       <Legend
-                        content={<RollingLegend
-                          show30={show30}
-                          show90={show90}
-                          labels={{
-                            last7Days: t('insights.last7Days'),
-                            last30Days: t('insights.last30Days'),
-                            last90Days: t('insights.last90Days'),
-                            logDaysToSee30: t('insights.logDaysToSee30Trend', { count: ENTRY_THRESHOLD_30 }),
-                            logDaysToSee90: t('insights.logDaysToSee90Trend', { count: ENTRY_THRESHOLD_90 }),
-                          }}
-                          wrapperStyle={legendWrapperStyle}
-                        />}
+                        content={(
+                          <RollingLegend
+                            show30={show30}
+                            show90={show90}
+                            labels={{
+                              last7Days: t('insights.last7Days'),
+                              last30Days: t('insights.last30Days'),
+                              last90Days: t('insights.last90Days'),
+                              logDaysToSee30: t('insights.logDaysToSee30Trend', { count: ENTRY_THRESHOLD_30 }),
+                              logDaysToSee90: t('insights.logDaysToSee90Trend', { count: ENTRY_THRESHOLD_90 }),
+                            }}
+                            wrapperStyle={legendWrapperStyle}
+                          />
+                        )}
                       />
                       {rollingMetric === 'sleep'
                         ? (
@@ -574,20 +576,46 @@ export const InsightsSmoothedTrends = ({
                                                 <span className="delta-stacked-sleep">
                                                   {t('insights.sleepLabel')}:{' '}
                                                   {summary.sleepDelta !== null && Number.isFinite(summary.sleepDelta)
-                                                    ? (
-                                                        <>
-                                                          <span className={summary.sleepDelta >= 0 ? 'mood-by-sleep-percent--up' : 'mood-by-sleep-percent--down'}>
-                                                            {formatSleepDeltaValue(summary.sleepDelta)}
-                                                          </span>
-                                                          <span
-                                                            className={`mood-by-sleep-trend ${summary.sleepDelta >= 0 ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
-                                                            aria-label={summary.sleepDelta >= 0 ? t('insights.sleepTrendUp') : t('insights.sleepTrendDown')}
-                                                            role="img"
-                                                          >
-                                                            {summary.sleepDelta >= 0 ? <TrendingUp size={14} aria-hidden="true" /> : <TrendingDown size={14} aria-hidden="true" />}
-                                                          </span>
-                                                        </>
-                                                      )
+                                                    ? (() => {
+                                                        const sleepFlat = Math.round(Math.abs(summary.sleepDelta) * 60) === 0
+                                                        const sleepUp = !sleepFlat && summary.sleepDelta > 0
+                                                        return (
+                                                          <>
+                                                            <span
+                                                              className={
+                                                                sleepFlat
+                                                                  ? 'mood-by-sleep-percent--flat'
+                                                                  : sleepUp
+                                                                    ? 'mood-by-sleep-percent--up'
+                                                                    : 'mood-by-sleep-percent--down'
+                                                              }
+                                                            >
+                                                              {formatSleepDeltaValue(summary.sleepDelta)}
+                                                            </span>
+                                                            <span
+                                                              className={
+                                                                sleepFlat
+                                                                  ? 'mood-by-sleep-trend mood-by-sleep-trend--flat'
+                                                                  : `mood-by-sleep-trend ${sleepUp ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`
+                                                              }
+                                                              aria-label={
+                                                                sleepFlat
+                                                                  ? t('insights.sleepTrendFlat')
+                                                                  : sleepUp
+                                                                    ? t('insights.sleepTrendUp')
+                                                                    : t('insights.sleepTrendDown')
+                                                              }
+                                                              role="img"
+                                                            >
+                                                              {sleepFlat
+                                                                ? <Equal size={14} aria-hidden="true" />
+                                                                : sleepUp
+                                                                  ? <TrendingUp size={14} aria-hidden="true" />
+                                                                  : <TrendingDown size={14} aria-hidden="true" />}
+                                                            </span>
+                                                          </>
+                                                        )
+                                                      })()
                                                     : '—'}
                                                 </span>
                                                 <span className="delta-stacked-mood">
@@ -595,18 +623,41 @@ export const InsightsSmoothedTrends = ({
                                                   {(() => {
                                                     const moodPct = getMoodDeltaPercent(summary.mood, summary.moodDelta)
                                                     if (moodPct === null) return '—'
-                                                    const isUp = moodPct >= 0
+                                                    const moodFlat = Math.round(Math.abs(moodPct)) === 0
+                                                    const moodUp = !moodFlat && moodPct > 0
                                                     return (
                                                       <>
-                                                        <span className={isUp ? 'mood-by-sleep-percent--up' : 'mood-by-sleep-percent--down'}>
+                                                        <span
+                                                          className={
+                                                            moodFlat
+                                                              ? 'mood-by-sleep-percent--flat'
+                                                              : moodUp
+                                                                ? 'mood-by-sleep-percent--up'
+                                                                : 'mood-by-sleep-percent--down'
+                                                          }
+                                                        >
                                                           {Math.abs(moodPct).toFixed(0)}%
                                                         </span>
                                                         <span
-                                                          className={`mood-by-sleep-trend ${isUp ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
-                                                          aria-label={isUp ? t('insights.moodTrendUp') : t('insights.moodTrendDown')}
+                                                          className={
+                                                            moodFlat
+                                                              ? 'mood-by-sleep-trend mood-by-sleep-trend--flat'
+                                                              : `mood-by-sleep-trend ${moodUp ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`
+                                                          }
+                                                          aria-label={
+                                                            moodFlat
+                                                              ? t('insights.moodTrendFlat')
+                                                              : moodUp
+                                                                ? t('insights.moodTrendUp')
+                                                                : t('insights.moodTrendDown')
+                                                          }
                                                           role="img"
                                                         >
-                                                          {isUp ? <TrendingUp size={14} aria-hidden="true" /> : <TrendingDown size={14} aria-hidden="true" />}
+                                                          {moodFlat
+                                                            ? <Equal size={14} aria-hidden="true" />
+                                                            : moodUp
+                                                              ? <TrendingUp size={14} aria-hidden="true" />
+                                                              : <TrendingDown size={14} aria-hidden="true" />}
                                                         </span>
                                                       </>
                                                     )

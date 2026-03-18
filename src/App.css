@@ -1603,6 +1603,19 @@
   color: color-mix(in srgb, var(--status-error) 75%, var(--text));
 }
 
+.window-average-delta--flat {
+  color: var(--muted);
+}
+
+.window-average-delta__eq {
+  color: #d97706;
+  flex-shrink: 0;
+}
+
+:root[data-theme="dark"] .window-average-delta__eq {
+  color: var(--badge-progress-fill);
+}
+
 .mood-by-sleep-value {
   display: inline-flex;
   align-items: center;
@@ -1617,6 +1630,10 @@
   color: color-mix(in srgb, var(--status-error) 75%, var(--text));
 }
 
+.mood-by-sleep-percent--flat {
+  color: var(--muted);
+}
+
 .mood-by-sleep-trend {
   display: inline-flex;
   width: 18px;
@@ -1629,6 +1646,14 @@
 
 .mood-by-sleep-trend--down {
   color: color-mix(in srgb, var(--status-error) 75%, var(--text));
+}
+
+.mood-by-sleep-trend--flat {
+  color: #d97706;
+}
+
+:root[data-theme="dark"] .mood-by-sleep-trend--flat {
+  color: var(--badge-progress-fill);
 }
 
 .mood-by-sleep-trend svg {

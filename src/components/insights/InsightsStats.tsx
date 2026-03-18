@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { SleepMoodAverages, WindowStats } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
-import { Flame, TrendingDown, TrendingUp } from 'lucide-react'
+import { Equal, Flame, TrendingDown, TrendingUp } from 'lucide-react'
 
 const RHYTHM_NEED = 5
 const SLEEP_CONSISTENCY_NEED = 2
@@ -123,13 +123,21 @@ export const InsightsStats = ({
                 ? (
                     <>
                       <span>{formatSleepHours(window.sleep)}</span>
-                      {sleepDeltaMinutes !== null && sleepDeltaMinutes !== 0 && (
+                      {sleepDeltaMinutes !== null && (
                         <span
-                          className={`window-average-delta ${sleepDeltaMinutes >= 0 ? 'window-average-delta--up' : 'window-average-delta--down'}`}
+                          className={
+                            sleepDeltaMinutes === 0
+                              ? 'window-average-delta window-average-delta--flat'
+                              : `window-average-delta ${sleepDeltaMinutes > 0 ? 'window-average-delta--up' : 'window-average-delta--down'}`
+                          }
                         >
-                          {sleepDeltaMinutes >= 0
-                            ? <TrendingUp size={16} aria-hidden="true" />
-                            : <TrendingDown size={16} aria-hidden="true" />}
+                          {sleepDeltaMinutes === 0
+                            ? (
+                                <Equal className="window-average-delta__eq" size={16} aria-hidden="true" />
+                              )
+                            : sleepDeltaMinutes > 0
+                              ? <TrendingUp size={16} aria-hidden="true" />
+                              : <TrendingDown size={16} aria-hidden="true" />}
                           <span>{t('insights.sleepDeltaMinutes', { count: Math.abs(sleepDeltaMinutes) })}</span>
                         </span>
                       )}
@@ -145,13 +153,21 @@ export const InsightsStats = ({
                 ? (
                     <>
                       <span>{window.mood.toFixed(1)} / 5</span>
-                      {moodDeltaPercent !== null && moodDeltaRounded !== null && moodDeltaRounded > 0 && (
+                      {moodDeltaPercent !== null && moodDeltaRounded !== null && (
                         <span
-                          className={`window-average-delta ${moodDeltaPercent >= 0 ? 'window-average-delta--up' : 'window-average-delta--down'}`}
+                          className={
+                            moodDeltaRounded === 0
+                              ? 'window-average-delta window-average-delta--flat'
+                              : `window-average-delta ${moodDeltaPercent > 0 ? 'window-average-delta--up' : 'window-average-delta--down'}`
+                          }
                         >
-                          {moodDeltaPercent >= 0
-                            ? <TrendingUp size={16} aria-hidden="true" />
-                            : <TrendingDown size={16} aria-hidden="true" />}
+                          {moodDeltaRounded === 0
+                            ? (
+                                <Equal className="window-average-delta__eq" size={16} aria-hidden="true" />
+                              )
+                            : moodDeltaPercent > 0
+                              ? <TrendingUp size={16} aria-hidden="true" />
+                              : <TrendingDown size={16} aria-hidden="true" />}
                           <span>{moodDeltaRounded}%</span>
                         </span>
                       )}

@@ -393,6 +393,8 @@ const en = {
     needOneDayLessThan: 'Needs 1 day with less than {{threshold}} of sleep.',
     sleepTrendUp: 'Sleep trend up',
     sleepTrendDown: 'Sleep trend down',
+    sleepTrendFlat: 'Sleep unchanged vs prior period',
+    moodTrendFlat: 'Mood unchanged vs prior period',
     increaseAria: 'Increase',
     decreaseAria: 'Decrease',
     toSeeInsights: 'to see insights.',

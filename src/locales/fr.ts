@@ -393,6 +393,8 @@ const fr = {
     needOneDayLessThan: 'Il faut 1 jour avec moins de {{threshold}} de sommeil.',
     sleepTrendUp: 'Tendance du sommeil en hausse',
     sleepTrendDown: 'Tendance du sommeil en baisse',
+    sleepTrendFlat: 'Sommeil inchangé par rapport à la période précédente',
+    moodTrendFlat: 'Humeur inchangée par rapport à la période précédente',
     increaseAria: 'Hausse',
     decreaseAria: 'Baisse',
     toSeeInsights: 'pour voir les insights.',

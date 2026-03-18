@@ -393,6 +393,8 @@ const pt = {
     needOneDayLessThan: 'Precisa de 1 dia com menos de {{threshold}} de sono.',
     sleepTrendUp: 'Tendência de sono em alta',
     sleepTrendDown: 'Tendência de sono em baixa',
+    sleepTrendFlat: 'Sono inalterado em relação ao período anterior',
+    moodTrendFlat: 'Humor inalterado em relação ao período anterior',
     increaseAria: 'Aumento',
     decreaseAria: 'Queda',
     toSeeInsights: 'para ver insights.',

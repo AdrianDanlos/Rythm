@@ -393,6 +393,8 @@ const es = {
     needOneDayLessThan: 'Necesita 1 día con menos de {{threshold}} de sueño.',
     sleepTrendUp: 'La tendencia de sueño sube',
     sleepTrendDown: 'La tendencia de sueño baja',
+    sleepTrendFlat: 'Sueño sin cambios respecto al periodo anterior',
+    moodTrendFlat: 'Ánimo sin cambios respecto al periodo anterior',
     increaseAria: 'Aumento',
     decreaseAria: 'Disminución',
     toSeeInsights: 'para ver información útil.',
