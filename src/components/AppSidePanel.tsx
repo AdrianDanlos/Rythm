@@ -32,21 +32,28 @@ function PanelButton({
   label,
   onClick,
   disabled,
+  className,
+  afterLabel,
 }: {
   icon: React.ComponentType<{ 'className'?: string, 'aria-hidden'?: boolean }>
   label: string
   onClick: () => void
   disabled?: boolean
+  className?: string
+  afterLabel?: React.ReactNode
 }) {
   return (
     <button
       type="button"
-      className="side-panel__item"
+      className={['side-panel__item', className].filter(Boolean).join(' ')}
       onClick={onClick}
       disabled={disabled}
     >
       <Icon className="side-panel__icon" aria-hidden={true} />
-      <span>{label}</span>
+      <span className="side-panel__item-label">
+        {label}
+        {afterLabel}
+      </span>
     </button>
   )
 }
@@ -99,7 +106,14 @@ export function AppSidePanel(props: AppSidePanelProps) {
           <PanelButton
             icon={FileText}
             label={t('insights.exportReport')}
-            onClick={() => runAndClose(onExportReport)}
+            className={!isPro ? 'pro-locked-button' : undefined}
+            afterLabel={
+              !isPro
+                ? <span className="pro-pill">{t('insights.pro')}</span>
+                : undefined
+            }
+            onClick={() =>
+              runAndClose(!isPro ? onOpenPaywall : onExportReport)}
           />
           <PanelButton
             icon={Settings}

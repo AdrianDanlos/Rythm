@@ -98,10 +98,10 @@ const es = {
     features: {
       dailyImpact: 'Descubre cómo lo que pasa en tu día influye en tu sueño y ánimo',
       sleepTarget: 'Tu objetivo de sueño recomendado según tu historial',
-      sleepMoodChart: 'Ve en una sola gráfica cómo se conectan sueño y ánimo',
+      sleepMoodChart: 'Descubre en una sola gráfica cómo se conectan sueño y ánimo',
       weeklyMonthlyTrends: 'Tendencias semanales y mensuales',
       historyRanges: 'Historial de 30/90/365 días',
-      exportReports: 'Exporta los reportes personalizados de Rythm en PDF',
+      exportReports: 'Exporta los análisis personalizados de Rythm en PDF',
     },
   },
   feedback: {

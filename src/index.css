@@ -144,7 +144,7 @@
   --bg: var(--neutral-50);
   --card: #111827;
   --border: var(--neutral-200);
-  --button-border: #334155;
+  --button-border: transparent;
   --button-bg: #334155;
   --button-text: var(--white);
   --ghost-bg: rgba(56, 189, 248, 0.08);
@@ -154,16 +154,14 @@
   --selected-text: var(--white);
   --selected-border: rgba(56, 189, 248, 0.7);
   --selected-surface: rgba(56, 189, 248, 0.18);
-  --button-hover-shadow:
-    0 10px 20px rgba(15, 23, 42, 0.45), 0 0 0 1px rgba(56, 189, 248, 0.45);
+  --button-hover-shadow: 0 10px 20px rgba(15, 23, 42, 0.45);
   --button-hover-shadow-strong:
-    0 18px 36px rgba(15, 23, 42, 0.55), 0 0 18px rgba(56, 189, 248, 0.25),
-    0 0 0 1px rgba(56, 189, 248, 0.5);
+    0 18px 36px rgba(15, 23, 42, 0.55), 0 0 18px rgba(56, 189, 248, 0.25);
   --button-hover-surface: rgba(56, 189, 248, 0.14);
   --button-disabled-bg: var(--neutral-50);
   --button-disabled-text: var(--neutral-500);
-  --button-disabled-border: #334155;
-  --button-primary-border: rgba(56, 189, 248, 0.7);
+  --button-disabled-border: transparent;
+  --button-primary-border: transparent;
   --input-focus-border: rgba(203, 213, 225, 0.65);
   --input-focus-shadow: 0 0 0 2px rgba(203, 213, 225, 0.12);
   --nav-focus-border: rgba(203, 213, 225, 0.55);
@@ -186,12 +184,11 @@
     rgba(2, 6, 23, 0.6),
     rgba(2, 6, 23, 0.9)
   );
-  --ghost-cta-border: rgba(56, 189, 248, 0.55);
+  --ghost-cta-border: transparent;
   --ghost-cta-bg: rgba(56, 189, 248, 0.12);
   --ghost-cta-text: #e2e8f0;
-  --ghost-cta-shadow:
-    0 12px 20px rgba(2, 6, 23, 0.55), 0 0 0 1px rgba(56, 189, 248, 0.35);
-  --ghost-cta-border-hover: rgba(56, 189, 248, 0.85);
+  --ghost-cta-shadow: 0 12px 20px rgba(2, 6, 23, 0.55);
+  --ghost-cta-border-hover: transparent;
   --cta-button-bg: linear-gradient(135deg, #0f172a, #1e3a8a);
   --cta-button-shadow:
     0 12px 26px rgba(15, 23, 42, 0.22),
@@ -214,7 +211,7 @@
     var(--selected-bg) 85%,
     transparent
   );
-  --review-cta-button-border: var(--selected-border);
+  --review-cta-button-border: transparent;
   --review-cta-button-text: var(--selected-text);
   /* Privacy page – dark theme */
   --privacy-bg: #0f1115;

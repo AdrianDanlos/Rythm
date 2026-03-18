@@ -151,7 +151,7 @@
 
 :root[data-theme="dark"] .native-auth-screen__google-btn {
   background: #2d3748;
-  border-color: #4a5568;
+  border-color: transparent;
   color: #f8fafc;
   font-weight: 700;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
@@ -395,6 +395,11 @@
   box-shadow: none;
 }
 
+:root[data-theme="dark"] .tab-button,
+:root[data-theme="dark"] .tab-button.active {
+  border-color: transparent;
+}
+
 .tab-icon {
   display: inline-flex;
   width: 18px;
@@ -569,6 +574,15 @@
   width: 20px;
   height: 20px;
   color: var(--muted);
+}
+
+.side-panel__item-label {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
 }
 
 .modal-header {
@@ -955,7 +969,7 @@
   --log-surface: rgba(10, 20, 40, 0.72);
   --log-surface-border: rgba(148, 163, 184, 0.22);
   --log-mood-bg: rgba(12, 22, 44, 0.88);
-  --log-mood-border: rgba(148, 163, 184, 0.2);
+  --log-mood-border: transparent;
 }
 
 .log-reflection-section--mood .log-reflection-section-label {
@@ -1083,6 +1097,10 @@
 
 .log-reflection-done.tag-add-button:hover:not(:disabled) {
   background: color-mix(in srgb, var(--log-surface) 88%, var(--text));
+}
+
+:root[data-theme="dark"] .log-reflection-done.tag-add-button {
+  border-color: transparent;
 }
 
 .log-reflection-block .tag-pills-row {
@@ -1517,7 +1535,7 @@
 }
 
 :root[data-theme="dark"] .sleep-duration-picker__quick-option:hover {
-  box-shadow: 0 0 0 1px rgba(170, 193, 236, 0.5) inset;
+  box-shadow: none;
 }
 
 /* Dark base (above) beats .is-active specificity — restore purple for selected hour */
@@ -1615,7 +1633,7 @@
 }
 
 :root[data-theme="dark"] .sleep-duration-picker__stepper-button:hover {
-  box-shadow: 0 0 0 1px rgba(170, 193, 236, 0.5) inset;
+  box-shadow: none;
 }
 
 @media (max-width: 430px) {
@@ -1730,6 +1748,10 @@
   background: var(--bg);
   color: var(--muted);
   cursor: not-allowed;
+}
+
+:root[data-theme="dark"] .tag-add-button {
+  border-color: transparent;
 }
 
 /* Pills row below dropdown */
@@ -3049,6 +3071,16 @@
 .toggle-group .ghost:focus-visible:not(:disabled) {
   outline: 2px solid var(--input-focus-border);
   outline-offset: 2px;
+}
+
+:root[data-theme="dark"] .toggle-group .ghost,
+:root[data-theme="dark"] .toggle-group .ghost.active {
+  border-color: transparent;
+}
+
+:root[data-theme="dark"] .toggle-group__btn--disabled,
+:root[data-theme="dark"] button.toggle-group__btn--disabled:disabled {
+  border-color: transparent;
 }
 
 .toggle-group--thirds {

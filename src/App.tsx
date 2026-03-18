@@ -596,7 +596,10 @@ function App() {
       setExportError(t('errors.addOneEntryToExport'))
       return
     }
-    if (!isPro) return
+    if (!isPro) {
+      openPaywall()
+      return
+    }
     setExportError(null)
     try {
       await exportMonthlyReport(entries, stats, {
