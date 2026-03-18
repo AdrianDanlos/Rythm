@@ -84,6 +84,9 @@ const de = {
     upgradeNow: 'Pro aktivieren',
     restorePurchases: 'Käufe wiederherstellen',
     notNow: 'Nicht jetzt',
+    premiumFeaturesSection: 'Pro-Funktionen',
+    cancelAnytime: 'Jederzeit kündbar',
+    secureFooter: 'Sichere Zahlung • Keine Bindung',
     features: {
       dailyImpact: 'Entdecke, wie dein Tagverlauf deinen Schlaf und deine Stimmung beeinflusst',
       sleepTarget: 'Dein empfohlenes Schlafziel basierend auf deiner Historie',

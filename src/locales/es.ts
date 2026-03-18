@@ -95,6 +95,9 @@ const es = {
     restorePurchases: 'Restaurar compras',
     notNow: 'Ahora no',
     configureUpgradeUrl: 'Configura VITE_UPGRADE_URL para habilitar el enlace de compra.',
+    premiumFeaturesSection: 'Funciones Pro',
+    cancelAnytime: 'Cancela cuando quieras',
+    secureFooter: 'Pago seguro • Sin permanencia',
     features: {
       dailyImpact: 'Descubre cómo lo que pasa en tu día influye en tu sueño y ánimo',
       sleepTarget: 'Tu objetivo de sueño recomendado según tu historial',

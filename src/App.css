@@ -15,9 +15,16 @@
   padding-bottom: 16px;
 }
 
-/* Pro upgrade full page — bottom nav hidden */
+/* Pro upgrade full page — bottom nav hidden, immersive paywall */
 .app-authenticated.app-pro-page {
-  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  padding: env(safe-area-inset-top, 0px) 0 0;
+  gap: 0;
+  min-height: 100dvh;
+  min-height: 100vh;
+}
+
+.app-authenticated.app-pro-page .app-header {
+  display: none;
 }
 
 /* Native (Capacitor) Google-only login — Figma-style full screen */
@@ -592,12 +599,6 @@
   gap: 12px;
 }
 
-.paywall-price {
-  margin: 8px 0 0;
-  font-weight: 600;
-  color: var(--text);
-}
-
 .modal-actions {
   display: flex;
   flex-wrap: wrap;
@@ -801,76 +802,316 @@
   cursor: not-allowed;
 }
 
+/* —— Paywall (Pro upgrade) — Figma-style gradient hero + dark panel —— */
 .paywall-page {
+  --paywall-gradient: linear-gradient(135deg, #ff9500 0%, #ff2d55 100%);
+  --paywall-panel-bg: #1a2233;
+  --paywall-panel-text: #f8fafc;
+  --paywall-muted: rgba(248, 250, 252, 0.55);
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
   width: 100%;
-  max-width: 520px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 12px 16px 32px;
+  padding: 0;
   box-sizing: border-box;
+  background: var(--paywall-panel-bg);
+  color: var(--paywall-panel-text);
 }
 
-.paywall-page__header {
+.paywall-page__hero {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 8px;
-  padding-top: 4px;
-  min-height: 44px;
-}
-
-.paywall-page__back {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
   flex-shrink: 0;
-  margin: 0;
-}
-
-.paywall-page__header-text {
-  width: 100%;
-  min-width: 0;
-  padding-inline: 48px;
-  box-sizing: border-box;
+  padding: 12px 20px 28px;
+  background: var(--paywall-gradient);
   text-align: center;
 }
 
-.paywall-page__title {
-  margin: 4px 0 0;
-  font-size: 1.5rem;
-  line-height: 1.25;
+.paywall-page__close {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26, 34, 51, 0.35);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
 
-.paywall-page__body {
+.paywall-page__close:hover {
+  background: rgba(26, 34, 51, 0.5);
+}
+
+.paywall-page__close-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.paywall-page__crown-ring {
+  width: 88px;
+  height: 88px;
+  margin: 8px auto 16px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paywall-page__crown-icon {
+  width: 40px;
+  height: 40px;
+  color: #fff;
+}
+
+.paywall-page__brand {
+  margin: 0;
+  font-size: clamp(1.5rem, 5vw, 1.85rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 1.15;
+}
+
+.paywall-page__tagline {
+  margin: 10px 0 0;
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.paywall-page__panel {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-height: 0;
+  background: var(--paywall-panel-bg);
+  border-radius: 24px 24px 0 0;
+  margin-top: -16px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.paywall-page__panel-inner {
+  padding: 28px 20px 20px;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.paywall-page__price-block {
+  text-align: center;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+
+.paywall-page__price-row {
+  margin: 0;
+  line-height: 1.1;
+}
+
+.paywall-page__price-amount {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--paywall-panel-text);
+}
+
+.paywall-page__price-period {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--paywall-muted);
+}
+
+.paywall-page__price-note {
+  margin: 10px 0 0;
+  font-size: 0.8125rem;
+  color: var(--paywall-muted);
+}
+
+.paywall-page__divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 22px 0 20px;
+}
+
+.paywall-page__features-eyebrow {
+  margin: 0 0 16px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--paywall-muted);
+  text-align: center;
+}
+
+.paywall-page__features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.paywall-feature {
+  display: grid;
+  grid-template-columns: 48px 1fr 28px;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+}
+
+.paywall-feature__icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paywall-feature__icon {
+  width: 24px;
+  height: 24px;
+  color: #ff9f0a;
+}
+
+.paywall-feature:nth-child(2) .paywall-feature__icon {
+  color: #a78bfa;
+}
+
+.paywall-feature:nth-child(3) .paywall-feature__icon {
+  color: #34d399;
+}
+
+.paywall-feature:nth-child(4) .paywall-feature__icon {
+  color: #f472b6;
+}
+
+.paywall-feature:nth-child(5) .paywall-feature__icon {
+  color: #38bdf8;
+}
+
+.paywall-feature:nth-child(6) .paywall-feature__icon {
+  color: #fbbf24;
+}
+
+.paywall-feature__text {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--paywall-panel-text);
+}
+
+.paywall-feature__check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #16a34a, #15803d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.35);
+}
+
+.paywall-feature__check-mark {
+  width: 14px;
+  height: 14px;
+  color: #fff;
 }
 
 .paywall-page__actions {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 24px;
+  margin-top: 28px;
 }
 
 .paywall-page__cta {
   width: 100%;
+  min-height: 54px;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  background: var(--paywall-gradient);
+  box-shadow: 0 8px 24px rgba(255, 45, 85, 0.35);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    opacity 0.12s ease;
 }
 
-.paywall-list {
-  margin: 12px 0 0;
-  padding-left: 18px;
-  display: grid;
-  gap: 6px;
-  color: var(--text);
+.paywall-page__cta:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(255, 45, 85, 0.42);
+}
+
+.paywall-page__cta:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.paywall-page__restore {
+  align-self: center;
+  padding: 8px;
+  border: none;
+  background: none;
+  color: var(--paywall-muted);
+  font-size: 0.875rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.paywall-page__restore:disabled {
+  opacity: 0.5;
+}
+
+.paywall-page__trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0 0;
+  font-size: 0.75rem;
+  color: var(--paywall-muted);
+  text-align: center;
+}
+
+.paywall-page__trust-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.paywall-page__helper {
+  margin: 16px 0 0;
+  font-size: 0.8125rem;
+  color: var(--paywall-muted);
+  text-align: center;
+  line-height: 1.4;
 }
 
 .locked-message {
