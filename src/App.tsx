@@ -103,12 +103,10 @@ function App() {
   const [isMenuPanelOpen, setIsMenuPanelOpen] = useState(false)
   const swipeStartXRef = useRef<number | null>(null)
 
-  const todayDate = useMemo(() => {
-    const date = new Date()
-    date.setHours(0, 0, 0, 0)
-    return date
-  }, [])
-  const today = useMemo(() => formatLocalDate(todayDate), [todayDate])
+  // Must not memoize with [] — SPA stays mounted across midnight; stale "today" breaks Log.
+  const todayDate = new Date()
+  todayDate.setHours(0, 0, 0, 0)
+  const today = formatLocalDate(todayDate)
 
   const userId = session?.user?.id
   const activePage = getPageFromPathname(pathname) ?? getDefaultPageForUser(userId)

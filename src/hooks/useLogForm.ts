@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { t } from 'i18next'
 import { toast } from 'sonner'
 import { upsertEntry, type Entry } from '../lib/entries'
@@ -53,6 +53,15 @@ export const useLogForm = ({
   onEntrySavedForToday,
 }: UseLogFormParams) => {
   const [entryDate, setEntryDate] = useState(today)
+  const lastAppTodayRef = useRef(today)
+  /** When the real calendar day advances, move off yesterday if user was on "today". */
+  useEffect(() => {
+    const prevToday = lastAppTodayRef.current
+    if (today !== prevToday) {
+      setEntryDate((ed) => (ed === prevToday ? today : ed))
+      lastAppTodayRef.current = today
+    }
+  }, [today])
   const [sleepHours, setSleepHours] = useState('')
   const [mood, setMood] = useState<number | null>(null)
   const [note, setNote] = useState('')
