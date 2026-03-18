@@ -1226,6 +1226,10 @@
   text-align: left;
 }
 
+.log-reflection-tags > .log-reflection-section-label {
+  margin-bottom: 6px;
+}
+
 .log-reflection-header {
   display: flex;
   flex-direction: column;
