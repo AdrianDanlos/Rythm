@@ -241,7 +241,7 @@ export const LogForm = ({
                   <button
                     key={hours}
                     type="button"
-                    className={`sleep-duration-picker__quick-option${sleepHourNumber === hours && sleepMinuteNumber === 0 ? ' is-active' : ''}`}
+                    className={`sleep-duration-picker__quick-option${sleepHourNumber === hours ? ' is-active' : ''}`}
                     onClick={() => updateSleepFromMinutes(hours * 60)}
                   >
                     {hours}
@@ -300,17 +300,6 @@ export const LogForm = ({
                 </div>
               </div>
             </div>
-            {!hasSleepValue
-              ? (
-                  <button
-                    type="button"
-                    className="sleep-duration-picker__use-default"
-                    onClick={() => updateSleepFromMinutes(totalSleepMinutes)}
-                  >
-                    {t('log.useDefaultSleep', { defaultValue: 'Use 8h 00m' })}
-                  </button>
-                )
-              : null}
           </div>
         </div>
         <div className="field field--tags">
