@@ -2,6 +2,7 @@ const pt = {
   common: {
     appTagline: 'Rastreador de sono e humor',
     close: 'Fechar',
+    back: 'Voltar',
     save: 'Salvar',
     cancel: 'Cancelar',
     edit: 'Editar',
@@ -148,7 +149,7 @@ const pt = {
     reflectionTitle: 'Como foi seu dia?',
     reflectionSubtitle: 'Registre seu humor e pensamentos',
     sectionMood: 'SEU HUMOR',
-    sectionTags: 'ETIQUETAS',
+    sectionTags: 'EVENTOS DO DIA',
     sectionThoughts: 'PENSAMENTOS DE HOJE',
     tagInputPlaceholder: 'Digite uma etiqueta e pressione Enter...',
     journalThoughtsPlaceholder:

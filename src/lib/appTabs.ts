@@ -15,6 +15,7 @@ export enum AppPage {
   Events = 'events',
   Log = 'log',
   Settings = 'settings',
+  Pro = 'pro',
 }
 
 export const APP_PAGE_PATHS: Record<AppPage, string> = {
@@ -23,6 +24,7 @@ export const APP_PAGE_PATHS: Record<AppPage, string> = {
   [AppPage.Charts]: '/charts',
   [AppPage.Events]: '/events',
   [AppPage.Settings]: '/settings',
+  [AppPage.Pro]: '/pro',
 }
 
 export function getPathForPage(page: AppPage): string {
@@ -66,5 +68,7 @@ export function getInsightsSectionForPage(page: AppPage): InsightsSection {
 }
 
 export function getTabForPage(page: AppPage): TabKey {
-  return page === AppPage.Log ? Tabs.Log : Tabs.Insights
+  if (page === AppPage.Log) return Tabs.Log
+  if (page === AppPage.Pro) return Tabs.Insights
+  return Tabs.Insights
 }

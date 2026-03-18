@@ -2,6 +2,7 @@ const en = {
   common: {
     appTagline: 'Sleep & Mood Tracker',
     close: 'Close',
+    back: 'Back',
     save: 'Save',
     cancel: 'Cancel',
     edit: 'Edit',
@@ -148,7 +149,7 @@ const en = {
     reflectionTitle: 'How was your day?',
     reflectionSubtitle: 'Track your mood & thoughts',
     sectionMood: 'YOUR MOOD',
-    sectionTags: 'TAGS',
+    sectionTags: 'DAY EVENTS',
     sectionThoughts: 'TODAY\'S THOUGHTS',
     tagInputPlaceholder: 'Type a tag and press Enter...',
     journalThoughtsPlaceholder:

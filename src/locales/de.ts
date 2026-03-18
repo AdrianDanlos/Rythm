@@ -6,6 +6,7 @@ const de = {
     ...en.common,
     appTagline: 'Schlaf- und Stimmungs-Tracker',
     close: 'Schließen',
+    back: 'Zurück',
     save: 'Speichern',
     edit: 'Bearbeiten',
     loading: 'Lädt...',
@@ -116,7 +117,7 @@ const de = {
     reflectionTitle: 'Wie war dein Tag?',
     reflectionSubtitle: 'Stimmung und Gedanken festhalten',
     sectionMood: 'DEINE STIMMUNG',
-    sectionTags: 'TAGS',
+    sectionTags: 'EREIGNISSE DES TAGES',
     sectionThoughts: 'GEDANKEN DES TAGES',
     tagInputPlaceholder: 'Tag eingeben und Enter drücken...',
     journalThoughtsPlaceholder:

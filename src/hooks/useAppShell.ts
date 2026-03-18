@@ -8,7 +8,6 @@ type UseAppShellParams = {
 
 export function useAppShell({ activeTab, onNavigateToPage }: UseAppShellParams) {
   const [isStreakOpen, setIsStreakOpen] = useState(false)
-  const [isPaywallOpen, setIsPaywallOpen] = useState(false)
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
 
   const saveLogWhenLeaving = useCallback((handleSave: () => void) => {
@@ -20,14 +19,10 @@ export function useAppShell({ activeTab, onNavigateToPage }: UseAppShellParams) 
   return {
     isStreakOpen,
     setIsStreakOpen,
-    isPaywallOpen,
-    setIsPaywallOpen,
     isFeedbackOpen,
     setIsFeedbackOpen,
     saveLogWhenLeaving,
-    openPaywall: () => setIsPaywallOpen(true),
     closeStreak: () => setIsStreakOpen(false),
-    closePaywall: () => setIsPaywallOpen(false),
     openFeedback: () => setIsFeedbackOpen(true),
     closeFeedback: () => setIsFeedbackOpen(false),
     goToInsightsSummary: () => {

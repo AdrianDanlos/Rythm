@@ -445,22 +445,22 @@ export const Insights = ({
               animate={{ opacity: 1 }}
               transition={panelTransition}
             >
-              <InsightsMoodDistribution
-                entries={entries}
-                moodColors={moodColors}
-                goToLog={goToLog}
-              />
-              <InsightsCalendarHeatmap
-                entries={entries}
-                moodColors={moodColors}
-                isMobile={isMobile}
-              />
               <InsightsMonthlyCalendar
                 entries={entries}
                 moodColors={moodColors}
                 isMobile={isMobile}
                 entriesLoading={entriesLoading}
                 tagColors={tagColors}
+              />
+              <InsightsCalendarHeatmap
+                entries={entries}
+                moodColors={moodColors}
+                isMobile={isMobile}
+              />
+              <InsightsMoodDistribution
+                entries={entries}
+                moodColors={moodColors}
+                goToLog={goToLog}
               />
               <InsightsWeekdayAverages
                 weekdayAverages={weekdayAverages}
@@ -475,6 +475,7 @@ export const Insights = ({
                   isMobile={isMobile}
                   plottedData={scatterPlottedData}
                   moodColors={moodColors}
+                  tagColors={tagColors}
                   scatterRange={effectiveScatterRange}
                   onScatterRangeChange={setScatterRange}
                   show90Range={isPro ? showScatter90 : true}

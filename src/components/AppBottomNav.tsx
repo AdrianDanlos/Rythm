@@ -36,7 +36,7 @@ export function AppBottomNav({
 }: AppBottomNavProps) {
   const { t } = useTranslation()
   const lastTouchNavAtMsRef = useRef(0)
-  const showActiveStyles = activePage !== AppPage.Settings
+  const showActiveStyles = activePage !== AppPage.Settings && activePage !== AppPage.Pro
 
   const handleTabInteraction = (navigate: () => void) => ({
     onTouchEnd: () => {

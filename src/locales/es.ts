@@ -2,6 +2,7 @@ const es = {
   common: {
     appTagline: 'Seguimiento de sueño y ánimo',
     close: 'Cerrar',
+    back: 'Atrás',
     save: 'Guardar',
     cancel: 'Cancelar',
     edit: 'Editar',
@@ -148,7 +149,7 @@ const es = {
     reflectionTitle: '¿Cómo fue tu día?',
     reflectionSubtitle: 'Registra tu ánimo y tus pensamientos',
     sectionMood: 'TU ÁNIMO',
-    sectionTags: 'ETIQUETAS',
+    sectionTags: 'EVENTOS DE DÍA',
     sectionThoughts: 'PENSAMIENTOS DE HOY',
     tagInputPlaceholder: 'Escribe una etiqueta y pulsa Enter...',
     journalThoughtsPlaceholder:

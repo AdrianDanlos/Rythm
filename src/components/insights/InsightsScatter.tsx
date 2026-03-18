@@ -14,6 +14,18 @@ import { formatLongDate } from '../../lib/utils/dateFormatters'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 
+const readableTextOnHex = (bg: string | undefined): string | undefined => {
+  if (!bg || !bg.startsWith('#')) return undefined
+  const hex = bg.slice(1)
+  if (hex.length !== 6) return undefined
+  const r = parseInt(hex.slice(0, 2), 16)
+  const g = parseInt(hex.slice(2, 4), 16)
+  const b = parseInt(hex.slice(4, 6), 16)
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return undefined
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000
+  return brightness > 140 ? '#000000' : '#ffffff'
+}
+
 type PlottedEntry = Entry & {
   sleep_hours_clamped: number
   sleep_hours_jittered: number
@@ -35,6 +47,7 @@ type InsightsScatterProps = {
   isMobile: boolean
   plottedData: PlottedEntry[] | ScatterPoint[]
   moodColors: string[]
+  tagColors?: Record<string, string>
   scatterRange: 'all' | 'last30' | 'last90'
   onScatterRangeChange: (value: 'all' | 'last30' | 'last90') => void
   show90Range: boolean
@@ -57,6 +70,7 @@ export const InsightsScatter = ({
   isMobile,
   plottedData,
   moodColors,
+  tagColors = {},
   scatterRange,
   onScatterRangeChange,
   show90Range,
@@ -126,11 +140,25 @@ export const InsightsScatter = ({
           {tags.length
             ? (
                 <div className="tooltip-tags">
-                  {tags.map((tag, index) => (
-                    <span className="tag-pill" data-color-index={index % 8} key={tag}>
-                      {tag}
-                    </span>
-                  ))}
+                  {tags.map((tag, index) => {
+                    const colorKey = tag.trim().toLowerCase()
+                    const tagColor = tagColors[colorKey]
+                    const textColor = readableTextOnHex(tagColor)
+                    return (
+                      <span
+                        className="tag-pill"
+                        data-color-index={index % 8}
+                        key={`${tag}-${index}`}
+                        style={
+                          tagColor
+                            ? { backgroundColor: tagColor, ...(textColor ? { color: textColor } : {}) }
+                            : undefined
+                        }
+                      >
+                        {tag}
+                      </span>
+                    )
+                  })}
                 </div>
               )
             : <p>{t('insights.none')}</p>}

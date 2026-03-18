@@ -116,7 +116,7 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 
 1. **Frontend: user clicks Upgrade**
 
-   - `PaywallModal` triggers the upgrade handler in `App`.
+   - `PaywallPage` (`/pro`) triggers the upgrade handler in `App`.
    - `App` calls the Supabase Edge Function `stripe-checkout-session`.
 
 2. **Edge Function: create checkout session**

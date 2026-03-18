@@ -2,6 +2,7 @@ const fr = {
   common: {
     appTagline: 'Suivi du sommeil et de l\'humeur',
     close: 'Fermer',
+    back: 'Retour',
     save: 'Enregistrer',
     cancel: 'Annuler',
     edit: 'Modifier',
@@ -148,7 +149,7 @@ const fr = {
     reflectionTitle: 'Comment s\'est passée votre journée ?',
     reflectionSubtitle: 'Suivez votre humeur et vos pensées',
     sectionMood: 'VOTRE HUMEUR',
-    sectionTags: 'ÉTIQUETTES',
+    sectionTags: 'ÉVÉNEMENTS DU JOUR',
     sectionThoughts: 'PENSÉES DU JOUR',
     tagInputPlaceholder: 'Tapez une étiquette et appuyez sur Entrée...',
     journalThoughtsPlaceholder:

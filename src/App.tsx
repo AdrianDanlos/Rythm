@@ -10,7 +10,7 @@ import { formatLocalDate } from './lib/utils/dateFormatters'
 import { AppHeader } from './components/AppHeader'
 import { AppMainContent } from './components/AppMainContent'
 import { AppBottomNav } from './components/AppBottomNav'
-import { PaywallModal } from './billing/shared/PaywallModal'
+import { PaywallPage } from './billing/shared/PaywallPage'
 import { FeedbackModal } from './components/FeedbackModal'
 import { StreakModal } from './components/StreakModal'
 import { AppSidePanel } from './components/AppSidePanel'
@@ -125,16 +125,26 @@ function App() {
   const shell = useAppShell({ activeTab, onNavigateToPage: navigateToPage })
   const {
     isStreakOpen,
-    isPaywallOpen,
     isFeedbackOpen,
     saveLogWhenLeaving,
     closeStreak,
-    closePaywall,
     openFeedback,
     closeFeedback,
-    openPaywall,
     goToInsightsSummary,
   } = shell
+
+  const openPaywall = useCallback(() => {
+    navigate(getPathForPage(AppPage.Pro), { state: { paywallFrom: pathname } })
+  }, [navigate, pathname])
+
+  const closePaywall = useCallback(() => {
+    const from = (location.state as { paywallFrom?: string } | null)?.paywallFrom
+    if (typeof from === 'string' && from.startsWith('/')) {
+      navigate(from, { replace: true })
+      return
+    }
+    navigate(getPathForPage(AppPage.Summary), { replace: true })
+  }, [navigate, location.state])
   const pageHistoryRef = useRef<AppPage[]>([activePage])
   const suppressNextHistoryEntryRef = useRef(false)
   const [canGoBackInApp, setCanGoBackInApp] = useState(false)
@@ -374,7 +384,7 @@ function App() {
         closeFeedback()
         return
       }
-      if (isPaywallOpen) {
+      if (activePage === AppPage.Pro) {
         closePaywall()
         return
       }
@@ -399,8 +409,8 @@ function App() {
   }, [
     isNativeApp,
     isFeedbackOpen,
-    isPaywallOpen,
     isStreakOpen,
+    activePage,
     closeFeedback,
     closePaywall,
     closeStreak,
@@ -476,7 +486,7 @@ function App() {
     }
 
     const routedPage = getPageFromPathname(pathname)
-    if (!routedPage || routedPage === AppPage.Log) {
+    if (!routedPage || routedPage === AppPage.Log || routedPage === AppPage.Pro) {
       return
     }
 
@@ -484,6 +494,28 @@ function App() {
       navigate(getPathForPage(AppPage.Log), { replace: true })
     }
   }, [userId, showPrivacyPage, showDeleteAccountPage, showStripeReturnPage, pathname, navigate])
+
+  useEffect(() => {
+    if (showPrivacyPage || showDeleteAccountPage || showStripeReturnPage) return
+    if (pathname !== getPathForPage(AppPage.Pro)) return
+    if (!authInitialized) return
+    if (isPro) {
+      navigate(getPathForPage(AppPage.Summary), { replace: true })
+      return
+    }
+    if (!session) {
+      navigate(getPathForPage(AppPage.Log), { replace: true })
+    }
+  }, [
+    showPrivacyPage,
+    showDeleteAccountPage,
+    showStripeReturnPage,
+    pathname,
+    authInitialized,
+    isPro,
+    session,
+    navigate,
+  ])
 
   useEffect(() => {
     if (!getPageFromPathname(pathname)) {
@@ -729,7 +761,7 @@ function App() {
 
   return (
     <div
-      className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}${!session && isNativeApp && Capacitor.getPlatform() === 'android' ? ' app-native-login' : ''}`}
+      className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}${!session && isNativeApp && Capacitor.getPlatform() === 'android' ? ' app-native-login' : ''}${session && activePage === AppPage.Pro ? ' app-pro-page' : ''}`}
       onClick={handleAppClick}
       onTouchStart={handleSwipeStart}
       onTouchMove={handleSwipeMove}
@@ -758,15 +790,6 @@ function App() {
         onSignOut={handleSignOut}
       />
 
-      <PaywallModal
-        isOpen={isPaywallOpen}
-        onClose={closePaywall}
-        upgradeUrl={trimmedUpgradeUrl}
-        onUpgrade={handleStartCheckout}
-        priceLabel={priceLabel}
-        onRestore={handleRestorePurchases}
-        showRestore={false}
-      />
       <StreakModal isOpen={isStreakOpen} onClose={closeStreak} />
       <FeedbackModal
         isOpen={isFeedbackOpen}
@@ -774,91 +797,104 @@ function App() {
         userEmail={session?.user?.email ?? null}
       />
 
-      <AppMainContent
-        activePage={activePage}
-        authInitialized={authInitialized}
-        session={session}
-        isNativeApp={isNativeApp}
-        authMode={authMode}
-        setAuthMode={setAuthMode}
-        authEmail={authEmail}
-        authPassword={authPassword}
-        authLoading={authLoading}
-        onAuth={handleAuth}
-        onGoogleSignIn={handleGoogleSignIn}
-        onEmailChange={setAuthEmail}
-        onPasswordChange={setAuthPassword}
-        activeTab={activeTab}
-        onNavigateToPage={navigateToPage}
-        activeInsightsTab={activeInsightsTab}
-        saveLogWhenLeaving={saveLogWhenLeaving}
-        entriesSettled={entriesSettled}
-        entries={entries}
-        selectedDate={selectedDate}
-        todayDate={todayDate}
-        highlightedDates={highlightedDates}
-        incompleteHighlightedDates={incompleteHighlightedDates}
-        sleepHours={sleepHours}
-        mood={mood}
-        note={note}
-        tags={tags}
-        tagSuggestions={tagSuggestions}
-        maxTagsPerEntry={maxTagsPerEntry}
-        saving={saving}
-        saved={saved}
-        entriesError={entriesError}
-        moodColors={moodColors}
-        isMobile={isMobile}
-        formatLocalDate={formatLocalDate}
-        onEntryDateChange={handleEntryDateChange}
-        onSleepHoursChange={setSleepHours}
-        onMoodChange={setMood}
-        onNoteChange={setNote}
-        onTagsChange={setTags}
-        onSave={handleSave}
-        entriesLoading={entriesLoading}
-        chartData={chartData}
-        averages={averages}
-        windowAverages={stats.windowAverages}
-        statCounts={stats.statCounts}
-        rhythmScore={stats.rhythmScore}
-        streak={stats.streak}
-        sleepConsistencyLabel={stats.sleepConsistencyLabel}
-        sleepConsistencyBadges={stats.sleepConsistencyBadges}
-        correlationLabel={stats.correlationLabel}
-        correlationDirection={stats.correlationDirection}
-        moodBySleepThreshold={stats.moodBySleepThreshold}
-        moodBySleepBucketCounts={stats.moodBySleepBucketCounts}
-        sleepThreshold={sleepThreshold}
-        trendSeries={stats.trendSeries}
-        rollingSeries={stats.rollingSeries}
-        rollingSummaries={stats.rollingSummaries}
-        weekdayAverages={stats.weekdayAverages}
-        personalSleepThreshold={stats.personalSleepThreshold}
-        moodByPersonalThreshold={stats.moodByPersonalThreshold}
-        tagDrivers={stats.tagDrivers}
-        tagSleepDrivers={stats.tagSleepDrivers}
-        tagColors={tagColors}
-        isPro={isPro}
-        onOpenPaywall={openPaywall}
-        onOpenFeedback={openFeedback}
-        settingsName={profileName}
-        settingsEmail={session?.user?.email ?? ''}
-        settingsDateFormat={dateFormat}
-        settingsLanguage={language}
-        settingsTheme={theme}
-        settingsPersonalSleepTarget={sleepTarget}
-        onSettingsNameChange={handleProfileNameChange}
-        onSettingsDateFormatChange={handleDateFormatChange}
-        onSettingsLanguageChange={handleLanguageChange}
-        onSettingsThemeChange={handleThemeChange}
-        onSettingsPersonalSleepTargetChange={handleSleepTargetChange}
-        onRenameTag={handleRenameTag}
-        onTagColorChange={handleTagColorChange}
-        onEnsureTagColor={ensureTagColorForTag}
-      />
+      {authInitialized && session && activePage === AppPage.Pro
+        ? (
+            <PaywallPage
+              onClose={closePaywall}
+              upgradeUrl={trimmedUpgradeUrl}
+              onUpgrade={handleStartCheckout}
+              priceLabel={priceLabel}
+              onRestore={handleRestorePurchases}
+              showRestore={false}
+            />
+          )
+        : (
+            <AppMainContent
+              activePage={activePage}
+              authInitialized={authInitialized}
+              session={session}
+              isNativeApp={isNativeApp}
+              authMode={authMode}
+              setAuthMode={setAuthMode}
+              authEmail={authEmail}
+              authPassword={authPassword}
+              authLoading={authLoading}
+              onAuth={handleAuth}
+              onGoogleSignIn={handleGoogleSignIn}
+              onEmailChange={setAuthEmail}
+              onPasswordChange={setAuthPassword}
+              activeTab={activeTab}
+              onNavigateToPage={navigateToPage}
+              activeInsightsTab={activeInsightsTab}
+              saveLogWhenLeaving={saveLogWhenLeaving}
+              entriesSettled={entriesSettled}
+              entries={entries}
+              selectedDate={selectedDate}
+              todayDate={todayDate}
+              highlightedDates={highlightedDates}
+              incompleteHighlightedDates={incompleteHighlightedDates}
+              sleepHours={sleepHours}
+              mood={mood}
+              note={note}
+              tags={tags}
+              tagSuggestions={tagSuggestions}
+              maxTagsPerEntry={maxTagsPerEntry}
+              saving={saving}
+              saved={saved}
+              entriesError={entriesError}
+              moodColors={moodColors}
+              isMobile={isMobile}
+              formatLocalDate={formatLocalDate}
+              onEntryDateChange={handleEntryDateChange}
+              onSleepHoursChange={setSleepHours}
+              onMoodChange={setMood}
+              onNoteChange={setNote}
+              onTagsChange={setTags}
+              onSave={handleSave}
+              entriesLoading={entriesLoading}
+              chartData={chartData}
+              averages={averages}
+              windowAverages={stats.windowAverages}
+              statCounts={stats.statCounts}
+              rhythmScore={stats.rhythmScore}
+              streak={stats.streak}
+              sleepConsistencyLabel={stats.sleepConsistencyLabel}
+              sleepConsistencyBadges={stats.sleepConsistencyBadges}
+              correlationLabel={stats.correlationLabel}
+              correlationDirection={stats.correlationDirection}
+              moodBySleepThreshold={stats.moodBySleepThreshold}
+              moodBySleepBucketCounts={stats.moodBySleepBucketCounts}
+              sleepThreshold={sleepThreshold}
+              trendSeries={stats.trendSeries}
+              rollingSeries={stats.rollingSeries}
+              rollingSummaries={stats.rollingSummaries}
+              weekdayAverages={stats.weekdayAverages}
+              personalSleepThreshold={stats.personalSleepThreshold}
+              moodByPersonalThreshold={stats.moodByPersonalThreshold}
+              tagDrivers={stats.tagDrivers}
+              tagSleepDrivers={stats.tagSleepDrivers}
+              tagColors={tagColors}
+              isPro={isPro}
+              onOpenPaywall={openPaywall}
+              onOpenFeedback={openFeedback}
+              settingsName={profileName}
+              settingsEmail={session?.user?.email ?? ''}
+              settingsDateFormat={dateFormat}
+              settingsLanguage={language}
+              settingsTheme={theme}
+              settingsPersonalSleepTarget={sleepTarget}
+              onSettingsNameChange={handleProfileNameChange}
+              onSettingsDateFormatChange={handleDateFormatChange}
+              onSettingsLanguageChange={handleLanguageChange}
+              onSettingsThemeChange={handleThemeChange}
+              onSettingsPersonalSleepTargetChange={handleSleepTargetChange}
+              onRenameTag={handleRenameTag}
+              onTagColorChange={handleTagColorChange}
+              onEnsureTagColor={ensureTagColorForTag}
+            />
+          )}
 
-      {authInitialized && session
+      {authInitialized && session && activePage !== AppPage.Pro
         ? (
             <AppBottomNav
               session={session}

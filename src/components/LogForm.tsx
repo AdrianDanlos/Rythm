@@ -387,7 +387,14 @@ export const LogForm = ({
           </div>
         </div>
       </div>
-      <div className="log-reflection-card log-reflection-block">
+      <div
+        className={`log-reflection-card log-reflection-block${mood != null ? ' log-reflection-card--mood-selected' : ''}`}
+        style={
+          mood != null
+            ? ({ '--reflection-mood-tint': moodColors[mood - 1] ?? moodColors[2] } as CSSProperties)
+            : undefined
+        }
+      >
         <header className="log-reflection-header">
           <div className="log-reflection-icon" aria-hidden="true">
             <Sun size={28} strokeWidth={2} />

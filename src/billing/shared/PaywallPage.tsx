@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ChevronLeft } from 'lucide-react'
 
-type PaywallModalProps = {
-  isOpen: boolean
+type PaywallPageProps = {
   onClose: () => void
   upgradeUrl?: string
   onUpgrade?: () => Promise<boolean> | boolean
@@ -20,21 +20,18 @@ const premiumFeatures = [
   'exportReports',
 ]
 
-export const PaywallModal = ({
-  isOpen,
+export const PaywallPage = ({
   onClose,
   upgradeUrl,
   onUpgrade,
   priceLabel,
   onRestore,
   showRestore,
-}: PaywallModalProps) => {
+}: PaywallPageProps) => {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [isRestoring, setIsRestoring] = useState(false)
   const canUpgrade = Boolean(onUpgrade || (upgradeUrl && upgradeUrl.trim()))
-
-  if (!isOpen) return null
 
   const handleUpgrade = async () => {
     if (!canUpgrade || isLoading) return
@@ -70,40 +67,33 @@ export const PaywallModal = ({
   }
 
   return (
-    <div className="modal-backdrop" role="presentation" onClick={onClose}>
-      <div
-        className="modal-card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="paywall-title"
-        onClick={event => event.stopPropagation()}
-      >
-        <div className="modal-header">
-          <div>
-            <p className="eyebrow">{t('paywall.premium')}</p>
-            <h2 id="paywall-title">{t('paywall.unlockPro')}</h2>
-          </div>
-          <button
-            type="button"
-            className="ghost icon-button"
-            onClick={onClose}
-            aria-label={t('common.close')}
-          >
-            ×
-          </button>
+    <div className="paywall-page">
+      <header className="paywall-page__header">
+        <button
+          type="button"
+          className="ghost icon-button paywall-page__back"
+          onClick={onClose}
+          aria-label={t('common.back')}
+        >
+          <ChevronLeft className="icon" aria-hidden="true" />
+        </button>
+        <div className="paywall-page__header-text">
+          <p className="eyebrow">{t('paywall.premium')}</p>
+          <h1 className="paywall-page__title" id="paywall-title">
+            {t('paywall.unlockPro')}
+          </h1>
         </div>
-        {priceLabel
-          ? <p className="paywall-price">{priceLabel}</p>
-          : null}
-        <p className="muted">
-          {t('paywall.upgradeToAccess')}
-        </p>
+      </header>
+
+      <div className="paywall-page__body">
+        {priceLabel ? <p className="paywall-price">{priceLabel}</p> : null}
+        <p className="muted">{t('paywall.upgradeToAccess')}</p>
         <ul className="paywall-list">
           {premiumFeatures.map(key => (
             <li key={key}>{t(`paywall.features.${key}`)}</li>
           ))}
         </ul>
-        <div className="modal-actions">
+        <div className="paywall-page__actions">
           {showRestore && onRestore
             ? (
                 <button
@@ -118,7 +108,7 @@ export const PaywallModal = ({
             : null}
           <button
             type="button"
-            className="primary-button cta-button"
+            className="primary-button cta-button paywall-page__cta"
             disabled={!canUpgrade || isLoading}
             onClick={handleUpgrade}
           >
