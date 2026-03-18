@@ -333,7 +333,7 @@ const pt = {
     changeTagColorTitle: 'Escolha uma cor para este evento',
     changeTagColorDescription: 'Escolha uma cor para fazer este evento diário se destacar nos seus calendários e gráficos.',
     tagColorRandomTooltip:
-      'Até guardar uma cor, cada evento usa uma cor aleatória da paleta. Toque no quadrado de cor para escolher a sua.',
+      'Quando nenhuma cor é fornecida, uma é atribuída aleatoriamente de forma automática',
     eventsInfluence: 'Veja como o que acontece no seu dia influencia seu humor e sono ao longo do tempo.',
     eventsPredictMood: 'Eventos diários que preveem humor',
     eventsPredictSleep: 'Eventos diários que preveem sono',

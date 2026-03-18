@@ -145,7 +145,7 @@ const de = {
   insights: {
     ...en.insights,
     tagColorRandomTooltip:
-      'Bis du eine Farbe speicherst, bekommt jedes Ereignis eine zufällige Farbe aus der Palette. Tippe auf das Farbfeld, um deine zu wählen.',
+      'Wenn keine Farbe angegeben wird, wird automatisch eine zufällige zugewiesen',
   },
   errors: {
     ...en.errors,
