@@ -1945,11 +1945,33 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  width: 100%;
+  margin: 0;
   padding: 14px 16px;
   border-radius: 16px;
   border: 1px solid var(--border);
   background: var(--card);
   box-shadow: var(--card-shadow);
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.log-date-picker-collapsed:hover {
+  border-color: var(--input-focus-border);
+}
+
+.log-date-picker-collapsed:focus {
+  outline: none;
+}
+
+.log-date-picker-collapsed:focus-visible {
+  outline: 2px solid var(--input-focus-border);
+  outline-offset: 2px;
 }
 
 .log-date-picker-date {
@@ -1985,21 +2007,15 @@
   width: 44px;
   height: 44px;
   margin: -6px -8px -6px 0;
-  border: none;
   border-radius: 12px;
   background: transparent;
   color: var(--text);
-  cursor: pointer;
+  pointer-events: none;
   transition: background 0.15s ease;
 }
 
-.log-date-picker-toggle:hover {
+.log-date-picker-collapsed:hover .log-date-picker-toggle {
   background: var(--button-hover-surface);
-}
-
-.log-date-picker-toggle:focus-visible {
-  outline: 2px solid var(--input-focus-border);
-  outline-offset: 2px;
 }
 
 .log-date-picker-chevron {
@@ -4388,6 +4404,9 @@ button.toggle-group__btn--disabled:disabled {
   padding: 6px 10px;
   font-size: 0.78rem;
   font-weight: 600;
+  /* Reset inherited label styles (e.g. .log-reflection-section-label uppercase) */
+  text-transform: none;
+  letter-spacing: normal;
   color: var(--text);
   white-space: normal;
   width: max-content;

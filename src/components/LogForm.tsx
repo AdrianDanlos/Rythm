@@ -213,11 +213,14 @@ export const LogForm = ({
   return (
     <form onSubmit={onSave} className="log-form-stack">
       <div id="log-calendar" ref={calendarWrapRef} className="log-date-picker-wrap">
-        <div className="log-date-picker-collapsed">
-          <span
-            className="log-date-picker-date"
-            aria-label={formatLongDate(selectedDate)}
-          >
+        <button
+          type="button"
+          className="log-date-picker-collapsed"
+          aria-expanded={calendarOpen}
+          aria-controls="log-daypicker-panel"
+          onClick={() => setCalendarOpen(o => !o)}
+        >
+          <span className="log-date-picker-date">
             {isEntryToday
               ? (
                   <>
@@ -229,23 +232,14 @@ export const LogForm = ({
                   <span className="log-date-picker-date-primary">{formatLongDate(selectedDate)}</span>
                 )}
           </span>
-          <button
-            type="button"
-            className="log-date-picker-toggle"
-            aria-expanded={calendarOpen}
-            aria-controls="log-daypicker-panel"
-            aria-label={
-              calendarOpen ? t('log.closeDatePicker') : t('log.openDatePicker')
-            }
-            onClick={() => setCalendarOpen(o => !o)}
-          >
+          <span className="log-date-picker-toggle" aria-hidden>
             <ChevronDown
               className={`log-date-picker-chevron${calendarOpen ? ' is-open' : ''}`}
               size={22}
               aria-hidden
             />
-          </button>
-        </div>
+          </span>
+        </button>
         <AnimatePresence initial={false}>
           {calendarOpen
             ? (
