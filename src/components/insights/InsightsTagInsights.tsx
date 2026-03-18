@@ -159,7 +159,15 @@ export const InsightsTagInsights = ({
                   />
                 </div>
               </div>
-              <p className="helper">{t('insights.entriesSuffix', { count: d.count })}</p>
+              <p className="helper">
+                {d.sleepWith != null && (
+                  <>
+                    {formatSleepHours(d.sleepWith)}
+                    {' — '}
+                  </>
+                )}
+                {t('insights.daysSuffix', { count: d.count })}
+              </p>
             </div>
           ))}
         </div>
@@ -216,7 +224,15 @@ export const InsightsTagInsights = ({
                                           />
                                         </div>
                                       </div>
-                                      <p className="helper">{t('insights.entriesSuffix', { count: tag.count })}</p>
+                                      <p className="helper">
+                                        {tag.moodWith != null && (
+                                          <>
+                                            {tag.moodWith.toFixed(1)}/5
+                                            {' — '}
+                                          </>
+                                        )}
+                                        {t('insights.entriesSuffix', { count: tag.count })}
+                                      </p>
                                       </div>
                                     )
                                   })}
@@ -247,7 +263,15 @@ export const InsightsTagInsights = ({
                                           />
                                         </div>
                                       </div>
-                                      <p className="helper">{t('insights.entriesSuffix', { count: tag.count })}</p>
+                                      <p className="helper">
+                                        {tag.moodWith != null && (
+                                          <>
+                                            {tag.moodWith.toFixed(1)}/5
+                                            {' — '}
+                                          </>
+                                        )}
+                                        {t('insights.entriesSuffix', { count: tag.count })}
+                                      </p>
                                       </div>
                                     )
                                   })}
