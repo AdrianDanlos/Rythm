@@ -11,6 +11,7 @@ import {
   YAxis,
 } from 'recharts'
 import type { TrendPoint } from '../../lib/types/stats'
+import { Info } from 'lucide-react'
 import { trimToDataExtentTrend } from '../../lib/chartUtils'
 import { buildMockTrendSeries } from '../../lib/insightsMock'
 import { buildBucketedTrendSeries, buildWeeklyTrendSeries } from '../../lib/stats'
@@ -147,7 +148,9 @@ export const InsightsDailyHistory = ({
             {t('insights.dailyHistory')}
             <Tooltip label={t('insights.dailyHistoryTooltip')}>
               <span className="tooltip-trigger">
-                <span className="tooltip-icon" aria-hidden="true">i</span>
+                <span className="tooltip-icon" aria-hidden="true">
+                  <Info size={14} />
+                </span>
               </span>
             </Tooltip>
           </h2>

@@ -9,6 +9,7 @@ import {
   YAxis,
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
+import { Info } from 'lucide-react'
 import type { WeekdayAveragePoint } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
@@ -85,7 +86,9 @@ export const InsightsWeekdayAverages = ({
             {t('insights.weekdayPattern')}
             <Tooltip label={t('insights.weekdaySleepTooltip')}>
               <span className="tooltip-trigger">
-                <span className="tooltip-icon" aria-hidden="true">i</span>
+                <span className="tooltip-icon" aria-hidden="true">
+                  <Info size={14} />
+                </span>
               </span>
             </Tooltip>
           </h2>

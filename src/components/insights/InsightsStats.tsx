@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { SleepMoodAverages, WindowStats } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
-import { Equal, Flame, TrendingDown, TrendingUp } from 'lucide-react'
+import { Equal, Flame, Info, TrendingDown, TrendingUp } from 'lucide-react'
 
 const RHYTHM_NEED = 5
 const SLEEP_CONSISTENCY_NEED = 2
@@ -259,7 +259,9 @@ export const InsightsStats = ({
                     {t('insights.rhythmScore')}
                     <Tooltip label={t('insights.rhythmTooltip')}>
                       <span className="tooltip-trigger">
-                        <span className="tooltip-icon" aria-hidden="true">i</span>
+                        <span className="tooltip-icon" aria-hidden="true">
+                          <Info size={14} />
+                        </span>
                       </span>
                     </Tooltip>
                   </p>
@@ -302,7 +304,9 @@ export const InsightsStats = ({
                         label={t('insights.moodBySleepTooltip', { threshold: formatSleepHours(sleepThreshold) })}
                       >
                         <span className="tooltip-trigger">
-                          <span className="tooltip-icon" aria-hidden="true">i</span>
+                          <span className="tooltip-icon" aria-hidden="true">
+                            <Info size={14} />
+                          </span>
                         </span>
                       </Tooltip>
                     )}

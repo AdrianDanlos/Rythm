@@ -17,7 +17,7 @@ import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
 import { rollingTrendColors } from '../../lib/colors'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
-import { Equal, TrendingDown, TrendingUp } from 'lucide-react'
+import { Equal, Info, TrendingDown, TrendingUp } from 'lucide-react'
 
 const ENTRY_THRESHOLD_30 = 7
 const ENTRY_THRESHOLD_90 = 30
@@ -203,7 +203,9 @@ export const InsightsSmoothedTrends = ({
             {t('insights.smoothedTrends')}
             <Tooltip label={t('insights.smoothedTrendsTooltip')}>
               <span className="tooltip-trigger">
-                <span className="tooltip-icon" aria-hidden="true">i</span>
+                <span className="tooltip-icon" aria-hidden="true">
+                  <Info size={14} />
+                </span>
               </span>
             </Tooltip>
           </h2>

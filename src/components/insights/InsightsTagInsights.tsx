@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { DEFAULT_TAG_DRIVER_MIN_COUNT } from '../../lib/utils/tagInsights'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
-import { TrendingDown, TrendingUp } from 'lucide-react'
+import { Info, TrendingDown, TrendingUp } from 'lucide-react'
 import { InsightsTagInsightsTeaser } from './InsightsTagInsightsTeaser'
 
 type InsightsTagInsightsProps = {
@@ -191,7 +191,9 @@ export const InsightsTagInsights = ({
                       <h3 className="tag-insights-block-title">{t('insights.eventsPredictMood')}</h3>
                       <Tooltip label={t('insights.compareMoodWithWithout')}>
                         <span className="tooltip-trigger">
-                          <span className="tooltip-icon" aria-hidden="true">i</span>
+                          <span className="tooltip-icon" aria-hidden="true">
+                            <Info size={14} />
+                          </span>
                         </span>
                       </Tooltip>
                     </div>
@@ -279,7 +281,9 @@ export const InsightsTagInsights = ({
                       <h3 className="tag-insights-block-title">{t('insights.eventsPredictSleep')}</h3>
                       <Tooltip label={t('insights.compareSleepWithWithout')}>
                         <span className="tooltip-trigger">
-                          <span className="tooltip-icon" aria-hidden="true">i</span>
+                          <span className="tooltip-icon" aria-hidden="true">
+                            <Info size={14} />
+                          </span>
                         </span>
                       </Tooltip>
                     </div>

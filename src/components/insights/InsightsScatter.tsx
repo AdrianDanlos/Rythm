@@ -9,6 +9,7 @@ import {
   YAxis,
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
+import { Info } from 'lucide-react'
 import type { Entry } from '../../lib/entries'
 import { formatLongDate } from '../../lib/utils/dateFormatters'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
@@ -269,7 +270,9 @@ export const InsightsScatter = ({
             {t('insights.sleepAndMood')}
             <Tooltip label={t('insights.scatterTooltip')}>
               <span className="tooltip-trigger">
-                <span className="tooltip-icon" aria-hidden="true">i</span>
+                <span className="tooltip-icon" aria-hidden="true">
+                  <Info size={14} />
+                </span>
               </span>
             </Tooltip>
           </h2>

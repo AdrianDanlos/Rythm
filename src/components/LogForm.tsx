@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type ComponentType, type CSSProperties, ty
 import { AnimatePresence, motion } from 'framer-motion'
 import { DayPicker } from 'react-day-picker'
 import { useTranslation } from 'react-i18next'
-import { Angry, ChevronDown, Frown, Laugh, Meh, Moon, Smile, Sun } from 'lucide-react'
+import { Angry, ChevronDown, Frown, Info, Laugh, Meh, Moon, Smile, Sun } from 'lucide-react'
 import 'react-day-picker/dist/style.css'
 import { formatLongDate } from '../lib/utils/dateFormatters'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
@@ -305,7 +305,9 @@ export const LogForm = ({
           <p className="sleep-duration-picker__title">{t('log.sleepQuestion')}</p>
           <Tooltip label={t('log.sleepTooltip')}>
             <span className="tooltip-trigger">
-              <span className="tooltip-icon" aria-hidden="true">i</span>
+              <span className="tooltip-icon" aria-hidden="true">
+                <Info size={14} />
+              </span>
             </span>
           </Tooltip>
         </div>
@@ -453,7 +455,9 @@ export const LogForm = ({
             {t('log.sectionTags')}
             <Tooltip label={t('log.eventsTooltip')}>
               <span className="tooltip-trigger log-reflection-label-tip">
-                <span className="tooltip-icon" aria-hidden="true">i</span>
+                <span className="tooltip-icon" aria-hidden="true">
+                  <Info size={14} />
+                </span>
               </span>
             </Tooltip>
           </div>

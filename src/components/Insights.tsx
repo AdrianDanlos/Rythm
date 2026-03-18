@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Pencil } from 'lucide-react'
+import { Info, Pencil } from 'lucide-react'
 import type { Entry } from '../lib/entries'
 import type { StatCounts } from '../lib/stats'
 import type {
@@ -528,7 +528,9 @@ export const Insights = ({
                         tabIndex={0}
                         aria-label={t('insights.tagColorRandomTooltip')}
                       >
-                        <span className="tooltip-icon" aria-hidden="true">i</span>
+                        <span className="tooltip-icon" aria-hidden="true">
+                          <Info size={14} />
+                        </span>
                       </span>
                     </Tooltip>
                   </div>

@@ -4364,15 +4364,16 @@ button.toggle-group__btn--disabled:disabled {
 .tooltip-icon {
   width: 16px;
   height: 16px;
-  border-radius: 999px;
-  border: 1px solid var(--tooltip-border);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
-  font-weight: 600;
   color: var(--muted);
-  background: var(--tooltip-bg);
+}
+
+.tooltip-icon svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
 }
 
 .app-tooltip-bubble {
