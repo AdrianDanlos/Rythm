@@ -1043,12 +1043,29 @@
   opacity: 0;
 }
 
+/* Sleep hours/minutes menus: keep row dividers when focused (auto-focus on open). */
+.sleep-select-menu .tag-suggestion:hover::after,
+.sleep-select-menu .tag-suggestion:focus::after,
+.sleep-select-menu .tag-suggestion:focus-visible::after {
+  opacity: 1;
+}
+
 .tag-suggestion--added {
   color: var(--muted);
   cursor: pointer;
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 6px;
+}
+
+.tag-suggestion--added .tag-suggestion-label {
+  min-width: 0;
+  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
 }
 
 .tag-suggestion--added:hover,

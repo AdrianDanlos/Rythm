@@ -373,10 +373,16 @@ export const LogForm = ({
                             onMouseDown={e => e.preventDefault()}
                             onClick={() => isAdded ? removeTag(suggestion.toLowerCase()) : addTag(suggestion)}
                           >
-                            {isAdded && (
-                              <span className="tag-suggestion-check" aria-hidden="true">✓</span>
-                            )}
-                            {suggestion}
+                            {isAdded
+                              ? (
+                                  <>
+                                    <span className="tag-suggestion-check" aria-hidden="true">✓</span>
+                                    <span className="tag-suggestion-label">{suggestion}</span>
+                                  </>
+                                )
+                              : (
+                                  suggestion
+                                )}
                           </button>
                         )
                       })
