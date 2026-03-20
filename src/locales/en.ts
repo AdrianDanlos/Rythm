@@ -337,7 +337,7 @@ const en = {
     changeTagColorTitle: 'Pick a color for this event',
     changeTagColorDescription: 'Choose a color to make this daily event stand out in your calendars and charts.',
     tagColorRandomTooltip:
-      'When no color is provided, a random one is automatically assigned',
+      'These colors appear when logging events, in the calendar, and in the sleep-mood chart. If no color is provided, one is assigned randomly and automatically.',
     eventsInfluence: 'See how what happens during the day influences your mood and sleep over time.',
     eventsPredictMood: 'Daily events that predict mood',
     eventsPredictSleep: 'Daily events that predict sleep',

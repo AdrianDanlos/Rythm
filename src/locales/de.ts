@@ -148,7 +148,7 @@ const de = {
   insights: {
     ...en.insights,
     tagColorRandomTooltip:
-      'Wenn keine Farbe angegeben wird, wird automatisch eine zufällige zugewiesen',
+      'Diese Farben werden beim Erfassen von Ereignissen, im Kalender und im Schlaf-Stimmungs-Diagramm angezeigt. Wird keine Farbe angegeben, wird automatisch eine zufällige Farbe zugewiesen.',
   },
   errors: {
     ...en.errors,

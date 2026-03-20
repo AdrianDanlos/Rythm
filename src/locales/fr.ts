@@ -337,7 +337,7 @@ const fr = {
     changeTagColorTitle: 'Choisissez une couleur pour cet événement',
     changeTagColorDescription: 'Choisissez une couleur pour que cet événement quotidien ressorte dans vos calendriers et graphiques.',
     tagColorRandomTooltip:
-      'Lorsqu\'aucune couleur n\'est fournie, une couleur aléatoire est automatiquement attribuée',
+      'Ces couleurs apparaissent lors de l\'enregistrement d\'événements, dans le calendrier et dans le graphique sommeil-humeur. Si aucune couleur n\'est choisie, une couleur aléatoire est attribuée automatiquement.',
     eventsInfluence: 'Voyez comment ce qui se passe dans la journée influence votre humeur et votre sommeil au fil du temps.',
     eventsPredictMood: 'Événements quotidiens qui prédisent l\'humeur',
     eventsPredictSleep: 'Événements quotidiens qui prédisent le sommeil',
