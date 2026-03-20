@@ -1697,7 +1697,7 @@
   display: grid;
   place-items: center;
   color: #ffffff;
-  background: linear-gradient(135deg, #4b6dff 0%, #7f47ff 100%);
+  background: linear-gradient(135deg, #4b6dff 0%, #394c82 100%);
   box-shadow:
     0 10px 26px rgba(79, 91, 255, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.2) inset;
@@ -1816,7 +1816,7 @@
 .sleep-duration-picker__quick-option.is-active {
   border-color: transparent;
   color: #ffffff;
-  background: linear-gradient(135deg, #4052ff 0%, #7f47ff 100%);
+  background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
   box-shadow: 0 8px 16px rgba(76, 82, 255, 0.35);
 }
 
@@ -1832,7 +1832,7 @@
 /* Dark base (above) beats .is-active specificity — restore purple for selected hour */
 :root[data-theme="dark"] .sleep-duration-picker__quick-option.is-active {
   color: #ffffff;
-  background: linear-gradient(135deg, #4052ff 0%, #7f47ff 100%);
+  background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
   box-shadow: 0 8px 16px rgba(76, 82, 255, 0.35);
 }
 
@@ -1902,14 +1902,14 @@
 .sleep-duration-picker__quick-option:focus-visible {
   outline: none;
   color: #ffffff;
-  background: linear-gradient(135deg, #4052ff 0%, #7f47ff 100%);
+  background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
   box-shadow: 0 8px 16px rgba(76, 82, 255, 0.35);
 }
 
 :root[data-theme="dark"] .sleep-duration-picker__quick-option:focus,
 :root[data-theme="dark"] .sleep-duration-picker__quick-option:focus-visible {
   color: #ffffff;
-  background: linear-gradient(135deg, #4052ff 0%, #7f47ff 100%);
+  background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
   box-shadow: 0 8px 16px rgba(76, 82, 255, 0.35);
 }
 
@@ -3390,7 +3390,7 @@
 
 :root[data-theme="dark"] .toggle-group .ghost.active {
   border-color: transparent;
-  background-color: #1E3A8A;
+  background-color: #394c82;
 }
 
 :root[data-theme="dark"] .toggle-group__btn--disabled,
