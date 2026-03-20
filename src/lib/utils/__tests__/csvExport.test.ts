@@ -44,8 +44,25 @@ describe('exportEntriesCsv', () => {
       filename: 'rythm-entries.csv',
       mimeType: 'text/csv;charset=utf-8;',
       data: [
-        'date,sleep_hours,mood,note',
-        '01/31/2026,8h,5,"Note, with ""quotes"""',
+        'date,sleep_hours,mood,events,note',
+        '01/31/2026,8h,5,,"Note, with ""quotes"""',
+      ].join('\n'),
+      encoding: Encoding.UTF8,
+    })
+  })
+
+  it('includes daily events as a comma-separated list', async () => {
+    exportFileMock.mockClear()
+    const entries = [makeEntry({ tags: ['stress', 'exercise'] })]
+
+    await exportEntriesCsv(entries)
+
+    expect(exportFileMock).toHaveBeenCalledWith({
+      filename: 'rythm-entries.csv',
+      mimeType: 'text/csv;charset=utf-8;',
+      data: [
+        'date,sleep_hours,mood,events,note',
+        '01/31/2026,8h,5,"stress, exercise",',
       ].join('\n'),
       encoding: Encoding.UTF8,
     })
@@ -68,8 +85,8 @@ describe('exportEntriesCsv', () => {
       filename: 'rythm-entries.csv',
       mimeType: 'text/csv;charset=utf-8;',
       data: [
-        'date,sleep_hours,mood,note',
-        '01/31/2026,,,',
+        'date,sleep_hours,mood,events,note',
+        '01/31/2026,,,,',
       ].join('\n'),
       encoding: Encoding.UTF8,
     })

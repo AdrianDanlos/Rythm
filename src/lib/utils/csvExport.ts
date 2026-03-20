@@ -9,11 +9,12 @@ export const exportEntriesCsv = async (entries: Entry[]) => {
   if (!entries.length) return
 
   const rows = [
-    ['date', 'sleep_hours', 'mood', 'note'],
+    ['date', 'sleep_hours', 'mood', 'events', 'note'],
     ...entries.map(entry => [
       formatLongDate(new Date(`${entry.entry_date}T00:00:00`)),
       entry.sleep_hours === null ? '' : formatSleepHours(entry.sleep_hours),
       entry.mood ?? '',
+      (entry.tags ?? []).filter(Boolean).join(', '),
       entry.note ?? '',
     ]),
   ]
