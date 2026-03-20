@@ -53,12 +53,7 @@ type InsightsScatterProps = {
   onScatterRangeChange: (value: 'all' | 'last30' | 'last90') => void
   show90Range: boolean
   showAllRange: boolean
-  bestSleepBand: {
-    x1: number
-    x2: number
-    samples: number
-    avgMood: number
-  } | null
+  idealSleepRangeBand: { x1: number, x2: number } | null
   goToLog: () => void
   isPro?: boolean
   onOpenPaywall?: () => void
@@ -76,7 +71,7 @@ export const InsightsScatter = ({
   onScatterRangeChange,
   show90Range,
   showAllRange,
-  bestSleepBand,
+  idealSleepRangeBand,
   goToLog,
   isPro = true,
   onOpenPaywall,
@@ -234,11 +229,11 @@ export const InsightsScatter = ({
                         width={35}
                         tickMargin={2}
                       />
-                      {bestSleepBand
+                      {idealSleepRangeBand
                         ? (
                             <ReferenceArea
-                              x1={bestSleepBand.x1}
-                              x2={bestSleepBand.x2}
+                              x1={idealSleepRangeBand.x1}
+                              x2={idealSleepRangeBand.x2}
                               y1={1}
                               y2={5}
                               fill="var(--chart-sleep)"
@@ -278,8 +273,8 @@ export const InsightsScatter = ({
           </h2>
           <p className="muted">
             {t('insights.scatterSubtitle')}
-            {bestSleepBand
-              ? ` ${t('insights.bestSleepRange', { from: formatSleepHours(bestSleepBand.x1), to: formatSleepHours(bestSleepBand.x2) })}`
+            {idealSleepRangeBand
+              ? ` ${t('insights.bestSleepRange', { from: formatSleepHours(idealSleepRangeBand.x1), to: formatSleepHours(idealSleepRangeBand.x2) })}`
               : ''}
           </p>
         </div>

@@ -49,13 +49,6 @@ const SCATTER_RANGE_DAYS: Record<Exclude<ScatterRange, 'all'>, number> = {
   last30: 30,
   last90: 90,
 }
-type BestSleepBand = {
-  x1: number
-  x2: number
-  samples: number
-  avgMood: number
-}
-
 type InsightsProps = {
   entries: Entry[]
   entriesLoading: boolean
@@ -232,38 +225,17 @@ export const Insights = ({
     })
   }, [scatterEntries])
 
-  const bestSleepBand = useMemo<BestSleepBand | null>(() => {
-    const buckets = new Map<number, { moodSum: number, count: number }>()
-    scatterEntries.forEach((entry) => {
-      const sleepRaw = Number(entry.sleep_hours)
-      const mood = Number(entry.mood)
-      if (!Number.isFinite(sleepRaw) || !Number.isFinite(mood)) return
-      const sleep = Math.min(10, Math.max(4, sleepRaw))
-      const bucketStart = sleep >= 10 ? 9 : Math.floor(sleep)
-      const bucket = buckets.get(bucketStart) ?? { moodSum: 0, count: 0 }
-      bucket.moodSum += mood
-      bucket.count += 1
-      buckets.set(bucketStart, bucket)
-    })
-    let best: BestSleepBand | null = null
-    buckets.forEach((bucket, start) => {
-      if (bucket.count < 2) return
-      const avgMood = bucket.moodSum / bucket.count
-      if (
-        !best
-        || avgMood > best.avgMood
-        || (avgMood === best.avgMood && bucket.count > best.samples)
-      ) {
-        best = {
-          x1: start,
-          x2: start + 1,
-          samples: bucket.count,
-          avgMood,
-        }
-      }
-    })
-    return best
-  }, [scatterEntries])
+  /** Highlight band on scatter: ideal sleep target ±30 min, clamped to chart domain [4, 10]. */
+  const idealSleepRangeBand = useMemo(() => {
+    if (personalSleepThreshold == null || !Number.isFinite(personalSleepThreshold)) {
+      return null
+    }
+    const halfHour = 0.5
+    const x1 = Math.max(4, personalSleepThreshold - halfHour)
+    const x2 = Math.min(10, personalSleepThreshold + halfHour)
+    if (x1 >= x2) return null
+    return { x1, x2 }
+  }, [personalSleepThreshold])
 
   const scatterPlottedData = useMemo(() => {
     if (isPro) return plottedData
@@ -480,7 +452,7 @@ export const Insights = ({
                   onScatterRangeChange={setScatterRange}
                   show90Range={isPro ? showScatter90 : true}
                   showAllRange={isPro ? showScatterAll : true}
-                  bestSleepBand={bestSleepBand}
+                  idealSleepRangeBand={idealSleepRangeBand}
                   goToLog={goToLog}
                   isPro={isPro}
                   onOpenPaywall={onOpenPaywall}
