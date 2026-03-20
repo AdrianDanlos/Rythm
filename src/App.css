@@ -1365,7 +1365,9 @@
 
 .log-reflection-done.tag-add-button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px var(--log-surface), 0 0 0 4px color-mix(in srgb, var(--text) 28%, transparent);
+  box-shadow:
+    0 0 0 2px var(--log-surface),
+    0 0 0 4px color-mix(in srgb, var(--text) 28%, transparent);
 }
 
 .log-reflection-done.tag-add-button:active {
@@ -1381,7 +1383,11 @@
 
 @media (hover: hover) and (pointer: fine) {
   .log-reflection-done.tag-add-button:hover:active {
-    background: color-mix(in srgb, var(--log-surface) 88%, var(--text)) !important;
+    background: color-mix(
+      in srgb,
+      var(--log-surface) 88%,
+      var(--text)
+    ) !important;
     box-shadow: none !important;
   }
 }
@@ -2766,7 +2772,8 @@
 @media (hover: hover) and (pointer: fine) {
   .log-form-stack .save-button:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: var(--button-hover-shadow-strong), var(--cta-button-shadow-hover);
+    box-shadow:
+      var(--button-hover-shadow-strong), var(--cta-button-shadow-hover);
     filter: brightness(1.03);
   }
 }
@@ -3381,9 +3388,9 @@
   outline-offset: 2px;
 }
 
-:root[data-theme="dark"] .toggle-group .ghost,
 :root[data-theme="dark"] .toggle-group .ghost.active {
   border-color: transparent;
+  background-color: #1E3A8A;
 }
 
 :root[data-theme="dark"] .toggle-group__btn--disabled,
