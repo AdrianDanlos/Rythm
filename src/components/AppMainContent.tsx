@@ -331,7 +331,7 @@ export function AppMainContent({
                             hasNoEntries={entries.length === 0}
                             goToLog={() =>
                               document
-                                .getElementById('log-calendar')
+                                .querySelector('.sleep-duration-picker__quick-grid')
                                 ?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
                           />
                           <p className="log-form-tip" role="status">
