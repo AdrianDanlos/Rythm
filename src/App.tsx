@@ -69,6 +69,28 @@ function getDefaultPageForUser(userId?: string): AppPage {
   return isReturningUser(userId) ? AppPage.Summary : AppPage.Log
 }
 
+/** True while the URL still carries tokens from an OAuth redirect (must not navigate away before Supabase reads them). */
+function hasSupabaseAuthCallbackPayload(search: string, hash: string): boolean {
+  try {
+    const q = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search)
+    if (q.has('code') || q.has('error')) {
+      return true
+    }
+    const fragment = hash.startsWith('#') ? hash.slice(1) : hash
+    if (!fragment) {
+      return false
+    }
+    if (fragment.includes('access_token') || fragment.includes('error=')) {
+      return true
+    }
+    const hp = new URLSearchParams(fragment)
+    return hp.has('access_token') || hp.has('error')
+  }
+  catch {
+    return false
+  }
+}
+
 function App() {
   const { t } = useTranslation()
   const location = useLocation()
@@ -463,6 +485,10 @@ function App() {
   useEffect(() => {
     if (showPrivacyPage || showDeleteAccountPage || showStripeReturnPage) return
 
+    if (hasSupabaseAuthCallbackPayload(location.search, location.hash)) {
+      return
+    }
+
     if (pathname === '/') {
       navigate(getPathForPage(getDefaultPageForUser(userId)), { replace: true })
       return
@@ -476,6 +502,8 @@ function App() {
     showDeleteAccountPage,
     showStripeReturnPage,
     pathname,
+    location.search,
+    location.hash,
     navigate,
     userId,
   ])
@@ -499,6 +527,7 @@ function App() {
     if (showPrivacyPage || showDeleteAccountPage || showStripeReturnPage) return
     if (pathname !== getPathForPage(AppPage.Pro)) return
     if (!authInitialized) return
+    if (hasSupabaseAuthCallbackPayload(location.search, location.hash)) return
     if (isPro) {
       navigate(getPathForPage(AppPage.Summary), { replace: true })
       return
@@ -511,6 +540,8 @@ function App() {
     showDeleteAccountPage,
     showStripeReturnPage,
     pathname,
+    location.search,
+    location.hash,
     authInitialized,
     isPro,
     session,
