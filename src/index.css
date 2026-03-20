@@ -78,11 +78,7 @@
   --toggle-track-focus-shadow:
     0 0 0 2px rgba(15, 23, 42, 0.18), 0 6px 14px rgba(20, 184, 166, 0.28);
   --toggle-track-disabled-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.1);
-  --cta-button-bg: #394c82;
-  --cta-button-shadow:
-    0 12px 26px rgba(15, 23, 42, 0.22),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-  --cta-button-shadow-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  --cta-button-bg: #3C4EB7;
   --loading-spinner-border: rgba(15, 23, 42, 0.2);
   --ghost-cta-border: rgba(15, 23, 42, 0.28);
   --ghost-cta-bg: rgba(15, 23, 42, 0.045);
@@ -189,11 +185,9 @@
   --ghost-cta-text: #e2e8f0;
   --ghost-cta-shadow: 0 12px 20px rgba(2, 6, 23, 0.55);
   --ghost-cta-border-hover: transparent;
-  --cta-button-bg: #394c82;
-  --cta-button-shadow:
-    0 12px 26px rgba(15, 23, 42, 0.22),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-  --cta-button-shadow-hover: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  --cta-button-bg: #3C4EB7;
+  /* Match .sleep-duration-picker__quick-option.is-active (dark) */
+  --cta-button-surface: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
   --heatmap-empty-bg: #64748b;
   --heatmap-empty-border: rgba(148, 163, 184, 0.35);
   --pro-pill-bg: #38bdf8;

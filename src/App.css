@@ -778,7 +778,6 @@
 .primary-button.cta-button {
   background: var(--cta-button-bg);
   border-color: transparent;
-  box-shadow: var(--cta-button-shadow);
   letter-spacing: 0.01em;
   transition:
     transform 160ms ease,
@@ -789,7 +788,6 @@
 .primary-button.cta-button:hover:not(:disabled),
 .primary-button.cta-button:focus-visible:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: var(--button-hover-shadow-strong), var(--cta-button-shadow-hover);
   filter: brightness(1.03);
 }
 
@@ -2741,7 +2739,6 @@
 /* Log form save — same CTA blue as Registrar hoy / Enviar comentario */
 .log-form-stack .save-button {
   border: none;
-  box-shadow: var(--cta-button-shadow);
   background: var(--cta-button-bg);
   color: #fff;
   border-radius: 12px;
@@ -2755,7 +2752,7 @@
 }
 
 .log-form-stack .save-button:disabled:has(.spinner) {
-  background: var(--cta-button-bg);
+  background: var(--cta-button-surface, var(--cta-button-bg));
   color: #fff;
   opacity: 0.9;
   cursor: wait;
@@ -2767,15 +2764,6 @@
   box-shadow: none;
   opacity: 1;
   cursor: not-allowed;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .log-form-stack .save-button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow:
-      var(--button-hover-shadow-strong), var(--cta-button-shadow-hover);
-    filter: brightness(1.03);
-  }
 }
 
 .log-form-stack .save-button:not(:disabled):focus-visible {
