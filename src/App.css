@@ -1200,7 +1200,7 @@
   gap: 28px;
   --log-surface: #f0f2f6;
   --log-surface-border: rgba(15, 23, 42, 0.1);
-  --log-mood-bg: #eef0f4;
+  --log-mood-bg: transparent;
   --log-mood-border: rgba(15, 23, 42, 0.09);
 }
 
@@ -1208,7 +1208,7 @@
   --log-surface: rgba(10, 20, 40, 0.72);
   --log-surface-border: rgba(148, 163, 184, 0.22);
   --log-mood-bg: rgba(12, 22, 44, 0.88);
-  --log-mood-border: transparent;
+  --log-mood-border: var(--log-surface-border);
 }
 
 .log-reflection-section--mood .log-reflection-section-label {
@@ -1476,18 +1476,23 @@
 }
 
 .log-reflection-block .mood-button.active {
-  padding: 9px 3px 7px;
+  padding: 10px 4px 8px;
   background: color-mix(in srgb, var(--mood-color) 20%, var(--log-mood-bg));
-  border-color: var(--mood-color);
-  border-width: 2px;
+  border: 1px solid transparent;
   box-shadow:
     0 10px 22px
       color-mix(in srgb, var(--mood-color) 18%, rgba(15, 23, 42, 0.06)),
     inset 0 1px 0 color-mix(in srgb, #ffffff 35%, transparent);
 }
 
+/* Light: mood tiles sit on white card — mix selected tint with white, not transparent */
+:root:not([data-theme="dark"]) .log-reflection-block .mood-button.active {
+  background: color-mix(in srgb, var(--mood-color) 20%, #ffffff);
+}
+
 :root[data-theme="dark"] .log-reflection-block .mood-button.active {
   background: color-mix(in srgb, var(--mood-color) 16%, var(--log-mood-bg));
+  border: 1px solid var(--log-mood-border);
   box-shadow:
     0 10px 26px color-mix(in srgb, var(--mood-color) 12%, rgba(0, 0, 0, 0.45)),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
