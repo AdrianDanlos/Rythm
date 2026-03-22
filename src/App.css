@@ -800,9 +800,11 @@
   cursor: not-allowed;
 }
 
-/* —— Paywall (Pro upgrade) — gradient hero; light panel in light theme —— */
+/* —— Paywall (Pro upgrade) — indigo→teal hero (matches charts / toggle accents) —— */
 .paywall-page {
-  --paywall-gradient: linear-gradient(135deg, #ff9500 0%, #ff2d55 100%);
+  --paywall-gradient: linear-gradient(135deg, #4f46e5 0%, #0d9488 55%, #14b8a6 100%);
+  --paywall-cta-shadow: 0 8px 24px rgba(79, 70, 229, 0.38), 0 4px 14px rgba(13, 148, 136, 0.28);
+  --paywall-cta-shadow-hover: 0 10px 28px rgba(79, 70, 229, 0.45), 0 6px 18px rgba(13, 148, 136, 0.32);
   --paywall-panel-bg: #ffffff;
   --paywall-panel-text: #0f172a;
   --paywall-muted: rgba(15, 23, 42, 0.55);
@@ -823,6 +825,9 @@
 }
 
 :root[data-theme="dark"] .paywall-page {
+  --paywall-gradient: linear-gradient(135deg, #6366f1 0%, #0f766e 52%, #2dd4bf 100%);
+  --paywall-cta-shadow: 0 8px 28px rgba(99, 102, 241, 0.42), 0 4px 16px rgba(15, 118, 110, 0.35);
+  --paywall-cta-shadow-hover: 0 12px 32px rgba(99, 102, 241, 0.5), 0 6px 20px rgba(15, 118, 110, 0.4);
   --paywall-panel-bg: #1a2233;
   --paywall-panel-text: #f8fafc;
   --paywall-muted: rgba(248, 250, 252, 0.55);
@@ -998,7 +1003,7 @@
 .paywall-feature__icon {
   width: 24px;
   height: 24px;
-  color: #ff9f0a;
+  color: #6366f1;
 }
 
 .paywall-feature:nth-child(2) .paywall-feature__icon {
@@ -1065,7 +1070,7 @@
   color: #fff;
   cursor: pointer;
   background: var(--paywall-gradient);
-  box-shadow: 0 8px 24px rgba(255, 45, 85, 0.35);
+  box-shadow: var(--paywall-cta-shadow);
   transition:
     transform 0.12s ease,
     box-shadow 0.12s ease,
@@ -1074,7 +1079,7 @@
 
 .paywall-page__cta:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 10px 28px rgba(255, 45, 85, 0.42);
+  box-shadow: var(--paywall-cta-shadow-hover);
 }
 
 .paywall-page__cta:disabled {
