@@ -98,6 +98,7 @@ const fr = {
     premiumFeaturesSection: 'Fonctions Premium',
     cancelAnytime: 'Résiliez quand vous voulez',
     secureFooter: 'Paiement sécurisé • Sans engagement',
+    proPriceLabel: '2,99 € / mois',
     features: {
       dailyImpact: 'Découvrez comment ce qui se passe dans la journée influence votre sommeil et votre humeur',
       sleepTarget: 'Votre objectif de sommeil recommandé selon votre historique',

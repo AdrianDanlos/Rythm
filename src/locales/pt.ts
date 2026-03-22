@@ -98,6 +98,7 @@ const pt = {
     premiumFeaturesSection: 'Recursos Premium',
     cancelAnytime: 'Cancele quando quiser',
     secureFooter: 'Pagamento seguro • Sem fidelidade',
+    proPriceLabel: '2,99 € / mês',
     features: {
       dailyImpact: 'Descubra como o que acontece no seu dia influencia seu sono e humor',
       sleepTarget: 'Sua meta de sono recomendada com base no seu histórico',

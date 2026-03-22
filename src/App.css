@@ -1332,63 +1332,29 @@
   box-shadow: var(--input-focus-shadow);
 }
 
-.log-reflection-done.tag-add-button {
+/* Done: same look in every state (overrides global `button` + `.tag-add-button:hover`) */
+.log-reflection-done.tag-add-button,
+.log-reflection-done.tag-add-button:hover:not(:disabled),
+.log-reflection-done.tag-add-button:active,
+.log-reflection-done.tag-add-button:focus,
+.log-reflection-done.tag-add-button:focus-visible {
   border-radius: 14px;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
   background: var(--log-surface);
   border: 1px solid var(--log-surface-border);
-  font-weight: 600;
-  font-size: 0.9rem;
-  padding: 12px 14px;
-}
-
-.log-reflection-done.tag-add-button:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--log-surface) 88%, var(--text));
-}
-
-:root[data-theme="dark"] .log-reflection-done.tag-add-button {
-  border-color: transparent;
-}
-
-/* Done: no lift from global button:hover; no pressed/focus flash on click */
-@media (hover: hover) and (pointer: fine) {
-  .log-reflection-done.tag-add-button:hover {
-    transform: none;
-    box-shadow: none;
-  }
-}
-
-.log-reflection-done.tag-add-button:focus:not(:focus-visible) {
-  outline: none;
+  transform: none;
   box-shadow: none;
-}
-
-.log-reflection-done.tag-add-button:focus-visible {
   outline: none;
-  box-shadow:
-    0 0 0 2px var(--log-surface),
-    0 0 0 4px color-mix(in srgb, var(--text) 28%, transparent);
+  transition: none;
 }
 
-.log-reflection-done.tag-add-button:active {
-  transform: none !important;
-  box-shadow: none !important;
-  background: var(--log-surface) !important;
-  border-color: var(--log-surface-border) !important;
-}
-
+:root[data-theme="dark"] .log-reflection-done.tag-add-button,
+:root[data-theme="dark"] .log-reflection-done.tag-add-button:hover:not(:disabled),
 :root[data-theme="dark"] .log-reflection-done.tag-add-button:active {
-  border-color: transparent !important;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .log-reflection-done.tag-add-button:hover:active {
-    background: color-mix(
-      in srgb,
-      var(--log-surface) 88%,
-      var(--text)
-    ) !important;
-    box-shadow: none !important;
-  }
+  border-color: transparent;
 }
 
 .log-reflection-block .tag-pills-row {

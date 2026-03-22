@@ -98,6 +98,7 @@ const en = {
     premiumFeaturesSection: 'Premium features',
     cancelAnytime: 'Cancel anytime',
     secureFooter: 'Secure payment • No commitment',
+    proPriceLabel: '€2.99 / month',
     features: {
       dailyImpact: 'Discover how what happens during the day influences your mood and sleep',
       sleepTarget: 'Your recommended sleep target based on your history',

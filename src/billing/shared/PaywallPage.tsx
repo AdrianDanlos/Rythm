@@ -18,7 +18,6 @@ type PaywallPageProps = {
   onClose: () => void
   upgradeUrl?: string
   onUpgrade?: () => Promise<boolean> | boolean
-  priceLabel?: string
   onRestore?: () => Promise<boolean>
   showRestore?: boolean
 }
@@ -48,7 +47,6 @@ export const PaywallPage = ({
   onClose,
   upgradeUrl,
   onUpgrade,
-  priceLabel,
   onRestore,
   showRestore,
 }: PaywallPageProps) => {
@@ -56,9 +54,7 @@ export const PaywallPage = ({
   const [isLoading, setIsLoading] = useState(false)
   const [isRestoring, setIsRestoring] = useState(false)
   const canUpgrade = Boolean(onUpgrade || (upgradeUrl && upgradeUrl.trim()))
-  const { amount, periodPart } = priceLabel
-    ? splitPriceLabel(priceLabel)
-    : { amount: '', periodPart: '' }
+  const { amount, periodPart } = splitPriceLabel(t('paywall.proPriceLabel'))
 
   const handleUpgrade = async () => {
     if (!canUpgrade || isLoading) return

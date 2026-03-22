@@ -87,6 +87,7 @@ const de = {
     premiumFeaturesSection: 'Pro-Funktionen',
     cancelAnytime: 'Jederzeit kündbar',
     secureFooter: 'Sichere Zahlung • Keine Bindung',
+    proPriceLabel: '2,99 € / Monat',
     features: {
       dailyImpact: 'Entdecke, wie dein Tagverlauf deinen Schlaf und deine Stimmung beeinflusst',
       sleepTarget: 'Dein empfohlenes Schlafziel basierend auf deiner Historie',

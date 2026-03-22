@@ -195,7 +195,6 @@ function App() {
     isPro,
     canManageSubscription,
     trimmedUpgradeUrl,
-    priceLabel,
   } = billing
 
   const settings = useSettingsSync(session)
@@ -834,7 +833,6 @@ function App() {
               onClose={closePaywall}
               upgradeUrl={trimmedUpgradeUrl}
               onUpgrade={handleStartCheckout}
-              priceLabel={priceLabel}
               onRestore={handleRestorePurchases}
               showRestore={false}
             />

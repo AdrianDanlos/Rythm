@@ -1,5 +1,4 @@
 import type { Session } from '@supabase/supabase-js'
-import { PRICING } from '../billing/shared/pricing'
 
 export type SubscriptionSource = 'play' | 'stripe' | undefined
 
@@ -18,13 +17,11 @@ export function useBillingState(session: Session | null) {
   const canManageSubscription = isPro && (hasStripe || subPlay || subStripe)
   const upgradeUrl = import.meta.env.VITE_UPGRADE_URL as string | undefined
   const trimmedUpgradeUrl = upgradeUrl?.trim() ?? undefined
-  const priceLabel = PRICING.pro.priceLabel
 
   return {
     isPro,
     subscriptionSource,
     canManageSubscription,
     trimmedUpgradeUrl,
-    priceLabel,
   }
 }

@@ -485,7 +485,6 @@ export const LogForm = ({
               <button
                 type="button"
                 className="tag-add-button log-reflection-done"
-                onMouseDown={e => e.preventDefault()}
                 onClick={() => setTagDropdownOpen(false)}
               >
                 {t('log.done')}
