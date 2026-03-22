@@ -155,7 +155,7 @@ const fr = {
     sectionMood: 'VOTRE HUMEUR',
     sectionTags: "Événements d'aujourd'hui",
     sectionThoughts: 'PENSÉES DU JOUR',
-    tagInputPlaceholder: 'Tapez une étiquette et appuyez sur Entrée...',
+    tagInputPlaceholder: 'Créez vos propres événements',
     journalThoughtsPlaceholder:
       'Qu\'a rendu cette journée spéciale ? Écrivez ici...',
     optionalShort: 'Optionnel',

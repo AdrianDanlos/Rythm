@@ -198,7 +198,7 @@ export const LogForm = ({
   const autoResizeNote = () => {
     const textarea = noteTextareaRef.current
     if (!textarea) return
-    const minH = textarea.classList.contains('log-diary-textarea') ? 132 : 44
+    const minH = textarea.classList.contains('log-diary-textarea') ? 88 : 44
     textarea.style.height = '0px'
     textarea.style.height = `${Math.max(minH, textarea.scrollHeight)}px`
   }
@@ -568,7 +568,7 @@ export const LogForm = ({
 
         <div className="log-reflection-section log-reflection-diary">
           <div className="log-reflection-section-label">
-            {t('log.sectionThoughts')}
+            {t('log.sectionThoughts')} ({t('log.optionalShort')})
           </div>
           <textarea
             ref={noteTextareaRef}
@@ -578,12 +578,11 @@ export const LogForm = ({
             onInput={autoResizeNote}
             placeholder={t('log.journalThoughtsPlaceholder')}
             maxLength={300}
-            rows={5}
-            aria-label={t('log.journalOptional')}
+            rows={3}
+            aria-label={`${t('log.sectionThoughts')} (${t('log.optionalShort')})`}
           />
           <div className="log-diary-footer">
             <span>{t('log.characterCount', { count: note.length })}</span>
-            <span>{t('log.optionalShort')}</span>
           </div>
         </div>
       </div>

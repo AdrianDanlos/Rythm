@@ -155,7 +155,7 @@ const en = {
     sectionMood: 'YOUR MOOD',
     sectionTags: "Today's events",
     sectionThoughts: 'TODAY\'S THOUGHTS',
-    tagInputPlaceholder: 'Type a tag and press Enter...',
+    tagInputPlaceholder: 'Create your own events',
     journalThoughtsPlaceholder:
       'What made today special? Write your thoughts here...',
     optionalShort: 'Optional',

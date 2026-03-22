@@ -1251,20 +1251,13 @@
     #facc15 72%,
     #f59e0b 100%
   );
-  box-shadow:
-    0 12px 28px rgba(245, 158, 11, 0.38),
-    0 0 0 1px rgba(255, 255, 255, 0.55) inset,
-    0 -2px 12px rgba(255, 237, 150, 0.9) inset;
+  box-shadow: none;
 }
 
 :root[data-theme="dark"] .log-reflection-icon {
   color: #fef3c7;
   background: linear-gradient(155deg, #ca8a04 0%, #eab308 42%, #fbbf24 100%);
-  box-shadow:
-    0 0 0 1px rgba(254, 243, 199, 0.2),
-    0 14px 36px rgba(234, 179, 8, 0.35),
-    0 0 40px rgba(251, 191, 36, 0.22),
-    inset 0 1px 0 rgba(255, 252, 232, 0.35);
+  box-shadow: none;
 }
 
 .log-reflection-title {
@@ -1364,7 +1357,7 @@
 .log-diary-textarea {
   width: 100%;
   box-sizing: border-box;
-  min-height: 132px;
+  min-height: 88px;
   background: var(--log-surface) !important;
   border: 1px solid var(--log-surface-border) !important;
   border-radius: 14px;
@@ -1389,7 +1382,7 @@
 
 .log-diary-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-top: 8px;
   font-size: 0.8rem;
@@ -1710,9 +1703,7 @@
   place-items: center;
   color: #ffffff;
   background: linear-gradient(135deg, #4b6dff 0%, #394c82 100%);
-  box-shadow:
-    0 10px 26px rgba(79, 91, 255, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  box-shadow: none;
 }
 
 .sleep-duration-picker__title-row {
@@ -1829,7 +1820,7 @@
   border-color: transparent;
   color: #ffffff;
   background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
-  box-shadow: 0 8px 16px rgba(76, 82, 255, 0.35);
+  box-shadow: none;
 }
 
 :root[data-theme="dark"] .sleep-duration-picker__quick-option {
@@ -1845,11 +1836,11 @@
 :root[data-theme="dark"] .sleep-duration-picker__quick-option.is-active {
   color: #ffffff;
   background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
-  box-shadow: 0 8px 16px rgba(76, 82, 255, 0.35);
+  box-shadow: none;
 }
 
 :root[data-theme="dark"] .sleep-duration-picker__quick-option.is-active:hover {
-  box-shadow: 0 8px 16px rgba(76, 82, 255, 0.35);
+  box-shadow: none;
 }
 
 .sleep-duration-picker__fine-tune-grid {

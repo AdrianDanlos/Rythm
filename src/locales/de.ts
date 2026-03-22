@@ -123,7 +123,7 @@ const de = {
     sectionMood: 'DEINE STIMMUNG',
     sectionTags: 'Ereignisse von heute',
     sectionThoughts: 'GEDANKEN DES TAGES',
-    tagInputPlaceholder: 'Tag eingeben und Enter drücken...',
+    tagInputPlaceholder: 'Erstelle deine eigenen Ereignisse',
     journalThoughtsPlaceholder:
       'Was hat den Tag besonders gemacht? Schreib es hier...',
     optionalShort: 'Optional',

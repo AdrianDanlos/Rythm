@@ -155,7 +155,7 @@ const es = {
     sectionMood: 'TU ÁNIMO',
     sectionTags: 'Eventos de hoy',
     sectionThoughts: 'PENSAMIENTOS DE HOY',
-    tagInputPlaceholder: 'Escribe una etiqueta y pulsa Enter...',
+    tagInputPlaceholder: 'Crea tus propios eventos',
     journalThoughtsPlaceholder:
       '¿Qué hizo especial el día? Escribe aquí...',
     optionalShort: 'Opcional',

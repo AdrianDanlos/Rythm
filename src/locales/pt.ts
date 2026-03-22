@@ -155,7 +155,7 @@ const pt = {
     sectionMood: 'SEU HUMOR',
     sectionTags: 'Eventos de hoje',
     sectionThoughts: 'PENSAMENTOS DE HOJE',
-    tagInputPlaceholder: 'Digite uma etiqueta e pressione Enter...',
+    tagInputPlaceholder: 'Crie seus próprios eventos',
     journalThoughtsPlaceholder:
       'O que tornou o dia especial? Escreva aqui...',
     optionalShort: 'Opcional',
