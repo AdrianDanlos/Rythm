@@ -77,16 +77,14 @@ export const exportFile = async ({
 
   const isUtf8Text = typeof data === 'string' && !dataIsBase64
 
-  await Filesystem.writeFile({
+  // Android Share only accepts file:// URLs. Directory.Documents often resolves to
+  // content:// (scoped storage), which Share rejects. Cache is app-private file paths
+  // and matches FileProvider cache-path in file_paths.xml.
+  const { uri } = await Filesystem.writeFile({
     path: filename,
     data: writeData,
-    directory: Directory.Documents,
+    directory: Directory.Cache,
     encoding: isUtf8Text ? encoding : undefined,
-  })
-
-  const { uri } = await Filesystem.getUri({
-    directory: Directory.Documents,
-    path: filename,
   })
 
   // File-only share: mixing EXTRA_TEXT + PDF breaks some Android share targets.
