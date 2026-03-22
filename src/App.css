@@ -800,12 +800,15 @@
   cursor: not-allowed;
 }
 
-/* —— Paywall (Pro upgrade) — Figma-style gradient hero + dark panel —— */
+/* —— Paywall (Pro upgrade) — gradient hero; light panel in light theme —— */
 .paywall-page {
   --paywall-gradient: linear-gradient(135deg, #ff9500 0%, #ff2d55 100%);
-  --paywall-panel-bg: #1a2233;
-  --paywall-panel-text: #f8fafc;
-  --paywall-muted: rgba(248, 250, 252, 0.55);
+  --paywall-panel-bg: #ffffff;
+  --paywall-panel-text: #0f172a;
+  --paywall-muted: rgba(15, 23, 42, 0.55);
+  --paywall-divider: rgba(15, 23, 42, 0.1);
+  --paywall-feature-icon-bg: rgba(15, 23, 42, 0.06);
+  --paywall-panel-shadow: 0 -8px 32px rgba(15, 23, 42, 0.1);
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -817,6 +820,15 @@
   box-sizing: border-box;
   background: var(--paywall-panel-bg);
   color: var(--paywall-panel-text);
+}
+
+:root[data-theme="dark"] .paywall-page {
+  --paywall-panel-bg: #1a2233;
+  --paywall-panel-text: #f8fafc;
+  --paywall-muted: rgba(248, 250, 252, 0.55);
+  --paywall-divider: rgba(255, 255, 255, 0.08);
+  --paywall-feature-icon-bg: rgba(255, 255, 255, 0.08);
+  --paywall-panel-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .paywall-page__hero {
@@ -900,7 +912,7 @@
   border-radius: 24px 24px 0 0;
   margin-top: -16px;
   padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--paywall-panel-shadow);
 }
 
 .paywall-page__panel-inner {
@@ -942,7 +954,7 @@
 
 .paywall-page__divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--paywall-divider);
   margin: 22px 0 20px;
 }
 
@@ -977,7 +989,7 @@
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--paywall-feature-icon-bg);
   display: flex;
   align-items: center;
   justify-content: center;
