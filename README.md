@@ -24,7 +24,7 @@ VITE_ANDROID_UPDATE_MANIFEST_URL=https://rythm-one.vercel.app/app-version.json
 - `VITE_ANDROID_UPDATE_MANIFEST_URL`: Public URL for the Android update manifest.
   - Use: `https://rythm-one.vercel.app/app-version.json`.
   - Used by the app at runtime to check the latest available Android version.
-- Keep `public/app-version.json` up to date by bumping `androidLatestVersion` every time you publish a new Play Store version.
+- Before each Play Store build, bump versions with `npm run release:bump-version` (patch bump by default). This updates `android/app/build.gradle` (`versionCode` +1 and `versionName`), `public/app-version.json`, the synced Android asset copy, `package.json`, and root entries in `package-lock.json`. Use `npm run release:bump-version -- minor`, `major`, or `npm run release:bump-version -- 1.2.3` for an exact `versionName`. Optional: `node scripts/bump-release-version.mjs --dry-run` to preview.
 
 ##### Edge Functions (Supabase secrets)
 
@@ -153,6 +153,7 @@ Same-day tags correlate with mood; previous-day tags correlate with sleep.
 
 ### Android (Capacitor)
 
+- **Before a release build** (new Play upload): run `npm run release:bump-version` so store version, `versionCode`, and update manifests stay aligned.
 - **Build web assets for native**:
   - `npm run build`
 - **Sync web assets and plugins to Android**:

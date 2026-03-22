@@ -1,9 +1,10 @@
 {
   "name": "rythm",
   "private": true,
-  "version": "1.0.4",
+  "version": "1.0.7",
   "type": "module",
   "scripts": {
+    "release:bump-version": "node scripts/bump-release-version.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
