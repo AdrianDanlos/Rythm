@@ -61,7 +61,6 @@ type AppMainContentProps = {
   maxTagsPerEntry: number
   saving: boolean
   saved: boolean
-  entriesError: string | null
   moodColors: string[]
   isMobile: boolean
   formatLocalDate: (date: Date) => string
@@ -158,7 +157,6 @@ export function AppMainContent({
   maxTagsPerEntry,
   saving,
   saved,
-  entriesError,
   moodColors,
   isMobile,
   formatLocalDate,
@@ -318,10 +316,19 @@ export function AppMainContent({
                 >
                   {!entriesSettled
                     ? (
-                        <div className="card auth-loading" aria-live="polite">
-                          <div className="loading-row">
-                            <span className="loading-spinner" aria-hidden="true" />
-                            <span className="muted">{t('log.loading')}</span>
+                        <div
+                          className="log-entries-loading-overlay"
+                          aria-live="polite"
+                          aria-busy="true"
+                        >
+                          <div className="log-entries-loading-overlay__content">
+                            <span
+                              className="log-entries-loading-overlay__spinner"
+                              aria-hidden="true"
+                            />
+                            <span className="log-entries-loading-overlay__label">
+                              {t('log.loading')}
+                            </span>
                           </div>
                         </div>
                       )
@@ -350,7 +357,6 @@ export function AppMainContent({
                             maxTagsPerEntry={maxTagsPerEntry}
                             saving={saving}
                             saved={saved}
-                            entriesError={entriesError}
                             moodColors={moodColors}
                             isMobile={isMobile}
                             formatLocalDate={formatLocalDate}

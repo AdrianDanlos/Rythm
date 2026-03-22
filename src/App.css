@@ -1417,8 +1417,8 @@
 
 .log-diary-textarea:focus {
   outline: none;
-  border-color: color-mix(in srgb, #ec4899 40%, var(--log-surface-border));
-  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
 }
 
 .log-diary-footer {
@@ -1602,6 +1602,48 @@
   border: 2px solid var(--loading-spinner-border);
   border-top-color: var(--text);
   animation: spin 0.8s linear infinite;
+}
+
+/* Log tab: full-viewport loading while entries are first loading (native + web) */
+.log-entries-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  padding-top: calc(24px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  background: var(--bg);
+}
+
+.log-entries-loading-overlay__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  text-align: center;
+  max-width: 280px;
+}
+
+.log-entries-loading-overlay__spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid var(--loading-spinner-border);
+  border-top-color: var(--text);
+  animation: spin 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+.log-entries-loading-overlay__label {
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .auth-card .stack {

@@ -220,8 +220,6 @@ function App() {
     setEntries,
     entriesLoading,
     entriesSettled,
-    entriesError,
-    setEntriesError,
     chartData,
     averages,
     highlightedDates,
@@ -321,7 +319,6 @@ function App() {
     sleepThreshold,
     isPro,
     maxTagsPerEntry,
-    setEntriesError,
     onStreakReached: () => shell.setIsStreakOpen(true),
     onEntrySavedForToday: goToInsightsSummary,
   })
@@ -875,7 +872,6 @@ function App() {
               maxTagsPerEntry={maxTagsPerEntry}
               saving={saving}
               saved={saved}
-              entriesError={entriesError}
               moodColors={moodColors}
               isMobile={isMobile}
               formatLocalDate={formatLocalDate}

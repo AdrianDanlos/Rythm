@@ -38,7 +38,6 @@ type UseLogFormParams = {
   sleepThreshold: number
   isPro: boolean
   maxTagsPerEntry: number
-  setEntriesError: (value: string | null) => void
   onStreakReached?: () => void
   onEntrySavedForToday?: () => void
 }
@@ -52,7 +51,6 @@ export const useLogForm = ({
   formatLocalDate,
   sleepThreshold,
   maxTagsPerEntry,
-  setEntriesError,
   onStreakReached,
   onEntrySavedForToday,
 }: UseLogFormParams) => {
@@ -214,7 +212,6 @@ export const useLogForm = ({
       : null
 
     setSaving(true)
-    setEntriesError(null)
     try {
       const savedEntry = await upsertEntry({
         user_id: userId,

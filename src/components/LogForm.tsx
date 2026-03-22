@@ -45,7 +45,6 @@ export type LogFormProps = {
   maxTagsPerEntry: number
   saving: boolean
   saved: boolean
-  entriesError: string | null
   moodColors: string[]
   isMobile?: boolean
   formatLocalDate: (date: Date) => string
@@ -72,7 +71,6 @@ export const LogForm = ({
   maxTagsPerEntry,
   saving,
   saved,
-  entriesError,
   moodColors,
   isMobile = false,
   formatLocalDate,
@@ -590,7 +588,6 @@ export const LogForm = ({
           </div>
         </div>
       </div>
-      {entriesError ? <p className="error">{entriesError}</p> : null}
       <button type="submit" disabled={saving} className="save-button">
         {saving
           ? <span className="spinner" aria-label={t('log.saving')} />

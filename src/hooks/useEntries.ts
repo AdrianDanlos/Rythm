@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { t } from 'i18next'
+import { toast } from 'sonner'
 import { fetchEntries, type Entry } from '../lib/entries'
 import { buildStats } from '../lib/stats'
 import i18n from '../i18n'
@@ -20,7 +21,6 @@ export const useEntries = ({
 }: UseEntriesParams) => {
   const [entries, setEntries] = useState<Entry[]>([])
   const [entriesLoading, setEntriesLoading] = useState(false)
-  const [entriesError, setEntriesError] = useState<string | null>(null)
   /** False until first fetch for current userId has completed; prevents flicker before we know if quick start should show */
   const [entriesSettled, setEntriesSettled] = useState(false)
 
@@ -28,7 +28,6 @@ export const useEntries = ({
     if (!userId) {
       setEntries([])
       setEntriesLoading(false)
-      setEntriesError(null)
       setEntriesSettled(false)
       return
     }
@@ -37,14 +36,13 @@ export const useEntries = ({
 
     const loadEntries = async () => {
       setEntriesLoading(true)
-      setEntriesError(null)
       try {
         const data = await fetchEntries(userId)
         setEntries(data)
         onEntriesLoaded?.(data)
       }
       catch {
-        setEntriesError(t('errors.unableToLoadEntries'))
+        toast.error(t('errors.unableToLoadEntries'))
       }
       finally {
         setEntriesLoading(false)
@@ -99,8 +97,6 @@ export const useEntries = ({
     setEntries,
     entriesLoading,
     entriesSettled,
-    entriesError,
-    setEntriesError,
     chartData,
     averages,
     highlightedDates,
