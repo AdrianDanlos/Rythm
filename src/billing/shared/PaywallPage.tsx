@@ -22,7 +22,7 @@ type PaywallPageProps = {
   showRestore?: boolean
 }
 
-const premiumFeatures: { key: string; Icon: LucideIcon }[] = [
+const premiumFeatures: { key: string, Icon: LucideIcon }[] = [
   { key: 'dailyImpact', Icon: Sun },
   { key: 'sleepTarget', Icon: Moon },
   { key: 'sleepMoodChart', Icon: LineChart },
@@ -31,7 +31,7 @@ const premiumFeatures: { key: string; Icon: LucideIcon }[] = [
   { key: 'exportReports', Icon: FileDown },
 ]
 
-function splitPriceLabel(label: string): { amount: string; periodPart: string } {
+function splitPriceLabel(label: string): { amount: string, periodPart: string } {
   const t = label.trim()
   const idx = t.indexOf('/')
   if (idx >= 0) {

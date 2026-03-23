@@ -4,7 +4,6 @@ import { App as CapacitorApp } from '@capacitor/app'
 import { LocalNotifications } from '@capacitor/local-notifications'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { exportMonthlyReport } from './lib/reports'
 import { exportEntriesCsv } from './lib/utils/csvExport'
 import { formatLocalDate } from './lib/utils/dateFormatters'
 import { AppHeader } from './components/AppHeader'
@@ -629,6 +628,7 @@ function App() {
     }
     setExportError(null)
     try {
+      const { exportMonthlyReport } = await import('./lib/reports')
       await exportMonthlyReport(entries, stats, {
         title: '',
         profileName,
