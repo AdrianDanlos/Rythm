@@ -95,7 +95,7 @@ async function getSubscriptionFromPlay(
   pkg: string,
   subscriptionId: string,
   token: string,
-): Promise<{ valid: boolean; expiryTimeMillis?: string }> {
+): Promise<{ valid: boolean, expiryTimeMillis?: string }> {
   const url = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${encodeURIComponent(pkg)}/purchases/subscriptions/${encodeURIComponent(subscriptionId)}/tokens/${encodeURIComponent(token)}`
   const res = await fetch(url, {
     headers: {
@@ -124,8 +124,8 @@ async function updateUserAppMetadata(
   updates: Record<string, unknown>,
 ): Promise<{ error: string | null }> {
   const adminHeaders = {
-    Authorization: `Bearer ${supabaseServiceRoleKey}`,
-    apikey: supabaseServiceRoleKey,
+    'Authorization': `Bearer ${supabaseServiceRoleKey}`,
+    'apikey': supabaseServiceRoleKey,
     'Content-Type': 'application/json',
   }
   const userRes = await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {
@@ -184,10 +184,11 @@ Deno.serve(async (req) => {
     })
   }
 
-  let body: { purchaseToken?: string; subscriptionId?: string; packageName?: string }
+  let body: { purchaseToken?: string, subscriptionId?: string, packageName?: string }
   try {
     body = await req.json()
-  } catch {
+  }
+  catch {
     return new Response(JSON.stringify({ error: 'Invalid JSON body.' }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -244,10 +245,10 @@ Deno.serve(async (req) => {
     const upsertRes = await fetch(`${supabaseUrl}/rest/v1/play_subscription_user`, {
       method: 'POST',
       headers: {
-        apikey: supabaseServiceRoleKey,
-        Authorization: `Bearer ${supabaseServiceRoleKey}`,
+        'apikey': supabaseServiceRoleKey,
+        'Authorization': `Bearer ${supabaseServiceRoleKey}`,
         'Content-Type': 'application/json',
-        Prefer: 'resolution=merge-duplicates',
+        'Prefer': 'resolution=merge-duplicates',
       },
       body: JSON.stringify({
         purchase_token: purchaseToken,
@@ -264,7 +265,8 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ ok: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
-  } catch (err) {
+  }
+  catch (err) {
     const message = err instanceof Error ? err.message : 'Verification failed.'
     return new Response(
       JSON.stringify({ error: message }),

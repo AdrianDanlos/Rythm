@@ -599,6 +599,7 @@ export const Insights = ({
                     )}
               </section>
               <TagColorPicker
+                key={colorPickerTag ?? 'closed'}
                 color={(() => {
                   if (!colorPickerTag) return '#ffffff'
                   const key = colorPickerTag.trim().toLowerCase()

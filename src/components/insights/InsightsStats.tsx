@@ -106,19 +106,19 @@ export const InsightsStats = ({
       return ((value - avg) / avg) * 100
     }
 
-    const sleepDeltaMinutes =
-      window.sleep !== null && averages.sleep !== null
+    const sleepDeltaMinutes
+      = window.sleep !== null && averages.sleep !== null
         ? Math.round((window.sleep - averages.sleep) * 60)
         : null
-    const showSleepDelta =
-      sleepDeltaMinutes !== null
-      && (sleepDeltaMinutes !== 0 || canShowEqualsVsAverage)
+    const showSleepDelta
+      = sleepDeltaMinutes !== null
+        && (sleepDeltaMinutes !== 0 || canShowEqualsVsAverage)
     const moodDeltaPercent = buildDeltaPercent(window.mood, averages.mood)
     const moodDeltaRounded = moodDeltaPercent !== null ? Math.round(Math.abs(moodDeltaPercent)) : null
-    const showMoodDelta =
-      moodDeltaPercent !== null
-      && moodDeltaRounded !== null
-      && (moodDeltaRounded !== 0 || canShowEqualsVsAverage)
+    const showMoodDelta
+      = moodDeltaPercent !== null
+        && moodDeltaRounded !== null
+        && (moodDeltaRounded !== 0 || canShowEqualsVsAverage)
 
     return (
       <div className="stat-tile">

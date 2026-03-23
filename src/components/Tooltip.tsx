@@ -13,7 +13,7 @@ type TooltipProps = {
 
 export const Tooltip = ({ label, children, className }: TooltipProps) => {
   const [isVisible, setIsVisible] = useState(false)
-  const [isTouch, setIsTouch] = useState(false)
+  const [isTouch] = useState(isTouchDevice)
   const isPositioned = isTouch
   const [bubbleStyle, setBubbleStyle] = useState<React.CSSProperties>({
     position: 'fixed',
@@ -23,10 +23,6 @@ export const Tooltip = ({ label, children, className }: TooltipProps) => {
   })
   const triggerRef = useRef<HTMLSpanElement>(null)
   const bubbleRef = useRef<HTMLSpanElement>(null)
-
-  useEffect(() => {
-    setIsTouch(isTouchDevice())
-  }, [])
 
   const hide = useCallback(() => setIsVisible(false), [])
 
@@ -78,7 +74,8 @@ export const Tooltip = ({ label, children, className }: TooltipProps) => {
     const spaceBelow = appRect.bottom - triggerRect.bottom
     if (spaceBelow >= bubbleRect.height + PADDING || spaceBelow >= spaceAbove) {
       top = triggerRect.bottom + PADDING
-    } else {
+    }
+    else {
       top = triggerRect.top - bubbleRect.height - PADDING
     }
 

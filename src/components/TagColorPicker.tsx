@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { HexColorPicker } from 'react-colorful'
 
 type TagColorPickerProps = {
@@ -28,11 +28,6 @@ export const TagColorPicker = ({
 
   useEffect(() => {
     if (!isOpen) return
-    setDraftColor(color)
-  }, [color, isOpen])
-
-  useEffect(() => {
-    if (!isOpen) return
     const previousActive = document.activeElement as HTMLElement | null
     initialFocusRef.current?.focus()
     return () => {
@@ -42,15 +37,15 @@ export const TagColorPicker = ({
 
   useEffect(() => {
     if (!isOpen) return
-    const handleKeyDown = (event: KeyboardEvent | KeyboardEventInit | any) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault()
         onCancel()
       }
     }
-    document.addEventListener('keydown', handleKeyDown as any)
+    document.addEventListener('keydown', handleKeyDown)
     return () => {
-      document.removeEventListener('keydown', handleKeyDown as any)
+      document.removeEventListener('keydown', handleKeyDown)
     }
   }, [isOpen, onCancel])
 
@@ -108,4 +103,3 @@ export const TagColorPicker = ({
     </div>
   )
 }
-

@@ -205,13 +205,13 @@ export const InsightsTagInsights = ({
                                 <p className="label">{t('insights.positive')}</p>
                                 <div className="tag-bar-list">
                                   {positiveDrivers.map(tag => (
-                                      <div className="tag-bar-item positive" key={tag.tag}>
-                                        <div className="tag-bar-header">
-                                          <p className="tag-title">
-                                            {tag.tag}
-                                          </p>
+                                    <div className="tag-bar-item positive" key={tag.tag}>
+                                      <div className="tag-bar-header">
+                                        <p className="tag-title">
+                                          {tag.tag}
+                                        </p>
                                         <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
-                                        </div>
+                                      </div>
                                       <div className="tag-bar-delta-and-track">
                                         <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
                                         <div className="tag-bar-track" aria-hidden="true">
@@ -230,7 +230,7 @@ export const InsightsTagInsights = ({
                                         )}
                                         {t('insights.entriesSuffix', { count: tag.count })}
                                       </p>
-                                      </div>
+                                    </div>
                                   ))}
                                 </div>
                               </div>
@@ -240,13 +240,13 @@ export const InsightsTagInsights = ({
                                 <p className="label">{t('insights.negative')}</p>
                                 <div className="tag-bar-list">
                                   {negativeDrivers.map(tag => (
-                                      <div className="tag-bar-item negative" key={tag.tag}>
-                                        <div className="tag-bar-header">
-                                          <p className="tag-title">
-                                            {tag.tag}
-                                          </p>
+                                    <div className="tag-bar-item negative" key={tag.tag}>
+                                      <div className="tag-bar-header">
+                                        <p className="tag-title">
+                                          {tag.tag}
+                                        </p>
                                         <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
-                                        </div>
+                                      </div>
                                       <div className="tag-bar-delta-and-track">
                                         <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
                                         <div className="tag-bar-track" aria-hidden="true">
@@ -265,7 +265,7 @@ export const InsightsTagInsights = ({
                                         )}
                                         {t('insights.entriesSuffix', { count: tag.count })}
                                       </p>
-                                      </div>
+                                    </div>
                                   ))}
                                 </div>
                               </div>
