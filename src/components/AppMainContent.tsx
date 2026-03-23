@@ -1,4 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { Suspense, lazy } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Session } from '@supabase/supabase-js'
 import type { Entry } from '../lib/entries'
@@ -17,8 +18,6 @@ import type {
 import { AuthForm } from './AuthForm'
 import { InsightsQuickStart } from './InsightsQuickStart'
 import { LogForm } from './LogForm'
-import { Insights } from './Insights'
-import { SettingsPage } from './SettingsPage'
 import { AppPage, Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
 import type {
   DateFormatPreference,
@@ -27,6 +26,16 @@ import type {
 } from '../lib/settings'
 import { motionTransition } from '../lib/motion'
 import logo from '../assets/rythm-logo.png'
+
+const Insights = lazy(async () => {
+  const module = await import('./Insights')
+  return { default: module.Insights }
+})
+
+const SettingsPage = lazy(async () => {
+  const module = await import('./SettingsPage')
+  return { default: module.SettingsPage }
+})
 
 type AppMainContentProps = {
   authInitialized: boolean
@@ -290,19 +299,21 @@ export function AppMainContent({
                 exit={{ opacity: 0 }}
                 transition={tabTransition}
               >
-                <SettingsPage
-                  name={settingsName}
-                  email={settingsEmail}
-                  dateFormat={settingsDateFormat}
-                  language={settingsLanguage}
-                  theme={settingsTheme}
-                  personalSleepTarget={settingsPersonalSleepTarget}
-                  onNameChange={onSettingsNameChange}
-                  onDateFormatChange={onSettingsDateFormatChange}
-                  onLanguageChange={onSettingsLanguageChange}
-                  onThemeChange={onSettingsThemeChange}
-                  onPersonalSleepTargetChange={onSettingsPersonalSleepTargetChange}
-                />
+                <Suspense fallback={null}>
+                  <SettingsPage
+                    name={settingsName}
+                    email={settingsEmail}
+                    dateFormat={settingsDateFormat}
+                    language={settingsLanguage}
+                    theme={settingsTheme}
+                    personalSleepTarget={settingsPersonalSleepTarget}
+                    onNameChange={onSettingsNameChange}
+                    onDateFormatChange={onSettingsDateFormatChange}
+                    onLanguageChange={onSettingsLanguageChange}
+                    onThemeChange={onSettingsThemeChange}
+                    onPersonalSleepTargetChange={onSettingsPersonalSleepTargetChange}
+                  />
+                </Suspense>
               </motion.div>
             )
           : activeTab === Tabs.Log
@@ -381,40 +392,42 @@ export function AppMainContent({
                   exit={{ opacity: 0 }}
                   transition={tabTransition}
                 >
-                  <Insights
-                    entries={entries}
-                    entriesLoading={entriesLoading}
-                    chartData={chartData}
-                    averages={averages}
-                    windowAverages={windowAverages}
-                    statCounts={statCounts}
-                    rhythmScore={rhythmScore}
-                    streak={streak}
-                    sleepConsistencyLabel={sleepConsistencyLabel}
-                    sleepConsistencyBadges={sleepConsistencyBadges}
-                    correlationLabel={correlationLabel}
-                    correlationDirection={correlationDirection}
-                    moodBySleepThreshold={moodBySleepThreshold}
-                    moodBySleepBucketCounts={moodBySleepBucketCounts}
-                    sleepThreshold={sleepThreshold}
-                    moodColors={moodColors}
-                    trendSeries={trendSeries}
-                    rollingSeries={rollingSeries}
-                    rollingSummaries={rollingSummaries}
-                    weekdayAverages={weekdayAverages}
-                    personalSleepThreshold={personalSleepThreshold}
-                    moodByPersonalThreshold={moodByPersonalThreshold}
-                    tagDrivers={tagDrivers}
-                    tagSleepDrivers={tagSleepDrivers}
-                    tagColors={tagColors}
-                    isPro={isPro}
-                    onOpenPaywall={onOpenPaywall}
-                    onOpenFeedback={onOpenFeedback}
-                    goToLog={() => onNavigateToPage(AppPage.Log)}
-                    activeTab={activeInsightsTab}
-                    onRenameTag={onRenameTag}
-                    onTagColorChange={onTagColorChange}
-                  />
+                  <Suspense fallback={null}>
+                    <Insights
+                      entries={entries}
+                      entriesLoading={entriesLoading}
+                      chartData={chartData}
+                      averages={averages}
+                      windowAverages={windowAverages}
+                      statCounts={statCounts}
+                      rhythmScore={rhythmScore}
+                      streak={streak}
+                      sleepConsistencyLabel={sleepConsistencyLabel}
+                      sleepConsistencyBadges={sleepConsistencyBadges}
+                      correlationLabel={correlationLabel}
+                      correlationDirection={correlationDirection}
+                      moodBySleepThreshold={moodBySleepThreshold}
+                      moodBySleepBucketCounts={moodBySleepBucketCounts}
+                      sleepThreshold={sleepThreshold}
+                      moodColors={moodColors}
+                      trendSeries={trendSeries}
+                      rollingSeries={rollingSeries}
+                      rollingSummaries={rollingSummaries}
+                      weekdayAverages={weekdayAverages}
+                      personalSleepThreshold={personalSleepThreshold}
+                      moodByPersonalThreshold={moodByPersonalThreshold}
+                      tagDrivers={tagDrivers}
+                      tagSleepDrivers={tagSleepDrivers}
+                      tagColors={tagColors}
+                      isPro={isPro}
+                      onOpenPaywall={onOpenPaywall}
+                      onOpenFeedback={onOpenFeedback}
+                      goToLog={() => onNavigateToPage(AppPage.Log)}
+                      activeTab={activeInsightsTab}
+                      onRenameTag={onRenameTag}
+                      onTagColorChange={onTagColorChange}
+                    />
+                  </Suspense>
                 </motion.div>
               )}
       </AnimatePresence>
