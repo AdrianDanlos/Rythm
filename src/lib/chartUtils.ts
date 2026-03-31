@@ -6,12 +6,12 @@ function hasTrendData(p: TrendPoint): boolean {
 
 function hasRollingData(p: RollingPoint): boolean {
   return (
-    p.sleep7 !== null ||
-    p.sleep30 !== null ||
-    p.sleep90 !== null ||
-    p.mood7 !== null ||
-    p.mood30 !== null ||
-    p.mood90 !== null
+    p.sleep7 !== null
+    || p.sleep30 !== null
+    || p.sleep90 !== null
+    || p.mood7 !== null
+    || p.mood30 !== null
+    || p.mood90 !== null
   )
 }
 

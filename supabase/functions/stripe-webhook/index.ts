@@ -115,8 +115,8 @@ Deno.serve(async (req) => {
       | ((current: Record<string, unknown>) => Record<string, unknown>),
   ) => {
     const adminHeaders = {
-      Authorization: `Bearer ${supabaseServiceRoleKey}`,
-      apikey: supabaseServiceRoleKey,
+      'Authorization': `Bearer ${supabaseServiceRoleKey}`,
+      'apikey': supabaseServiceRoleKey,
       'Content-Type': 'application/json',
     }
     const userResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {
@@ -128,8 +128,8 @@ Deno.serve(async (req) => {
 
     const userPayload = await userResponse.json()
     const currentMetadata = userPayload?.app_metadata ?? {}
-    const updates =
-      typeof updatesOrFn === 'function'
+    const updates
+      = typeof updatesOrFn === 'function'
         ? updatesOrFn(currentMetadata)
         : updatesOrFn
     const updateResponse = await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {

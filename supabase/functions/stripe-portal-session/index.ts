@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
   const stripeResponse = await fetch('https://api.stripe.com/v1/billing_portal/sessions', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${stripeSecretKey}`,
+      'Authorization': `Bearer ${stripeSecretKey}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body,

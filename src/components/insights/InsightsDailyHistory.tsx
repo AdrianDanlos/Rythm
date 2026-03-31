@@ -317,11 +317,13 @@ export const InsightsDailyHistory = ({
                       formatter={formatTooltipValue}
                     />
                     <Legend
-                      content={<DailyHistoryLegend
-                        sleepLabel={t('common.sleep')}
-                        moodLabel={t('common.mood')}
-                        wrapperStyle={legendWrapperStyle}
-                      />}
+                      content={(
+                        <DailyHistoryLegend
+                          sleepLabel={t('common.sleep')}
+                          moodLabel={t('common.mood')}
+                          wrapperStyle={legendWrapperStyle}
+                        />
+                      )}
                     />
                     <Line
                       type="monotone"

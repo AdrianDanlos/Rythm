@@ -60,7 +60,7 @@ export const useLogForm = ({
   useEffect(() => {
     const prevToday = lastAppTodayRef.current
     if (today !== prevToday) {
-      setEntryDate((ed) => (ed === prevToday ? today : ed))
+      setEntryDate(ed => (ed === prevToday ? today : ed))
       lastAppTodayRef.current = today
     }
   }, [today])

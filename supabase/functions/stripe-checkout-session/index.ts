@@ -78,14 +78,15 @@ Deno.serve(async (req) => {
   body.append('metadata[supabase_user_id]', user.id)
   if (typeof stripeCustomerId === 'string') {
     body.append('customer', stripeCustomerId)
-  } else if (user.email) {
+  }
+  else if (user.email) {
     body.append('customer_email', user.email)
   }
 
   const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${stripeSecretKey}`,
+      'Authorization': `Bearer ${stripeSecretKey}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body,
