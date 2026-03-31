@@ -511,6 +511,7 @@ export const LogForm = ({
                     <button
                       type="button"
                       className="tag-badge-remove"
+                      style={{ color: 'inherit' }}
                       aria-label={t('log.removeTag', { tag })}
                       onMouseDown={e => e.preventDefault()}
                       onClick={() => removeTag(tag)}

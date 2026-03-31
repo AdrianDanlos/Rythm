@@ -5513,3 +5513,16 @@ button.toggle-group__btn--disabled:disabled {
   .app-toast-description {
   color: #cbd5f5 !important;
 }
+
+:root:not([data-theme="dark"])
+  [data-sonner-toast].app-toast
+  .app-toast-action-button {
+  color: #fff !important;
+}
+
+:root:not([data-theme="dark"])
+  [data-sonner-toaster].app-toaster-theme
+  [data-sonner-toast]
+  [data-button] {
+  color: #fff !important;
+}
