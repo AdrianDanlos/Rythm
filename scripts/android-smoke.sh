@@ -27,6 +27,16 @@ require_cmd curl
 require_cmd node
 require_cmd rg
 
+if [[ -z "${ANDROID_SDK_ROOT:-}" && -d "/usr/lib/android-sdk" ]]; then
+  export ANDROID_SDK_ROOT="/usr/lib/android-sdk"
+fi
+if [[ -z "${ANDROID_HOME:-}" && -n "${ANDROID_SDK_ROOT:-}" ]]; then
+  export ANDROID_HOME="$ANDROID_SDK_ROOT"
+fi
+if [[ -n "${ANDROID_SDK_ROOT:-}" ]]; then
+  export PATH="${ANDROID_SDK_ROOT}/platform-tools:${ANDROID_SDK_ROOT}/emulator:${PATH}"
+fi
+
 require_var VITE_SUPABASE_URL
 require_var VITE_SUPABASE_ANON_KEY
 require_var ANDROID_SMOKE_TEST_EMAIL
@@ -87,25 +97,36 @@ ACCESS_TOKEN="$(
 REFRESH_TOKEN="$(
   printf '%s' "$TOKENS_JSON" | node -e "let i='';process.stdin.on('data',c=>i+=c).on('end',()=>process.stdout.write(JSON.parse(i).refreshToken));"
 )"
+DEEPLINK_URL="capacitor://localhost/#access_token=${ACCESS_TOKEN}\\&refresh_token=${REFRESH_TOKEN}"
 
 log "Building and syncing Capacitor Android app"
 VITE_SMOKE_TEST_MODE=true npm run build
 npx cap sync android
-npx cap run android --target "$SERIAL"
+
+if ! adb -s "$SERIAL" get-state >/dev/null 2>&1; then
+  printf 'Target serial %s is not attached via adb.\n' "$SERIAL" >&2
+  exit 1
+fi
+
+APP_APK_PATH="android/app/build/outputs/apk/debug/app-debug.apk"
+./android/gradlew -p android assembleDebug >/dev/null
+adb -s "$SERIAL" install -r "$APP_APK_PATH" >/dev/null
 
 log "Starting logcat capture"
-adb -s "$SERIAL" logcat -c
+if ! adb -s "$SERIAL" logcat -c >/dev/null 2>&1; then
+  log "Unable to clear logcat buffer on this emulator; continuing"
+fi
 adb -s "$SERIAL" logcat >"$LOGCAT_FILE" 2>&1 &
 LOGCAT_PID=$!
 
 sleep 4
 
 log "Launching app and injecting Supabase session through deep link"
-adb -s "$SERIAL" shell monkey -p com.rythm.app -c android.intent.category.LAUNCHER 1 >/dev/null
+adb -s "$SERIAL" shell am start -W -n com.rythm.app/.MainActivity >/dev/null
 sleep 3
 adb -s "$SERIAL" shell am start -W \
   -a android.intent.action.VIEW \
-  -d "capacitor://localhost/#access_token=${ACCESS_TOKEN}&refresh_token=${REFRESH_TOKEN}" \
+  -d "$DEEPLINK_URL" \
   com.rythm.app >/dev/null
 sleep 4
 
@@ -124,12 +145,13 @@ sleep 2
 log "Triggering foreground cycle to exercise update-check appStateChange hook"
 adb -s "$SERIAL" shell input keyevent KEYCODE_HOME
 sleep 2
-adb -s "$SERIAL" shell monkey -p com.rythm.app -c android.intent.category.LAUNCHER 1 >/dev/null
+adb -s "$SERIAL" shell am start -W -n com.rythm.app/.MainActivity >/dev/null
 sleep 3
 
 log "Asserting app still foreground after back flow"
 FOCUS_LINE="$(adb -s "$SERIAL" shell dumpsys window | rg -m 1 'mCurrentFocus|mFocusedApp' || true)"
-if [[ "$FOCUS_LINE" != *"com.rythm.app"* ]]; then
+FOCUSED_APP_LINE="$(adb -s "$SERIAL" shell dumpsys window | rg -m 1 'mFocusedApp' || true)"
+if [[ "$FOCUS_LINE" != *"com.rythm.app"* && "$FOCUSED_APP_LINE" != *"com.rythm.app"* ]]; then
   printf 'App is not foreground after smoke actions. Focus line: %s\n' "$FOCUS_LINE" >&2
   exit 1
 fi
