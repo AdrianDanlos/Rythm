@@ -1,0 +1,54 @@
+name: Android smoke
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  android-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      ANDROID_SMOKE_TEST_EMAIL: ${{ secrets.ANDROID_SMOKE_TEST_EMAIL }}
+      ANDROID_SMOKE_TEST_PASSWORD: ${{ secrets.ANDROID_SMOKE_TEST_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Android smoke (API 34)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-boot-timeout: 900
+          script: |
+            chmod +x ./scripts/android-smoke.sh
+            ./scripts/android-smoke.sh
+
+      - name: Upload smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-smoke-artifacts
+          path: /tmp/android-smoke-artifacts

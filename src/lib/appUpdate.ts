@@ -11,6 +11,7 @@ type UpdateManifest = {
 }
 
 const SHOULD_FORCE_SHOW_UPDATE_PROMPT = import.meta.env.VITE_FORCE_UPDATE_TOAST === 'true'
+const IS_SMOKE_TEST_MODE = import.meta.env.VITE_SMOKE_TEST_MODE === 'true'
 
 function compareVersions(currentVersion: string, latestVersion: string): number {
   const currentParts = currentVersion.split('.').map(part => Number(part) || 0)
@@ -36,6 +37,9 @@ async function openPlayStore() {
 }
 
 export async function checkForAndroidUpdate() {
+  if (IS_SMOKE_TEST_MODE) {
+    console.info('[smoke] checkForAndroidUpdate invoked')
+  }
   const isAndroidNative = Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android'
   if (!SHOULD_FORCE_SHOW_UPDATE_PROMPT && !isAndroidNative) return
 

@@ -163,6 +163,31 @@ Same-day tags correlate with mood; previous-day tags correlate with sleep.
 - **Run on a device or emulator (optional)**:
   - `npx cap run android`
 
+#### Android smoke lane (PR)
+
+This repository includes a lightweight Android smoke runner at `scripts/android-smoke.sh` and a PR workflow at `.github/workflows/android-smoke.yml`.
+
+Required GitHub Action secrets:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `ANDROID_SMOKE_TEST_EMAIL`
+- `ANDROID_SMOKE_TEST_PASSWORD`
+
+Store your test account credentials only in GitHub secrets (never commit credentials in repository files).
+
+Local run (with emulator booted):
+
+- `chmod +x ./scripts/android-smoke.sh`
+- `VITE_SUPABASE_URL=... VITE_SUPABASE_ANON_KEY=... ANDROID_SMOKE_TEST_EMAIL=... ANDROID_SMOKE_TEST_PASSWORD=... ./scripts/android-smoke.sh`
+
+The smoke script verifies:
+
+- native deep-link auth callback path (`appUrlOpen`)
+- Android back-button listener path
+- Android foreground update-check path (`appStateChange` + `checkForAndroidUpdate`)
+- no fatal crash/ANR patterns in logcat
+
 ### App development
 
 - **Run the React app (Vite dev server)**:
