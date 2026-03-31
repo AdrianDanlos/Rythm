@@ -2217,14 +2217,16 @@
 }
 
 .tag-suggestion:hover,
-.tag-suggestion:focus {
+.tag-suggestion:focus,
+.tag-suggestion:active {
   background: transparent;
   border-color: transparent;
 }
 
 .tag-suggestion:hover::after,
-.tag-suggestion:focus::after {
-  opacity: 0;
+.tag-suggestion:focus::after,
+.tag-suggestion:active::after {
+  opacity: 1;
 }
 
 .tag-suggestion--added {
@@ -2246,13 +2248,15 @@
 }
 
 .tag-suggestion--added:hover,
-.tag-suggestion--added:focus {
+.tag-suggestion--added:focus,
+.tag-suggestion--added:active {
   background: transparent;
   border-color: transparent;
 }
 
 .tag-suggestion--added:hover::after,
-.tag-suggestion--added:focus::after {
+.tag-suggestion--added:focus::after,
+.tag-suggestion--added:active::after {
   opacity: 1;
 }
 

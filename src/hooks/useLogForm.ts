@@ -54,6 +54,7 @@ export const useLogForm = ({
   onStreakReached,
   onEntrySavedForToday,
 }: UseLogFormParams) => {
+  const defaultSleepHoursOption = formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS)
   const [entryDate, setEntryDate] = useState(today)
   const lastAppTodayRef = useRef(today)
   /** When the real calendar day advances, move off yesterday if user was on "today". */
@@ -64,7 +65,7 @@ export const useLogForm = ({
       lastAppTodayRef.current = today
     }
   }, [today])
-  const [sleepHours, setSleepHours] = useState('')
+  const [sleepHours, setSleepHours] = useState(defaultSleepHoursOption)
   const [mood, setMood] = useState<number | null>(null)
   const [note, setNote] = useState('')
   const [tags, setTags] = useState('')
@@ -139,7 +140,7 @@ export const useLogForm = ({
     if (existing) {
       setSleepHours(
         existing.sleep_hours === null
-          ? ''
+          ? defaultSleepHoursOption
           : formatSleepHoursOption(existing.sleep_hours),
       )
       setMood(existing.mood)
@@ -148,11 +149,11 @@ export const useLogForm = ({
       return
     }
 
-    setSleepHours('')
+    setSleepHours(defaultSleepHoursOption)
     setMood(null)
     setNote('')
     setTags('')
-  }, [entryDate, entries])
+  }, [entryDate, entries, defaultSleepHoursOption])
 
   const handleSave = async (event: FormEvent, options?: { silent?: boolean }) => {
     event.preventDefault()

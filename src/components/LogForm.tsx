@@ -4,6 +4,7 @@ import { DayPicker } from 'react-day-picker'
 import { useTranslation } from 'react-i18next'
 import { Angry, ChevronDown, Frown, Info, Laugh, Meh, Moon, Smile, Sun } from 'lucide-react'
 import 'react-day-picker/dist/style.css'
+import { getHighContrastTextColor } from '../lib/utils/colorContrast'
 import { formatLongDate } from '../lib/utils/dateFormatters'
 import { DEFAULT_LOG_SLEEP_HOURS } from '../lib/utils/sleepHours'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
@@ -19,18 +20,6 @@ const MOOD_ICONS: Record<1 | 2 | 3 | 4 | 5, ComponentType<{ 'className'?: string
 
 const QUICK_SLEEP_HOUR_OPTIONS = [4, 5, 6, 7, 8, 9, 10]
 const MAX_SLEEP_MINUTES = 12 * 60
-
-const getReadableTextColor = (bg: string | undefined): string | undefined => {
-  if (!bg || !bg.startsWith('#')) return undefined
-  const hex = bg.slice(1)
-  if (hex.length !== 6) return undefined
-  const r = parseInt(hex.slice(0, 2), 16)
-  const g = parseInt(hex.slice(2, 4), 16)
-  const b = parseInt(hex.slice(4, 6), 16)
-  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return undefined
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000
-  return brightness > 140 ? '#000000' : '#ffffff'
-}
 
 export type LogFormProps = {
   selectedDate: Date
@@ -510,7 +499,7 @@ export const LogForm = ({
               {usedTags.map((tag, index) => {
                 const colorKey = tag.trim().toLowerCase()
                 const tagColor = tagColors?.[colorKey]
-                const textColor = getReadableTextColor(tagColor)
+                const textColor = getHighContrastTextColor(tagColor)
                 return (
                   <span
                     key={tag}

@@ -1,5 +1,6 @@
 import type { Entry } from '../../lib/entries'
 import { useTranslation } from 'react-i18next'
+import { getHighContrastTextColor } from '../../lib/utils/colorContrast'
 import { formatLongDate } from '../../lib/utils/dateFormatters'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 
@@ -91,12 +92,17 @@ export const InsightsDayDetailModal = ({
                           {tags.map((tag, index) => {
                             const colorKey = tag.trim().toLowerCase()
                             const tagColor = tagColors?.[colorKey]
+                            const textColor = getHighContrastTextColor(tagColor)
                             return (
                               <span
                                 className="tag-pill"
                                 data-color-index={index % 8}
                                 key={tag}
-                                style={tagColor ? { backgroundColor: tagColor } : undefined}
+                                style={
+                                  tagColor
+                                    ? { backgroundColor: tagColor, ...(textColor ? { color: textColor } : {}) }
+                                    : undefined
+                                }
                               >
                                 {tag}
                               </span>
