@@ -1739,6 +1739,10 @@
 
 .sleep-duration-picker__subtitle {
   margin: 8px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
   font-size: 1rem;
   color: #93a1b5;
 }
@@ -2256,6 +2260,32 @@
   flex-shrink: 0;
   font-size: 0.9em;
   opacity: 0.9;
+}
+
+.tag-suggestion--creatable {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tag-suggestion--creatable .tag-suggestion-label {
+  min-width: 0;
+  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag-suggestion-action {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 500;
 }
 
 .log-date-picker-wrap {

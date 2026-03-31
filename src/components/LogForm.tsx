@@ -108,6 +108,9 @@ export const LogForm = ({
   const suggestionsWithinLength = sortedTagSuggestions.filter(
     tag => tag.length <= MAX_TAG_LENGTH,
   )
+  const suggestionsWithinLengthSet = new Set(
+    suggestionsWithinLength.map(tag => tag.toLowerCase()),
+  )
   const token = tagInputValue.trim().toLowerCase()
   const allMatchingSuggestions = token
     ? suggestionsWithinLength.filter(s => s.toLowerCase().includes(token))
@@ -298,6 +301,10 @@ export const LogForm = ({
         </div>
         <div className="sleep-duration-picker__title-row">
           <p className="sleep-duration-picker__title">{t('log.sleepQuestion')}</p>
+        </div>
+        <p className="sleep-duration-picker__subtitle">
+          <span>{t('log.sleepSubtitle', { defaultValue: 'Track your rest' })}</span>
+          {' '}
           <Tooltip label={t('log.sleepTooltip')}>
             <span className="tooltip-trigger">
               <span className="tooltip-icon" aria-hidden="true">
@@ -305,9 +312,6 @@ export const LogForm = ({
               </span>
             </span>
           </Tooltip>
-        </div>
-        <p className="sleep-duration-picker__subtitle">
-          {t('log.sleepSubtitle', { defaultValue: 'Track your rest' })}
         </p>
         <div className="sleep-duration-picker__value" role="status" aria-live="polite">
           <span className="sleep-duration-picker__value-main">{sleepHourNumber}</span>
@@ -449,11 +453,14 @@ export const LogForm = ({
                   {dropdownOptions.length > 0
                     ? dropdownOptions.map((suggestion) => {
                         const isAdded = usedTagSet.has(suggestion.toLowerCase())
+                        const isCreatableOption = token.length > 0
+                          && suggestion === tagInputValue.trim()
+                          && !suggestionsWithinLengthSet.has(suggestion.toLowerCase())
                         return (
                           <button
                             key={suggestion}
                             type="button"
-                            className={`tag-suggestion${isAdded ? ' tag-suggestion--added' : ''}`}
+                            className={`tag-suggestion${isAdded ? ' tag-suggestion--added' : ''}${isCreatableOption ? ' tag-suggestion--creatable' : ''}`}
                             aria-label={isAdded ? t('log.removeTag', { tag: suggestion }) : undefined}
                             onMouseDown={e => e.preventDefault()}
                             onClick={() => isAdded ? removeTag(suggestion.toLowerCase()) : addTag(suggestion)}
@@ -466,7 +473,14 @@ export const LogForm = ({
                                   </>
                                 )
                               : (
-                                  suggestion
+                                  isCreatableOption
+                                    ? (
+                                        <>
+                                          <span className="tag-suggestion-label">{suggestion}</span>
+                                          <span className="tag-suggestion-action">{t('log.addTagOption')}</span>
+                                        </>
+                                      )
+                                    : suggestion
                                 )}
                           </button>
                         )

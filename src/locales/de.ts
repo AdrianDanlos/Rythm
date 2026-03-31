@@ -146,6 +146,7 @@ const de = {
     pressEnterForNew: 'Enter drücken, um als neues Ereignis hinzuzufügen',
     noSuggestions: 'Keine Vorschläge',
     addButton: '+',
+    addTagOption: '+ Hinzufügen',
     done: 'Fertig',
     removeTag: '{{tag}} entfernen',
     tagAlreadyAdded: '{{tag}} bereits hinzugefügt',

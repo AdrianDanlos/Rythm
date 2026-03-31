@@ -146,6 +146,7 @@ const fr = {
     pressEnterForNew: 'Appuyez sur Entrée pour ajouter comme nouvel événement',
     noSuggestions: 'Aucune suggestion',
     addButton: '+',
+    addTagOption: '+ Ajouter',
     done: 'Terminé',
     removeTag: 'Retirer {{tag}}',
     tagAlreadyAdded: '{{tag}} déjà ajouté',

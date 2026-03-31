@@ -146,6 +146,7 @@ const en = {
     pressEnterForNew: 'Press Enter to add as new event',
     noSuggestions: 'No suggestions',
     addButton: '+',
+    addTagOption: '+ Add',
     done: 'Done',
     removeTag: 'Remove {{tag}}',
     tagAlreadyAdded: '{{tag}} already added',

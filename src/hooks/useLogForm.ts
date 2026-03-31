@@ -256,8 +256,8 @@ export const useLogForm = ({
         }
       }
       window.setTimeout(() => setSaved(false), 2000)
-      if (entryDate === today && isComplete && !options?.silent) {
-        window.setTimeout(() => onEntrySavedForToday?.(), 500)
+      if (!options?.silent) {
+        onEntrySavedForToday?.()
       }
     }
     catch {

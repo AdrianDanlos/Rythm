@@ -146,6 +146,7 @@ const pt = {
     pressEnterForNew: 'Pressione Enter para adicionar como novo evento',
     noSuggestions: 'Sem sugestões',
     addButton: '+',
+    addTagOption: '+ Adicionar',
     done: 'Pronto',
     removeTag: 'Remover {{tag}}',
     tagAlreadyAdded: '{{tag}} já adicionado',

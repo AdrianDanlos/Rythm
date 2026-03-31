@@ -466,10 +466,6 @@ function App() {
   }, [isMenuPanelOpen])
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-  }, [activePage])
-
-  useEffect(() => {
     if (!showStripeReturnPage) return
     if (pathname === ROUTES.stripeSuccess) {
       void refreshSession()

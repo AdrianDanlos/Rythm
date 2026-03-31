@@ -146,6 +146,7 @@ const es = {
     pressEnterForNew: 'Presiona Enter para agregar como evento nuevo',
     noSuggestions: 'Sin sugerencias',
     addButton: '+',
+    addTagOption: '+ Agregar',
     done: 'Listo',
     removeTag: 'Quitar {{tag}}',
     tagAlreadyAdded: '{{tag}} ya agregado',
