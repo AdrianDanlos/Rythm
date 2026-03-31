@@ -3550,6 +3550,27 @@ button.toggle-group__btn--disabled:disabled {
   min-width: 0;
 }
 
+.tag-bar-item--locked {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-style: dashed;
+  background: linear-gradient(180deg, var(--card) 0%, var(--button-hover-surface) 100%);
+}
+
+.tag-bar-item--locked:hover,
+.tag-bar-item--locked:focus-visible {
+  border-color: var(--text);
+}
+
+.tag-bar-item--locked .tag-title,
+.tag-bar-item--locked .helper {
+  color: var(--muted);
+}
+
 .tag-bar-header {
   display: flex;
   align-items: baseline;
