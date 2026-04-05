@@ -558,6 +558,11 @@ function App() {
     setCanGoBackInApp(pageHistoryRef.current.length > 1)
   }, [pathname, activePage])
 
+  useEffect(() => {
+    // Keep tab/page navigation predictable: always start each page at top.
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [pathname])
+
   const restoredForUserIdRef = useRef<string | null>(null)
   useEffect(() => {
     const userId = session?.user?.id

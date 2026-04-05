@@ -4498,6 +4498,13 @@ button.toggle-group__btn--disabled:disabled {
   background: #818cf8;
 }
 
+.ideal-sleep-target-card__progress-detail {
+  margin: 6px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
 .ideal-sleep-target-card__message {
   padding: 10px 12px;
   border-radius: 12px;

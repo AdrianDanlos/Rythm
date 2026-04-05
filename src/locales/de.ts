@@ -436,6 +436,8 @@ const de = {
     logDaysToSee30Trend: '{{count}}+ Tage eintragen, um den 30-Tage-Trend zu sehen.',
     logDaysToSee90Trend: '{{count}}+ Tage eintragen, um den 90-Tage-Trend zu sehen.',
     progressToTargetLabel: 'Fortschritt zum Ziel',
+    progressToTargetHoursSummary: 'Kürzlicher Durchschnitt {{avg}} · Ziel {{target}}',
+    progressToTargetTargetOnly: 'Strebe etwa {{target}} Schlaf pro Nacht an',
     optimalRangeTitle: 'Klasse! Dein aktueller Schlafdurchschnitt hat dein ideales Ziel erreicht.',
     optimalRangeBody: 'Behalte diese gesunden Schlafgewohnheiten bei, um dein allgemeines Wohlbefinden zu verbessern.',
     notOptimalRangeTitle: 'Dein aktueller Schlafdurchschnitt liegt unter deinem idealen Ziel.',

@@ -439,6 +439,8 @@ const en = {
     logDaysToSee30Trend: 'Log {{count}}+ days to see 30-day trend.',
     logDaysToSee90Trend: 'Log {{count}}+ days to see 90-day trend.',
     progressToTargetLabel: 'Progress to target',
+    progressToTargetHoursSummary: '{{avg}} recent average · {{target}} target',
+    progressToTargetTargetOnly: 'Aim for about {{target}} of sleep per night',
     optimalRangeTitle: 'Great! Your recent sleep average has reached your ideal target.',
     optimalRangeBody: 'Keep maintaining this healthy sleep schedule for better overall well-being.',
     notOptimalRangeTitle: 'Your recent sleep average is below your ideal target.',

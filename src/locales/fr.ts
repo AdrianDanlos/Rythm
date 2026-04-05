@@ -438,6 +438,8 @@ const fr = {
     logDaysToSee30Trend: 'Enregistrez {{count}}+ jours pour voir la tendance sur 30 jours.',
     logDaysToSee90Trend: 'Enregistrez {{count}}+ jours pour voir la tendance sur 90 jours.',
     progressToTargetLabel: 'Progression vers l\'objectif',
+    progressToTargetHoursSummary: 'Moyenne récente {{avg}} · Objectif {{target}}',
+    progressToTargetTargetOnly: 'Visez environ {{target}} de sommeil par nuit',
     optimalRangeTitle: 'Bravo ! Votre moyenne de sommeil récente a atteint votre objectif idéal.',
     optimalRangeBody: 'Continuez à maintenir ces habitudes de sommeil saines pour un meilleur bien-être général.',
     notOptimalRangeTitle: 'Votre moyenne de sommeil récente est en dessous de votre objectif idéal.',

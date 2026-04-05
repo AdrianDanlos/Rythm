@@ -7,6 +7,7 @@ type IdeaSleepTargetTeaserProps = {
 }
 
 const MOCK_THRESHOLD = 7.5
+const MOCK_RECENT_AVG = 6.6
 const MOCK_MOOD_HIGH = 3.8
 const MOCK_MOOD_LOW = 3.1
 const MOCK_DELTA_PERCENT = ((MOCK_MOOD_HIGH - MOCK_MOOD_LOW) / MOCK_MOOD_LOW) * 100
@@ -47,8 +48,14 @@ export const IdeaSleepTargetTeaser = ({ onOpenPaywall }: IdeaSleepTargetTeaserPr
               </p>
             </div>
             <div className="ideal-sleep-target-card__progress-track">
-              <div className="ideal-sleep-target-card__progress-fill" />
+              <div className="ideal-sleep-target-card__progress-fill" style={{ width: '88%' }} />
             </div>
+            <p className="ideal-sleep-target-card__progress-detail">
+              {t('insights.progressToTargetHoursSummary', {
+                avg: formatSleepHours(MOCK_RECENT_AVG),
+                target: formatSleepHours(MOCK_THRESHOLD),
+              })}
+            </p>
           </div>
           <div className="ideal-sleep-target-card__message ideal-sleep-target-card__message--success">
             <p className="ideal-sleep-target-card__message-title">

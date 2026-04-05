@@ -436,6 +436,8 @@ const pt = {
     logDaysToSee30Trend: 'Registre {{count}}+ dias para ver a tendência de 30 dias.',
     logDaysToSee90Trend: 'Registre {{count}}+ dias para ver a tendência de 90 dias.',
     progressToTargetLabel: 'Progresso em direção à meta',
+    progressToTargetHoursSummary: 'Média recente {{avg}} · Meta {{target}}',
+    progressToTargetTargetOnly: 'Meta de cerca de {{target}} de sono por noite',
     optimalRangeTitle: 'Arrasou! Sua média de sono recente atingiu sua meta ideal.',
     optimalRangeBody: 'Continue mantendo esses hábitos de sono saudáveis para um bem-estar ainda melhor.',
     notOptimalRangeTitle: 'Sua média de sono recente está abaixo da sua meta ideal.',

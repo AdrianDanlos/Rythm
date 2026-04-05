@@ -98,6 +98,16 @@ export const IdeaSleepTarget = ({
                       style={{ width: `${progressToTarget !== null ? progressToTarget : 0}%` }}
                     />
                   </div>
+                  <p className="ideal-sleep-target-card__progress-detail">
+                    {averageSleep !== null
+                      ? t('insights.progressToTargetHoursSummary', {
+                          avg: formatSleepHours(averageSleep),
+                          target: formatSleepHours(personalSleepThreshold),
+                        })
+                      : t('insights.progressToTargetTargetOnly', {
+                          target: formatSleepHours(personalSleepThreshold),
+                        })}
+                  </p>
                 </div>
                 <div className="ideal-sleep-target-card__message ideal-sleep-target-card__message--success">
                   <p className="ideal-sleep-target-card__message-title">
