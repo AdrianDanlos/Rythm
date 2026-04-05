@@ -10,6 +10,7 @@ type AppBottomNavProps = {
   activePage: AppPage
   activeTab: TabKey
   activeInsightsTab: InsightsSection
+  lockNonLogTabs: boolean
   onNavigateToPage: (page: AppPage) => void
   onBeforeLeaveTab: () => void
   canManageSubscription: boolean
@@ -25,6 +26,7 @@ export function AppBottomNav({
   activePage,
   activeTab,
   activeInsightsTab,
+  lockNonLogTabs,
   onNavigateToPage,
   onBeforeLeaveTab,
   canManageSubscription,
@@ -53,16 +55,19 @@ export function AppBottomNav({
   })
 
   const goToSummary = () => {
+    if (lockNonLogTabs) return
     onBeforeLeaveTab()
     onNavigateToPage(AppPage.Summary)
   }
 
   const goToCharts = () => {
+    if (lockNonLogTabs) return
     onBeforeLeaveTab()
     onNavigateToPage(AppPage.Charts)
   }
 
   const goToEvents = () => {
+    if (lockNonLogTabs) return
     onBeforeLeaveTab()
     onNavigateToPage(AppPage.Events)
   }
@@ -84,6 +89,7 @@ export function AppBottomNav({
                   type="button"
                   className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Summary ? 'active' : ''}`}
                   {...handleTabInteraction(goToSummary)}
+                  disabled={lockNonLogTabs}
                 >
                   <span className="tab-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -112,6 +118,7 @@ export function AppBottomNav({
                   type="button"
                   className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Charts ? 'active' : ''}`}
                   {...handleTabInteraction(goToCharts)}
+                  disabled={lockNonLogTabs}
                 >
                   <span className="tab-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -135,6 +142,7 @@ export function AppBottomNav({
                   type="button"
                   className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Events ? 'active' : ''}`}
                   {...handleTabInteraction(goToEvents)}
+                  disabled={lockNonLogTabs}
                 >
                   <span className="tab-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" aria-hidden="true">

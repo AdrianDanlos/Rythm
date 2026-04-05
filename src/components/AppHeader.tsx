@@ -7,12 +7,15 @@ type AppHeaderProps = {
   onOpenMenu?: () => void
   isMenuOpen?: boolean
   isAuthenticated?: boolean
+  /** When true, the hamburger control is inactive (e.g. first-time log quick start). */
+  isMenuDisabled?: boolean
 }
 
 export function AppHeader({
   onOpenMenu,
   isMenuOpen,
   isAuthenticated,
+  isMenuDisabled,
 }: AppHeaderProps) {
   const { t } = useTranslation()
   const [isScrolled, setIsScrolled] = useState(false)
@@ -44,7 +47,11 @@ export function AppHeader({
           <button
             className="app-header-menu-btn"
             type="button"
-            onClick={() => onOpenMenu?.()}
+            disabled={!!isMenuDisabled}
+            onClick={() => {
+              if (isMenuDisabled) return
+              onOpenMenu?.()
+            }}
             aria-label="Menu"
           >
             <Menu className="icon" aria-hidden="true" />

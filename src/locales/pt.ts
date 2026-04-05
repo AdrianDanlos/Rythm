@@ -54,6 +54,19 @@ const pt = {
     legalAgreement:
       'Ao continuar, você concorda com nossos <terms>Termos de uso</terms> e com a <privacy>Política de privacidade</privacy>.',
   },
+  intro: {
+    title: 'Bem-vindo ao Rythm',
+    subtitle: "Creemos que entender cómo te sientes debería de ser sencillo.",
+    step1Title: 'Registre seu sono em segundos',
+    step1Body: 'Acompanhe quantas horas você dormiu e como se sentiu a cada dia.',
+    step2Title: 'Capture o que moldou o seu dia',
+    step2Body: 'Adicione seus eventos diários personalizados: estresse, exercício, cafeína, tempo social…',
+    step3Title: 'Descubra o que te faz sentir melhor',
+    step3Body: 'O Rythm encontra padrões e destaca os hábitos que melhoram seu bem-estar.',
+    skip: 'Pular',
+    next: 'Próximo',
+    getStarted: 'Começar',
+  },
   settings: {
     title: 'Configurações',
     account: 'Conta',
@@ -137,6 +150,7 @@ const pt = {
     fineTune: 'Ajuste fino',
     hours: 'Horas',
     minutes: 'Minutos',
+    minutesStep: 'Minutos (+15)',
     eventsQuestion: 'O que aconteceu hoje?',
     eventsTooltip: 'Adicione eventos do dia (ex.: estresse, cafeína, exercício...). Use os eventos padrão ou crie os seus. O Rythm vai encontrar padrões e mostrar correlações.',
     recommended: 'Recomendado',
@@ -203,7 +217,7 @@ const pt = {
   },
   insights: {
     quickStart: 'Primeiros passos',
-    quickStartTitle: 'Veja como sua vida influencia seu sono e seu humor',
+    quickStartTitle: 'Sono, hábitos e humor: tudo está conectado',
     step1: 'Registre quanto você dormiu na noite passada.',
     step2: 'Adicione eventos do dia (ex.: café, exercício, estresse, etc.).',
     step3: 'Avalie seu humor. Quanto mais dias você registrar, mais você vai descobrir.',
@@ -241,7 +255,8 @@ const pt = {
     noSleepLogged: 'Nenhum sono registrado',
     noMoodLogged: 'Nenhum humor registrado',
     dailyEvents: 'Eventos do dia',
-    noDailyEventsLogged: 'Nenhum evento do dia registrado',
+    noDailyEventsLogged:
+      'Nenhum evento do dia registrado. Você pode registrá-los <logLink>aqui</logLink>.',
     journal: 'Diário',
     noJournalForDay: 'Nenhuma nota para este dia',
     noEntryForDay: 'Nenhuma entrada para este dia.',

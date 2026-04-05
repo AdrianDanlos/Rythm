@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ComponentType, type CSSProperties, type FormEvent, type ChangeEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type ComponentType, type CSSProperties, type FormEvent, type ChangeEvent } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { DayPicker } from 'react-day-picker'
 import { useTranslation } from 'react-i18next'
@@ -8,6 +8,7 @@ import { getHighContrastTextColor } from '../lib/utils/colorContrast'
 import { formatLongDate } from '../lib/utils/dateFormatters'
 import { DEFAULT_LOG_SLEEP_HOURS } from '../lib/utils/sleepHours'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
+import { useScrollToLogDailyEventsOnMount } from '../hooks/useScrollToLogDailyEventsOnMount'
 import { Tooltip } from './Tooltip'
 
 const MOOD_ICONS: Record<1 | 2 | 3 | 4 | 5, ComponentType<{ 'className'?: string, 'size'?: number, 'aria-hidden'?: boolean }>> = {
@@ -35,7 +36,6 @@ export type LogFormProps = {
   saving: boolean
   saved: boolean
   moodColors: string[]
-  isMobile?: boolean
   formatLocalDate: (date: Date) => string
   tagColors?: Record<string, string>
   onEnsureTagColor?: (tag: string) => void
@@ -61,7 +61,6 @@ export const LogForm = ({
   saving,
   saved,
   moodColors,
-  isMobile = false,
   formatLocalDate,
   tagColors,
   onEnsureTagColor,
@@ -84,6 +83,15 @@ export const LogForm = ({
   const tagDropdownWrapRef = useRef<HTMLDivElement | null>(null)
   const tagInputRef = useRef<HTMLInputElement | null>(null)
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false)
+
+  const openTagDropdownAfterScroll = useCallback((el: HTMLElement) => {
+    setTagDropdownOpen(true)
+    if (el instanceof HTMLInputElement && !el.disabled) {
+      el.focus({ preventScroll: true })
+    }
+  }, [])
+
+  useScrollToLogDailyEventsOnMount(tagInputRef, openTagDropdownAfterScroll)
   const [tagInputValue, setTagInputValue] = useState('')
   const [tagPlaceholderOverride, setTagPlaceholderOverride] = useState<string | null>(null)
   const [calendarOpen, setCalendarOpen] = useState(false)
@@ -353,7 +361,7 @@ export const LogForm = ({
             </div>
             <div className="sleep-duration-picker__fine-tune-block">
               <span className="sleep-duration-picker__fine-tune-label">
-                {t('log.minutesStep', { defaultValue: 'Minutes (+15)' })}
+                {t('log.minutesStep')}
               </span>
               <div className="sleep-duration-picker__stepper">
                 <button
@@ -437,7 +445,7 @@ export const LogForm = ({
                   }
                 }}
               />
-              {tagDropdownOpen && (dropdownOptions.length > 0 || !isMobile) && (
+              {tagDropdownOpen && (
                 <div className="tag-suggestions" role="listbox">
                   {dropdownOptions.length > 0
                     ? dropdownOptions.map((suggestion) => {

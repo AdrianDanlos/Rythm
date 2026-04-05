@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Session } from '@supabase/supabase-js'
 import type { Entry } from '../lib/entries'
@@ -16,6 +16,7 @@ import type {
   WindowStats,
 } from '../lib/types/stats'
 import { AuthForm } from './AuthForm'
+import { IntroCarousel } from './IntroCarousel'
 import { InsightsQuickStart } from './InsightsQuickStart'
 import { LogForm } from './LogForm'
 import { AppPage, Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
@@ -25,6 +26,7 @@ import type {
   ThemePreference,
 } from '../lib/settings'
 import { motionTransition } from '../lib/motion'
+import { STORAGE_KEYS } from '../lib/storageKeys'
 import logo from '../assets/rythm-logo.png'
 
 const Insights = lazy(async () => {
@@ -71,7 +73,6 @@ type AppMainContentProps = {
   saving: boolean
   saved: boolean
   moodColors: string[]
-  isMobile: boolean
   formatLocalDate: (date: Date) => string
   onEntryDateChange: (value: string) => void
   onSleepHoursChange: (value: string) => void
@@ -132,6 +133,9 @@ type AppMainContentProps = {
   onRenameTag: (fromTag: string, toTag: string) => void
   onTagColorChange: (tag: string, color: string) => void
   onEnsureTagColor: (tag: string) => void
+  onIntroVisibilityChange?: (visible: boolean) => void
+  /** While the log-tab quick start is shown (no entries yet), Insights tab is disabled. */
+  lockNonLogTabs: boolean
 }
 
 export function AppMainContent({
@@ -167,7 +171,6 @@ export function AppMainContent({
   saving,
   saved,
   moodColors,
-  isMobile,
   formatLocalDate,
   onEntryDateChange,
   onSleepHoursChange,
@@ -215,10 +218,48 @@ export function AppMainContent({
   onRenameTag,
   onTagColorChange,
   onEnsureTagColor,
+  onIntroVisibilityChange,
+  lockNonLogTabs,
 }: AppMainContentProps) {
   const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
   const tabTransition = reduceMotion ? { duration: 0 } : motionTransition
+  const [introCompleted, setIntroCompleted] = useState(() => {
+    if (typeof window === 'undefined') return false
+    try {
+      return window.localStorage.getItem(STORAGE_KEYS.INTRO_COMPLETED) === 'true'
+    }
+    catch {
+      return false
+    }
+  })
+
+  useEffect(() => {
+    if (!session || introCompleted || typeof window === 'undefined') return
+    try {
+      window.localStorage.setItem(STORAGE_KEYS.INTRO_COMPLETED, 'true')
+    }
+    catch {
+      // Ignore storage write failures.
+    }
+    setIntroCompleted(true)
+  }, [session, introCompleted])
+
+  const handleCompleteIntro = useCallback(() => {
+    setIntroCompleted(true)
+    if (typeof window === 'undefined') return
+    try {
+      window.localStorage.setItem(STORAGE_KEYS.INTRO_COMPLETED, 'true')
+    }
+    catch {
+      // Ignore storage write failures.
+    }
+  }, [])
+  const shouldShowIntro = authInitialized && !session && !introCompleted
+
+  useEffect(() => {
+    onIntroVisibilityChange?.(shouldShowIntro)
+  }, [onIntroVisibilityChange, shouldShowIntro])
 
   // On native apps (Android/iOS), rely on the native splash screen (R logo)
   // and avoid showing the intermediate "loading account" screen.
@@ -245,6 +286,10 @@ export function AppMainContent({
   }
 
   if (!session) {
+    if (shouldShowIntro) {
+      return <IntroCarousel onComplete={handleCompleteIntro} />
+    }
+
     return (
       <AuthForm
         authMode={authMode}
@@ -268,7 +313,9 @@ export function AppMainContent({
         <button
           type="button"
           className={`tab-button ${activeTab === Tabs.Insights ? 'active' : ''}`}
+          disabled={lockNonLogTabs}
           onClick={() => {
+            if (lockNonLogTabs) return
             saveLogWhenLeaving(() =>
               void onSave(
                 { preventDefault: () => {} } as React.FormEvent<HTMLFormElement>,
@@ -354,9 +401,11 @@ export function AppMainContent({
                                 .querySelector('.sleep-duration-picker__quick-grid')
                                 ?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
                           />
-                          <p className="log-form-tip" role="status">
-                            {t('log.tip')}
-                          </p>
+                          {entries.length > 0 && (
+                            <p className="log-form-tip" role="status">
+                              {t('log.tip')}
+                            </p>
+                          )}
                           <LogForm
                             selectedDate={selectedDate}
                             todayDate={todayDate}
@@ -371,7 +420,6 @@ export function AppMainContent({
                             saving={saving}
                             saved={saved}
                             moodColors={moodColors}
-                            isMobile={isMobile}
                             formatLocalDate={formatLocalDate}
                             tagColors={tagColors}
                             onEnsureTagColor={onEnsureTagColor}

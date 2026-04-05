@@ -116,6 +116,7 @@ function App() {
   const [exportError, setExportError] = useState<string | null>(null)
   const [isPortalLoading, setIsPortalLoading] = useState(false)
   const [isSignOutLoading, setIsSignOutLoading] = useState(false)
+  const [isIntroVisible, setIsIntroVisible] = useState(false)
   const [isMobile, setIsMobile] = useState(
     () =>
       typeof window !== 'undefined'
@@ -755,6 +756,18 @@ function App() {
     }
   }, [isNativeApp, navigateToPage])
 
+  const lockNonLogTabs = entriesSettled && entries.length === 0
+
+  useEffect(() => {
+    if (!isIntroVisible) return
+    setIsMenuPanelOpen(false)
+  }, [isIntroVisible])
+
+  useEffect(() => {
+    if (!lockNonLogTabs) return
+    setIsMenuPanelOpen(false)
+  }, [lockNonLogTabs])
+
   if (showDeleteAccountPage) {
     return <DeleteAccountPage />
   }
@@ -763,12 +776,17 @@ function App() {
   }
 
   const handleSwipeStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (lockNonLogTabs) {
+      swipeStartXRef.current = null
+      return
+    }
     const touch = event.touches[0]
     // Only start a swipe if it begins near the left edge to avoid conflicts
     swipeStartXRef.current = touch.clientX <= 32 ? touch.clientX : null
   }
 
   const handleSwipeMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (lockNonLogTabs) return
     if (swipeStartXRef.current == null || isMenuPanelOpen) return
     const touch = event.touches[0]
     const deltaX = touch.clientX - swipeStartXRef.current
@@ -798,20 +816,25 @@ function App() {
 
   return (
     <div
-      className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}${!session && isNativeApp && Capacitor.getPlatform() === 'android' ? ' app-native-login' : ''}${session && activePage === AppPage.Pro ? ' app-pro-page' : ''}`}
+      className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}${!session && isNativeApp && Capacitor.getPlatform() === 'android' ? ' app-native-login' : ''}${session && activePage === AppPage.Pro ? ' app-pro-page' : ''}${isIntroVisible ? ' app-intro' : ''}`}
       onClick={handleAppClick}
       onTouchStart={handleSwipeStart}
       onTouchMove={handleSwipeMove}
       onTouchEnd={handleSwipeEnd}
     >
-      <AppHeader
-        onOpenMenu={() => setIsMenuPanelOpen(prev => !prev)}
-        isMenuOpen={isMenuPanelOpen}
-        isAuthenticated={!!session}
-      />
+      {!isIntroVisible
+        ? (
+            <AppHeader
+              onOpenMenu={() => setIsMenuPanelOpen(prev => !prev)}
+              isMenuOpen={isMenuPanelOpen}
+              isAuthenticated={!!session}
+              isMenuDisabled={!!session && lockNonLogTabs}
+            />
+          )
+        : null}
 
       <AppSidePanel
-        isOpen={isMenuPanelOpen}
+        isOpen={isMenuPanelOpen && !lockNonLogTabs}
         onClose={() => setIsMenuPanelOpen(false)}
         session={session}
         isPro={isPro}
@@ -878,7 +901,6 @@ function App() {
               saving={saving}
               saved={saved}
               moodColors={moodColors}
-              isMobile={isMobile}
               formatLocalDate={formatLocalDate}
               onEntryDateChange={handleEntryDateChange}
               onSleepHoursChange={setSleepHours}
@@ -926,6 +948,8 @@ function App() {
               onRenameTag={handleRenameTag}
               onTagColorChange={handleTagColorChange}
               onEnsureTagColor={ensureTagColorForTag}
+              onIntroVisibilityChange={setIsIntroVisible}
+              lockNonLogTabs={lockNonLogTabs}
             />
           )}
 
@@ -936,6 +960,7 @@ function App() {
               activePage={activePage}
               activeTab={activeTab}
               activeInsightsTab={activeInsightsTab}
+              lockNonLogTabs={lockNonLogTabs}
               onNavigateToPage={navigateToPage}
               onBeforeLeaveTab={runSaveBeforeLeavingTab}
               canManageSubscription={canManageSubscription}

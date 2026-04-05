@@ -15,6 +15,16 @@
   padding-bottom: 16px;
 }
 
+.app.app-intro {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  gap: 0;
+  min-height: 100dvh;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
 /* Pro upgrade full page — bottom nav hidden, immersive paywall */
 .app-authenticated.app-pro-page {
   padding: env(safe-area-inset-top, 0px) 0 0;
@@ -225,6 +235,176 @@
   opacity: 0.85;
 }
 
+.intro-carousel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
+  max-width: none;
+  min-height: 100%;
+  margin: 0;
+  padding-top: max(16px, env(safe-area-inset-top, 0px));
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+  /* Themed undraw accents → chart tokens; ink/slate stay *dark* (not --text, which is light in dark theme). */
+  --intro-svg-accent: var(--chart-sleep-bar, var(--button-bg));
+  --intro-svg-secondary: var(--chart-mood);
+  --intro-svg-slate: #3f3d56;
+  --intro-svg-ink: #090814;
+  /* Light fills in illustrations (screens, paper, shadows) */
+  --intro-svg-paper: #ffffff;
+  --intro-svg-wash: #f2f2f2;
+  --intro-svg-wash-2: #e6e6e6;
+  --intro-svg-wash-3: #d6d6e3;
+  --intro-svg-skin: #ed9da0;
+  /* events.svg chart overlay lines (former flat white paths) */
+  --intro-svg-vein: color-mix(in srgb, var(--intro-svg-accent) 28%, var(--intro-svg-ink) 72%);
+  background:
+    radial-gradient(circle at 50% -20%, color-mix(in srgb, var(--button-bg) 16%, transparent), transparent 58%),
+    var(--bg);
+  overflow: hidden;
+}
+
+:root[data-theme="dark"] .intro-carousel {
+  /* Light slate panels — readable on dark UI without going full white */
+  --intro-svg-paper: #e8edf4;
+  --intro-svg-wash: #dbe3ee;
+  --intro-svg-wash-2: #d0d9e6;
+  --intro-svg-wash-3: #c5cfde;
+  --intro-svg-skin: color-mix(in srgb, #ed9da0 96%, #94a3b8);
+  --intro-svg-vein: color-mix(in srgb, var(--intro-svg-accent) 40%, #0f172a 60%);
+}
+
+.intro-carousel__hero {
+  width: min(640px, calc(100% - 32px));
+  text-align: center;
+  margin-top: max(14px, env(safe-area-inset-top, 0px));
+}
+
+.intro-carousel__hero-title {
+  margin: 0;
+  font-size: clamp(1.7rem, 5.5vw, 2.2rem);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.intro-carousel__hero-subtitle {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: clamp(0.95rem, 3.2vw, 1.05rem);
+}
+
+.intro-carousel__illustration-wrap {
+  width: min(460px, calc(100% - 32px));
+  height: clamp(220px, 34dvh, 320px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  padding: clamp(12px, 3vw, 18px);
+  background: color-mix(in srgb, var(--card) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.intro-carousel__illustration-svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.intro-carousel__illustration-svg > svg {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+
+.intro-carousel__content {
+  width: min(620px, calc(100% - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+}
+
+.intro-carousel__title {
+  margin: 0;
+  font-size: clamp(1.32rem, 4.4vw, 1.72rem);
+  line-height: 1.2;
+}
+
+.intro-carousel__body {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.52;
+  font-size: clamp(0.95rem, 3.1vw, 1.02rem);
+}
+
+.intro-carousel__pagination {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.intro-carousel__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--muted) 40%, transparent);
+}
+
+.intro-carousel__dot.is-active {
+  width: 24px;
+  background: var(--button-bg);
+}
+
+.intro-carousel__actions {
+  width: min(620px, calc(100% - 32px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+}
+
+.intro-carousel__button {
+  min-width: 108px;
+}
+
+.intro-carousel__button--primary {
+  min-width: 146px;
+  margin-left: auto;
+}
+
+@media (max-width: 480px) {
+  .intro-carousel {
+    gap: 14px;
+  }
+
+  .intro-carousel__hero-subtitle {
+    margin-top: 10px;
+  }
+
+  .intro-carousel__illustration-wrap {
+    border-radius: 18px;
+  }
+
+  .intro-carousel__actions {
+    gap: 8px;
+  }
+}
+
 .app-header {
   position: fixed;
   top: 0;
@@ -307,6 +487,12 @@
   background: transparent;
   outline: none;
   box-shadow: none;
+}
+
+.app-header-menu-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .header-actions {
@@ -395,6 +581,12 @@
   background: var(--selected-bg);
   color: var(--selected-text);
   border-color: var(--selected-border);
+}
+
+.tab-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .tab-button:focus:not(:focus-visible) {
@@ -4262,7 +4454,7 @@ button.toggle-group__btn--disabled:disabled {
 .insights-intro {
   display: grid;
   gap: 16px;
-  margin-bottom: 10px;
+  margin-bottom: 24px;
 }
 
 .insights-intro__header {

@@ -54,6 +54,19 @@ const en = {
     legalAgreement:
       'By continuing, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.',
   },
+  intro: {
+    title: 'Welcome to Rythm',
+    subtitle: "Creemos que entender cómo te sientes debería de ser sencillo.",
+    step1Title: 'Log your sleep in seconds',
+    step1Body: 'Track how many hours you slept and how you felt each day.',
+    step2Title: 'Capture what shaped your day',
+    step2Body: 'Add your custom daily events like stress, exercise, caffeine, or social time.',
+    step3Title: 'Unlock clear personal insights',
+    step3Body: 'Rythm finds patterns and highlights what helps you feel better',
+    skip: 'Skip',
+    next: 'Next',
+    getStarted: 'Get started',
+  },
   settings: {
     title: 'Settings',
     account: 'Account',
@@ -137,6 +150,7 @@ const en = {
     fineTune: 'Fine-tune',
     hours: 'Hours',
     minutes: 'Minutes',
+    minutesStep: 'Minutes (+15)',
     eventsQuestion: 'What happened today?',
     eventsTooltip: 'Log daily events (e.g. stress, caffeine, exercise...). Use the default events or add your own custom ones. Rythm will automatically recognize patterns in them and show you insights.',
     recommended: 'Recommended',
@@ -204,7 +218,7 @@ const en = {
   },
   insights: {
     quickStart: 'Quick start',
-    quickStartTitle: 'See how your life affects your sleep and mood',
+    quickStartTitle: 'Sleep, habits, and mood: it\'s all connected',
     step1: 'Log how much you slept last night.',
     step2: 'Log daily events (e.g. coffee, workout, late night, stress).',
     step3: 'Rate how you are feeling. The more days you log, the more insights you will see.',
@@ -242,7 +256,8 @@ const en = {
     noSleepLogged: 'No sleep logged',
     noMoodLogged: 'No mood logged',
     dailyEvents: 'Daily events',
-    noDailyEventsLogged: 'No daily events logged',
+    noDailyEventsLogged:
+      'No daily events logged. You can register them <logLink>here</logLink>.',
     journal: 'Journal',
     noJournalForDay: 'No journal entry for this day',
     noEntryForDay: 'No entry for this day.',

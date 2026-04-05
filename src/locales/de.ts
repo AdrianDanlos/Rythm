@@ -54,6 +54,19 @@ const de = {
     legalAgreement:
       'Mit der Nutzung stimmst du unseren <terms>Nutzungsbedingungen</terms> und der <privacy>Datenschutzerklärung</privacy> zu.',
   },
+  intro: {
+    title: 'Willkommen bei Rythm',
+    subtitle: "Creemos que entender cómo te sientes debería de ser sencillo.",
+    step1Title: 'Schlaf in Sekunden erfassen',
+    step1Body: 'Halte fest, wie viele Stunden du geschlafen hast und wie du dich jeden Tag gefühlt hast.',
+    step2Title: 'Festhalten, was deinen Tag geprägt hat',
+    step2Body: 'Füge eigene tägliche Ereignisse hinzu: Stress, Sport, Koffein oder Zeit mit anderen.',
+    step3Title: 'Erkenne, was dir wirklich guttut',
+    step3Body: 'Rythm erkennt Muster und zeigt dir, welche Gewohnheiten dein Wohlbefinden verbessern.',
+    skip: 'Überspringen',
+    next: 'Weiter',
+    getStarted: 'Loslegen',
+  },
   settings: {
     title: 'Einstellungen',
     account: 'Konto',
@@ -137,6 +150,7 @@ const de = {
     fineTune: 'Feinabstimmung',
     hours: 'Stunden',
     minutes: 'Minuten',
+    minutesStep: 'Minuten (+15)',
     eventsQuestion: 'Was ist heute passiert?',
     eventsTooltip: 'Füge Tagesereignisse hinzu (z. B. Stress, Koffein, Sport ...). Nutze die Standardereignisse oder erstelle eigene. Rythm findet Muster und zeigt dir Zusammenhänge.',
     recommended: 'Empfohlen',
@@ -203,7 +217,7 @@ const de = {
   },
   insights: {
     quickStart: 'Erste Schritte',
-    quickStartTitle: 'Sieh, wie dein Leben deinen Schlaf und deine Stimmung beeinflusst',
+    quickStartTitle: 'Schlaf, Gewohnheiten und Stimmung: alles hängt zusammen',
     step1: 'Trag ein, wie viel du letzte Nacht geschlafen hast.',
     step2: 'Füge Tagesereignisse hinzu (z. B. Kaffee, Sport, Stress usw.).',
     step3: 'Bewerte deine Stimmung. Je mehr Tage du einträgst, desto mehr erfährst du.',
@@ -241,7 +255,8 @@ const de = {
     noSleepLogged: 'Kein Schlaf eingetragen',
     noMoodLogged: 'Keine Stimmung eingetragen',
     dailyEvents: 'Tagesereignisse',
-    noDailyEventsLogged: 'Keine Tagesereignisse eingetragen',
+    noDailyEventsLogged:
+      'Keine Tagesereignisse eingetragen. Du kannst sie <logLink>hier</logLink> erfassen.',
     journal: 'Tagebuch',
     noJournalForDay: 'Keine Notiz für diesen Tag',
     noEntryForDay: 'Kein Eintrag für diesen Tag.',

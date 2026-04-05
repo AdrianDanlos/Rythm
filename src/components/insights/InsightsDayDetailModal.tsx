@@ -1,5 +1,6 @@
 import type { Entry } from '../../lib/entries'
 import { useTranslation } from 'react-i18next'
+import { NoDailyEventsLoggedHint } from './NoDailyEventsLoggedHint'
 import { getHighContrastTextColor } from '../../lib/utils/colorContrast'
 import { formatLongDate } from '../../lib/utils/dateFormatters'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
@@ -10,6 +11,7 @@ type InsightsDayDetailModalProps = {
   entry: Entry | null
   moodColors: string[]
   onClose: () => void
+  onGoToLog: () => void
   tagColors?: Record<string, string>
 }
 
@@ -19,6 +21,7 @@ export const InsightsDayDetailModal = ({
   entry,
   moodColors,
   onClose,
+  onGoToLog,
   tagColors,
 }: InsightsDayDetailModalProps) => {
   const { t } = useTranslation()
@@ -110,7 +113,7 @@ export const InsightsDayDetailModal = ({
                           })}
                         </div>
                       )
-                    : <p className="muted">{t('insights.noDailyEventsLogged')}</p>}
+                    : <NoDailyEventsLoggedHint onGoToLog={onGoToLog} />}
                 </div>
 
                 <div className="insights-day-modal__row">

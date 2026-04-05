@@ -54,6 +54,19 @@ const fr = {
     legalAgreement:
       'En continuant, vous acceptez nos <terms>Conditions d\'utilisation</terms> et notre <privacy>Politique de confidentialité</privacy>.',
   },
+  intro: {
+    title: 'Bienvenue dans Rythm',
+    subtitle: "Creemos que entender cómo te sientes debería de ser sencillo.",
+    step1Title: 'Notez votre sommeil en quelques secondes',
+    step1Body: 'Enregistrez vos heures de sommeil et comment vous vous êtes senti chaque jour.',
+    step2Title: 'Capturez ce qui a marqué votre journée',
+    step2Body: 'Ajoutez vos événements quotidiens personnalisés : stress, sport, caféine, vie sociale…',
+    step3Title: 'Découvrez ce qui vous fait vraiment du bien',
+    step3Body: 'Rythm détecte des tendances et met en lumière ce qui vous aide à vous sentir mieux.',
+    skip: 'Passer',
+    next: 'Suivant',
+    getStarted: 'Commencer',
+  },
   settings: {
     title: 'Paramètres',
     account: 'Compte',
@@ -137,6 +150,7 @@ const fr = {
     fineTune: 'Affiner',
     hours: 'Heures',
     minutes: 'Minutes',
+    minutesStep: 'Minutes (+15)',
     eventsQuestion: 'Qu\'est-ce qui s\'est passé aujourd\'hui ?',
     eventsTooltip: 'Ajoutez des événements du jour (ex. stress, caféine, sport...). Utilisez les événements par défaut ou créez les vôtres. Rythm trouvera des tendances et vous montrera des corrélations.',
     recommended: 'Recommandé',
@@ -203,7 +217,7 @@ const fr = {
   },
   insights: {
     quickStart: 'Pour commencer',
-    quickStartTitle: 'Voyez comment votre vie influence votre sommeil et votre humeur',
+    quickStartTitle: 'Sommeil, habitudes et humeur : tout est lié',
     step1: 'Enregistrez combien vous avez dormi la nuit dernière.',
     step2: 'Ajoutez des événements du jour (ex. café, sport, stress, etc.).',
     step3: 'Évaluez votre humeur. Plus vous enregistrez de jours, plus vous obtiendrez d\'informations.',
@@ -241,7 +255,8 @@ const fr = {
     noSleepLogged: 'Aucun sommeil enregistré',
     noMoodLogged: 'Aucune humeur enregistrée',
     dailyEvents: 'Événements du jour',
-    noDailyEventsLogged: 'Aucun événement du jour enregistré',
+    noDailyEventsLogged:
+      'Aucun événement du jour enregistré. Vous pouvez les enregistrer <logLink>ici</logLink>.',
     journal: 'Journal',
     noJournalForDay: 'Aucune note pour ce jour',
     noEntryForDay: 'Aucune entrée pour ce jour.',

@@ -21,6 +21,7 @@ import { InsightsFirstTwoCard } from './insights/InsightsFirstTwoCard'
 import { InsightsSummaryIntro } from './InsightsSummaryIntro'
 import { InsightsCalendarHeatmap } from './insights/InsightsCalendarHeatmap'
 import { InsightsMonthlyCalendar } from './insights/InsightsMonthlyCalendar'
+import { NoDailyEventsLoggedHint } from './insights/NoDailyEventsLoggedHint'
 import { IdeaSleepTarget } from './insights/IdeaSleepTarget'
 import { InsightsScatter } from './insights/InsightsScatter'
 import { InsightsSmoothedTrends } from './insights/InsightsSmoothedTrends'
@@ -423,6 +424,7 @@ export const Insights = ({
                 isMobile={isMobile}
                 entriesLoading={entriesLoading}
                 tagColors={tagColors}
+                goToLog={goToLog}
               />
               <InsightsCalendarHeatmap
                 entries={entries}
@@ -595,7 +597,7 @@ export const Insights = ({
                       </>
                     )
                   : (
-                      <p className="muted">{t('insights.noDailyEventsLogged')}</p>
+                      <NoDailyEventsLoggedHint onGoToLog={goToLog} />
                     )}
               </section>
               <TagColorPicker
