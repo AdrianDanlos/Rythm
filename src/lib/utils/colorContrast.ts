@@ -1,5 +1,7 @@
 const hexColorPattern = /^#([0-9a-fA-F]{6})$/
-const WHITE_BIAS_FACTOR = 1.02
+
+/** Black text only on clearly light fills; saturated / mid-tone pills stay white. */
+const LIGHT_BACKGROUND_LUMINANCE = 0.62
 
 const toLinearChannel = (channel: number): number => {
   const normalized = channel / 255
@@ -12,12 +14,6 @@ const relativeLuminance = (r: number, g: number, b: number): number => (
   + 0.7152 * toLinearChannel(g)
   + 0.0722 * toLinearChannel(b)
 )
-
-const contrastRatio = (l1: number, l2: number): number => {
-  const lighter = Math.max(l1, l2)
-  const darker = Math.min(l1, l2)
-  return (lighter + 0.05) / (darker + 0.05)
-}
 
 const parseHexColor = (value: string): { r: number, g: number, b: number } | null => {
   const match = hexColorPattern.exec(value)
@@ -36,8 +32,5 @@ export const getHighContrastTextColor = (backgroundHex: string | undefined): str
   if (!parsed) return undefined
 
   const bgLuminance = relativeLuminance(parsed.r, parsed.g, parsed.b)
-  const blackContrast = contrastRatio(bgLuminance, 0)
-  const whiteContrast = contrastRatio(bgLuminance, 1)
-
-  return whiteContrast * WHITE_BIAS_FACTOR >= blackContrast ? '#ffffff' : '#000000'
+  return bgLuminance >= LIGHT_BACKGROUND_LUMINANCE ? '#000000' : '#ffffff'
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState, type FocusEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
+import { ChevronRight, Crown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import {
   cancelDailyReminder,
@@ -18,6 +19,8 @@ import appleLogo from '../assets/apple.png'
 import fitbitLogo from '../assets/fitbit.png'
 
 type SettingsPageProps = {
+  isPro: boolean
+  onOpenPaywall: () => void
   name: string
   email: string
   dateFormat: DateFormatPreference
@@ -32,6 +35,8 @@ type SettingsPageProps = {
 }
 
 export function SettingsPage({
+  isPro,
+  onOpenPaywall,
   name,
   email,
   dateFormat,
@@ -142,6 +147,26 @@ export function SettingsPage({
       <div className="settings-header">
         <h2 id="settings-title">{t('settings.title')}</h2>
       </div>
+
+      {!isPro
+        ? (
+            <button
+              type="button"
+              className="settings-pro-banner"
+              onClick={onOpenPaywall}
+              aria-label={`${t('paywall.unlockPro')}: ${t('paywall.upgradeNow')}`}
+            >
+              <span className="settings-pro-banner__icon-wrap" aria-hidden="true">
+                <Crown className="settings-pro-banner__icon" strokeWidth={2} />
+              </span>
+              <span className="settings-pro-banner__body">
+                <span className="settings-pro-banner__title">{t('paywall.unlockPro')}</span>
+                <span className="settings-pro-banner__subtitle">{t('paywall.upgradeToAccess')}</span>
+              </span>
+              <ChevronRight className="settings-pro-banner__chevron" aria-hidden="true" strokeWidth={2} />
+            </button>
+          )
+        : null}
 
       <div className="settings-form">
         <section className="settings-section">

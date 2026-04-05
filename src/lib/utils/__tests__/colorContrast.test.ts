@@ -10,12 +10,10 @@ describe('getHighContrastTextColor', () => {
     expect(getHighContrastTextColor('#4f46e5')).toBe('#ffffff')
   })
 
-  it('chooses the mathematically higher contrast for mid-tone colors', () => {
+  it('uses white on mid-tone and pastel fills', () => {
     expect(getHighContrastTextColor('#757575')).toBe('#ffffff')
-  })
-
-  it('applies a slight white bias for near-tie contrasts', () => {
     expect(getHighContrastTextColor('#767676')).toBe('#ffffff')
+    expect(getHighContrastTextColor('#c4b5fd')).toBe('#ffffff')
   })
 
   it('returns undefined for invalid colors', () => {

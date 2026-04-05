@@ -301,6 +301,8 @@ export function AppMainContent({
               >
                 <Suspense fallback={null}>
                   <SettingsPage
+                    isPro={isPro}
+                    onOpenPaywall={onOpenPaywall}
                     name={settingsName}
                     email={settingsEmail}
                     dateFormat={settingsDateFormat}
