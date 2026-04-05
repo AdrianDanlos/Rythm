@@ -48,15 +48,15 @@ const fr = {
     alreadyHaveAccount: 'Déjà un compte ? Connectez-vous',
     loadingAccount: 'Chargement de votre compte',
     checkingSession: 'Vérification de votre session...',
-    welcome: 'Bienvenue',
+    welcome: 'Bienvenue sur Rythm',
     signInToContinue: 'Connectez-vous pour continuer',
     secureSignIn: 'Connexion sécurisée',
-    legalAgreement:
-      'En continuant, vous acceptez nos <terms>Conditions d\'utilisation</terms> et notre <privacy>Politique de confidentialité</privacy>.',
+    signInBenefit:
+      'Sign in so your progress and settings stay with you on any device.',
   },
   intro: {
     title: 'Bienvenue dans Rythm',
-    subtitle: "Creemos que entender cómo te sientes debería de ser sencillo.",
+    subtitle: 'Creemos que entender cómo te sientes debería de ser sencillo.',
     step1Title: 'Notez votre sommeil en quelques secondes',
     step1Body: 'Enregistrez vos heures de sommeil et comment vous vous êtes senti chaque jour.',
     step2Title: 'Capturez ce qui a marqué votre journée',

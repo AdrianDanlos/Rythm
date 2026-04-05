@@ -304,10 +304,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 24px;
-  padding: clamp(12px, 3vw, 18px);
-  background: color-mix(in srgb, var(--card) 90%, transparent);
-  border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
   box-sizing: border-box;
   flex-shrink: 0;
 }
@@ -394,10 +390,6 @@
 
   .intro-carousel__hero-subtitle {
     margin-top: 10px;
-  }
-
-  .intro-carousel__illustration-wrap {
-    border-radius: 18px;
   }
 
   .intro-carousel__actions {

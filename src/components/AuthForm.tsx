@@ -1,8 +1,7 @@
 import type { FormEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import googleLogo from '../assets/google-logo.png'
-import { ROUTES } from '../billing/stripe/routes'
 
 type AuthFormProps = {
   authMode: 'signin' | 'signup'
@@ -19,9 +18,6 @@ type AuthFormProps = {
 
 function NativeGoogleLoginScreen({ onGoogleSignIn }: { onGoogleSignIn: () => void }) {
   const { t } = useTranslation()
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
-  const termsUrl = `${origin}${ROUTES.privacyPage}#terms`
-  const privacyUrl = `${origin}${ROUTES.privacyPage}#privacy`
 
   return (
     <div className="native-auth-screen">
@@ -57,29 +53,7 @@ function NativeGoogleLoginScreen({ onGoogleSignIn }: { onGoogleSignIn: () => voi
           <span className="native-auth-screen__divider-text">{t('auth.secureSignIn')}</span>
           <span className="native-auth-screen__divider-line" />
         </div>
-        <p className="native-auth-screen__legal">
-          <Trans
-            i18nKey="auth.legalAgreement"
-            components={{
-              terms: (
-                <a
-                  className="native-auth-screen__legal-link"
-                  href={termsUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                />
-              ),
-              privacy: (
-                <a
-                  className="native-auth-screen__legal-link"
-                  href={privacyUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                />
-              ),
-            }}
-          />
-        </p>
+        <p className="native-auth-screen__legal">{t('auth.signInBenefit')}</p>
       </div>
     </div>
   )

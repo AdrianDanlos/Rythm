@@ -48,15 +48,15 @@ const en = {
     alreadyHaveAccount: 'Already have an account? Sign in',
     loadingAccount: 'Loading your account',
     checkingSession: 'Checking your session...',
-    welcome: 'Welcome',
+    welcome: 'Welcome to Rythm',
     signInToContinue: 'Sign in to continue',
     secureSignIn: 'Secure sign-in',
-    legalAgreement:
-      'By continuing, you agree to our <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>.',
+    signInBenefit:
+      'Sign in so your progress and settings stay with you on any device.',
   },
   intro: {
     title: 'Welcome to Rythm',
-    subtitle: "Creemos que entender cómo te sientes debería de ser sencillo.",
+    subtitle: 'Creemos que entender cómo te sientes debería de ser sencillo.',
     step1Title: 'Log your sleep in seconds',
     step1Body: 'Track how many hours you slept and how you felt each day.',
     step2Title: 'Capture what shaped your day',

@@ -48,11 +48,11 @@ const de = {
     alreadyHaveAccount: 'Schon ein Konto? Jetzt anmelden',
     loadingAccount: 'Konto wird geladen',
     checkingSession: 'Sitzung wird überprüft...',
-    welcome: 'Willkommen',
+    welcome: 'Willkommen bei Rythm',
     signInToContinue: 'Melde dich an, um fortzufahren',
     secureSignIn: 'Sichere Anmeldung',
-    legalAgreement:
-      'Mit der Nutzung stimmst du unseren <terms>Nutzungsbedingungen</terms> und der <privacy>Datenschutzerklärung</privacy> zu.',
+    signInBenefit:
+      'Sign in so your progress and settings stay with you on any device.',
   },
   intro: {
     title: 'Willkommen bei Rythm',
