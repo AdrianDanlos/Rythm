@@ -467,11 +467,12 @@ function App() {
 
   useEffect(() => {
     if (!showStripeReturnPage) return
+    if (!authInitialized) return
     if (pathname === ROUTES.stripeSuccess) {
       void refreshSession()
     }
     navigate(getPathForPage(getDefaultPageForUser(userId)), { replace: true })
-  }, [showStripeReturnPage, pathname, refreshSession, navigate, userId])
+  }, [showStripeReturnPage, pathname, refreshSession, navigate, userId, authInitialized])
 
   useEffect(() => {
     if (showPrivacyPage || showDeleteAccountPage || showStripeReturnPage) return
@@ -479,6 +480,10 @@ function App() {
     if (hasSupabaseAuthCallbackPayload(location.search, location.hash)) {
       return
     }
+
+    // Avoid navigating from `/` before Supabase has restored the session: with no userId,
+    // getDefaultPageForUser always picks Log, and we never re-run for `/` once stuck on /log.
+    if (!authInitialized) return
 
     if (pathname === '/') {
       navigate(getPathForPage(getDefaultPageForUser(userId)), { replace: true })
@@ -497,6 +502,7 @@ function App() {
     location.hash,
     navigate,
     userId,
+    authInitialized,
   ])
 
   useEffect(() => {
