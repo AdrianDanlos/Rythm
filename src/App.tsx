@@ -47,6 +47,14 @@ import './App.css'
 import { upsertEntry } from './lib/entries'
 import { MAX_TAG_LENGTH } from './lib/utils/stringUtils'
 
+const isSmokeTestMode = import.meta.env.VITE_SMOKE_TEST_MODE === 'true'
+
+function smokeLog(message: string) {
+  if (!isSmokeTestMode) return
+  // Forward deterministic smoke signals to Android logcat.
+  console.info(`[smoke] ${message}`)
+}
+
 function getReturningUserStorageKey(userId: string): string {
   return `${STORAGE_KEYS.RETURNING_USER}:${userId}`
 }
@@ -383,6 +391,7 @@ function App() {
       const accessToken = params.get('access_token')
       const refreshToken = params.get('refresh_token')
       if (accessToken && refreshToken) {
+        smokeLog('appUrlOpen token payload detected')
         void supabase.auth.setSession({
           access_token: accessToken,
           refresh_token: refreshToken,
@@ -398,6 +407,7 @@ function App() {
     if (!isNativeApp || Capacitor.getPlatform() !== 'android') return
 
     const listenerPromise = CapacitorApp.addListener('backButton', () => {
+      smokeLog('android backButton listener invoked')
       if (isFeedbackOpen) {
         closeFeedback()
         return
@@ -439,10 +449,12 @@ function App() {
 
   useEffect(() => {
     void checkForAndroidUpdate()
+    smokeLog('checkForAndroidUpdate invoked')
     if (!isNativeApp || Capacitor.getPlatform() !== 'android') return
 
     const listenerPromise = CapacitorApp.addListener('appStateChange', ({ isActive }) => {
       if (isActive) {
+        smokeLog('android appStateChange active')
         void checkForAndroidUpdate()
       }
     })
