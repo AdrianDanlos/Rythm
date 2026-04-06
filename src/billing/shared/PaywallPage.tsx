@@ -13,12 +13,18 @@ import {
   Shield,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { getPlayFreeTrialDays, isAndroidPlayBilling } from '../play/config'
+import {
+  getPlayFreeTrialDays,
+  getPlayPlansForPicker,
+  hasPlayYearlyBasePlan,
+  isAndroidPlayBilling,
+  type PlayPlanPickerKey,
+} from '../play/config'
 
 type PaywallPageProps = {
   onClose: () => void
   upgradeUrl?: string
-  onUpgrade?: () => Promise<boolean> | boolean
+  onUpgrade?: (basePlanId?: string) => Promise<boolean> | boolean
   onRestore?: () => Promise<boolean>
   showRestore?: boolean
 }
@@ -54,8 +60,15 @@ export const PaywallPage = ({
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [isRestoring, setIsRestoring] = useState(false)
+  const [selectedPlayPlanKey, setSelectedPlayPlanKey] = useState<PlayPlanPickerKey>('monthly')
   const canUpgrade = Boolean(onUpgrade || (upgradeUrl && upgradeUrl.trim()))
-  const { amount, periodPart } = splitPriceLabel(t('paywall.proPriceLabel'))
+  const androidPicker = isAndroidPlayBilling() && hasPlayYearlyBasePlan()
+  const priceLabelKey = androidPicker
+    ? (selectedPlayPlanKey === 'yearly' ? 'paywall.proPriceLabelYearly' : 'paywall.proPriceLabelMonthly')
+    : isAndroidPlayBilling()
+      ? 'paywall.proPriceLabelMonthly'
+      : 'paywall.proPriceLabel'
+  const { amount, periodPart } = splitPriceLabel(t(priceLabelKey))
   const trialDays = getPlayFreeTrialDays()
   const showTrialOffer = isAndroidPlayBilling() && trialDays > 0
   const fullPriceLabel = [amount, periodPart].filter(Boolean).join(' ')
@@ -68,7 +81,10 @@ export const PaywallPage = ({
     }
     setIsLoading(true)
     try {
-      const didStartCheckout = await onUpgrade()
+      const playPlans = getPlayPlansForPicker()
+      const selectedPlan = playPlans.find(p => p.key === selectedPlayPlanKey) ?? playPlans[0]
+      const basePlanIdForPurchase = isAndroidPlayBilling() ? selectedPlan.basePlanId : undefined
+      const didStartCheckout = await onUpgrade(basePlanIdForPurchase)
       if (didStartCheckout) {
         return
       }
@@ -117,26 +133,84 @@ export const PaywallPage = ({
         <div className="paywall-page__panel-inner">
           {amount
             ? (
-                <div className="paywall-page__price-block">
-                  {showTrialOffer
-                    ? (
-                        <p className="paywall-page__trial-pill">
-                          {t('paywall.trialPill', { days: trialDays })}
+                androidPicker
+                  ? (
+                      <div className="paywall-page__price-block paywall-page__price-block--plans">
+                        {showTrialOffer
+                          ? (
+                              <p className="paywall-page__trial-pill">
+                                {t('paywall.trialPill', { days: trialDays })}
+                              </p>
+                            )
+                          : null}
+                        <fieldset className="paywall-page__plans">
+                          <legend className="paywall-page__plans-legend">{t('paywall.choosePlan')}</legend>
+                          {getPlayPlansForPicker().map((plan) => {
+                            const label = t(
+                              plan.key === 'yearly' ? 'paywall.proPriceLabelYearly' : 'paywall.proPriceLabelMonthly',
+                            )
+                            const { amount: planAmount, periodPart: planPeriod } = splitPriceLabel(label)
+                            return (
+                              <label
+                                key={plan.key}
+                                className={
+                                  selectedPlayPlanKey === plan.key
+                                    ? 'paywall-page__plan-option paywall-page__plan-option--selected'
+                                    : 'paywall-page__plan-option'
+                                }
+                              >
+                                <input
+                                  type="radio"
+                                  className="paywall-page__plan-radio"
+                                  name="play-subscription-plan"
+                                  value={plan.key}
+                                  checked={selectedPlayPlanKey === plan.key}
+                                  onChange={() => setSelectedPlayPlanKey(plan.key)}
+                                />
+                                <span className="paywall-page__plan-option-body">
+                                  <span className="paywall-page__plan-option-title">
+                                    {plan.key === 'yearly' ? t('paywall.planYearly') : t('paywall.planMonthly')}
+                                  </span>
+                                  <span className="paywall-page__plan-option-price">
+                                    {planAmount}
+                                    {planPeriod
+                                      ? <span className="paywall-page__plan-option-period"> {planPeriod}</span>
+                                      : null}
+                                  </span>
+                                </span>
+                              </label>
+                            )
+                          })}
+                        </fieldset>
+                        <p className="paywall-page__price-note paywall-page__price-note--below-plans">
+                          {showTrialOffer
+                            ? t('paywall.trialFootnote', { price: fullPriceLabel })
+                            : t('paywall.cancelAnytime')}
                         </p>
-                      )
-                    : null}
-                  <p className="paywall-page__price-row">
-                    <span className="paywall-page__price-amount">{amount}</span>
-                    {periodPart
-                      ? <span className="paywall-page__price-period"> {periodPart}</span>
-                      : null}
-                  </p>
-                  <p className="paywall-page__price-note">
-                    {showTrialOffer
-                      ? t('paywall.trialFootnote', { price: fullPriceLabel })
-                      : t('paywall.cancelAnytime')}
-                  </p>
-                </div>
+                      </div>
+                    )
+                  : (
+                      <div className="paywall-page__price-block">
+                        {showTrialOffer
+                          ? (
+                              <p className="paywall-page__trial-pill">
+                                {t('paywall.trialPill', { days: trialDays })}
+                              </p>
+                            )
+                          : null}
+                        <p className="paywall-page__price-row">
+                          <span className="paywall-page__price-amount">{amount}</span>
+                          {periodPart
+                            ? <span className="paywall-page__price-period"> {periodPart}</span>
+                            : null}
+                        </p>
+                        <p className="paywall-page__price-note">
+                          {showTrialOffer
+                            ? t('paywall.trialFootnote', { price: fullPriceLabel })
+                            : t('paywall.cancelAnytime')}
+                        </p>
+                      </div>
+                    )
               )
             : null}
 

@@ -114,8 +114,13 @@ const de = {
     trialPill: '{{days}} Tage kostenlos testen',
     trialFootnote: 'Keine Gebühr bis zum Ende der Testphase, danach {{price}}. Jederzeit kündbar.',
     startFreeTrial: 'Kostenlos testen',
+    choosePlan: 'Plan wählen',
+    planMonthly: 'Monatlich',
+    planYearly: 'Jährlich',
     secureFooter: 'Sichere Zahlung • Keine Mindestlaufzeit',
     proPriceLabel: '2,99 € / Monat',
+    proPriceLabelMonthly: '2,99 € / Monat',
+    proPriceLabelYearly: '19,99 € / Jahr',
     features: {
       dailyImpact: 'Entdecke, wie dein Alltag deinen Schlaf und deine Stimmung beeinflusst',
       sleepTarget: 'Dein empfohlenes Schafziel basierend auf deiner Geschichte',

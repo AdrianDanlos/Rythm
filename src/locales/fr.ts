@@ -114,8 +114,13 @@ const fr = {
     trialPill: '{{days}} jours gratuits',
     trialFootnote: 'Aucun paiement avant la fin de l’essai, puis {{price}}. Annulez à tout moment.',
     startFreeTrial: 'Commencer l’essai gratuit',
+    choosePlan: 'Choisir le plan',
+    planMonthly: 'Mensuel',
+    planYearly: 'Annuel',
     secureFooter: 'Paiement sécurisé • Sans engagement',
     proPriceLabel: '2,99 € / mois',
+    proPriceLabelMonthly: '2,99 € / mois',
+    proPriceLabelYearly: '19,99 € / an',
     features: {
       dailyImpact: 'Découvrez comment votre journée influence votre sommeil et votre humeur',
       sleepTarget: 'Votre objectif de sommeil recommandé selon votre historique',

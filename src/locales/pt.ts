@@ -114,8 +114,13 @@ const pt = {
     trialPill: '{{days}} dias grátis',
     trialFootnote: 'Sem cobrança até o fim do período de teste; depois {{price}}. Cancele quando quiser.',
     startFreeTrial: 'Começar teste grátis',
+    choosePlan: 'Escolha o plano',
+    planMonthly: 'Mensal',
+    planYearly: 'Anual',
     secureFooter: 'Pagamento seguro • Sem fidelidade',
     proPriceLabel: 'R$ 14,90 / mês',
+    proPriceLabelMonthly: 'R$ 14,90 / mês',
+    proPriceLabelYearly: '19,99 € / ano',
     features: {
       dailyImpact: 'Descubra como o que acontece no seu dia influencia o sono e o humor',
       sleepTarget: 'Sua meta de sono recomendada com base no seu histórico',

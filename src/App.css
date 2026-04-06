@@ -1278,6 +1278,90 @@
   color: var(--paywall-muted);
 }
 
+.paywall-page__price-note--below-plans {
+  margin-top: 14px;
+}
+
+.paywall-page__plans {
+  border: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.paywall-page__plans-legend {
+  width: 100%;
+  padding: 0;
+  margin: 0 0 10px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--paywall-muted);
+  text-align: center;
+}
+
+.paywall-page__plan-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.paywall-page__plan-option {
+  display: block;
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 2px solid var(--paywall-divider);
+  background: var(--paywall-feature-icon-bg);
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.paywall-page__plan-option:hover {
+  border-color: rgba(255, 159, 10, 0.45);
+}
+
+.paywall-page__plan-option--selected {
+  border-color: #ff9f0a;
+  box-shadow: 0 0 0 1px rgba(255, 159, 10, 0.25);
+}
+
+.paywall-page__plan-option:focus-within {
+  outline: 2px solid #ff9f0a;
+  outline-offset: 2px;
+}
+
+.paywall-page__plan-option-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.paywall-page__plan-option-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--paywall-panel-text);
+}
+
+.paywall-page__plan-option-price {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--paywall-panel-text);
+}
+
+.paywall-page__plan-option-period {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--paywall-muted);
+}
+
 .paywall-page__divider {
   height: 1px;
   background: var(--paywall-divider);

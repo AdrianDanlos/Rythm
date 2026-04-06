@@ -114,8 +114,13 @@ const es = {
     trialPill: '{{days}} días gratis',
     trialFootnote: 'Sin cargo hasta que termine la prueba; después {{price}}. Cancela cuando quieras.',
     startFreeTrial: 'Empezar prueba gratis',
+    choosePlan: 'Elige el plan',
+    planMonthly: 'Mensual',
+    planYearly: 'Anual',
     secureFooter: 'Pago seguro • Sin permanencia',
     proPriceLabel: '2,99 € / mes',
+    proPriceLabelMonthly: '2,99 € / mes',
+    proPriceLabelYearly: '19,99 € / año',
     features: {
       dailyImpact: 'Descubre cómo lo que pasa en tu día influye en tu sueño y ánimo',
       sleepTarget: 'Tu objetivo de sueño recomendado según tu historial',

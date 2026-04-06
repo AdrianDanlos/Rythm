@@ -27,7 +27,7 @@ export const useBillingActions = ({
   subscriptionSource,
   refreshSession,
 }: UseBillingActionsParams) => {
-  const handleStartCheckout = useCallback(async (): Promise<boolean> => {
+  const handleStartCheckout = useCallback(async (basePlanIdOverride?: string): Promise<boolean> => {
     if (isAndroid()) {
       try {
         const supported = await NativePurchases.isBillingSupported()
@@ -36,9 +36,10 @@ export const useBillingActions = ({
           return false
         }
         const { subscriptionId, basePlanId } = BILLING.play
+        const planIdentifier = (basePlanIdOverride?.trim() || basePlanId)
         const transaction = await NativePurchases.purchaseProduct({
           productIdentifier: subscriptionId,
-          planIdentifier: basePlanId,
+          planIdentifier,
           productType: PURCHASE_TYPE.SUBS,
           quantity: 1,
         })
