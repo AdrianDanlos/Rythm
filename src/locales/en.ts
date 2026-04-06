@@ -53,6 +53,7 @@ const en = {
     secureSignIn: 'Secure sign-in',
     signInBenefit:
       'Sign in so your progress and settings stay with you on any device.',
+    tryWithoutSigningIn: 'Continue as Guest',
   },
   intro: {
     title: 'Welcome to Rythm',

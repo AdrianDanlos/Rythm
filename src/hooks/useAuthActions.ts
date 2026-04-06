@@ -1,25 +1,30 @@
 import type { FormEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
+import type { Session } from '@supabase/supabase-js'
 import { t } from 'i18next'
 import { toast } from 'sonner'
 import { SocialLogin } from '@capgo/capacitor-social-login'
 import { supabase } from '../lib/supabaseClient'
 
 type UseAuthActionsParams = {
+  session: Session | null
   authMode: 'signin' | 'signup'
   authEmail: string
   authPassword: string
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>
   signUp: (email: string, password: string) => Promise<{ error: Error | null }>
+  signInAnonymously: () => Promise<{ error: Error | null }>
   setAuthError: (value: string | null) => void
 }
 
 export const useAuthActions = ({
+  session,
   authMode,
   authEmail,
   authPassword,
   signIn,
   signUp,
+  signInAnonymously,
   setAuthError,
 }: UseAuthActionsParams) => {
   const handleAuth = async (event: FormEvent) => {
@@ -41,8 +46,20 @@ export const useAuthActions = ({
     }
   }
 
+  const handleTryWithoutAccount = async () => {
+    setAuthError(null)
+    try {
+      const { error } = await signInAnonymously()
+      if (error) throw error
+    }
+    catch {
+      setAuthError(null)
+    }
+  }
+
   const handleGoogleSignIn = async () => {
     setAuthError(null)
+    const linkGoogleToCurrentUser = Boolean(session?.user?.is_anonymous)
 
     try {
       if (Capacitor.isNativePlatform()) {
@@ -96,25 +113,35 @@ export const useAuthActions = ({
           throw new Error('No ID token returned from Google')
         }
 
-        const { error } = await supabase.auth.signInWithIdToken({
-          provider: 'google',
-          token: idToken,
-          nonce: rawNonce,
-        })
+        const { error } = linkGoogleToCurrentUser
+          ? await supabase.auth.linkIdentity({
+              provider: 'google',
+              token: idToken,
+              nonce: rawNonce,
+            })
+          : await supabase.auth.signInWithIdToken({
+              provider: 'google',
+              token: idToken,
+              nonce: rawNonce,
+            })
 
         if (error) {
           throw error
         }
       }
       else {
-        // Web: keep existing browser-based OAuth flow
         const redirectTo = window.location.origin
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo,
-          },
-        })
+        const { error } = linkGoogleToCurrentUser
+          ? await supabase.auth.linkIdentity({
+              provider: 'google',
+              options: { redirectTo },
+            })
+          : await supabase.auth.signInWithOAuth({
+              provider: 'google',
+              options: {
+                redirectTo,
+              },
+            })
         if (error) {
           throw error
         }
@@ -131,5 +158,6 @@ export const useAuthActions = ({
   return {
     handleAuth,
     handleGoogleSignIn,
+    handleTryWithoutAccount,
   }
 }

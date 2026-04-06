@@ -13,10 +13,19 @@ type AuthFormProps = {
   onPasswordChange: (value: string) => void
   onSubmit: (event: FormEvent) => void
   onGoogleSignIn: () => void
+  onTryWithoutAccount: () => void
   onToggleMode: () => void
 }
 
-function NativeGoogleLoginScreen({ onGoogleSignIn }: { onGoogleSignIn: () => void }) {
+function NativeGoogleLoginScreen({
+  authLoading,
+  onGoogleSignIn,
+  onTryWithoutAccount,
+}: {
+  authLoading: boolean
+  onGoogleSignIn: () => void
+  onTryWithoutAccount: () => void
+}) {
   const { t } = useTranslation()
 
   return (
@@ -43,10 +52,19 @@ function NativeGoogleLoginScreen({ onGoogleSignIn }: { onGoogleSignIn: () => voi
         <button
           className="native-auth-screen__google-btn"
           type="button"
+          disabled={authLoading}
           onClick={onGoogleSignIn}
         >
           <img className="native-auth-screen__google-logo" src={googleLogo} alt="" />
           <span>{t('auth.continueWithGoogle')}</span>
+        </button>
+        <button
+          className="native-auth-screen__skip-btn"
+          type="button"
+          disabled={authLoading}
+          onClick={onTryWithoutAccount}
+        >
+          {t('auth.tryWithoutSigningIn')}
         </button>
         <div className="native-auth-screen__divider" role="presentation">
           <span className="native-auth-screen__divider-line" />
@@ -69,22 +87,42 @@ export const AuthForm = ({
   onPasswordChange,
   onSubmit,
   onGoogleSignIn,
+  onTryWithoutAccount,
   onToggleMode,
 }: AuthFormProps) => {
   const { t } = useTranslation()
   if (!showEmailPassword) {
     if (Capacitor.getPlatform() === 'android') {
-      return <NativeGoogleLoginScreen onGoogleSignIn={onGoogleSignIn} />
+      return (
+        <NativeGoogleLoginScreen
+          authLoading={authLoading}
+          onGoogleSignIn={onGoogleSignIn}
+          onTryWithoutAccount={onTryWithoutAccount}
+        />
+      )
     }
     return (
-      <button
-        className="ghost oauth-button oauth-button--standalone"
-        type="button"
-        onClick={onGoogleSignIn}
-      >
-        <img className="oauth-logo" src={googleLogo} alt={t('common.googleLogoAlt')} />
-        {t('auth.continueWithGoogle')}
-      </button>
+      <div className="native-auth-screen native-auth-screen--compact">
+        <div className="native-auth-screen__inner">
+          <button
+            className="ghost oauth-button oauth-button--standalone"
+            type="button"
+            disabled={authLoading}
+            onClick={onGoogleSignIn}
+          >
+            <img className="oauth-logo" src={googleLogo} alt={t('common.googleLogoAlt')} />
+            {t('auth.continueWithGoogle')}
+          </button>
+          <button
+            className="native-auth-screen__skip-btn native-auth-screen__skip-btn--inline"
+            type="button"
+            disabled={authLoading}
+            onClick={onTryWithoutAccount}
+          >
+            {t('auth.tryWithoutSigningIn')}
+          </button>
+        </div>
+      </div>
     )
   }
 
@@ -134,6 +172,7 @@ export const AuthForm = ({
       <button
         className="ghost oauth-button"
         type="button"
+        disabled={authLoading}
         onClick={(event) => {
           event.stopPropagation()
           onGoogleSignIn()
@@ -141,6 +180,14 @@ export const AuthForm = ({
       >
         <img className="oauth-logo" src={googleLogo} alt={t('common.googleLogoAlt')} />
         {t('auth.continueWithGoogle')}
+      </button>
+      <button
+        className="ghost auth-try-without"
+        type="button"
+        disabled={authLoading}
+        onClick={onTryWithoutAccount}
+      >
+        {t('auth.tryWithoutSigningIn')}
       </button>
       <button className="ghost auth-toggle" type="button" onClick={onToggleMode}>
         {authMode === 'signin'

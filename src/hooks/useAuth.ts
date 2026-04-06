@@ -71,6 +71,18 @@ export const useAuth = () => {
     return { error }
   }
 
+  const signInAnonymously = async () => {
+    setAuthLoading(true)
+    setAuthError(null)
+    const { error } = await supabase.auth.signInAnonymously()
+    if (error) {
+      toast.error(error.message ?? 'Unable to start guest session.')
+      setAuthError(null)
+    }
+    setAuthLoading(false)
+    return { error }
+  }
+
   const signOut = async () => {
     await supabase.auth.signOut()
   }
@@ -119,6 +131,7 @@ export const useAuth = () => {
     authInitialized,
     signIn,
     signUp,
+    signInAnonymously,
     signOut,
     refreshSession,
     setAuthError,

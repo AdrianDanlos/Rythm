@@ -166,6 +166,61 @@
   transform: scale(0.98);
 }
 
+.native-auth-screen__google-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.native-auth-screen__skip-btn {
+  width: 100%;
+  max-width: 340px;
+  margin-top: 14px;
+  padding: 14px 24px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: transparent;
+  color: #475569;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.native-auth-screen__skip-btn:hover {
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.native-auth-screen__skip-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+:root[data-theme="dark"] .native-auth-screen__skip-btn {
+  border-color: #4b5563;
+  color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .native-auth-screen__skip-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.native-auth-screen--compact .native-auth-screen__inner {
+  padding-top: 24px;
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.native-auth-screen__skip-btn--inline {
+  margin-top: 0;
+  max-width: 280px;
+}
+
 :root[data-theme="dark"] .native-auth-screen__google-btn {
   background: #2d3748;
   border-color: transparent;
@@ -2047,6 +2102,13 @@
 
 .oauth-button--standalone {
   margin-bottom: 0;
+}
+
+.auth-try-without {
+  width: 100%;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 .oauth-logo {

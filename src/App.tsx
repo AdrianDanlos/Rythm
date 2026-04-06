@@ -108,6 +108,7 @@ function App() {
     authInitialized,
     signIn,
     signUp,
+    signInAnonymously,
     signOut,
     refreshSession,
     setAuthError,
@@ -345,12 +346,14 @@ function App() {
     }
   }
 
-  const { handleAuth, handleGoogleSignIn } = useAuthActions({
+  const { handleAuth, handleGoogleSignIn, handleTryWithoutAccount } = useAuthActions({
+    session,
     authMode,
     authEmail,
     authPassword,
     signIn,
     signUp,
+    signInAnonymously,
     setAuthError,
   })
 
@@ -880,6 +883,7 @@ function App() {
               authLoading={authLoading}
               onAuth={handleAuth}
               onGoogleSignIn={handleGoogleSignIn}
+              onTryWithoutAccount={handleTryWithoutAccount}
               onEmailChange={setAuthEmail}
               onPasswordChange={setAuthPassword}
               activeTab={activeTab}

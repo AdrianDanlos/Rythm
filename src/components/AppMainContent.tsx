@@ -50,6 +50,7 @@ type AppMainContentProps = {
   authLoading: boolean
   onAuth: (e: React.FormEvent) => void
   onGoogleSignIn: () => void
+  onTryWithoutAccount: () => void
   onEmailChange: (value: string) => void
   onPasswordChange: (value: string) => void
   activeTab: TabKey
@@ -149,6 +150,7 @@ export function AppMainContent({
   authLoading,
   onAuth,
   onGoogleSignIn,
+  onTryWithoutAccount,
   onEmailChange,
   onPasswordChange,
   activeTab,
@@ -301,6 +303,7 @@ export function AppMainContent({
         onPasswordChange={onPasswordChange}
         onSubmit={onAuth}
         onGoogleSignIn={onGoogleSignIn}
+        onTryWithoutAccount={onTryWithoutAccount}
         onToggleMode={() =>
           setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}
       />
