@@ -80,6 +80,7 @@ const es = {
     personalSleepTargetHours: 'Objetivo personal de sueño (horas)',
     sleepTargetHelper: 'Se usa para el objetivo promedio de sueño y comparaciones ánimo/sueño.',
     appearance: 'Apariencia',
+    system: 'Sistema',
     dark: 'Oscuro',
     light: 'Claro',
     dailyLogReminder: 'Recordatorio diario',

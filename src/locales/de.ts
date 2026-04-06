@@ -80,6 +80,7 @@ const de = {
     personalSleepTargetHours: 'Persönliches Schafziel (Stunden)',
     sleepTargetHelper: 'Wird für das durchschnittliche Schafziel und Stimmungs-/Schlafvergleiche verwendet.',
     appearance: 'Darstellung',
+    system: 'System',
     dark: 'Dunkel',
     light: 'Hell',
     dailyLogReminder: 'Tägliche Erinnerung',

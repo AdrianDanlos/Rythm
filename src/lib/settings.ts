@@ -1,7 +1,8 @@
 import { STORAGE_KEYS } from './storageKeys'
 
 export type DateFormatPreference = 'mdy' | 'dmy' | 'ymd'
-export type ThemePreference = 'light' | 'dark'
+export type ThemePreference = 'system' | 'light' | 'dark'
+export type ThemeAppearance = 'light' | 'dark'
 export type LanguagePreference = 'en' | 'es' | 'fr' | 'pt' | 'de'
 
 const DEFAULT_SLEEP_TARGET = 8
@@ -72,23 +73,7 @@ export const setStoredDateFormat = (value: DateFormatPreference) => {
   writeStorage(STORAGE_KEYS.DATE_FORMAT, value)
 }
 
-export const getStoredTheme = (): ThemePreference => {
-  return getStoredThemePreference() ?? detectSystemTheme()
-}
-
-export const getStoredThemePreference = (): ThemePreference | null => {
-  const value = readStorage(STORAGE_KEYS.THEME)
-  if (value === 'dark' || value === 'light') {
-    return value
-  }
-  return null
-}
-
-export const setStoredTheme = (value: ThemePreference) => {
-  writeStorage(STORAGE_KEYS.THEME, value)
-}
-
-const detectSystemTheme = (): ThemePreference => {
+export const detectSystemTheme = (): ThemeAppearance => {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
     return 'dark'
   }
@@ -98,6 +83,30 @@ const detectSystemTheme = (): ThemePreference => {
   catch {
     return 'dark'
   }
+}
+
+export const resolveThemePreference = (preference: ThemePreference): ThemeAppearance => {
+  if (preference === 'system') {
+    return detectSystemTheme()
+  }
+  return preference
+}
+
+/** Effective light/dark from stored preference (system follows OS). */
+export const getStoredTheme = (): ThemeAppearance => {
+  return resolveThemePreference(getStoredThemePreference())
+}
+
+export const getStoredThemePreference = (): ThemePreference => {
+  const value = readStorage(STORAGE_KEYS.THEME)
+  if (value === 'system' || value === 'dark' || value === 'light') {
+    return value
+  }
+  return 'system'
+}
+
+export const setStoredTheme = (value: ThemePreference) => {
+  writeStorage(STORAGE_KEYS.THEME, value)
 }
 
 export const getStoredLanguage = (): LanguagePreference => {

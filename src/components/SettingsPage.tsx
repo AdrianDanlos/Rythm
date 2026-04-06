@@ -314,6 +314,13 @@ export function SettingsPage({
               <div className="toggle-group">
                 <button
                   type="button"
+                  className={`ghost ${theme === 'system' ? 'active' : ''}`}
+                  onClick={() => onThemeChange('system')}
+                >
+                  {t('settings.system')}
+                </button>
+                <button
+                  type="button"
                   className={`ghost ${theme === 'dark' ? 'active' : ''}`}
                   onClick={() => onThemeChange('dark')}
                 >

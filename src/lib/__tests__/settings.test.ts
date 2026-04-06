@@ -42,7 +42,7 @@ describe('settings storage helpers', () => {
     )
 
     expect(getStoredDateFormat()).toBe('mdy')
-    expect(getStoredThemePreference()).toBeNull()
+    expect(getStoredThemePreference()).toBe('system')
     expect(getStoredTheme()).toBe('light')
     expect(getStoredProfileName()).toBe('')
   })
@@ -72,7 +72,7 @@ describe('settings storage helpers', () => {
     window.localStorage.setItem(STORAGE_KEYS.THEME, 'invalid')
 
     expect(getStoredDateFormat()).toBe('dmy')
-    expect(getStoredThemePreference()).toBeNull()
+    expect(getStoredThemePreference()).toBe('system')
   })
 
   it('detects year-month-day locale ordering', () => {
@@ -95,7 +95,7 @@ describe('settings storage helpers', () => {
         throw new Error('storage failure')
       })
 
-    expect(getStoredThemePreference()).toBeNull()
+    expect(getStoredThemePreference()).toBe('system')
     expect(getStoredTheme()).toBe('dark')
     getItemSpy.mockRestore()
   })

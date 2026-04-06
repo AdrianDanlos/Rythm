@@ -5,11 +5,11 @@ import { NavigationBar } from '@capgo/capacitor-navigation-bar'
 import type { Session } from '@supabase/supabase-js'
 import i18n from '../i18n'
 import {
+  detectSystemTheme,
   getStoredDateFormat,
   getStoredLanguage,
   getStoredProfileName,
   getStoredPersonalSleepTarget,
-  getStoredTheme,
   getStoredThemePreference,
   normalizeSleepTarget,
   setStoredDateFormat,
@@ -19,6 +19,7 @@ import {
   setStoredTheme,
   type DateFormatPreference,
   type LanguagePreference,
+  type ThemeAppearance,
   type ThemePreference,
 } from '../lib/settings'
 
@@ -27,31 +28,34 @@ export function useSettingsSync(session: Session | null) {
     getStoredDateFormat(),
   )
   const [language, setLanguage] = useState<LanguagePreference>(() => getStoredLanguage())
-  const [theme, setTheme] = useState<ThemePreference>(() => getStoredTheme())
-  const [hasExplicitThemeChoice, setHasExplicitThemeChoice] = useState(
-    () => getStoredThemePreference() !== null,
+  const [themePreference, setThemePreference] = useState<ThemePreference>(() =>
+    getStoredThemePreference(),
   )
+  const [systemAppearance, setSystemAppearance] = useState<ThemeAppearance>(() =>
+    detectSystemTheme(),
+  )
+
+  const resolvedTheme: ThemeAppearance
+    = themePreference === 'system' ? systemAppearance : themePreference
   const [profileName, setProfileName] = useState(() => getStoredProfileName())
   const [sleepTarget, setSleepTarget] = useState(() =>
     getStoredPersonalSleepTarget(),
   )
 
-  // Apply theme to DOM and persist
   useEffect(() => {
-    document.documentElement.dataset.theme = theme
-  }, [theme])
+    document.documentElement.dataset.theme = resolvedTheme
+  }, [resolvedTheme])
 
-  // Follow system appearance until the user explicitly chooses light/dark.
   useEffect(() => {
-    if (hasExplicitThemeChoice || typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    if (themePreference !== 'system' || typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
       return
     }
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    const applySystemTheme = () => setTheme(mediaQuery.matches ? 'dark' : 'light')
-    applySystemTheme()
-    mediaQuery.addEventListener('change', applySystemTheme)
-    return () => mediaQuery.removeEventListener('change', applySystemTheme)
-  }, [hasExplicitThemeChoice])
+    const sync = () => setSystemAppearance(mediaQuery.matches ? 'dark' : 'light')
+    sync()
+    mediaQuery.addEventListener('change', sync)
+    return () => mediaQuery.removeEventListener('change', sync)
+  }, [themePreference])
 
   useEffect(() => {
     setStoredLanguage(language)
@@ -63,9 +67,9 @@ export function useSettingsSync(session: Session | null) {
   // Keep Android status bar colors/icons aligned with the selected app theme.
   useEffect(() => {
     if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') return
-    const backgroundColor = theme === 'dark' ? '#0B1220' : '#F8FAFC'
-    const style = theme === 'dark' ? Style.Dark : Style.Light
-    const darkButtons = theme !== 'dark'
+    const backgroundColor = resolvedTheme === 'dark' ? '#0B1220' : '#F8FAFC'
+    const style = resolvedTheme === 'dark' ? Style.Dark : Style.Light
+    const darkButtons = resolvedTheme !== 'dark'
 
     void (async () => {
       await StatusBar.setOverlaysWebView({ overlay: true })
@@ -76,7 +80,7 @@ export function useSettingsSync(session: Session | null) {
         darkButtons,
       })
     })()
-  }, [theme])
+  }, [resolvedTheme])
 
   const sessionFallbackName
     = session?.user?.user_metadata?.full_name
@@ -90,8 +94,7 @@ export function useSettingsSync(session: Session | null) {
   }
 
   const handleThemeChange = (value: ThemePreference) => {
-    setHasExplicitThemeChoice(true)
-    setTheme(value)
+    setThemePreference(value)
     setStoredTheme(value)
   }
 
@@ -115,8 +118,7 @@ export function useSettingsSync(session: Session | null) {
     setDateFormat,
     language,
     setLanguage,
-    theme,
-    setTheme,
+    theme: themePreference,
     profileName: resolvedProfileName,
     setProfileName,
     sleepTarget,

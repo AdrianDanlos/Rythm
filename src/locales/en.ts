@@ -80,6 +80,7 @@ const en = {
     personalSleepTargetHours: 'Personal sleep target (hours)',
     sleepTargetHelper: 'Used for avg sleep target and mood-by-sleep comparisons.',
     appearance: 'Appearance',
+    system: 'System',
     dark: 'Dark',
     light: 'Light',
     dailyLogReminder: 'Daily log reminder',

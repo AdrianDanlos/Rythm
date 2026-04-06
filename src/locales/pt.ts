@@ -80,6 +80,7 @@ const pt = {
     personalSleepTargetHours: 'Meta pessoal de sono (horas)',
     sleepTargetHelper: 'Usada para a meta média de sono e comparações de humor/sono.',
     appearance: 'Aparência',
+    system: 'Sistema',
     dark: 'Escuro',
     light: 'Claro',
     dailyLogReminder: 'Lembrete diário',
