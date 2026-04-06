@@ -1238,6 +1238,23 @@
   margin-bottom: 4px;
 }
 
+.paywall-page__trial-pill {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--paywall-panel-text);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 159, 10, 0.22),
+    rgba(167, 139, 250, 0.2)
+  );
+  border: 1px solid rgba(255, 159, 10, 0.35);
+}
+
 .paywall-page__price-row {
   margin: 0;
   line-height: 1.1;

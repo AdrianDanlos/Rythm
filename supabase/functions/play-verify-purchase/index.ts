@@ -115,7 +115,9 @@ async function getSubscriptionFromPlay(
   const expiryMs = data.expiryTimeMillis ? Number(data.expiryTimeMillis) : 0
   const paymentState = data.paymentState ?? 0
   const acknowledged = (data.acknowledgementState ?? 0) === 1
-  const valid = Number.isFinite(expiryMs) && expiryMs > Date.now() && paymentState === 1 && acknowledged
+  // 1 = payment received, 2 = free trial (Play Console base-plan offer). 0 = pending — do not grant Pro.
+  const paymentOk = paymentState === 1 || paymentState === 2
+  const valid = Number.isFinite(expiryMs) && expiryMs > Date.now() && paymentOk && acknowledged
   return { valid, expiryTimeMillis: data.expiryTimeMillis }
 }
 

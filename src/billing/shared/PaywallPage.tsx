@@ -13,6 +13,7 @@ import {
   Shield,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { getPlayFreeTrialDays, isAndroidPlayBilling } from '../play/config'
 
 type PaywallPageProps = {
   onClose: () => void
@@ -55,6 +56,9 @@ export const PaywallPage = ({
   const [isRestoring, setIsRestoring] = useState(false)
   const canUpgrade = Boolean(onUpgrade || (upgradeUrl && upgradeUrl.trim()))
   const { amount, periodPart } = splitPriceLabel(t('paywall.proPriceLabel'))
+  const trialDays = getPlayFreeTrialDays()
+  const showTrialOffer = isAndroidPlayBilling() && trialDays > 0
+  const fullPriceLabel = [amount, periodPart].filter(Boolean).join(' ')
 
   const handleUpgrade = async () => {
     if (!canUpgrade || isLoading) return
@@ -114,13 +118,24 @@ export const PaywallPage = ({
           {amount
             ? (
                 <div className="paywall-page__price-block">
+                  {showTrialOffer
+                    ? (
+                        <p className="paywall-page__trial-pill">
+                          {t('paywall.trialPill', { days: trialDays })}
+                        </p>
+                      )
+                    : null}
                   <p className="paywall-page__price-row">
                     <span className="paywall-page__price-amount">{amount}</span>
                     {periodPart
                       ? <span className="paywall-page__price-period"> {periodPart}</span>
                       : null}
                   </p>
-                  <p className="paywall-page__price-note">{t('paywall.cancelAnytime')}</p>
+                  <p className="paywall-page__price-note">
+                    {showTrialOffer
+                      ? t('paywall.trialFootnote', { price: fullPriceLabel })
+                      : t('paywall.cancelAnytime')}
+                  </p>
                 </div>
               )
             : null}
@@ -150,7 +165,11 @@ export const PaywallPage = ({
               disabled={!canUpgrade || isLoading}
               onClick={handleUpgrade}
             >
-              {isLoading ? t('paywall.openingCheckout') : t('paywall.upgradeNow')}
+              {isLoading
+                ? t('paywall.openingCheckout')
+                : showTrialOffer
+                  ? t('paywall.startFreeTrial')
+                  : t('paywall.upgradeNow')}
             </button>
             {showRestore && onRestore
               ? (

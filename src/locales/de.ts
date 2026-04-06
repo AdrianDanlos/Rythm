@@ -111,6 +111,9 @@ const de = {
     configureUpgradeUrl: 'Konfiguriere VITE_UPGRADE_URL, um den Kauflink zu aktivieren.',
     premiumFeaturesSection: 'Pro-Funktionen',
     cancelAnytime: 'Jederzeit kündbar',
+    trialPill: '{{days}} Tage kostenlos testen',
+    trialFootnote: 'Keine Gebühr bis zum Ende der Testphase, danach {{price}}. Jederzeit kündbar.',
+    startFreeTrial: 'Kostenlos testen',
     secureFooter: 'Sichere Zahlung • Keine Mindestlaufzeit',
     proPriceLabel: '2,99 € / Monat',
     features: {

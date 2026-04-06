@@ -111,6 +111,9 @@ const fr = {
     configureUpgradeUrl: 'Configurez VITE_UPGRADE_URL pour activer le lien d\'achat.',
     premiumFeaturesSection: 'Fonctionnalités Pro',
     cancelAnytime: 'Annulez à tout moment',
+    trialPill: '{{days}} jours gratuits',
+    trialFootnote: 'Aucun paiement avant la fin de l’essai, puis {{price}}. Annulez à tout moment.',
+    startFreeTrial: 'Commencer l’essai gratuit',
     secureFooter: 'Paiement sécurisé • Sans engagement',
     proPriceLabel: '2,99 € / mois',
     features: {
