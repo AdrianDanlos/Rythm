@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Info, Pencil } from 'lucide-react'
+import { Info, Moon, Pencil } from 'lucide-react'
 import type { Entry } from '../lib/entries'
 import type { StatCounts } from '../lib/stats'
 import type {
@@ -28,6 +28,12 @@ import { InsightsStats } from './insights/InsightsStats'
 import { InsightsTagInsights } from './insights/InsightsTagInsights'
 import { InsightsMoodDistribution } from './insights/InsightsMoodDistribution'
 import { InsightsWeekdayAverages } from './insights/InsightsWeekdayAverages'
+import {
+  TimelineFilters,
+  TimelineMonthAction,
+  type FilterOperator,
+  type TimelineFilterState,
+} from './insights/TimelineFilters'
 import { useIsMobile } from '../hooks/useIsMobile'
 import { tagColorPalette } from '../lib/colors'
 import { TagColorPicker } from './TagColorPicker'
@@ -42,12 +48,21 @@ import { buildMockScatterPlottedData } from '../lib/insightsMock'
 import { getMotivationMessage } from '../lib/utils/motivationMessage'
 import { motionTransition } from '../lib/motion'
 import { MAX_TAG_LENGTH } from '../lib/utils/stringUtils'
+import { formatSleepHours } from '../lib/utils/sleepHours'
+import { getHighContrastTextColor } from '../lib/utils/colorContrast'
 
 type InsightsTab = 'summary' | 'charts' | 'events' | 'timeline'
 type ScatterRange = 'all' | 'last30' | 'last90'
 const SCATTER_RANGE_DAYS: Record<Exclude<ScatterRange, 'all'>, number> = {
   last30: 30,
   last90: 90,
+}
+const DEFAULT_TIMELINE_FILTERS: TimelineFilterState = {
+  moodOperator: 'eq',
+  moodValue: null,
+  sleepOperator: 'eq',
+  sleepValue: null,
+  tags: [],
 }
 type InsightsProps = {
   entries: Entry[]
@@ -122,7 +137,7 @@ export const Insights = ({
   onRenameTag,
   onTagColorChange,
 }: InsightsProps) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
   const hasEnoughEntries = entries.length >= 3
@@ -263,6 +278,118 @@ export const Insights = ({
       .sort((a, b) => b[1].count - a[1].count)
       .map(([, { display, count }]) => ({ display, count }))
   }, [entries])
+  const timelineEntries = useMemo(() => {
+    return [...entries].sort((a, b) => b.entry_date.localeCompare(a.entry_date))
+  }, [entries])
+  const timelineTagOptions = useMemo(() => {
+    return topTags.map(({ display }) => ({
+      key: display.trim().toLowerCase(),
+      label: display,
+    }))
+  }, [topTags])
+  const timelineTagLabelByKey = useMemo(() => {
+    return new Map(timelineTagOptions.map(tag => [tag.key, tag.label]))
+  }, [timelineTagOptions])
+  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false)
+  const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false)
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const now = new Date()
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+  })
+  const [appliedTimelineFilters, setAppliedTimelineFilters] = useState<TimelineFilterState>(DEFAULT_TIMELINE_FILTERS)
+  const [draftTimelineFilters, setDraftTimelineFilters] = useState<TimelineFilterState>(DEFAULT_TIMELINE_FILTERS)
+  const [timelineTagSearch, setTimelineTagSearch] = useState('')
+
+  const monthOptions = useMemo(() => {
+    const locale = i18n.resolvedLanguage || i18n.language || undefined
+    const now = new Date()
+    return Array.from({ length: 12 }, (_, index) => {
+      const date = new Date(now.getFullYear(), now.getMonth() - index, 1)
+      const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+      return {
+        key,
+        label: date.toLocaleDateString(locale, { month: 'long', year: 'numeric' }),
+      }
+    })
+  }, [i18n.language, i18n.resolvedLanguage])
+  const selectedMonthLabel = useMemo(() => {
+    return monthOptions.find(option => option.key === selectedMonth)?.label ?? selectedMonth
+  }, [monthOptions, selectedMonth])
+  const matchesOperator = (value: number, target: number, operator: FilterOperator) => {
+    if (operator === 'gte') return value >= target
+    if (operator === 'lte') return value <= target
+    return value === target
+  }
+  const filteredTimelineEntries = useMemo(() => {
+    const normalizedTagSet = new Set(appliedTimelineFilters.tags)
+    return timelineEntries.filter((entry) => {
+      if (!entry.entry_date.startsWith(selectedMonth)) return false
+      if (appliedTimelineFilters.moodValue !== null) {
+        if (entry.mood == null) return false
+        if (!matchesOperator(entry.mood, appliedTimelineFilters.moodValue, appliedTimelineFilters.moodOperator)) {
+          return false
+        }
+      }
+      if (appliedTimelineFilters.sleepValue !== null) {
+        if (entry.sleep_hours == null) return false
+        if (!matchesOperator(entry.sleep_hours, appliedTimelineFilters.sleepValue, appliedTimelineFilters.sleepOperator)) {
+          return false
+        }
+      }
+      if (normalizedTagSet.size > 0) {
+        const entryTags = (entry.tags ?? []).map(tag => tag.trim().toLowerCase())
+        if (!entryTags.some(tag => normalizedTagSet.has(tag))) {
+          return false
+        }
+      }
+      return true
+    })
+  }, [appliedTimelineFilters, selectedMonth, timelineEntries])
+  const appliedFilterCount = useMemo(() => {
+    let total = 0
+    if (appliedTimelineFilters.moodValue !== null) total += 1
+    if (appliedTimelineFilters.sleepValue !== null) total += 1
+    if (appliedTimelineFilters.tags.length > 0) total += 1
+    return total
+  }, [appliedTimelineFilters])
+  const hasAppliedTimelineFilters = appliedFilterCount > 0
+  const operatorOptions = useMemo((): { value: FilterOperator, label: string }[] => ([
+    { value: 'eq', label: t('insights.timelineFilters.exactly') },
+    { value: 'gte', label: t('insights.timelineFilters.atLeast') },
+    { value: 'lte', label: t('insights.timelineFilters.atMost') },
+  ]), [t])
+  const operatorLabelByValue = useMemo(() => {
+    return new Map(operatorOptions.map(option => [option.value, option.label]))
+  }, [operatorOptions])
+  const visibleTimelineTagOptions = useMemo(() => {
+    const query = timelineTagSearch.trim().toLowerCase()
+    const selectedSet = new Set(draftTimelineFilters.tags)
+    const selectedFirst = draftTimelineFilters.tags
+      .map((key) => {
+        return timelineTagOptions.find(tag => tag.key === key)
+      })
+      .filter((tag): tag is { key: string, label: string } => Boolean(tag))
+
+    const matchedUnselected = timelineTagOptions.filter((tag) => {
+      if (selectedSet.has(tag.key)) return false
+      if (!query) return true
+      return tag.label.toLowerCase().includes(query)
+    })
+
+    return [...selectedFirst, ...matchedUnselected]
+  }, [draftTimelineFilters.tags, timelineTagOptions, timelineTagSearch])
+
+  const formatTimelineDate = (value: string) => {
+    const parsed = new Date(`${value}T00:00:00`)
+    if (Number.isNaN(parsed.getTime())) {
+      return { dateLabel: value, weekdayLabel: t('common.noDataDash') }
+    }
+    const locale = i18n.resolvedLanguage || i18n.language || undefined
+    return {
+      dateLabel: parsed.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
+      weekdayLabel: parsed.toLocaleDateString(locale, { weekday: 'long' }),
+    }
+  }
   const [editingTag, setEditingTag] = useState<string | null>(null)
   const [editingValue, setEditingValue] = useState('')
   const [showAllTags, setShowAllTags] = useState(false)
@@ -631,14 +758,155 @@ export const Insights = ({
               animate={{ opacity: 1 }}
               transition={panelTransition}
             >
-              <section className="card">
-                <div className="card-header">
-                  <div>
-                    <h2>{t('nav.timeline')}</h2>
-                    <p className="muted">{t('insights.timelineComingSoon')}</p>
-                  </div>
+              <div className="card-header">
+                <div>
+                  <h2>{t('nav.timeline')}</h2>
+                  <p className="muted">{t('insights.overviewDailyLogs')}</p>
                 </div>
-              </section>
+                <TimelineMonthAction
+                  selectedMonthLabel={selectedMonthLabel}
+                  onToggleMonthPicker={() => setIsMonthPickerOpen(prev => !prev)}
+                />
+              </div>
+              <TimelineFilters
+                isMonthPickerOpen={isMonthPickerOpen}
+                monthOptions={monthOptions}
+                selectedMonth={selectedMonth}
+                hasAppliedTimelineFilters={hasAppliedTimelineFilters}
+                appliedTimelineFilters={appliedTimelineFilters}
+                operatorLabelByValue={operatorLabelByValue}
+                timelineTagLabelByKey={timelineTagLabelByKey}
+                isFilterSheetOpen={isFilterSheetOpen}
+                appliedFilterCount={appliedFilterCount}
+                reduceMotion={reduceMotion}
+                panelTransition={panelTransition}
+                operatorOptions={operatorOptions}
+                moodColors={moodColors}
+                draftTimelineFilters={draftTimelineFilters}
+                timelineTagSearch={timelineTagSearch}
+                visibleTimelineTagOptions={visibleTimelineTagOptions}
+                tagColors={tagColors}
+                onSelectMonth={(key) => {
+                  setSelectedMonth(key)
+                  setIsMonthPickerOpen(false)
+                }}
+                onClearAppliedMood={() => {
+                  setAppliedTimelineFilters(prev => ({ ...prev, moodValue: null }))
+                  setDraftTimelineFilters(prev => ({ ...prev, moodValue: null }))
+                }}
+                onClearAppliedSleep={() => {
+                  setAppliedTimelineFilters(prev => ({ ...prev, sleepValue: null }))
+                  setDraftTimelineFilters(prev => ({ ...prev, sleepValue: null }))
+                }}
+                onRemoveAppliedTag={(tag) => {
+                  setAppliedTimelineFilters(prev => ({
+                    ...prev,
+                    tags: prev.tags.filter(activeTag => activeTag !== tag),
+                  }))
+                  setDraftTimelineFilters(prev => ({
+                    ...prev,
+                    tags: prev.tags.filter(activeTag => activeTag !== tag),
+                  }))
+                }}
+                onOpenFilter={() => {
+                  setDraftTimelineFilters(appliedTimelineFilters)
+                  setTimelineTagSearch('')
+                  setIsFilterSheetOpen(true)
+                }}
+                onCloseFilter={() => setIsFilterSheetOpen(false)}
+                onDraftMoodOperatorChange={operator => setDraftTimelineFilters(prev => ({ ...prev, moodOperator: operator }))}
+                onDraftMoodValueChange={value => setDraftTimelineFilters(prev => ({ ...prev, moodValue: value }))}
+                onDraftSleepOperatorChange={operator => setDraftTimelineFilters(prev => ({ ...prev, sleepOperator: operator }))}
+                onDraftSleepValueChange={value => setDraftTimelineFilters(prev => ({ ...prev, sleepValue: value }))}
+                onTimelineTagSearchChange={value => setTimelineTagSearch(value)}
+                onToggleDraftTag={tagKey =>
+                  setDraftTimelineFilters(prev => ({
+                    ...prev,
+                    tags: prev.tags.includes(tagKey)
+                      ? prev.tags.filter(activeTag => activeTag !== tagKey)
+                      : [...prev.tags, tagKey],
+                  }))}
+                onClearAllDraft={() => setDraftTimelineFilters(DEFAULT_TIMELINE_FILTERS)}
+                onApplyDraftFilters={() => {
+                  setAppliedTimelineFilters(draftTimelineFilters)
+                  setIsFilterSheetOpen(false)
+                }}
+              />
+              {entriesLoading && (
+                <p className="muted timeline-empty-state">{t('common.loading')}</p>
+              )}
+              {!entriesLoading && filteredTimelineEntries.length === 0 && (
+                <p className="muted timeline-empty-state">{t('insights.noEntryForDay')}</p>
+              )}
+              {!entriesLoading && filteredTimelineEntries.length > 0 && (
+                <div className="timeline-cards">
+                  {filteredTimelineEntries.map((entry) => {
+                    const timelineDate = formatTimelineDate(entry.entry_date)
+                    const moodLabel = entry.mood == null
+                      ? t('common.noDataDash')
+                      : t(`log.moodName${entry.mood}`)
+                    const moodDotColor = entry.mood == null
+                      ? 'var(--muted)'
+                      : moodColors[Math.max(0, Math.min(moodColors.length - 1, entry.mood - 1))]
+                    const sleepLabel = entry.sleep_hours == null
+                      ? t('common.noDataDash')
+                      : formatSleepHours(entry.sleep_hours)
+
+                    return (
+                      <article className="card timeline-card" key={entry.id}>
+                        <div className="timeline-card-date-row">
+                          <h3 className="timeline-card-date">{timelineDate.dateLabel}</h3>
+                          <span className="timeline-card-weekday">{timelineDate.weekdayLabel}</span>
+                        </div>
+                        <div className="timeline-card-metrics">
+                          <span className="timeline-card-metric">
+                            <span className="timeline-card-mood-dot" style={{ backgroundColor: moodDotColor }} aria-hidden />
+                            <span>{moodLabel}</span>
+                          </span>
+                          <span className="timeline-card-metric">
+                            <Moon size={14} aria-hidden />
+                            <span>{sleepLabel}</span>
+                          </span>
+                        </div>
+                        {entry.tags && entry.tags.length > 0 && (
+                          <div className="timeline-card-tags">
+                            {entry.tags.map((tag) => {
+                              const colorKey = tag.trim().toLowerCase()
+                              const tagColor = tagColors[colorKey]
+                              const textColor = getHighContrastTextColor(tagColor)
+
+                              return (
+                                <span
+                                  className="timeline-card-tag"
+                                  key={tag}
+                                  style={
+                                    tagColor
+                                      ? { backgroundColor: tagColor, color: textColor, borderColor: 'transparent' }
+                                      : undefined
+                                  }
+                                >
+                                  #
+                                  {tag}
+                                </span>
+                              )
+                            })}
+                          </div>
+                        )}
+                        {entry.note?.trim() && (
+                          <p className="timeline-card-note">
+                            <strong>
+                              {t('common.notes')}
+                              :
+                            </strong>
+                            {' '}
+                            {entry.note}
+                          </p>
+                        )}
+                      </article>
+                    )
+                  })}
+                </div>
+              )}
             </motion.div>
           )
         : null}
