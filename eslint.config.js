@@ -9,7 +9,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 const STYLISTIC_CONFIG_NAME = 'recommended'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'android']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

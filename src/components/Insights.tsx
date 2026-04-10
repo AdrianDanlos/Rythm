@@ -20,7 +20,6 @@ import { InsightsFirstFiveCard } from './insights/InsightsFirstFiveCard'
 import { InsightsFirstTwoCard } from './insights/InsightsFirstTwoCard'
 import { InsightsSummaryIntro } from './InsightsSummaryIntro'
 import { InsightsCalendarHeatmap } from './insights/InsightsCalendarHeatmap'
-import { InsightsMonthlyCalendar } from './insights/InsightsMonthlyCalendar'
 import { NoDailyEventsLoggedHint } from './insights/NoDailyEventsLoggedHint'
 import { IdeaSleepTarget } from './insights/IdeaSleepTarget'
 import { InsightsScatter } from './insights/InsightsScatter'
@@ -44,7 +43,7 @@ import { getMotivationMessage } from '../lib/utils/motivationMessage'
 import { motionTransition } from '../lib/motion'
 import { MAX_TAG_LENGTH } from '../lib/utils/stringUtils'
 
-type InsightsTab = 'summary' | 'charts' | 'events'
+type InsightsTab = 'summary' | 'charts' | 'events' | 'timeline'
 type ScatterRange = 'all' | 'last30' | 'last90'
 const SCATTER_RANGE_DAYS: Record<Exclude<ScatterRange, 'all'>, number> = {
   last30: 30,
@@ -418,23 +417,15 @@ export const Insights = ({
               animate={{ opacity: 1 }}
               transition={panelTransition}
             >
-              <InsightsMonthlyCalendar
+              <InsightsMoodDistribution
                 entries={entries}
                 moodColors={moodColors}
-                isMobile={isMobile}
-                entriesLoading={entriesLoading}
-                tagColors={tagColors}
                 goToLog={goToLog}
               />
               <InsightsCalendarHeatmap
                 entries={entries}
                 moodColors={moodColors}
                 isMobile={isMobile}
-              />
-              <InsightsMoodDistribution
-                entries={entries}
-                moodColors={moodColors}
-                goToLog={goToLog}
               />
               <InsightsWeekdayAverages
                 weekdayAverages={weekdayAverages}
@@ -629,6 +620,25 @@ export const Insights = ({
                   goToLog={goToLog}
                 />
               )}
+            </motion.div>
+          )
+        : null}
+      {activeTab === 'timeline'
+        ? (
+            <motion.div
+              className="insights-panel"
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={panelTransition}
+            >
+              <section className="card">
+                <div className="card-header">
+                  <div>
+                    <h2>{t('nav.timeline')}</h2>
+                    <p className="muted">{t('insights.timelineComingSoon')}</p>
+                  </div>
+                </div>
+              </section>
             </motion.div>
           )
         : null}

@@ -865,7 +865,7 @@ function App() {
             <PaywallPage
               onClose={closePaywall}
               upgradeUrl={trimmedUpgradeUrl}
-              onUpgrade={(basePlanId) => handleStartCheckout(basePlanId)}
+              onUpgrade={basePlanId => handleStartCheckout(basePlanId)}
               onRestore={handleRestorePurchases}
               showRestore={false}
             />

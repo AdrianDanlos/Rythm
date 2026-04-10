@@ -19,9 +19,9 @@ export function useScrollToLogDailyEventsOnMount(
     const scrollToTarget = () => {
       const el = targetRef.current
       if (!el || !(el instanceof HTMLElement)) return
-      const prefersReducedMotion =
-        typeof window !== 'undefined'
-        && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      const prefersReducedMotion
+        = typeof window !== 'undefined'
+          && window.matchMedia('(prefers-reduced-motion: reduce)').matches
       el.scrollIntoView({
         behavior: prefersReducedMotion ? 'auto' : 'smooth',
         block: 'center',

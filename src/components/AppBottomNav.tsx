@@ -72,6 +72,12 @@ export function AppBottomNav({
     onNavigateToPage(AppPage.Events)
   }
 
+  const goToTimeline = () => {
+    if (lockNonLogTabs) return
+    onBeforeLeaveTab()
+    onNavigateToPage(AppPage.Timeline)
+  }
+
   const goToLog = () => onNavigateToPage(AppPage.Log)
 
   return (
@@ -113,6 +119,35 @@ export function AppBottomNav({
                     </svg>
                   </span>
                   <span>{t('nav.summary')}</span>
+                </button>
+                <button
+                  type="button"
+                  className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Timeline ? 'active' : ''}`}
+                  {...handleTabInteraction(goToTimeline)}
+                  disabled={lockNonLogTabs}
+                >
+                  <span className="tab-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M7 2v4M17 2v4M3 10h18"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                      <rect
+                        x="3"
+                        y="4"
+                        width="18"
+                        height="17"
+                        rx="3"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                    </svg>
+                  </span>
+                  <span>{t('nav.timeline')}</span>
                 </button>
                 <button
                   type="button"

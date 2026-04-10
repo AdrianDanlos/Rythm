@@ -244,7 +244,7 @@ export function AppMainContent({
     catch {
       // Ignore storage write failures.
     }
-    setIntroCompleted(true)
+    queueMicrotask(() => setIntroCompleted(true))
   }, [session, introCompleted])
 
   const handleCompleteIntro = useCallback(() => {
