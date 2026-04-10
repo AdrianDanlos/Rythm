@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Info, Moon, Pencil } from 'lucide-react'
 import type { Entry } from '../lib/entries'
 import type { StatCounts } from '../lib/stats'
 import type {
@@ -15,44 +14,21 @@ import type {
   WeekdayAveragePoint,
   WindowStats,
 } from '../lib/types/stats'
-import { InsightsDailyHistory } from './insights/InsightsDailyHistory'
-import { InsightsFirstFiveCard } from './insights/InsightsFirstFiveCard'
-import { InsightsFirstTwoCard } from './insights/InsightsFirstTwoCard'
-import { InsightsSummaryIntro } from './InsightsSummaryIntro'
-import { InsightsCalendarHeatmap } from './insights/InsightsCalendarHeatmap'
-import { NoDailyEventsLoggedHint } from './insights/NoDailyEventsLoggedHint'
-import { IdeaSleepTarget } from './insights/IdeaSleepTarget'
-import { InsightsScatter } from './insights/InsightsScatter'
-import { InsightsSmoothedTrends } from './insights/InsightsSmoothedTrends'
-import { InsightsStats } from './insights/InsightsStats'
-import { InsightsTagInsights } from './insights/InsightsTagInsights'
-import { InsightsMoodDistribution } from './insights/InsightsMoodDistribution'
-import { InsightsWeekdayAverages } from './insights/InsightsWeekdayAverages'
+import { Charts, type ScatterRange } from './insights/Charts'
+import { Events } from './insights/Events'
+import { Summary } from './insights/Summary'
+import { Timeline } from './insights/Timeline'
 import {
-  TimelineFilters,
-  TimelineMonthAction,
   type FilterOperator,
   type TimelineFilterState,
 } from './insights/TimelineFilters'
 import { useIsMobile } from '../hooks/useIsMobile'
-import { tagColorPalette } from '../lib/colors'
-import { TagColorPicker } from './TagColorPicker'
-import { Tooltip } from './Tooltip'
-import rankingBadge1 from '../assets/badges/ranking-badge_1.png'
-import rankingBadge2 from '../assets/badges/ranking-badge_2.png'
-import rankingBadge3 from '../assets/badges/ranking-badge_3.png'
-import rankingBadge4 from '../assets/badges/ranking-badge_4.png'
-import rankingBadge5 from '../assets/badges/ranking-badge_5.png'
-import rankingBadgeLast from '../assets/badges/ranking-badge_last.png'
 import { buildMockScatterPlottedData } from '../lib/insightsMock'
 import { getMotivationMessage } from '../lib/utils/motivationMessage'
 import { motionTransition } from '../lib/motion'
 import { MAX_TAG_LENGTH } from '../lib/utils/stringUtils'
-import { formatSleepHours } from '../lib/utils/sleepHours'
-import { getHighContrastTextColor } from '../lib/utils/colorContrast'
 
 type InsightsTab = 'summary' | 'charts' | 'events' | 'timeline'
-type ScatterRange = 'all' | 'last30' | 'last90'
 const SCATTER_RANGE_DAYS: Record<Exclude<ScatterRange, 'all'>, number> = {
   last30: 30,
   last90: 90,
@@ -428,486 +404,174 @@ export const Insights = ({
     <>
       {activeTab === 'summary'
         ? (
-            <motion.div
-              className="insights-panel"
-              initial={reduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={panelTransition}
-            >
-              {!entriesLoading && entries.length === 1 && (
-                <InsightsFirstTwoCard entries={entries} goToLog={goToLog} />
-              )}
-              {!entriesLoading && entries.length >= 2 && entries.length <= 4 && (
-                <InsightsFirstFiveCard entries={entries} goToLog={goToLog} />
-              )}
-              {!entriesLoading && entries.length === 0 && (
-                <InsightsSummaryIntro
-                  entryCount={entries.length}
-                  entriesLoading={entriesLoading}
-                  goToLog={goToLog}
-                />
-              )}
-              <InsightsStats
-                isLoading={isLoading}
-                averages={averages}
-                windowAverages={windowAverages}
-                statCounts={statCounts}
-                rhythmScore={rhythmScore}
-                streak={streak}
-                sleepConsistencyLabel={sleepConsistencyLabel}
-                correlationLabel={correlationLabel}
-                correlationDirection={correlationDirection}
-                moodBySleepThreshold={moodBySleepThreshold}
-                moodBySleepBucketCounts={moodBySleepBucketCounts}
-                sleepThreshold={sleepThreshold}
-                isPro={isPro}
-                goToLog={goToLog}
-                motivationMessage={motivationMessage.text}
-              />
-              {hasEnoughEntries && (
-                <IdeaSleepTarget
-                  isPro={isPro}
-                  entryCount={entries.length}
-                  personalSleepThreshold={personalSleepThreshold}
-                  averageSleep={averages.sleep}
-                  moodByPersonalThreshold={moodByPersonalThreshold}
-                  onOpenPaywall={onOpenPaywall}
-                  goToLog={goToLog}
-                />
-              )}
-              {sleepConsistencyBadges.length > 0 && (
-                <section className="card">
-                  <div className="card-header">
-                    <div>
-                      <h2>{t('insights.badges')}</h2>
-                      <p className="muted">{t('insights.levelUp')}</p>
-                    </div>
-                  </div>
-                  <>
-                    <div className="badge-list">
-                      {sortedBadges.map((badge) => {
-                        const isMaxTier = badge.unlocked && (badge.tierCount === 1 || badge.currentTierIndex === badge.tierCount - 1)
-                        const step = badge.unlocked ? (isMaxTier ? 'last' : badge.currentTierIndex + 2) : 1
-                        const badgeSrc = step === 'last'
-                          ? rankingBadgeLast
-                          : [rankingBadge1, rankingBadge2, rankingBadge3, rankingBadge4, rankingBadge5][step - 1]
-                        return (
-                          <div
-                            className={`badge-row ${badge.unlocked ? 'unlocked' : 'locked'}`}
-                            key={badge.id}
-                          >
-                            <div className="badge-row-header">
-                              <div className="badge-title-row">
-                                <p className="badge-title">{badge.title}</p>
-                                <img
-                                  className="badge-status-icon badge-status-icon--ranking"
-                                  src={badgeSrc}
-                                  alt=""
-                                  aria-hidden
-                                />
-                              </div>
-                              <p className="badge-helper">{badge.description}</p>
-                            </div>
-                            {badge.progressTotal > 0 && !isMaxTier && (
-                              <div className="badge-progress-track" aria-hidden="true">
-                                <span
-                                  className="badge-progress-fill"
-                                  style={{
-                                    width: `${Math.min(
-                                      100,
-                                      Math.max(0, (badge.progressValue / (badge.progressTotal || 1)) * 100),
-                                    )}%`,
-                                  }}
-                                />
-                              </div>
-                            )}
-                            {badge.progressText
-                              ? (
-                                  <p className="badge-progress-text">{badge.progressText}</p>
-                                )
-                              : null}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </>
-                </section>
-              )}
-            </motion.div>
+            <Summary
+              reduceMotion={reduceMotion}
+              panelTransition={panelTransition}
+              entriesLoading={entriesLoading}
+              entries={entries}
+              goToLog={goToLog}
+              isLoading={isLoading}
+              averages={averages}
+              windowAverages={windowAverages}
+              statCounts={statCounts}
+              rhythmScore={rhythmScore}
+              streak={streak}
+              sleepConsistencyLabel={sleepConsistencyLabel}
+              sleepConsistencyBadges={sleepConsistencyBadges}
+              sortedBadges={sortedBadges}
+              correlationLabel={correlationLabel}
+              correlationDirection={correlationDirection}
+              moodBySleepThreshold={moodBySleepThreshold}
+              moodBySleepBucketCounts={moodBySleepBucketCounts}
+              sleepThreshold={sleepThreshold}
+              isPro={isPro}
+              motivationMessage={motivationMessage.text}
+              hasEnoughEntries={hasEnoughEntries}
+              personalSleepThreshold={personalSleepThreshold}
+              moodByPersonalThreshold={moodByPersonalThreshold}
+              onOpenPaywall={onOpenPaywall}
+              t={t}
+            />
           )
         : null}
       {activeTab === 'charts'
         ? (
-            <motion.div
-              className="insights-panel"
-              initial={reduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={panelTransition}
-            >
-              <InsightsMoodDistribution
-                entries={entries}
-                moodColors={moodColors}
-                goToLog={goToLog}
-              />
-              <InsightsCalendarHeatmap
-                entries={entries}
-                moodColors={moodColors}
-                isMobile={isMobile}
-              />
-              <InsightsWeekdayAverages
-                weekdayAverages={weekdayAverages}
-                isMobile={isMobile}
-                goToLog={goToLog}
-              />
-              {hasEnoughEntries && (
-                <InsightsScatter
-                  isLoading={isLoading}
-                  hasAnyEntries={isPro ? !isEmpty : true}
-                  isRangeEmpty={isPro ? !isLoading && plottedData.length === 0 : false}
-                  isMobile={isMobile}
-                  plottedData={scatterPlottedData}
-                  moodColors={moodColors}
-                  tagColors={tagColors}
-                  scatterRange={effectiveScatterRange}
-                  onScatterRangeChange={setScatterRange}
-                  show90Range={isPro ? showScatter90 : true}
-                  showAllRange={isPro ? showScatterAll : true}
-                  idealSleepRangeBand={idealSleepRangeBand}
-                  goToLog={goToLog}
-                  isPro={isPro}
-                  onOpenPaywall={onOpenPaywall}
-                />
-              )}
-              {hasEnoughEntries && (
-                <InsightsSmoothedTrends
-                  isPro={isPro}
-                  isMobile={isMobile}
-                  entryCount={entries.length}
-                  rollingSeries={rollingSeries}
-                  rollingSummaries={rollingSummaries}
-                  onOpenPaywall={onOpenPaywall}
-                  goToLog={goToLog}
-                />
-              )}
-              {hasEnoughEntries && (
-                <InsightsDailyHistory
-                  isPro={isPro}
-                  isMobile={isMobile}
-                  entryCount={entries.length}
-                  trendSeries={trendSeries}
-                  onOpenPaywall={onOpenPaywall}
-                  goToLog={goToLog}
-                />
-              )}
-            </motion.div>
+            <Charts
+              reduceMotion={reduceMotion}
+              panelTransition={panelTransition}
+              entries={entries}
+              moodColors={moodColors}
+              goToLog={goToLog}
+              isMobile={isMobile}
+              weekdayAverages={weekdayAverages}
+              hasEnoughEntries={hasEnoughEntries}
+              isLoading={isLoading}
+              isPro={isPro}
+              isEmpty={isEmpty}
+              plottedData={plottedData}
+              scatterPlottedData={scatterPlottedData}
+              tagColors={tagColors}
+              effectiveScatterRange={effectiveScatterRange}
+              onScatterRangeChange={setScatterRange}
+              showScatter90={showScatter90}
+              showScatterAll={showScatterAll}
+              idealSleepRangeBand={idealSleepRangeBand}
+              rollingSeries={rollingSeries}
+              rollingSummaries={rollingSummaries}
+              trendSeries={trendSeries}
+              onOpenPaywall={onOpenPaywall}
+            />
           )
         : null}
       {activeTab === 'events'
         ? (
-            <motion.div
-              className="insights-panel"
-              initial={reduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={panelTransition}
-            >
-              <section className="card">
-                <div className="card-header">
-                  <div className="your-daily-events-heading">
-                    <h2>{t('insights.yourDailyEvents')}</h2>
-                    <Tooltip label={t('insights.tagColorRandomTooltip')}>
-                      <span
-                        className="tooltip-trigger"
-                        tabIndex={0}
-                        aria-label={t('insights.tagColorRandomTooltip')}
-                      >
-                        <span className="tooltip-icon" aria-hidden="true">
-                          <Info size={14} />
-                        </span>
-                      </span>
-                    </Tooltip>
-                  </div>
-                </div>
-                {topTags.length > 0
-                  ? (
-                      <>
-                        <ul className="your-daily-events-list">
-                          {visibleTags.map(({ display, count }) => {
-                            const isEditing = editingTag === display
-                            const colorKey = display.trim().toLowerCase()
-                            const hasExplicitColor = !!tagColors[colorKey]
-                            const tagColor = hasExplicitColor ? tagColors[colorKey] : '#ffffff'
-                            return (
-                              <li
-                                key={display}
-                                className="your-daily-events-list-item"
-                              >
-                                {isEditing
-                                  ? (
-                                      <div className="field your-daily-events-edit-input">
-                                        <input
-                                          type="text"
-                                          value={editingValue}
-                                          onChange={e => setEditingValue(e.target.value.slice(0, MAX_TAG_LENGTH))}
-                                          onBlur={commitEditingTag}
-                                          onKeyDown={(e) => {
-                                            if (e.key === 'Enter') {
-                                              e.preventDefault()
-                                              commitEditingTag()
-                                            }
-                                            else if (e.key === 'Escape') {
-                                              e.preventDefault()
-                                              cancelEditingTag()
-                                            }
-                                          }}
-                                          autoFocus
-                                        />
-                                      </div>
-                                    )
-                                  : (
-                                      <>
-                                        <span className="your-daily-events-list-label">
-                                          {t('insights.dailyEventCount', { tag: display, count })}
-                                        </span>
-                                        <button
-                                          type="button"
-                                          className="tag-color-trigger"
-                                          style={{ backgroundColor: tagColor }}
-                                          onClick={() => setColorPickerTag(display)}
-                                          aria-label={t('insights.changeTagColor', { tag: display })}
-                                        >
-                                          <span className="tag-color-trigger-inner" />
-                                        </button>
-                                        <button
-                                          type="button"
-                                          className="ghost icon-button your-daily-events-edit-button"
-                                          onClick={() => startEditingTag(display)}
-                                          aria-label={t('common.edit')}
-                                        >
-                                          <Pencil className="icon" aria-hidden />
-                                        </button>
-                                      </>
-                                    )}
-                              </li>
-                            )
-                          })}
-                        </ul>
-                        {topTags.length > 6 && (
-                          <div className="tag-insights-show-more">
-                            <button
-                              type="button"
-                              className="link-button link-button--text your-daily-events-toggle"
-                              onClick={() => {
-                                setShowAllTags((prev) => {
-                                  const next = !prev
-                                  if (prev && typeof window !== 'undefined') {
-                                    window.scrollTo({ top: 0, behavior: 'smooth' })
-                                  }
-                                  return next
-                                })
-                              }}
-                            >
-                              {showAllTags
-                                ? t('insights.showTopTags')
-                                : t('insights.showAllTags')}
-                            </button>
-                          </div>
-                        )}
-                      </>
-                    )
-                  : (
-                      <NoDailyEventsLoggedHint onGoToLog={goToLog} />
-                    )}
-              </section>
-              <TagColorPicker
-                key={colorPickerTag ?? 'closed'}
-                color={(() => {
-                  if (!colorPickerTag) return '#ffffff'
-                  const key = colorPickerTag.trim().toLowerCase()
-                  return tagColors[key] ?? tagColorPalette[0]
-                })()}
-                isOpen={!!colorPickerTag}
-                title={t('insights.changeTagColorTitle')}
-                description={t('insights.changeTagColorDescription')}
-                confirmLabel={t('common.save')}
-                cancelLabel={t('common.cancel')}
-                onCancel={() => setColorPickerTag(null)}
-                onConfirm={(nextColor) => {
-                  if (colorPickerTag) {
-                    onTagColorChange(colorPickerTag, nextColor)
+            <Events
+              reduceMotion={reduceMotion}
+              panelTransition={panelTransition}
+              topTags={topTags}
+              visibleTags={visibleTags}
+              editingTag={editingTag}
+              editingValue={editingValue}
+              onEditingValueChange={setEditingValue}
+              onCommitEditingTag={commitEditingTag}
+              onCancelEditingTag={cancelEditingTag}
+              onStartEditingTag={startEditingTag}
+              tagColors={tagColors}
+              onSetColorPickerTag={setColorPickerTag}
+              colorPickerTag={colorPickerTag}
+              onTagColorChange={onTagColorChange}
+              showAllTags={showAllTags}
+              onToggleShowAllTags={() => {
+                setShowAllTags((prev) => {
+                  const next = !prev
+                  if (prev && typeof window !== 'undefined') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
                   }
-                  setColorPickerTag(null)
-                }}
-              />
-              {hasEnoughEntries && (
-                <InsightsTagInsights
-                  isPro={isPro}
-                  tagDrivers={tagDrivers}
-                  tagSleepDrivers={tagSleepDrivers}
-                  onOpenPaywall={onOpenPaywall}
-                  goToLog={goToLog}
-                />
-              )}
-            </motion.div>
+                  return next
+                })
+              }}
+              goToLog={goToLog}
+              hasEnoughEntries={hasEnoughEntries}
+              isPro={isPro}
+              tagDrivers={tagDrivers}
+              tagSleepDrivers={tagSleepDrivers}
+              onOpenPaywall={onOpenPaywall}
+              t={t}
+            />
           )
         : null}
       {activeTab === 'timeline'
         ? (
-            <motion.div
-              className="insights-panel"
-              initial={reduceMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={panelTransition}
-            >
-              <div className="card-header">
-                <div>
-                  <h2>{t('nav.timeline')}</h2>
-                  <p className="muted">{t('insights.overviewDailyLogs')}</p>
-                </div>
-                <TimelineMonthAction
-                  selectedMonthLabel={selectedMonthLabel}
-                  onToggleMonthPicker={() => setIsMonthPickerOpen(prev => !prev)}
-                />
-              </div>
-              <TimelineFilters
-                isMonthPickerOpen={isMonthPickerOpen}
-                monthOptions={monthOptions}
-                selectedMonth={selectedMonth}
-                hasAppliedTimelineFilters={hasAppliedTimelineFilters}
-                appliedTimelineFilters={appliedTimelineFilters}
-                operatorLabelByValue={operatorLabelByValue}
-                timelineTagLabelByKey={timelineTagLabelByKey}
-                isFilterSheetOpen={isFilterSheetOpen}
-                appliedFilterCount={appliedFilterCount}
-                reduceMotion={reduceMotion}
-                panelTransition={panelTransition}
-                operatorOptions={operatorOptions}
-                moodColors={moodColors}
-                draftTimelineFilters={draftTimelineFilters}
-                timelineTagSearch={timelineTagSearch}
-                visibleTimelineTagOptions={visibleTimelineTagOptions}
-                tagColors={tagColors}
-                onSelectMonth={(key) => {
-                  setSelectedMonth(key)
-                  setIsMonthPickerOpen(false)
-                }}
-                onClearAppliedMood={() => {
-                  setAppliedTimelineFilters(prev => ({ ...prev, moodValue: null }))
-                  setDraftTimelineFilters(prev => ({ ...prev, moodValue: null }))
-                }}
-                onClearAppliedSleep={() => {
-                  setAppliedTimelineFilters(prev => ({ ...prev, sleepValue: null }))
-                  setDraftTimelineFilters(prev => ({ ...prev, sleepValue: null }))
-                }}
-                onRemoveAppliedTag={(tag) => {
-                  setAppliedTimelineFilters(prev => ({
-                    ...prev,
-                    tags: prev.tags.filter(activeTag => activeTag !== tag),
-                  }))
-                  setDraftTimelineFilters(prev => ({
-                    ...prev,
-                    tags: prev.tags.filter(activeTag => activeTag !== tag),
-                  }))
-                }}
-                onOpenFilter={() => {
-                  setDraftTimelineFilters(appliedTimelineFilters)
-                  setTimelineTagSearch('')
-                  setIsFilterSheetOpen(true)
-                }}
-                onCloseFilter={() => setIsFilterSheetOpen(false)}
-                onDraftMoodOperatorChange={operator => setDraftTimelineFilters(prev => ({ ...prev, moodOperator: operator }))}
-                onDraftMoodValueChange={value => setDraftTimelineFilters(prev => ({ ...prev, moodValue: value }))}
-                onDraftSleepOperatorChange={operator => setDraftTimelineFilters(prev => ({ ...prev, sleepOperator: operator }))}
-                onDraftSleepValueChange={value => setDraftTimelineFilters(prev => ({ ...prev, sleepValue: value }))}
-                onTimelineTagSearchChange={value => setTimelineTagSearch(value)}
-                onToggleDraftTag={tagKey =>
-                  setDraftTimelineFilters(prev => ({
-                    ...prev,
-                    tags: prev.tags.includes(tagKey)
-                      ? prev.tags.filter(activeTag => activeTag !== tagKey)
-                      : [...prev.tags, tagKey],
-                  }))}
-                onClearAllDraft={() => setDraftTimelineFilters(DEFAULT_TIMELINE_FILTERS)}
-                onApplyDraftFilters={() => {
-                  setAppliedTimelineFilters(draftTimelineFilters)
-                  setIsFilterSheetOpen(false)
-                }}
-              />
-              {entriesLoading && (
-                <p className="muted timeline-empty-state">{t('common.loading')}</p>
-              )}
-              {!entriesLoading && filteredTimelineEntries.length === 0 && (
-                <p className="muted timeline-empty-state">{t('insights.noEntryForDay')}</p>
-              )}
-              {!entriesLoading && filteredTimelineEntries.length > 0 && (
-                <div className="timeline-cards">
-                  {filteredTimelineEntries.map((entry) => {
-                    const timelineDate = formatTimelineDate(entry.entry_date)
-                    const moodLabel = entry.mood == null
-                      ? t('common.noDataDash')
-                      : t(`log.moodName${entry.mood}`)
-                    const moodDotColor = entry.mood == null
-                      ? 'var(--muted)'
-                      : moodColors[Math.max(0, Math.min(moodColors.length - 1, entry.mood - 1))]
-                    const sleepLabel = entry.sleep_hours == null
-                      ? t('common.noDataDash')
-                      : formatSleepHours(entry.sleep_hours)
-
-                    return (
-                      <article className="card timeline-card" key={entry.id}>
-                        <div className="timeline-card-date-row">
-                          <h3 className="timeline-card-date">{timelineDate.dateLabel}</h3>
-                          <span className="timeline-card-weekday">{timelineDate.weekdayLabel}</span>
-                        </div>
-                        <div className="timeline-card-metrics">
-                          <span className="timeline-card-metric">
-                            <span className="timeline-card-mood-dot" style={{ backgroundColor: moodDotColor }} aria-hidden />
-                            <span>{moodLabel}</span>
-                          </span>
-                          <span className="timeline-card-metric">
-                            <Moon size={14} aria-hidden />
-                            <span>{sleepLabel}</span>
-                          </span>
-                        </div>
-                        {entry.tags && entry.tags.length > 0 && (
-                          <div className="timeline-card-tags">
-                            {entry.tags.map((tag) => {
-                              const colorKey = tag.trim().toLowerCase()
-                              const tagColor = tagColors[colorKey]
-                              const textColor = getHighContrastTextColor(tagColor)
-
-                              return (
-                                <span
-                                  className="timeline-card-tag"
-                                  key={tag}
-                                  style={
-                                    tagColor
-                                      ? { backgroundColor: tagColor, color: textColor, borderColor: 'transparent' }
-                                      : undefined
-                                  }
-                                >
-                                  #
-                                  {tag}
-                                </span>
-                              )
-                            })}
-                          </div>
-                        )}
-                        {entry.note?.trim() && (
-                          <p className="timeline-card-note">
-                            <strong>
-                              {t('common.notes')}
-                              :
-                            </strong>
-                            {' '}
-                            {entry.note}
-                          </p>
-                        )}
-                      </article>
-                    )
-                  })}
-                </div>
-              )}
-            </motion.div>
+            <Timeline
+              reduceMotion={reduceMotion}
+              panelTransition={panelTransition}
+              t={t}
+              selectedMonthLabel={selectedMonthLabel}
+              onToggleMonthPicker={() => setIsMonthPickerOpen(prev => !prev)}
+              isMonthPickerOpen={isMonthPickerOpen}
+              monthOptions={monthOptions}
+              selectedMonth={selectedMonth}
+              hasAppliedTimelineFilters={hasAppliedTimelineFilters}
+              appliedTimelineFilters={appliedTimelineFilters}
+              operatorLabelByValue={operatorLabelByValue}
+              timelineTagLabelByKey={timelineTagLabelByKey}
+              isFilterSheetOpen={isFilterSheetOpen}
+              appliedFilterCount={appliedFilterCount}
+              operatorOptions={operatorOptions}
+              moodColors={moodColors}
+              draftTimelineFilters={draftTimelineFilters}
+              timelineTagSearch={timelineTagSearch}
+              visibleTimelineTagOptions={visibleTimelineTagOptions}
+              tagColors={tagColors}
+              onSelectMonth={(key) => {
+                setSelectedMonth(key)
+                setIsMonthPickerOpen(false)
+              }}
+              onClearAppliedMood={() => {
+                setAppliedTimelineFilters(prev => ({ ...prev, moodValue: null }))
+                setDraftTimelineFilters(prev => ({ ...prev, moodValue: null }))
+              }}
+              onClearAppliedSleep={() => {
+                setAppliedTimelineFilters(prev => ({ ...prev, sleepValue: null }))
+                setDraftTimelineFilters(prev => ({ ...prev, sleepValue: null }))
+              }}
+              onRemoveAppliedTag={(tag) => {
+                setAppliedTimelineFilters(prev => ({
+                  ...prev,
+                  tags: prev.tags.filter(activeTag => activeTag !== tag),
+                }))
+                setDraftTimelineFilters(prev => ({
+                  ...prev,
+                  tags: prev.tags.filter(activeTag => activeTag !== tag),
+                }))
+              }}
+              onOpenFilter={() => {
+                setDraftTimelineFilters(appliedTimelineFilters)
+                setTimelineTagSearch('')
+                setIsFilterSheetOpen(true)
+              }}
+              onCloseFilter={() => setIsFilterSheetOpen(false)}
+              onDraftMoodOperatorChange={operator => setDraftTimelineFilters(prev => ({ ...prev, moodOperator: operator }))}
+              onDraftMoodValueChange={value => setDraftTimelineFilters(prev => ({ ...prev, moodValue: value }))}
+              onDraftSleepOperatorChange={operator => setDraftTimelineFilters(prev => ({ ...prev, sleepOperator: operator }))}
+              onDraftSleepValueChange={value => setDraftTimelineFilters(prev => ({ ...prev, sleepValue: value }))}
+              onTimelineTagSearchChange={value => setTimelineTagSearch(value)}
+              onToggleDraftTag={tagKey =>
+                setDraftTimelineFilters(prev => ({
+                  ...prev,
+                  tags: prev.tags.includes(tagKey)
+                    ? prev.tags.filter(activeTag => activeTag !== tagKey)
+                    : [...prev.tags, tagKey],
+                }))}
+              onClearAllDraft={() => setDraftTimelineFilters(DEFAULT_TIMELINE_FILTERS)}
+              onApplyDraftFilters={() => {
+                setAppliedTimelineFilters(draftTimelineFilters)
+                setIsFilterSheetOpen(false)
+              }}
+              entriesLoading={entriesLoading}
+              filteredTimelineEntries={filteredTimelineEntries}
+              formatTimelineDate={formatTimelineDate}
+            />
           )
         : null}
     </>
