@@ -608,7 +608,6 @@
 .tabs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
 }
 
 .tab-button {
@@ -3572,6 +3571,56 @@
 
 .insights-bottom-nav__tabs {
   grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
+}
+
+.insights-bottom-nav .tab-button--log-fab {
+  grid-column: 3;
+  width: 56px;
+  height: 56px;
+  margin-inline: auto;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, #7a5cff 0%, #3f9eff 100%);
+  box-shadow:
+    0 10px 20px rgb(55 80 180 / 28%),
+    0 2px 6px rgb(40 60 140 / 24%);
+  transform: translateY(-14px);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+}
+
+.insights-bottom-nav .tab-button--log-fab:hover {
+  transform: translateY(-16px);
+  filter: saturate(1.08);
+  box-shadow:
+    0 14px 26px rgb(55 80 180 / 32%),
+    0 4px 10px rgb(40 60 140 / 26%);
+}
+
+.insights-bottom-nav .tab-button--log-fab.active {
+  background: linear-gradient(135deg, #7250ff 0%, #3397ff 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+.insights-bottom-nav .tab-button--log-fab:focus-visible {
+  outline: 2px solid var(--nav-focus-border);
+  outline-offset: 3px;
+}
+
+.tab-fab-plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1;
+  transform: translateY(-1px);
 }
 
 .nav-actions {
@@ -3579,13 +3628,6 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-}
-
-.nav-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
 }
 
 .nav-brand {
@@ -5240,11 +5282,6 @@ button.toggle-group__btn--disabled:disabled {
   .app-header {
     align-items: flex-start;
   }
-
-  .tabs {
-    gap: 20px;
-  }
-
   .badge-row {
     display: flex;
     flex-direction: column;
@@ -5319,8 +5356,23 @@ button.toggle-group__btn--disabled:disabled {
     border: 0;
   }
 
+  .insights-bottom-nav .tab-button--log-fab {
+    width: 54px;
+    height: 54px;
+    padding: 0;
+    transform: translateY(-16px);
+  }
+
+  .insights-bottom-nav .tab-button--log-fab:hover {
+    transform: translateY(-18px);
+  }
+
   .insights-bottom-nav .tab-button.active {
     background: var(--selected-bg);
+  }
+
+  .insights-bottom-nav .tab-button--log-fab.active {
+    background: linear-gradient(135deg, #7250ff 0%, #3397ff 100%);
   }
 
   .insights-bottom-nav .tab-icon {
@@ -5541,6 +5593,17 @@ button.toggle-group__btn--disabled:disabled {
   .insights-bottom-nav__tabs .tab-button {
     padding: 8px 12px;
     border: 0;
+  }
+
+  .insights-bottom-nav__tabs .tab-button--log-fab {
+    width: 58px;
+    height: 58px;
+    padding: 0;
+    transform: translateY(0);
+  }
+
+  .insights-bottom-nav__tabs .tab-button--log-fab:hover {
+    transform: translateY(-2px);
   }
 
   .insights-bottom-nav__tabs .tab-button:focus-visible {

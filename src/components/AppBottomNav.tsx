@@ -151,6 +151,14 @@ export function AppBottomNav({
                 </button>
                 <button
                   type="button"
+                  className={`tab-button tab-button--log-fab ${showActiveStyles && activeTab === Tabs.Log ? 'active' : ''}`}
+                  {...handleTabInteraction(goToLog)}
+                  aria-label={t('nav.log')}
+                >
+                  <span className="tab-fab-plus" aria-hidden="true">+</span>
+                </button>
+                <button
+                  type="button"
                   className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Charts ? 'active' : ''}`}
                   {...handleTabInteraction(goToCharts)}
                   disabled={lockNonLogTabs}
@@ -194,24 +202,6 @@ export function AppBottomNav({
                     </svg>
                   </span>
                   <span>{t('nav.events')}</span>
-                </button>
-                <button
-                  type="button"
-                  className={`tab-button ${showActiveStyles && activeTab === Tabs.Log ? 'active' : ''}`}
-                  {...handleTabInteraction(goToLog)}
-                >
-                  <span className="tab-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path
-                        d="M12 5v14M5 12h14"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </span>
-                  <span>{t('nav.log')}</span>
                 </button>
               </div>
               <div className="nav-actions" aria-label={t('nav.accountActions')}>
