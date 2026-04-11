@@ -263,221 +263,223 @@ export const TimelineFilters = ({
               transition={panelTransition}
             >
               <h3>{t('insights.timelineFilters.title')}</h3>
-              <div className="timeline-filter-section">
-                <button
-                  type="button"
-                  className="timeline-filter-section-toggle"
-                  onClick={() => setIsMoodSectionOverride(prev => !(prev ?? draftTimelineFilters.moodValue !== null))}
-                  aria-expanded={isMoodSectionOpen}
-                >
-                  <span className="timeline-filter-section-heading">
-                    <Smile className="timeline-filter-section-icon" size={16} aria-hidden />
-                    <span className="timeline-filter-section-title">{t('insights.timelineFilters.mood')}</span>
-                  </span>
-                  <ChevronDown
-                    size={18}
-                    className={`timeline-filter-section-chevron ${isMoodSectionOpen ? 'open' : ''}`}
-                    aria-hidden
-                  />
-                </button>
-                <AnimatePresence initial={false}>
-                  {isMoodSectionOpen && (
-                    <motion.div
-                      className="timeline-filter-section-content"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={sectionTransition}
-                    >
-                      <div className="timeline-filter-operator-row">
-                        {operatorOptions.map(option => (
-                          <button
-                            type="button"
-                            key={option.value}
-                          className={`ghost ${
-                            draftTimelineFilters.moodOperator === option.value
-                            && (
-                              draftTimelineFilters.moodValue !== null
-                              || draftTimelineFilters.moodOperator !== 'eq'
-                              || isMoodOperatorTouched
-                            )
-                              ? 'active'
-                              : ''
-                          }`}
-                          onClick={() => {
-                            setIsMoodOperatorTouched(true)
-                            onDraftMoodOperatorChange(option.value)
-                          }}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                      <div className="timeline-filter-mood-row">
-                        {moodFaceOptions.map((value) => {
-                          const Icon = TIMELINE_MOOD_ICONS[value]
-                          const moodColor = moodColors[value - 1] ?? 'var(--text)'
-                          return (
+              <div className="timeline-filter-sheet-content">
+                <div className="timeline-filter-section">
+                  <button
+                    type="button"
+                    className="timeline-filter-section-toggle"
+                    onClick={() => setIsMoodSectionOverride(prev => !(prev ?? draftTimelineFilters.moodValue !== null))}
+                    aria-expanded={isMoodSectionOpen}
+                  >
+                    <span className="timeline-filter-section-heading">
+                      <Smile className="timeline-filter-section-icon" size={16} aria-hidden />
+                      <span className="timeline-filter-section-title">{t('insights.timelineFilters.mood')}</span>
+                    </span>
+                    <ChevronDown
+                      size={18}
+                      className={`timeline-filter-section-chevron ${isMoodSectionOpen ? 'open' : ''}`}
+                      aria-hidden
+                    />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isMoodSectionOpen && (
+                      <motion.div
+                        className="timeline-filter-section-content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={sectionTransition}
+                      >
+                        <div className="timeline-filter-operator-row">
+                          {operatorOptions.map(option => (
                             <button
-                              key={value}
                               type="button"
-                              className={`timeline-mood-face ${draftTimelineFilters.moodValue === value ? 'active' : ''}`}
-                              style={{ '--mood-color': moodColor } as CSSProperties}
-                              onClick={() => onDraftMoodValueChange(value)}
-                              aria-label={t(`log.moodName${value}`)}
+                              key={option.value}
+                              className={`ghost ${
+                                draftTimelineFilters.moodOperator === option.value
+                                && (
+                                  draftTimelineFilters.moodValue !== null
+                                  || draftTimelineFilters.moodOperator !== 'eq'
+                                  || isMoodOperatorTouched
+                                )
+                                  ? 'active'
+                                  : ''
+                              }`}
+                              onClick={() => {
+                                setIsMoodOperatorTouched(true)
+                                onDraftMoodOperatorChange(option.value)
+                              }}
                             >
-                              <Icon className="timeline-mood-face-icon" size={20} aria-hidden />
+                              {option.label}
                             </button>
-                          )
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              <div className="timeline-filter-section">
-                <button
-                  type="button"
-                  className="timeline-filter-section-toggle"
-                  onClick={() => setIsSleepSectionOverride(prev => !(prev ?? draftTimelineFilters.sleepValue !== null))}
-                  aria-expanded={isSleepSectionOpen}
-                >
-                  <span className="timeline-filter-section-heading">
-                    <Moon className="timeline-filter-section-icon" size={16} aria-hidden />
-                    <span className="timeline-filter-section-title">{t('insights.timelineFilters.sleep')}</span>
-                  </span>
-                  <ChevronDown
-                    size={18}
-                    className={`timeline-filter-section-chevron ${isSleepSectionOpen ? 'open' : ''}`}
-                    aria-hidden
-                  />
-                </button>
-                <AnimatePresence initial={false}>
-                  {isSleepSectionOpen && (
-                    <motion.div
-                      className="timeline-filter-section-content"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={sectionTransition}
-                    >
-                      <div className="timeline-filter-operator-row">
-                        {operatorOptions.map(option => (
-                          <button
-                            type="button"
-                            key={option.value}
-                            className={`ghost ${draftTimelineFilters.sleepValue !== null && draftTimelineFilters.sleepOperator === option.value ? 'active' : ''}`}
-                            onClick={() => onDraftSleepOperatorChange(option.value)}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                      <div className="timeline-sleep-slider-wrap">
-                        <input
-                          type="range"
-                          min={0}
-                          max={12}
-                          step={0.5}
-                          value={sleepSliderValue}
-                          onChange={event => onDraftSleepValueChange(Number(event.target.value))}
-                        />
-                        <div className="timeline-sleep-slider-meta">
-                          <span>0h</span>
-                          <strong>{formatSleepHours(sleepSliderValue)}</strong>
-                          <span>12h</span>
+                          ))}
                         </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                        <div className="timeline-filter-mood-row">
+                          {moodFaceOptions.map((value) => {
+                            const Icon = TIMELINE_MOOD_ICONS[value]
+                            const moodColor = moodColors[value - 1] ?? 'var(--text)'
+                            return (
+                              <button
+                                key={value}
+                                type="button"
+                                className={`timeline-mood-face ${draftTimelineFilters.moodValue === value ? 'active' : ''}`}
+                                style={{ '--mood-color': moodColor } as CSSProperties}
+                                onClick={() => onDraftMoodValueChange(value)}
+                                aria-label={t(`log.moodName${value}`)}
+                              >
+                                <Icon className="timeline-mood-face-icon" size={20} aria-hidden />
+                              </button>
+                            )
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
 
-              <div className="timeline-filter-section">
-                <button
-                  type="button"
-                  className="timeline-filter-section-toggle"
-                  onClick={() => setIsEventsSectionOverride(prev => !(prev ?? draftTimelineFilters.tags.length > 0))}
-                  aria-expanded={isEventsSectionOpen}
-                >
-                  <span className="timeline-filter-section-heading">
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="timeline-filter-section-icon"
-                      width="16"
-                      height="16"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M8 6h13M8 12h13M8 18h13"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      <circle cx="4" cy="6" r="1.5" fill="currentColor" />
-                      <circle cx="4" cy="12" r="1.5" fill="currentColor" />
-                      <circle cx="4" cy="18" r="1.5" fill="currentColor" />
-                    </svg>
-                    <span className="timeline-filter-section-title">{t('insights.dailyEvents')}</span>
-                  </span>
-                  <ChevronDown
-                    size={18}
-                    className={`timeline-filter-section-chevron ${isEventsSectionOpen ? 'open' : ''}`}
-                    aria-hidden
-                  />
-                </button>
-                <AnimatePresence initial={false}>
-                  {isEventsSectionOpen && (
-                    <motion.div
-                      className="timeline-filter-section-content"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={sectionTransition}
-                    >
-                      <div className="timeline-filter-tag-search">
-                        <input
-                          type="search"
-                          className="tag-dropdown-trigger log-reflection-input"
-                          value={timelineTagSearch}
-                          onChange={event => onTimelineTagSearchChange(event.target.value)}
-                          placeholder={t('insights.timelineFilters.searchEvents')}
-                          aria-label={t('insights.timelineFilters.searchEvents')}
-                        />
-                      </div>
-                      <div className="timeline-filter-tags-fade-wrap">
-                        <div className="timeline-filter-tags-scroll">
-                          <div className="timeline-filter-tags-wrap">
-                            {visibleTimelineTagOptions.map((tag, index) => {
-                              const isSelected = draftTimelineFilters.tags.includes(tag.key)
-                              const effectiveTagColor = tagColors[tag.key] ?? getFallbackTagColor(tag.key)
-                              const textColor = getHighContrastTextColor(effectiveTagColor)
-                              return (
-                                <button
-                                  key={tag.key}
-                                  type="button"
-                                  className={`timeline-filter-tag-option ${isSelected ? 'active tag-pill' : ''}`}
-                                  data-color-index={index % 8}
-                                  style={
-                                    isSelected
-                                      ? { backgroundColor: effectiveTagColor, color: textColor, borderColor: 'transparent' }
-                                      : undefined
-                                  }
-                                  onClick={() => onToggleDraftTag(tag.key)}
-                                >
-                                  #
-                                  {tag.label}
-                                </button>
-                              )
-                            })}
+                <div className="timeline-filter-section">
+                  <button
+                    type="button"
+                    className="timeline-filter-section-toggle"
+                    onClick={() => setIsSleepSectionOverride(prev => !(prev ?? draftTimelineFilters.sleepValue !== null))}
+                    aria-expanded={isSleepSectionOpen}
+                  >
+                    <span className="timeline-filter-section-heading">
+                      <Moon className="timeline-filter-section-icon" size={16} aria-hidden />
+                      <span className="timeline-filter-section-title">{t('insights.timelineFilters.sleep')}</span>
+                    </span>
+                    <ChevronDown
+                      size={18}
+                      className={`timeline-filter-section-chevron ${isSleepSectionOpen ? 'open' : ''}`}
+                      aria-hidden
+                    />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isSleepSectionOpen && (
+                      <motion.div
+                        className="timeline-filter-section-content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={sectionTransition}
+                      >
+                        <div className="timeline-filter-operator-row">
+                          {operatorOptions.map(option => (
+                            <button
+                              type="button"
+                              key={option.value}
+                              className={`ghost ${draftTimelineFilters.sleepValue !== null && draftTimelineFilters.sleepOperator === option.value ? 'active' : ''}`}
+                              onClick={() => onDraftSleepOperatorChange(option.value)}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="timeline-sleep-slider-wrap">
+                          <input
+                            type="range"
+                            min={0}
+                            max={12}
+                            step={0.5}
+                            value={sleepSliderValue}
+                            onChange={event => onDraftSleepValueChange(Number(event.target.value))}
+                          />
+                          <div className="timeline-sleep-slider-meta">
+                            <span>0h</span>
+                            <strong>{formatSleepHours(sleepSliderValue)}</strong>
+                            <span>12h</span>
                           </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <div className="timeline-filter-section">
+                  <button
+                    type="button"
+                    className="timeline-filter-section-toggle"
+                    onClick={() => setIsEventsSectionOverride(prev => !(prev ?? draftTimelineFilters.tags.length > 0))}
+                    aria-expanded={isEventsSectionOpen}
+                  >
+                    <span className="timeline-filter-section-heading">
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="timeline-filter-section-icon"
+                        width="16"
+                        height="16"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M8 6h13M8 12h13M8 18h13"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <circle cx="4" cy="6" r="1.5" fill="currentColor" />
+                        <circle cx="4" cy="12" r="1.5" fill="currentColor" />
+                        <circle cx="4" cy="18" r="1.5" fill="currentColor" />
+                      </svg>
+                      <span className="timeline-filter-section-title">{t('insights.dailyEvents')}</span>
+                    </span>
+                    <ChevronDown
+                      size={18}
+                      className={`timeline-filter-section-chevron ${isEventsSectionOpen ? 'open' : ''}`}
+                      aria-hidden
+                    />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isEventsSectionOpen && (
+                      <motion.div
+                        className="timeline-filter-section-content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={sectionTransition}
+                      >
+                        <div className="timeline-filter-tag-search">
+                          <input
+                            type="search"
+                            className="tag-dropdown-trigger log-reflection-input"
+                            value={timelineTagSearch}
+                            onChange={event => onTimelineTagSearchChange(event.target.value)}
+                            placeholder={t('insights.timelineFilters.searchEvents')}
+                            aria-label={t('insights.timelineFilters.searchEvents')}
+                          />
+                        </div>
+                        <div className="timeline-filter-tags-fade-wrap">
+                          <div className="timeline-filter-tags-scroll">
+                            <div className="timeline-filter-tags-wrap">
+                              {visibleTimelineTagOptions.map((tag, index) => {
+                                const isSelected = draftTimelineFilters.tags.includes(tag.key)
+                                const effectiveTagColor = tagColors[tag.key] ?? getFallbackTagColor(tag.key)
+                                const textColor = getHighContrastTextColor(effectiveTagColor)
+                                return (
+                                  <button
+                                    key={tag.key}
+                                    type="button"
+                                    className={`timeline-filter-tag-option ${isSelected ? 'active tag-pill' : ''}`}
+                                    data-color-index={index % 8}
+                                    style={
+                                      isSelected
+                                        ? { backgroundColor: effectiveTagColor, color: textColor, borderColor: 'transparent' }
+                                        : undefined
+                                    }
+                                    onClick={() => onToggleDraftTag(tag.key)}
+                                  >
+                                    #
+                                    {tag.label}
+                                  </button>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
 
               <div className="timeline-filter-actions">

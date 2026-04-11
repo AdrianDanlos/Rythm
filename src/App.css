@@ -508,6 +508,10 @@
   background: var(--bg);
 }
 
+.app-header--menu-open::after {
+  display: none;
+}
+
 .app-header-top {
   width: 100%;
   display: flex;
@@ -1151,9 +1155,10 @@
   resize: vertical;
 }
 
-.feedback-textarea:focus {
+.feedback-textarea:focus,
+.feedback-textarea:focus-visible {
   outline: none;
-  border-color: var(--input-focus-border);
+  border-color: var(--border);
   box-shadow: var(--input-focus-shadow);
 }
 
@@ -4013,7 +4018,6 @@
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text);
-  border-radius: 999px;
   padding: 8px 10px;
   text-align: left;
 }
@@ -4193,8 +4197,11 @@
   border-bottom: 0;
   padding: 16px;
   z-index: 40;
-  max-height: min(78vh, 640px);
-  overflow-y: auto;
+  max-height: min(90vh, 660px);
+  overflow: hidden;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
 }
 
 .timeline-filter-sheet h3 {
@@ -4205,6 +4212,14 @@
 
 .timeline-filter-sheet h3 + .timeline-filter-section {
   margin-top: 16px;
+}
+
+.timeline-filter-sheet-content {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin-right: -4px;
+  padding-right: 4px;
+  padding-bottom: 8px;
 }
 
 .timeline-filter-section + .timeline-filter-section {
@@ -4395,6 +4410,7 @@
 .timeline-filter-tags-scroll {
   max-height: 120px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding-bottom: 24px;
 }
 
@@ -4432,7 +4448,10 @@
 }
 
 .timeline-filter-actions {
-  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  background: var(--card);
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   gap: 10px;

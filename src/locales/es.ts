@@ -269,7 +269,7 @@ const es = {
       searchEvents: 'Buscar eventos',
       clearAll: 'Quitar filtros',
       showResults: 'Mostrar resultados',
-      allEntries: 'Siempre',
+      allEntries: 'Histórico',
     },
     previousMonth: 'Mes anterior',
     nextMonth: 'Mes siguiente',
