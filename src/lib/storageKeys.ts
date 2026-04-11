@@ -21,4 +21,5 @@ export type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS]
 /** Keys used with sessionStorage for one-shot navigation UX (cleared when consumed). */
 export const SESSION_STORAGE_KEYS = {
   SCROLL_TO_LOG_DAILY_EVENTS: 'rythm_scroll_to_log_daily_events',
+  SCROLL_TO_SETTINGS_REMINDER: 'rythm_scroll_to_settings_reminder',
 } as const

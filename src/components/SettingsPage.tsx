@@ -1,4 +1,4 @@
-import { useEffect, useState, type FocusEvent } from 'react'
+import { useEffect, useRef, useState, type FocusEvent } from 'react'
 import { Capacitor } from '@capacitor/core'
 import { ChevronRight, Crown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +17,7 @@ import type {
 } from '../lib/settings'
 import appleLogo from '../assets/apple.png'
 import fitbitLogo from '../assets/fitbit.png'
+import { useScrollToSettingsReminderOnMount } from '../hooks/useScrollToSettingsReminderOnMount'
 
 type SettingsPageProps = {
   isPro: boolean
@@ -59,9 +60,11 @@ export function SettingsPage({
   )
   const [isDateFormatOpen, setIsDateFormatOpen] = useState(false)
   const [isLanguageOpen, setIsLanguageOpen] = useState(false)
+  const reminderFieldRef = useRef<HTMLDivElement | null>(null)
   const [sleepTargetInput, setSleepTargetInput] = useState(
     () => String(personalSleepTarget),
   )
+  useScrollToSettingsReminderOnMount(reminderFieldRef)
 
   const reminderActive = remindersSupported && remindersEnabled
 
@@ -335,7 +338,7 @@ export function SettingsPage({
                 </button>
               </div>
             </div>
-            <div className="field">
+            <div className="field" ref={reminderFieldRef}>
               <span>{t('settings.dailyLogReminder')}</span>
               <div className="settings-inline">
                 <label className="toggle-row">

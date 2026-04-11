@@ -31,8 +31,7 @@ export const dismissDailyReminderNudge = () => {
 }
 
 export const shouldShowDailyReminderNudge = () =>
-  Capacitor.isNativePlatform()
-  && !getStoredDailyReminderEnabled()
+  !getStoredDailyReminderEnabled()
   && !hasDismissedDailyReminderNudge()
 
 const parseReminderTime = (value?: string) => {

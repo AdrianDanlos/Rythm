@@ -39,7 +39,8 @@ type UseLogFormParams = {
   isPro: boolean
   maxTagsPerEntry: number
   onStreakReached?: () => void
-  onEntrySavedForToday?: () => void
+  shouldSuppressPostSaveToast?: (entryCount: number) => boolean
+  onEntrySavedForToday?: (entryCount: number) => void
 }
 
 export const useLogForm = ({
@@ -52,6 +53,7 @@ export const useLogForm = ({
   sleepThreshold,
   maxTagsPerEntry,
   onStreakReached,
+  shouldSuppressPostSaveToast,
   onEntrySavedForToday,
 }: UseLogFormParams) => {
   const defaultSleepHoursOption = formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS)
@@ -237,7 +239,8 @@ export const useLogForm = ({
         onStreakReached?.()
       }
       setSaved(true)
-      if (!options?.silent) {
+      const suppressPostSaveToast = shouldSuppressPostSaveToast?.(nextEntries.length) ?? false
+      if (!options?.silent && !suppressPostSaveToast) {
         if (tagList.length === 0) {
           const isCompleteAfterSave = mood !== null
           const isShortSleep = sleepHoursToSave < (sleepThreshold - 1)
@@ -258,7 +261,7 @@ export const useLogForm = ({
       }
       window.setTimeout(() => setSaved(false), 2000)
       if (!options?.silent) {
-        onEntrySavedForToday?.()
+        onEntrySavedForToday?.(nextEntries.length)
       }
     }
     catch {

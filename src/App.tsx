@@ -44,11 +44,10 @@ import { STORAGE_KEYS } from './lib/storageKeys'
 import {
   DAILY_REMINDER_ID,
   dismissDailyReminderNudge,
-  scheduleDailyReminder,
-  setStoredDailyReminderEnabled,
   shouldShowDailyReminderNudge,
 } from './lib/notifications'
 import { Toaster, toast } from 'sonner'
+import { requestScrollToSettingsReminder } from './hooks/useScrollToSettingsReminderOnMount'
 import './App.css'
 import { upsertEntry } from './lib/entries'
 import { MAX_TAG_LENGTH } from './lib/utils/stringUtils'
@@ -164,47 +163,43 @@ function App() {
     goToInsightsSummary,
   } = shell
 
-  const handleEnableReminderNudge = useCallback(async () => {
-    const scheduled = await scheduleDailyReminder({ force: true })
+  const handleEnableReminderNudge = useCallback(() => {
     dismissDailyReminderNudge()
-    if (scheduled) {
-      setStoredDailyReminderEnabled(true)
-      toast.success(t('notifications.nudgeEnabled'))
+    requestScrollToSettingsReminder()
+    navigateToPage(AppPage.Settings)
+  }, [navigateToPage])
+
+  const handleEntrySavedForToday = useCallback((entryCount: number) => {
+    goToInsightsSummary()
+    if (entryCount !== 3) {
       return
     }
-    toast.message(t('notifications.nudgeEnableInSettings'))
-  }, [t])
-
-  const handleEntrySavedForToday = useCallback(() => {
-    goToInsightsSummary()
     if (!shouldShowDailyReminderNudge()) {
       return
     }
 
-    let isHandled = false
-    const dismissNudge = () => {
-      if (isHandled) return
-      isHandled = true
-      dismissDailyReminderNudge()
-    }
-
     toast(t('notifications.nudgeTitle'), {
       description: t('notifications.nudgeBody'),
-      duration: 10000,
+      duration: Number.POSITIVE_INFINITY,
+      dismissible: false,
+      closeButton: false,
       action: {
         label: t('notifications.nudgeEnableAction'),
         onClick: () => {
-          isHandled = true
           void handleEnableReminderNudge()
         },
       },
       cancel: {
         label: t('notifications.nudgeNotNowAction'),
-        onClick: dismissNudge,
+        onClick: () => dismissDailyReminderNudge(),
       },
-      onDismiss: dismissNudge,
     })
   }, [goToInsightsSummary, handleEnableReminderNudge, t])
+
+  const shouldSuppressPostSaveToast = useCallback(
+    (entryCount: number) => entryCount === 3 && shouldShowDailyReminderNudge(),
+    [],
+  )
 
   const openPaywall = useCallback(() => {
     navigate(getPathForPage(AppPage.Pro), { state: { paywallFrom: pathname } })
@@ -370,6 +365,7 @@ function App() {
     isPro,
     maxTagsPerEntry,
     onStreakReached: () => shell.setIsStreakOpen(true),
+    shouldSuppressPostSaveToast,
     onEntrySavedForToday: handleEntrySavedForToday,
   })
 
