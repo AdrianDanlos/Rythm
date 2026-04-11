@@ -442,6 +442,20 @@ export const Insights = ({
   }, [])
 
   useEffect(() => {
+    if (typeof document === 'undefined') return
+    const className = 'timeline-filter-sheet-open'
+    if (isFilterSheetOpen) {
+      document.body.classList.add(className)
+    }
+    else {
+      document.body.classList.remove(className)
+    }
+    return () => {
+      document.body.classList.remove(className)
+    }
+  }, [isFilterSheetOpen])
+
+  useEffect(() => {
     if (typeof window === 'undefined') return
     window.sessionStorage.setItem(TIMELINE_FILTERS_SESSION_KEY, JSON.stringify(appliedTimelineFilters))
   }, [appliedTimelineFilters])

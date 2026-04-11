@@ -149,6 +149,9 @@ export const Timeline = ({
             const moodLabel = entry.mood == null
               ? t('common.noDataDash')
               : t(`log.moodName${entry.mood}`)
+            const moodNumericValue = entry.mood == null
+              ? t('common.noDataDash')
+              : `${entry.mood} / 5`
             const moodDotColor = entry.mood == null
               ? 'var(--muted)'
               : moodColors[Math.max(0, Math.min(moodColors.length - 1, entry.mood - 1))]
@@ -166,6 +169,7 @@ export const Timeline = ({
                   <span className="timeline-card-metric">
                     <span className="timeline-card-mood-dot" style={{ backgroundColor: moodDotColor }} aria-hidden />
                     <span>{moodLabel}</span>
+                    <span>{moodNumericValue}</span>
                   </span>
                   <span className="timeline-card-metric">
                     <Moon size={14} aria-hidden />

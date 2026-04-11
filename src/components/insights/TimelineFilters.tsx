@@ -179,6 +179,14 @@ export const TimelineFilters = ({
                 )
               : null}
             {' '}
+            <span
+              className="timeline-card-mood-dot"
+              style={{
+                backgroundColor: moodColors[Math.max(0, Math.min(moodColors.length - 1, appliedTimelineFilters.moodValue - 1))],
+              }}
+              aria-hidden
+            />
+            {' '}
             {t(`log.moodName${appliedTimelineFilters.moodValue}`)}
             {' '}×
           </button>

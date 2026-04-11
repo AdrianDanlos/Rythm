@@ -3615,6 +3615,12 @@
   padding: 8px;
   padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
   box-shadow: var(--card-shadow);
+  transition: opacity 160ms ease;
+}
+
+body.timeline-filter-sheet-open .insights-bottom-nav {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .insights-bottom-nav__tabs {
@@ -4108,6 +4114,7 @@
   height: 9px;
   border-radius: 999px;
   background: #34d399;
+  margin-inline: 4px;
 }
 
 .timeline-card-tags {
