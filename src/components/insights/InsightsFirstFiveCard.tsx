@@ -64,7 +64,7 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
               <span className="insights-first-five-card__data-item-value">{formatSleepHours(sleep!)}</span>
             </div>
           )}
-          {hasMood && (
+          {roundedMood !== null && (
             <div className="insights-first-five-card__data-item insights-first-five-card__data-item--mood" role="listitem">
               <span className="insights-first-five-card__data-item-label">{t('common.mood')}</span>
               <span className="insights-first-five-card__data-item-value">{roundedMood} / 5</span>
