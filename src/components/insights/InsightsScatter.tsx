@@ -140,7 +140,7 @@ export const InsightsScatter = ({
                             : undefined
                         }
                       >
-                        {tag}
+                        #{tag}
                       </span>
                     )
                   })}

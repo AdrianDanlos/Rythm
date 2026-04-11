@@ -515,7 +515,7 @@ export const LogForm = ({
                     data-color-index={index}
                     style={tagColor ? { backgroundColor: tagColor, color: textColor } : undefined}
                   >
-                    {tag}
+                    #{tag}
                     <button
                       type="button"
                       className="tag-badge-remove"

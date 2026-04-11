@@ -780,8 +780,21 @@ function App() {
     return <Privacy />
   }
 
+  const shouldIgnoreMenuSwipe = (target: EventTarget | null) => {
+    if (!(target instanceof Element)) return false
+    return Boolean(
+      target.closest(
+        '.timeline-filter-sheet, input, textarea, select, button, [role="slider"]',
+      ),
+    )
+  }
+
   const handleSwipeStart = (event: React.TouchEvent<HTMLDivElement>) => {
     if (lockNonLogTabs) {
+      swipeStartXRef.current = null
+      return
+    }
+    if (shouldIgnoreMenuSwipe(event.target)) {
       swipeStartXRef.current = null
       return
     }
@@ -792,6 +805,7 @@ function App() {
 
   const handleSwipeMove = (event: React.TouchEvent<HTMLDivElement>) => {
     if (lockNonLogTabs) return
+    if (shouldIgnoreMenuSwipe(event.target)) return
     if (swipeStartXRef.current == null || isMenuPanelOpen) return
     const touch = event.touches[0]
     const deltaX = touch.clientX - swipeStartXRef.current

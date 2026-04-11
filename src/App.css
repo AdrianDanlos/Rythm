@@ -490,6 +490,20 @@
   pointer-events: none;
 }
 
+.app-header::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 22px;
+  background: var(--bg);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), transparent);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), transparent);
+  pointer-events: none;
+  z-index: -1;
+}
+
 .app-header--menu-open::before {
   background: var(--bg);
 }
@@ -639,6 +653,12 @@
   background: var(--selected-bg);
   color: var(--selected-text);
   border-color: var(--selected-border);
+}
+
+:root[data-theme="light"] .tab-button.active:not(.tab-button--log-fab) {
+  background: transparent;
+  color: #5b7fff;
+  border-color: #5b7fff;
 }
 
 .tab-button:disabled {
@@ -1974,7 +1994,7 @@
 }
 
 /* Light: mood tiles sit on white card — mix selected tint with white, not transparent */
-:root:not([data-theme="dark"]) .log-reflection-block .mood-button.active {
+:root[data-theme="light"] .log-reflection-block .mood-button.active {
   background: color-mix(in srgb, var(--mood-color) 20%, #ffffff);
 }
 
@@ -3020,23 +3040,23 @@
 }
 
 /* Light mode: mejor contraste en mood buttons */
-:root:not([data-theme="dark"]) .mood-button {
+:root[data-theme="light"] .mood-button {
   outline: 1px solid
     color-mix(in srgb, var(--mood-color, var(--button-border)) 72%, var(--text));
 }
-:root:not([data-theme="dark"]) .mood-button::after {
+:root[data-theme="light"] .mood-button::after {
   opacity: 0.38;
 }
-:root:not([data-theme="dark"]) .mood-button:hover {
+:root[data-theme="light"] .mood-button:hover {
   background: rgba(15, 23, 42, 0.07);
 }
-:root:not([data-theme="dark"]) .mood-button.active {
+:root[data-theme="light"] .mood-button.active {
   background: rgba(15, 23, 42, 0.12);
   outline-width: 2px;
   outline-color: color-mix(in srgb, var(--mood-color) 65%, var(--text));
   box-shadow: 0 8px 16px rgba(15, 23, 42, 0.14);
 }
-:root:not([data-theme="dark"]) .mood-button.active::after {
+:root[data-theme="light"] .mood-button.active::after {
   opacity: 0.75;
 }
 
@@ -3619,9 +3639,9 @@
 
 .insights-bottom-nav .tab-button.active:not(.tab-button--log-fab) {
   background: transparent;
-  color: #7250ff;
+  color: #5b7fff;
   border-color: transparent;
-  border-bottom: 2px solid #7250ff;
+  border-bottom: 2px solid #5b7fff;
   border-radius: 0;
 }
 
@@ -4253,7 +4273,7 @@
 }
 
 .timeline-filter-mood-row {
-  margin-top: 8px;
+  margin: 10px 2px 2px;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
@@ -4282,6 +4302,19 @@
     var(--mood-color, var(--selected-border)) 65%,
     var(--selected-border)
   );
+}
+
+:root[data-theme="light"] .timeline-mood-face {
+  outline: 1px solid
+    color-mix(in srgb, var(--mood-color, var(--button-border)) 72%, var(--text));
+}
+
+:root[data-theme="light"] .timeline-mood-face.active {
+  background: color-mix(in srgb, var(--mood-color) 20%, #ffffff);
+  border: none;
+  outline-width: 2px;
+  outline-color: color-mix(in srgb, var(--mood-color) 65%, var(--text));
+  box-shadow: none;
 }
 
 .timeline-mood-face-icon {
@@ -4399,10 +4432,21 @@
 }
 
 .timeline-filter-actions {
-  margin-top: 18px;
+  margin-top: 24px;
   display: flex;
   justify-content: space-between;
   gap: 10px;
+}
+
+.timeline-filter-actions .cta-button {
+  background: var(--cta-button-bg);
+  border-color: transparent;
+  color: #fff;
+}
+
+.timeline-filter-actions .cta-button:hover:not(:disabled),
+.timeline-filter-actions .cta-button:focus-visible:not(:disabled) {
+  filter: brightness(1.03);
 }
 
 @media (min-width: 1024px) {
@@ -5871,8 +5915,9 @@ button.toggle-group__btn--disabled:disabled {
 
   .insights-bottom-nav .tab-button.active:not(.tab-button--log-fab) {
     background: transparent;
-    color: #7250ff;
-    border-bottom: 2px solid #7250ff;
+    color: #5b7fff;
+    border-bottom: 2px solid #5b7fff;
+    padding-block: 6px;
   }
 
   .insights-bottom-nav .tab-button--log-fab.active {
@@ -6120,8 +6165,9 @@ button.toggle-group__btn--disabled:disabled {
   }
 
   .insights-bottom-nav__tabs .tab-button.active:not(.tab-button--log-fab) {
-    color: #7250ff;
-    border-bottom: 2px solid #7250ff;
+    color: #5b7fff;
+    border-bottom: 2px solid #5b7fff;
+    padding-block: 6px;
   }
 
   .nav-brand {
@@ -6363,30 +6409,30 @@ button.toggle-group__btn--disabled:disabled {
   color: var(--muted);
 }
 
-:root:not([data-theme="dark"]) [data-sonner-toast].app-toast {
+:root[data-theme="light"] [data-sonner-toast].app-toast {
   background: #0f172a !important;
   /* Lighter text for contrast on dark slate bg */
   color: #e5edf9 !important;
   border-color: color-mix(in srgb, #e5edf9 18%, transparent) !important;
 }
 
-:root:not([data-theme="dark"]) [data-sonner-toast].app-toast .app-toast-title {
+:root[data-theme="light"] [data-sonner-toast].app-toast .app-toast-title {
   color: #e5edf9 !important;
 }
 
-:root:not([data-theme="dark"])
+:root[data-theme="light"]
   [data-sonner-toast].app-toast
   .app-toast-description {
   color: #cbd5f5 !important;
 }
 
-:root:not([data-theme="dark"])
+:root[data-theme="light"]
   [data-sonner-toast].app-toast
   .app-toast-action-button {
   color: #fff !important;
 }
 
-:root:not([data-theme="dark"])
+:root[data-theme="light"]
   [data-sonner-toaster].app-toaster-theme
   [data-sonner-toast]
   [data-button] {
