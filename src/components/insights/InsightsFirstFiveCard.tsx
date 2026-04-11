@@ -1,10 +1,19 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import { Angry, Frown, Laugh, Meh, Smile } from 'lucide-react'
 import type { Entry } from '../../lib/entries'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
+import { moodColors } from '../../lib/colors'
 import { cardEnter, motionTransitionSlow, progressEnter } from '../../lib/motion'
 
 const UNLOCK_DAYS = 5
+const MOOD_ICONS = {
+  1: Angry,
+  2: Frown,
+  3: Meh,
+  4: Smile,
+  5: Laugh,
+} as const
 
 type InsightsFirstFiveCardProps = {
   entries: Entry[]
@@ -31,6 +40,8 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
   const hasSleep = sleep !== null
   const hasMood = mood !== null
   const hasAnyData = hasSleep || hasMood
+  const roundedMood = mood !== null ? Math.max(1, Math.min(5, Math.round(mood))) as 1 | 2 | 3 | 4 | 5 : null
+  const MoodIcon = roundedMood !== null ? MOOD_ICONS[roundedMood] : null
 
   const transition = reduceMotion ? { duration: 0 } : motionTransitionSlow
 
@@ -54,9 +65,10 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
             </div>
           )}
           {hasMood && (
-            <div className="insights-first-five-card__data-item" role="listitem">
+            <div className="insights-first-five-card__data-item insights-first-five-card__data-item--mood" role="listitem">
               <span className="insights-first-five-card__data-item-label">{t('common.mood')}</span>
-              <span className="insights-first-five-card__data-item-value">{Math.round(mood!)} / 5</span>
+              <span className="insights-first-five-card__data-item-value">{roundedMood} / 5</span>
+              {MoodIcon ? <MoodIcon className="insights-first-five-card__mood-face" size={18} style={{ color: moodColors[roundedMood - 1] }} aria-hidden /> : null}
             </div>
           )}
         </div>

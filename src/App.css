@@ -5244,6 +5244,10 @@ button.toggle-group__btn--disabled:disabled {
   gap: 8px;
 }
 
+.insights-first-five-card__data-item--mood {
+  align-items: center;
+}
+
 .insights-first-five-card__data-item-label {
   font-size: 0.85rem;
   color: var(--muted);
@@ -5252,6 +5256,11 @@ button.toggle-group__btn--disabled:disabled {
 .insights-first-five-card__data-item-value {
   font-size: 1rem;
   font-weight: 600;
+}
+
+.insights-first-five-card__mood-face {
+  display: inline-flex;
+  align-self: center;
 }
 
 .insights-first-five-card__data--muted {
