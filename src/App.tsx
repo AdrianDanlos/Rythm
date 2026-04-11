@@ -47,6 +47,8 @@ import './App.css'
 import { upsertEntry } from './lib/entries'
 import { MAX_TAG_LENGTH } from './lib/utils/stringUtils'
 
+const CLOSE_TRANSIENT_PANELS_EVENT = 'app:close-transient-panels'
+
 function getReturningUserStorageKey(userId: string): string {
   return `${STORAGE_KEYS.RETURNING_USER}:${userId}`
 }
@@ -796,6 +798,9 @@ function App() {
     // Simple threshold: a rightward swipe of at least 40px from the edge opens the menu
     if (deltaX > 40) {
       swipeStartXRef.current = null
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event(CLOSE_TRANSIENT_PANELS_EVENT))
+      }
       setIsMenuPanelOpen(true)
     }
   }
@@ -828,7 +833,14 @@ function App() {
       {!isIntroVisible
         ? (
             <AppHeader
-              onOpenMenu={() => setIsMenuPanelOpen(prev => !prev)}
+              onOpenMenu={() =>
+                setIsMenuPanelOpen((prev) => {
+                  const next = !prev
+                  if (next && typeof window !== 'undefined') {
+                    window.dispatchEvent(new Event(CLOSE_TRANSIENT_PANELS_EVENT))
+                  }
+                  return next
+                })}
               isMenuOpen={isMenuPanelOpen}
               isAuthenticated={!!session}
               isMenuDisabled={!!session && lockNonLogTabs}

@@ -267,7 +267,7 @@ const es = {
       atLeast: '≥',
       atMost: '≤',
       searchEvents: 'Buscar eventos',
-      clearAll: 'Limpiar todo',
+      clearAll: 'Quitar filtros',
       showResults: 'Mostrar resultados',
     },
     previousMonth: 'Mes anterior',

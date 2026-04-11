@@ -4106,6 +4106,10 @@
   filter: brightness(1.04);
 }
 
+.timeline-filter-fab.is-sheet-open {
+  filter: brightness(0.68);
+}
+
 .timeline-filter-fab-badge {
   position: absolute;
   top: -5px;
@@ -4149,16 +4153,62 @@
 }
 
 .timeline-filter-sheet h3 {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+}
+
+.timeline-filter-sheet h3 + .timeline-filter-section {
+  margin-top: 16px;
 }
 
 .timeline-filter-section + .timeline-filter-section {
-  margin-top: 14px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
 }
 
 .timeline-filter-section-title {
-  margin: 0 0 8px;
+  margin: 0;
   font-weight: 700;
+}
+
+.timeline-filter-section-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-filter-section-icon {
+  opacity: 0.78;
+}
+
+.timeline-filter-section-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.timeline-filter-section-chevron {
+  opacity: 0.72;
+  transition: transform 180ms ease;
+}
+
+.timeline-filter-section-chevron.open {
+  transform: rotate(180deg);
+}
+
+.timeline-filter-section-content {
+  margin-top: 10px;
+  overflow: hidden;
 }
 
 .timeline-filter-operator-row {
@@ -4170,6 +4220,13 @@
   flex: 1;
 }
 
+.timeline-filter-operator-row .ghost.active {
+  border-color: var(--selected-border);
+  background: var(--selected-bg);
+  color: var(--selected-text);
+  font-weight: 600;
+}
+
 .timeline-filter-mood-row {
   margin-top: 8px;
   display: grid;
@@ -4178,9 +4235,9 @@
 }
 
 .timeline-mood-face {
-  border: 1px solid color-mix(in srgb, var(--mood-color, var(--border)) 52%, var(--border));
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: color-mix(in srgb, var(--mood-color, transparent) 8%, transparent);
+  background: transparent;
   color: var(--mood-color, var(--text));
   padding: 9px 4px;
   display: inline-flex;
@@ -4189,9 +4246,17 @@
 }
 
 .timeline-mood-face.active {
-  background: color-mix(in srgb, var(--mood-color, var(--selected-bg)) 22%, var(--selected-bg));
+  background: color-mix(
+    in srgb,
+    var(--mood-color, var(--selected-bg)) 22%,
+    var(--selected-bg)
+  );
   color: var(--mood-color, var(--selected-text));
-  border-color: color-mix(in srgb, var(--mood-color, var(--selected-border)) 65%, var(--selected-border));
+  border-color: color-mix(
+    in srgb,
+    var(--mood-color, var(--selected-border)) 65%,
+    var(--selected-border)
+  );
 }
 
 .timeline-mood-face-icon {
@@ -4205,61 +4270,12 @@
 
 .timeline-sleep-slider-wrap input[type="range"] {
   width: 100%;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--border) 72%, var(--surface-3));
+  accent-color: var(--accent, #5b7fff);
+  cursor: pointer;
   outline: none;
 }
 
-.timeline-sleep-slider-wrap input[type="range"]::-webkit-slider-runnable-track {
-  height: 6px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--border) 72%, var(--surface-3));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border) 85%, transparent);
-}
-
-.timeline-sleep-slider-wrap input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  border: 2px solid var(--card);
-  background: var(--accent, #5b7fff);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent, #5b7fff) 35%, transparent);
-  margin-top: -6px;
-}
-
-.timeline-sleep-slider-wrap input[type="range"]::-moz-range-track {
-  height: 6px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--border) 72%, var(--surface-3));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border) 85%, transparent);
-}
-
-.timeline-sleep-slider-wrap input[type="range"]::-moz-range-progress {
-  height: 6px;
-  border-radius: 999px;
-  background: var(--accent, #5b7fff);
-}
-
-.timeline-sleep-slider-wrap input[type="range"]::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  border: 2px solid var(--card);
-  background: var(--accent, #5b7fff);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--accent, #5b7fff) 35%, transparent);
-}
-
-.timeline-sleep-slider-wrap input[type="range"]:focus-visible::-webkit-slider-thumb {
-  outline: 2px solid var(--input-focus-border);
-  outline-offset: 2px;
-}
-
-.timeline-sleep-slider-wrap input[type="range"]:focus-visible::-moz-range-thumb {
+.timeline-sleep-slider-wrap input[type="range"]:focus-visible {
   outline: 2px solid var(--input-focus-border);
   outline-offset: 2px;
 }
@@ -4285,23 +4301,54 @@
 .timeline-filter-tag-search input {
   width: 100%;
   border: 1px solid var(--border) !important;
+  color: var(--text);
+}
+
+.timeline-filter-tag-search .log-reflection-input.tag-dropdown-trigger:focus,
+.timeline-filter-tag-search
+  .log-reflection-input.tag-dropdown-trigger:focus-visible {
+  box-shadow: none;
+}
+
+.timeline-filter-tag-search input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background-color: color-mix(in srgb, var(--muted) 78%, var(--text));
+  opacity: 0.9;
+  cursor: pointer;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.2 4.2l7.6 7.6M11.8 4.2l-7.6 7.6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: 12px 12px;
+}
+
+.timeline-filter-tag-search
+  input[type="search"]::-webkit-search-cancel-button:hover {
+  opacity: 1;
+}
+
+.timeline-filter-tags-fade-wrap {
+  position: relative;
+  overflow: hidden;
 }
 
 .timeline-filter-tags-scroll {
-  position: relative;
   max-height: 120px;
   overflow-y: auto;
-  padding-bottom: 8px;
+  padding-bottom: 24px;
 }
 
-.timeline-filter-tags-scroll::after {
+.timeline-filter-tags-fade-wrap::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: -1px;
   display: block;
-  height: 22px;
+  height: 28px;
+  z-index: 2;
   pointer-events: none;
   background: linear-gradient(to bottom, rgb(0 0 0 / 0%), var(--card));
 }

@@ -266,7 +266,7 @@ const pt = {
       atLeast: '≥',
       atMost: '≤',
       searchEvents: 'Buscar eventos',
-      clearAll: 'Limpar tudo',
+      clearAll: 'Remover filtros',
       showResults: 'Mostrar resultados',
     },
     previousMonth: 'Mês anterior',

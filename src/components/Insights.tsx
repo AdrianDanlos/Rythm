@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import type { Entry } from '../lib/entries'
@@ -371,6 +371,19 @@ export const Insights = ({
   const [showAllTags, setShowAllTags] = useState(false)
   const visibleTags = showAllTags ? topTags : topTags.slice(0, 6)
   const [colorPickerTag, setColorPickerTag] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const closeTransientPanels = () => {
+      setIsFilterSheetOpen(false)
+      setIsMonthPickerOpen(false)
+      setColorPickerTag(null)
+    }
+    window.addEventListener('app:close-transient-panels', closeTransientPanels)
+    return () => {
+      window.removeEventListener('app:close-transient-panels', closeTransientPanels)
+    }
+  }, [])
 
   const startEditingTag = (tag: string) => {
     setEditingTag(tag)

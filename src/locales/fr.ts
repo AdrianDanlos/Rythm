@@ -266,7 +266,7 @@ const fr = {
       atLeast: '≥',
       atMost: '≤',
       searchEvents: 'Rechercher des événements',
-      clearAll: 'Tout effacer',
+      clearAll: 'Retirer les filtres',
       showResults: 'Afficher les résultats',
     },
     previousMonth: 'Mois précédent',
