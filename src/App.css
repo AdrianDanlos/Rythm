@@ -6467,14 +6467,6 @@ button.toggle-group__btn--disabled:disabled {
   font-weight: 600;
 }
 
-[data-sonner-toast].app-toast [data-buttons] {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
-
 [data-sonner-toast].app-toast .app-toast-action-button:hover {
   box-shadow: var(--button-hover-shadow);
   transform: translateY(-1px);
@@ -6511,14 +6503,6 @@ button.toggle-group__btn--disabled:disabled {
   border-radius: 8px !important;
   padding: 10px 14px !important;
   font-weight: 600 !important;
-}
-
-[data-sonner-toaster].app-toaster-theme [data-sonner-toast] [data-buttons] {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
 }
 
 [data-sonner-toaster].app-toaster-theme

@@ -181,18 +181,15 @@ function App() {
     toast(t('notifications.nudgeTitle'), {
       description: t('notifications.nudgeBody'),
       duration: Number.POSITIVE_INFINITY,
-      dismissible: false,
-      closeButton: false,
+      dismissible: true,
+      closeButton: true,
       action: {
         label: t('notifications.nudgeEnableAction'),
         onClick: () => {
           void handleEnableReminderNudge()
         },
       },
-      cancel: {
-        label: t('notifications.nudgeNotNowAction'),
-        onClick: () => dismissDailyReminderNudge(),
-      },
+      onDismiss: () => dismissDailyReminderNudge(),
     })
   }, [goToInsightsSummary, handleEnableReminderNudge, t])
 
