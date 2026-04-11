@@ -220,6 +220,9 @@ const de = {
     maxTagLength: 'Jedes Tagesereignis darf maximal {{count}} Zeichen haben.',
     maxTagsPerEntry: 'Maximal {{count}} Tagesereignisse pro Eintrag.',
     addAtLeastOneValue: 'Füge mindestens einen Wert hinzu, bevor du speicherst.',
+    firstDayNeedSleepAndMood: 'Gib deine Schlafdauer an und wähle eine Stimmung, bevor du deinen ersten Tag speicherst.',
+    firstDayNeedSleep: 'Gib deine Schlafdauer an, bevor du deinen ersten Tag speicherst.',
+    firstDayNeedMood: 'Wähle eine Stimmung, bevor du deinen ersten Tag speicherst.',
     saveEntryError: 'Eintrag konnte nicht gespeichert werden.',
     postSaveSuggestions: {
       lowSleepNoEventsGoodMood: 'Wenig Schlaf, aber trotzdem gute Stimmung – das ist Resilienz! Es lohnt sich, ein Ereignis hinzuzufügen, um zu sehen, was geholfen haben könnte.',

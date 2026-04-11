@@ -183,7 +183,8 @@ export const useLogForm = ({
       setTagsState(existing.tags?.join(', ') ?? '')
     }
     else {
-      setSleepHoursState(defaultSleepHoursOption)
+      /* First-ever log: empty sleep so Save requires explicit hours + mood (quick start). */
+      setSleepHoursState(entries.length === 0 ? '' : defaultSleepHoursOption)
       setMoodState(null)
       setNoteState('')
       setTagsState('')
@@ -208,6 +209,30 @@ export const useLogForm = ({
       if (!options?.silent) showEntriesError(t('log.invalidSleep'))
       return
     }
+
+    const isFirstEverEntry = entries.length === 0
+    if (isFirstEverEntry) {
+      const hasValidSleep = hasSleepInput && parsedSleep !== null
+      const hasMood = mood !== null
+      if (!hasValidSleep || !hasMood) {
+        if (!options?.silent) {
+          if (!hasValidSleep && !hasMood) {
+            showEntriesError(t('log.firstDayNeedSleepAndMood'))
+          }
+          else if (!hasValidSleep) {
+            showEntriesError(t('log.firstDayNeedSleep'))
+          }
+          else {
+            showEntriesError(t('log.firstDayNeedMood'))
+          }
+        }
+        else {
+          setSaved(false)
+        }
+        return
+      }
+    }
+
     const sleepHoursToSave = hasSleepInput ? parsedSleep! : DEFAULT_LOG_SLEEP_HOURS
     if (sleepHoursToSave < 0 || sleepHoursToSave > 12) {
       if (!options?.silent) showEntriesError(t('log.sleepRange'))

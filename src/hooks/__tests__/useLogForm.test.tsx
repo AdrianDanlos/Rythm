@@ -105,10 +105,10 @@ describe('useLogForm', () => {
     })
   }
 
-  it('defaults sleep hours to 8h for a new log form', async () => {
+  it('starts with empty sleep on first-ever log so quick start requires explicit sleep', async () => {
     await renderHook([])
 
-    expect(latest?.sleepHours).toBe(formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS))
+    expect(latest?.sleepHours).toBe('')
   })
 
   it('uses default 8h when existing entry has null sleep_hours', async () => {
@@ -121,10 +121,28 @@ describe('useLogForm', () => {
     expect(latest?.sleepHours).toBe(formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS))
   })
 
-  it('saves untouched form with default sleep hours', async () => {
-    const savedEntry = makeEntry({})
+  it('blocks save on first day until sleep and mood are set', async () => {
+    await renderHook([])
+
+    await act(async () => {
+      await latest?.handleSave({
+        preventDefault: vi.fn(),
+      } as FormEvent)
+    })
+
+    expect(upsertEntryMock).not.toHaveBeenCalled()
+    expect(toastErrorMock).toHaveBeenCalledWith('log.firstDayNeedSleepAndMood')
+  })
+
+  it('saves first day when both sleep and mood are set', async () => {
+    const savedEntry = makeEntry({ mood: 4 })
     upsertEntryMock.mockResolvedValue(savedEntry)
     await renderHook([])
+
+    await act(async () => {
+      latest?.setSleepHours(formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS))
+      latest?.setMood(4)
+    })
 
     await act(async () => {
       await latest?.handleSave({
@@ -138,9 +156,9 @@ describe('useLogForm', () => {
         user_id: 'user-1',
         entry_date: '2026-03-31',
         sleep_hours: DEFAULT_LOG_SLEEP_HOURS,
+        mood: 4,
       }),
     )
-    expect(toastErrorMock).not.toHaveBeenCalledWith('log.addAtLeastOneValue')
   })
 
   it('does not persist silently when the user has not edited the form', async () => {
@@ -158,12 +176,13 @@ describe('useLogForm', () => {
     expect(upsertEntryMock).not.toHaveBeenCalled()
   })
 
-  it('still persists silently after an edit', async () => {
-    const savedEntry = makeEntry({})
+  it('still persists silently after an edit when first-day requirements are met', async () => {
+    const savedEntry = makeEntry({ mood: 4 })
     upsertEntryMock.mockResolvedValue(savedEntry)
     await renderHook([])
 
     await act(async () => {
+      latest?.setSleepHours(formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS))
       latest?.setMood(4)
     })
 
