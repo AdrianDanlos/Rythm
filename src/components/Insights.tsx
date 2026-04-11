@@ -40,6 +40,55 @@ const DEFAULT_TIMELINE_FILTERS: TimelineFilterState = {
   sleepValue: null,
   tags: [],
 }
+const TIMELINE_FILTERS_SESSION_KEY = 'insights.timeline.appliedFilters.v1'
+const TIMELINE_MONTH_SESSION_KEY = 'insights.timeline.selectedMonth.v1'
+
+const isFilterOperator = (value: unknown): value is FilterOperator => {
+  return value === 'eq' || value === 'gte' || value === 'lte'
+}
+
+const parsePersistedTimelineFilters = (): TimelineFilterState => {
+  if (typeof window === 'undefined') return DEFAULT_TIMELINE_FILTERS
+
+  const raw = window.sessionStorage.getItem(TIMELINE_FILTERS_SESSION_KEY)
+  if (!raw) return DEFAULT_TIMELINE_FILTERS
+
+  try {
+    const parsed = JSON.parse(raw) as Partial<TimelineFilterState>
+    const moodOperator = isFilterOperator(parsed.moodOperator) ? parsed.moodOperator : DEFAULT_TIMELINE_FILTERS.moodOperator
+    const sleepOperator = isFilterOperator(parsed.sleepOperator) ? parsed.sleepOperator : DEFAULT_TIMELINE_FILTERS.sleepOperator
+    const moodValue = typeof parsed.moodValue === 'number' && Number.isFinite(parsed.moodValue) ? parsed.moodValue : null
+    const sleepValue = typeof parsed.sleepValue === 'number' && Number.isFinite(parsed.sleepValue) ? parsed.sleepValue : null
+    const tags = Array.isArray(parsed.tags)
+      ? [...new Set(parsed.tags.filter((tag): tag is string => typeof tag === 'string').map(tag => tag.trim().toLowerCase()).filter(Boolean))]
+      : []
+
+    return {
+      moodOperator,
+      moodValue,
+      sleepOperator,
+      sleepValue,
+      tags,
+    }
+  }
+  catch {
+    return DEFAULT_TIMELINE_FILTERS
+  }
+}
+
+const getDefaultSelectedMonth = () => {
+  const now = new Date()
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+}
+
+const parsePersistedSelectedMonth = (): string => {
+  if (typeof window === 'undefined') return getDefaultSelectedMonth()
+  const raw = window.sessionStorage.getItem(TIMELINE_MONTH_SESSION_KEY)
+  if (!raw) return getDefaultSelectedMonth()
+  if (raw === 'all' || /^\d{4}-\d{2}$/.test(raw)) return raw
+  return getDefaultSelectedMonth()
+}
+
 type InsightsProps = {
   entries: Entry[]
   entriesLoading: boolean
@@ -268,12 +317,9 @@ export const Insights = ({
   }, [timelineTagOptions])
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false)
   const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false)
-  const [selectedMonth, setSelectedMonth] = useState(() => {
-    const now = new Date()
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
-  })
-  const [appliedTimelineFilters, setAppliedTimelineFilters] = useState<TimelineFilterState>(DEFAULT_TIMELINE_FILTERS)
-  const [draftTimelineFilters, setDraftTimelineFilters] = useState<TimelineFilterState>(DEFAULT_TIMELINE_FILTERS)
+  const [selectedMonth, setSelectedMonth] = useState(parsePersistedSelectedMonth)
+  const [appliedTimelineFilters, setAppliedTimelineFilters] = useState<TimelineFilterState>(parsePersistedTimelineFilters)
+  const [draftTimelineFilters, setDraftTimelineFilters] = useState<TimelineFilterState>(appliedTimelineFilters)
   const [timelineTagSearch, setTimelineTagSearch] = useState('')
 
   const monthOptions = useMemo(() => {
@@ -325,7 +371,7 @@ export const Insights = ({
       }
       if (normalizedTagSet.size > 0) {
         const entryTags = (entry.tags ?? []).map(tag => tag.trim().toLowerCase())
-        if (!entryTags.some(tag => normalizedTagSet.has(tag))) {
+        if (!Array.from(normalizedTagSet).every(tag => entryTags.includes(tag))) {
           return false
         }
       }
@@ -339,7 +385,6 @@ export const Insights = ({
     if (appliedTimelineFilters.tags.length > 0) total += 1
     return total
   }, [appliedTimelineFilters])
-  const hasAppliedTimelineFilters = appliedFilterCount > 0
   const operatorOptions = useMemo((): { value: FilterOperator, label: string }[] => ([
     { value: 'eq', label: t('insights.timelineFilters.exactly') },
     { value: 'gte', label: t('insights.timelineFilters.atLeast') },
@@ -395,6 +440,16 @@ export const Insights = ({
       window.removeEventListener('app:close-transient-panels', closeTransientPanels)
     }
   }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    window.sessionStorage.setItem(TIMELINE_FILTERS_SESSION_KEY, JSON.stringify(appliedTimelineFilters))
+  }, [appliedTimelineFilters])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    window.sessionStorage.setItem(TIMELINE_MONTH_SESSION_KEY, selectedMonth)
+  }, [selectedMonth])
 
   useEffect(() => {
     if (!isMonthPickerOpen || typeof document === 'undefined') return
@@ -553,7 +608,6 @@ export const Insights = ({
               isMonthPickerOpen={isMonthPickerOpen}
               monthOptions={monthOptions}
               selectedMonth={selectedMonth}
-              hasAppliedTimelineFilters={hasAppliedTimelineFilters}
               appliedTimelineFilters={appliedTimelineFilters}
               operatorLabelByValue={operatorLabelByValue}
               timelineTagLabelByKey={timelineTagLabelByKey}
@@ -595,7 +649,12 @@ export const Insights = ({
               onCloseFilter={() => setIsFilterSheetOpen(false)}
               onDraftMoodOperatorChange={operator => setDraftTimelineFilters(prev => ({ ...prev, moodOperator: operator }))}
               onDraftMoodValueChange={value => setDraftTimelineFilters(prev => ({ ...prev, moodValue: value }))}
-              onDraftSleepOperatorChange={operator => setDraftTimelineFilters(prev => ({ ...prev, sleepOperator: operator }))}
+              onDraftSleepOperatorChange={operator =>
+                setDraftTimelineFilters(prev => ({
+                  ...prev,
+                  sleepOperator: operator,
+                  sleepValue: prev.sleepValue ?? 0,
+                }))}
               onDraftSleepValueChange={value => setDraftTimelineFilters(prev => ({ ...prev, sleepValue: value }))}
               onTimelineTagSearchChange={value => setTimelineTagSearch(value)}
               onToggleDraftTag={tagKey =>

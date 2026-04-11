@@ -56,10 +56,11 @@ export const TimelineMonthAction = ({
 )
 
 type TimelineFiltersProps = {
+  selectedMonthLabel: string
+  onToggleMonthPicker: () => void
   isMonthPickerOpen: boolean
   monthOptions: TimelineMonthOption[]
   selectedMonth: string
-  hasAppliedTimelineFilters: boolean
   appliedTimelineFilters: TimelineFilterState
   operatorLabelByValue: Map<FilterOperator, string>
   timelineTagLabelByKey: Map<string, string>
@@ -90,10 +91,11 @@ type TimelineFiltersProps = {
 }
 
 export const TimelineFilters = ({
+  selectedMonthLabel,
+  onToggleMonthPicker,
   isMonthPickerOpen,
   monthOptions,
   selectedMonth,
-  hasAppliedTimelineFilters,
   appliedTimelineFilters,
   operatorLabelByValue,
   timelineTagLabelByKey,
@@ -155,6 +157,67 @@ export const TimelineFilters = ({
 
   return (
     <>
+      <div className="timeline-active-filters">
+        <button
+          type="button"
+          className="timeline-month-pill"
+          onClick={onToggleMonthPicker}
+        >
+          {selectedMonthLabel}
+        </button>
+        {appliedTimelineFilters.moodValue !== null && (
+          <button
+            type="button"
+            className="timeline-active-filter-chip timeline-month-pill"
+            onClick={onClearAppliedMood}
+          >
+            {t('insights.timelineFilters.mood')}
+            {appliedTimelineFilters.moodOperator !== 'eq'
+              ? (
+                  <>
+                    {' '}
+                    {operatorLabelByValue.get(appliedTimelineFilters.moodOperator)}
+                  </>
+                )
+              : null}
+            {' '}
+            {t(`log.moodName${appliedTimelineFilters.moodValue}`)}
+            {' '}×
+          </button>
+        )}
+        {appliedTimelineFilters.sleepValue !== null && (
+          <button
+            type="button"
+            className="timeline-active-filter-chip timeline-month-pill"
+            onClick={onClearAppliedSleep}
+          >
+            {t('insights.timelineFilters.sleep')}
+            {appliedTimelineFilters.sleepOperator !== 'eq'
+              ? (
+                  <>
+                    {' '}
+                    {operatorLabelByValue.get(appliedTimelineFilters.sleepOperator)}
+                  </>
+                )
+              : null}
+            {' '}
+            {formatSleepHours(appliedTimelineFilters.sleepValue)}
+            {' '}×
+          </button>
+        )}
+        {appliedTimelineFilters.tags.map(tag => (
+          <button
+            type="button"
+            key={tag}
+            className="timeline-active-filter-chip timeline-month-pill"
+            onClick={() => onRemoveAppliedTag(tag)}
+          >
+            #
+            {timelineTagLabelByKey.get(tag) ?? tag}
+            {' '}×
+          </button>
+        ))}
+      </div>
       {isMonthPickerOpen && (
         <div className="timeline-month-picker card">
           {monthOptions.map(option => (
@@ -165,62 +228,6 @@ export const TimelineFilters = ({
               onClick={() => onSelectMonth(option.key)}
             >
               {option.label}
-            </button>
-          ))}
-        </div>
-      )}
-      {hasAppliedTimelineFilters && (
-        <div className="timeline-active-filters">
-          {appliedTimelineFilters.moodValue !== null && (
-            <button
-              type="button"
-              className="timeline-active-filter-chip timeline-month-pill"
-              onClick={onClearAppliedMood}
-            >
-              {t('insights.timelineFilters.mood')}
-              {appliedTimelineFilters.moodOperator !== 'eq'
-                ? (
-                    <>
-                      {' '}
-                      {operatorLabelByValue.get(appliedTimelineFilters.moodOperator)}
-                    </>
-                  )
-                : null}
-              {' '}
-              {t(`log.moodName${appliedTimelineFilters.moodValue}`)}
-              {' '}×
-            </button>
-          )}
-          {appliedTimelineFilters.sleepValue !== null && (
-            <button
-              type="button"
-              className="timeline-active-filter-chip timeline-month-pill"
-              onClick={onClearAppliedSleep}
-            >
-              {t('insights.timelineFilters.sleep')}
-              {appliedTimelineFilters.sleepOperator !== 'eq'
-                ? (
-                    <>
-                      {' '}
-                      {operatorLabelByValue.get(appliedTimelineFilters.sleepOperator)}
-                    </>
-                  )
-                : null}
-              {' '}
-              {formatSleepHours(appliedTimelineFilters.sleepValue)}
-              {' '}×
-            </button>
-          )}
-          {appliedTimelineFilters.tags.map(tag => (
-            <button
-              type="button"
-              key={tag}
-              className="timeline-active-filter-chip timeline-month-pill"
-              onClick={() => onRemoveAppliedTag(tag)}
-            >
-              #
-              {timelineTagLabelByKey.get(tag) ?? tag}
-              {' '}×
             </button>
           ))}
         </div>

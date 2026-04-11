@@ -5,7 +5,6 @@ import { getHighContrastTextColor } from '../../lib/utils/colorContrast'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import {
   TimelineFilters,
-  TimelineMonthAction,
   type FilterOperator,
   type TimelineFilterState,
 } from './TimelineFilters'
@@ -20,7 +19,6 @@ export type TimelineProps = {
   isMonthPickerOpen: boolean
   monthOptions: { key: string, label: string }[]
   selectedMonth: string
-  hasAppliedTimelineFilters: boolean
   appliedTimelineFilters: TimelineFilterState
   operatorLabelByValue: Map<FilterOperator, string>
   timelineTagLabelByKey: Map<string, string>
@@ -61,7 +59,6 @@ export const Timeline = ({
   isMonthPickerOpen,
   monthOptions,
   selectedMonth,
-  hasAppliedTimelineFilters,
   appliedTimelineFilters,
   operatorLabelByValue,
   timelineTagLabelByKey,
@@ -104,16 +101,13 @@ export const Timeline = ({
           <p className="muted">{t('insights.overviewDailyLogs')}</p>
           <p className="muted timeline-total-count">{t('insights.entriesCount', { count: displayedEntriesCount })}</p>
         </div>
-        <TimelineMonthAction
-          selectedMonthLabel={selectedMonthLabel}
-          onToggleMonthPicker={onToggleMonthPicker}
-        />
       </div>
       <TimelineFilters
+        selectedMonthLabel={selectedMonthLabel}
+        onToggleMonthPicker={onToggleMonthPicker}
         isMonthPickerOpen={isMonthPickerOpen}
         monthOptions={monthOptions}
         selectedMonth={selectedMonth}
-        hasAppliedTimelineFilters={hasAppliedTimelineFilters}
         appliedTimelineFilters={appliedTimelineFilters}
         operatorLabelByValue={operatorLabelByValue}
         timelineTagLabelByKey={timelineTagLabelByKey}
