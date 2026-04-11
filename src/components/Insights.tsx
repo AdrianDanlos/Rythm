@@ -417,8 +417,12 @@ export const Insights = ({
       return { dateLabel: value, weekdayLabel: t('common.noDataDash') }
     }
     const locale = i18n.resolvedLanguage || i18n.language || undefined
+    const monthLabel = parsed.toLocaleDateString(locale, { month: 'long' })
+    const yearLabel = parsed.toLocaleDateString(locale, { year: 'numeric' })
+    const currentYear = new Date().getFullYear()
+    const isCurrentYear = parsed.getFullYear() === currentYear
     return {
-      dateLabel: parsed.toLocaleDateString(locale, { month: 'long', day: 'numeric' }),
+      dateLabel: isCurrentYear ? monthLabel : `${monthLabel} • ${yearLabel}`,
       weekdayLabel: parsed.toLocaleDateString(locale, { weekday: 'long' }),
     }
   }

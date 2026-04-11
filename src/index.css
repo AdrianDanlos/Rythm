@@ -186,9 +186,7 @@
   --ghost-cta-text: #e2e8f0;
   --ghost-cta-shadow: 0 12px 20px rgba(2, 6, 23, 0.55);
   --ghost-cta-border-hover: transparent;
-  --cta-button-bg: #3C4EB7;
-  /* Match .sleep-duration-picker__quick-option.is-active (dark) */
-  --cta-button-surface: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
+  --cta-button-bg: #00d4aa;
   --heatmap-empty-bg: #64748b;
   --heatmap-empty-border: rgba(148, 163, 184, 0.35);
   --pro-pill-bg: #38bdf8;

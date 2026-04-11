@@ -4034,6 +4034,11 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   border-color: var(--selected-border);
 }
 
+:root[data-theme="dark"] .timeline-month-option.active {
+  border-color: transparent;
+  background-color: #5b7fff;
+}
+
 .timeline-active-filters {
   display: flex;
   flex-wrap: wrap;
@@ -4041,16 +4046,34 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   margin-bottom: 12px;
 }
 
+.timeline-active-filters > .timeline-month-pill:first-child {
+  border-color: var(--selected-border);
+  background: var(--selected-bg);
+  color: var(--selected-text);
+}
+
+:root[data-theme="dark"] .timeline-active-filters > .timeline-month-pill:first-child {
+  border-color: transparent;
+  background-color: #5b7fff;
+}
+
 .timeline-active-filter-chip {
-  border-color: var(--border);
+  border-color: var(--selected-border);
+  background: var(--selected-bg);
+  color: var(--selected-text);
   padding: 7px 12px;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.9rem;
   line-height: 1;
   min-height: 34px;
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
+}
+
+:root[data-theme="dark"] .timeline-active-filter-chip {
+  border-color: transparent;
+  background-color: #5b7fff;
 }
 
 .timeline-cards {
@@ -4294,6 +4317,11 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   font-weight: 600;
 }
 
+:root[data-theme="dark"] .timeline-filter-operator-row .ghost.active {
+  border-color: transparent;
+  background-color: #5b7fff;
+}
+
 .timeline-filter-mood-row {
   margin: 10px 2px 2px;
   display: grid;
@@ -4511,7 +4539,7 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 
 :root[data-theme="dark"] .toggle-group .ghost.active {
   border-color: transparent;
-  background-color: #394c82;
+  background-color: #5b7fff;
 }
 
 :root[data-theme="dark"] .toggle-group__btn--disabled,
