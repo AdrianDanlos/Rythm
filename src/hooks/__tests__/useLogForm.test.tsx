@@ -142,4 +142,40 @@ describe('useLogForm', () => {
     )
     expect(toastErrorMock).not.toHaveBeenCalledWith('log.addAtLeastOneValue')
   })
+
+  it('does not persist silently when the user has not edited the form', async () => {
+    await renderHook([])
+
+    await act(async () => {
+      await latest?.handleSave(
+        {
+          preventDefault: vi.fn(),
+        } as FormEvent,
+        { silent: true },
+      )
+    })
+
+    expect(upsertEntryMock).not.toHaveBeenCalled()
+  })
+
+  it('still persists silently after an edit', async () => {
+    const savedEntry = makeEntry({})
+    upsertEntryMock.mockResolvedValue(savedEntry)
+    await renderHook([])
+
+    await act(async () => {
+      latest?.setMood(4)
+    })
+
+    await act(async () => {
+      await latest?.handleSave(
+        {
+          preventDefault: vi.fn(),
+        } as FormEvent,
+        { silent: true },
+      )
+    })
+
+    expect(upsertEntryMock).toHaveBeenCalledTimes(1)
+  })
 })

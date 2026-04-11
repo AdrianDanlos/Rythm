@@ -1,4 +1,12 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type SetStateAction,
+} from 'react'
 import { t } from 'i18next'
 import { toast } from 'sonner'
 import { upsertEntry, type Entry } from '../lib/entries'
@@ -67,12 +75,36 @@ export const useLogForm = ({
       lastAppTodayRef.current = today
     }
   }, [today])
-  const [sleepHours, setSleepHours] = useState(defaultSleepHoursOption)
-  const [mood, setMood] = useState<number | null>(null)
-  const [note, setNote] = useState('')
-  const [tags, setTags] = useState('')
+  const [sleepHours, setSleepHoursState] = useState(defaultSleepHoursOption)
+  const [mood, setMoodState] = useState<number | null>(null)
+  const [note, setNoteState] = useState('')
+  const [tags, setTagsState] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+
+  /**
+   * True after the user changes sleep, mood, note, or tags for the current day.
+   * Resets when we load a day from `entries` / `entryDate`. Silent auto-save no-ops if false;
+   * explicit Save ignores this (default 8h in the UI still persists on submit).
+   */
+  const userEditedLogRef = useRef(false)
+
+  const setSleepHours = useCallback((value: SetStateAction<string>) => {
+    userEditedLogRef.current = true
+    setSleepHoursState(value)
+  }, [])
+  const setMood = useCallback((value: SetStateAction<number | null>) => {
+    userEditedLogRef.current = true
+    setMoodState(value)
+  }, [])
+  const setNote = useCallback((value: SetStateAction<string>) => {
+    userEditedLogRef.current = true
+    setNoteState(value)
+  }, [])
+  const setTags = useCallback((value: SetStateAction<string>) => {
+    userEditedLogRef.current = true
+    setTagsState(value)
+  }, [])
 
   const selectedDate = useMemo(
     () => new Date(`${entryDate}T00:00:00`),
@@ -138,27 +170,31 @@ export const useLogForm = ({
   }
 
   useEffect(() => {
+    userEditedLogRef.current = false
     const existing = entries.find(item => item.entry_date === entryDate)
     if (existing) {
-      setSleepHours(
+      setSleepHoursState(
         existing.sleep_hours === null
           ? defaultSleepHoursOption
           : formatSleepHoursOption(existing.sleep_hours),
       )
-      setMood(existing.mood)
-      setNote(existing.note ?? '')
-      setTags(existing.tags?.join(', ') ?? '')
-      return
+      setMoodState(existing.mood)
+      setNoteState(existing.note ?? '')
+      setTagsState(existing.tags?.join(', ') ?? '')
     }
-
-    setSleepHours(defaultSleepHoursOption)
-    setMood(null)
-    setNote('')
-    setTags('')
+    else {
+      setSleepHoursState(defaultSleepHoursOption)
+      setMoodState(null)
+      setNoteState('')
+      setTagsState('')
+    }
   }, [entryDate, entries, defaultSleepHoursOption])
 
   const handleSave = async (event: FormEvent, options?: { silent?: boolean }) => {
     event.preventDefault()
+    if (options?.silent && !userEditedLogRef.current) {
+      return
+    }
     if (!userId) return
 
     if (entryDate > today) {
