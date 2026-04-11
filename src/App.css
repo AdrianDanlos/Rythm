@@ -6447,8 +6447,8 @@ button.toggle-group__btn--disabled:disabled {
   border: 1px solid color-mix(in srgb, var(--border) 55%, #000) !important;
   box-shadow: var(--card-shadow);
   display: flex !important;
-  flex-direction: column !important;
-  align-items: stretch !important;
+  flex-direction: row !important;
+  align-items: center !important;
 }
 
 [data-sonner-toast].app-toast .app-toast-title,
@@ -6458,13 +6458,18 @@ button.toggle-group__btn--disabled:disabled {
 
 [data-sonner-toast].app-toast .app-toast-title {
   width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 [data-sonner-toast].app-toast .app-toast-description {
   color: var(--muted);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 [data-sonner-toast].app-toast .app-toast-action-button {
@@ -6493,8 +6498,8 @@ button.toggle-group__btn--disabled:disabled {
   color: var(--text) !important;
   border-color: var(--border) !important;
   display: flex !important;
-  flex-direction: column !important;
-  align-items: stretch !important;
+  flex-direction: row !important;
+  align-items: center !important;
 }
 
 [data-sonner-toaster].app-toaster-theme [data-sonner-toast] [data-title] {
