@@ -377,7 +377,6 @@ const en = {
     dailyEventsInsights: 'Daily Events Insights',
     yourDailyEvents: 'Your Daily Events',
     dailyEventCount: '{{tag}} ({{count}})',
-    openInTimeline: 'Open timeline',
     openTagTimelineAria: 'Open Timeline filtered by {{tag}}',
     changeTagColor: 'Change color for {{tag}}',
     changeTagColorTitle: 'Pick a color for this event',

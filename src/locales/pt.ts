@@ -375,7 +375,6 @@ const pt = {
     dailyEventsInsights: 'Análise dos eventos do dia',
     yourDailyEvents: 'Seus eventos do dia',
     dailyEventCount: '{{tag}} ({{count}})',
-    openInTimeline: 'Abrir linha do tempo',
     openTagTimelineAria: 'Abrir linha do tempo filtrada por {{tag}}',
     changeTagColor: 'Mudar cor de {{tag}}',
     changeTagColorTitle: 'Escolha uma cor para este evento',

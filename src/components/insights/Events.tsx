@@ -1,4 +1,4 @@
-import { ChevronRight, Info, Pencil } from 'lucide-react'
+import { Info, Pencil } from 'lucide-react'
 import { motion, type Transition } from 'framer-motion'
 import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
 import { tagColorPalette } from '../../lib/colors'
@@ -123,20 +123,9 @@ export const Events = ({
                             )
                           : (
                               <>
-                                <button
-                                  type="button"
-                                  className="your-daily-events-open-timeline"
-                                  onClick={() => onOpenTagInTimeline(display)}
-                                  aria-label={t('insights.openTagTimelineAria', { tag: display })}
-                                >
-                                  <span className="your-daily-events-list-label">
-                                    {t('insights.dailyEventCount', { tag: display, count })}
-                                  </span>
-                                  <span className="your-daily-events-open-hint">
-                                    {t('insights.openInTimeline')}
-                                  </span>
-                                  <ChevronRight className="your-daily-events-open-icon" size={16} aria-hidden />
-                                </button>
+                                <span className="your-daily-events-list-label">
+                                  {t('insights.dailyEventCount', { tag: display, count })}
+                                </span>
                                 <div className="your-daily-events-item-actions">
                                   <button
                                     type="button"
@@ -162,7 +151,7 @@ export const Events = ({
                     )
                   })}
                 </ul>
-                {topTags.length > 6 && (
+                {topTags.length > 4 && (
                   <div className="tag-insights-show-more">
                     <button
                       type="button"
@@ -208,6 +197,7 @@ export const Events = ({
           tagSleepDrivers={tagSleepDrivers}
           onOpenPaywall={onOpenPaywall}
           goToLog={goToLog}
+          onOpenTagInTimeline={onOpenTagInTimeline}
         />
       )}
     </motion.div>

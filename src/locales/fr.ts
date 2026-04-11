@@ -376,7 +376,6 @@ const fr = {
     dailyEventsInsights: 'Analyse des événements du jour',
     yourDailyEvents: 'Vos événements du jour',
     dailyEventCount: '{{tag}} ({{count}})',
-    openInTimeline: 'Ouvrir la chronologie',
     openTagTimelineAria: 'Ouvrir la chronologie filtrée par {{tag}}',
     changeTagColor: 'Changer la couleur de {{tag}}',
     changeTagColorTitle: 'Choisissez une couleur pour cet événement',

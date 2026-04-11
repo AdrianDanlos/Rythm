@@ -431,7 +431,7 @@ export const Insights = ({
   const [editingTag, setEditingTag] = useState<string | null>(null)
   const [editingValue, setEditingValue] = useState('')
   const [showAllTags, setShowAllTags] = useState(false)
-  const visibleTags = showAllTags ? topTags : topTags.slice(0, 6)
+  const visibleTags = showAllTags ? topTags : topTags.slice(0, 4)
   const [colorPickerTag, setColorPickerTag] = useState<string | null>(null)
 
   useEffect(() => {
