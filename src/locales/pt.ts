@@ -528,6 +528,12 @@ const pt = {
     channelDescription: 'Lembretes diários de registro',
     title: 'Registre seu dia',
     body: 'Adicione sono e humor para manter sua sequência.',
+    nudgeTitle: 'Quer um lembrete diário suave?',
+    nudgeBody: 'Ative as notificações e vamos lembrar você de registrar todos os dias.',
+    nudgeEnableAction: 'Ativar',
+    nudgeNotNowAction: 'Agora não',
+    nudgeEnabled: 'Lembrete diário ativado.',
+    nudgeEnableInSettings: 'Você pode ativar os lembretes a qualquer momento em Configurações.',
   },
   updates: {
     title: 'Nova versão disponível',

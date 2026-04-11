@@ -41,8 +41,14 @@ import {
 import { moodColors, tagColorPalette } from './lib/colors'
 import { PLAY_STORE_APP_URL } from './lib/constants'
 import { STORAGE_KEYS } from './lib/storageKeys'
-import { DAILY_REMINDER_ID } from './lib/notifications'
-import { Toaster } from 'sonner'
+import {
+  DAILY_REMINDER_ID,
+  dismissDailyReminderNudge,
+  scheduleDailyReminder,
+  setStoredDailyReminderEnabled,
+  shouldShowDailyReminderNudge,
+} from './lib/notifications'
+import { Toaster, toast } from 'sonner'
 import './App.css'
 import { upsertEntry } from './lib/entries'
 import { MAX_TAG_LENGTH } from './lib/utils/stringUtils'
@@ -157,6 +163,48 @@ function App() {
     closeFeedback,
     goToInsightsSummary,
   } = shell
+
+  const handleEnableReminderNudge = useCallback(async () => {
+    const scheduled = await scheduleDailyReminder({ force: true })
+    dismissDailyReminderNudge()
+    if (scheduled) {
+      setStoredDailyReminderEnabled(true)
+      toast.success(t('notifications.nudgeEnabled'))
+      return
+    }
+    toast.message(t('notifications.nudgeEnableInSettings'))
+  }, [t])
+
+  const handleEntrySavedForToday = useCallback(() => {
+    goToInsightsSummary()
+    if (!shouldShowDailyReminderNudge()) {
+      return
+    }
+
+    let isHandled = false
+    const dismissNudge = () => {
+      if (isHandled) return
+      isHandled = true
+      dismissDailyReminderNudge()
+    }
+
+    toast(t('notifications.nudgeTitle'), {
+      description: t('notifications.nudgeBody'),
+      duration: 10000,
+      action: {
+        label: t('notifications.nudgeEnableAction'),
+        onClick: () => {
+          isHandled = true
+          void handleEnableReminderNudge()
+        },
+      },
+      cancel: {
+        label: t('notifications.nudgeNotNowAction'),
+        onClick: dismissNudge,
+      },
+      onDismiss: dismissNudge,
+    })
+  }, [goToInsightsSummary, handleEnableReminderNudge, t])
 
   const openPaywall = useCallback(() => {
     navigate(getPathForPage(AppPage.Pro), { state: { paywallFrom: pathname } })
@@ -322,7 +370,7 @@ function App() {
     isPro,
     maxTagsPerEntry,
     onStreakReached: () => shell.setIsStreakOpen(true),
-    onEntrySavedForToday: goToInsightsSummary,
+    onEntrySavedForToday: handleEntrySavedForToday,
   })
 
   const runSaveBeforeLeavingTab = useCallback(

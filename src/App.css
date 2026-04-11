@@ -666,6 +666,7 @@
 }
 
 .tab-button:disabled {
+  background: transparent;
   opacity: 0.45;
   cursor: not-allowed;
   pointer-events: none;

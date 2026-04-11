@@ -531,6 +531,12 @@ const es = {
     channelDescription: 'Recordatorios diarios de registro',
     title: 'Registra tu día',
     body: 'Agrega sueño y ánimo para mantener tu racha.',
+    nudgeTitle: '¿Quieres un recordatorio diario suave?',
+    nudgeBody: 'Activa las notificaciones y te recordaremos registrar cada día.',
+    nudgeEnableAction: 'Activar',
+    nudgeNotNowAction: 'Ahora no',
+    nudgeEnabled: 'Recordatorio diario activado.',
+    nudgeEnableInSettings: 'Puedes activar los recordatorios cuando quieras en Ajustes.',
   },
   updates: {
     title: 'Nueva version disponible',

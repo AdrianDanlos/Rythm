@@ -531,6 +531,12 @@ const en = {
     channelDescription: 'Daily logging reminders',
     title: 'Log your day',
     body: 'Add your sleep and mood to keep your streak going.',
+    nudgeTitle: 'Want a gentle daily reminder?',
+    nudgeBody: 'Enable notifications and we can remind you to log each day.',
+    nudgeEnableAction: 'Enable',
+    nudgeNotNowAction: 'Not now',
+    nudgeEnabled: 'Daily reminder enabled.',
+    nudgeEnableInSettings: 'You can enable reminders anytime in Settings.',
   },
   updates: {
     title: 'New version available',

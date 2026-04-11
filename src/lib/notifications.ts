@@ -23,6 +23,18 @@ export const setStoredDailyReminderTime = (value: string) => {
   localStorage.setItem(STORAGE_KEYS.DAILY_REMINDER_TIME, value)
 }
 
+export const hasDismissedDailyReminderNudge = () =>
+  localStorage.getItem(STORAGE_KEYS.DAILY_REMINDER_NUDGE_DISMISSED) === 'true'
+
+export const dismissDailyReminderNudge = () => {
+  localStorage.setItem(STORAGE_KEYS.DAILY_REMINDER_NUDGE_DISMISSED, 'true')
+}
+
+export const shouldShowDailyReminderNudge = () =>
+  Capacitor.isNativePlatform()
+  && !getStoredDailyReminderEnabled()
+  && !hasDismissedDailyReminderNudge()
+
 const parseReminderTime = (value?: string) => {
   const candidate = value ?? getStoredDailyReminderTime()
   if (!/^\d{2}:\d{2}$/.test(candidate)) {

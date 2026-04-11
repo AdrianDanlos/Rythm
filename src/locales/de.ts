@@ -528,6 +528,12 @@ const de = {
     channelDescription: 'Tägliche Erinnerungen zum Eintragen',
     title: 'Deinen Tag festhalten',
     body: 'Trag Schlaf und Stimmung ein, um deine Serie aufrechtzuerhalten.',
+    nudgeTitle: 'Möchtest du eine sanfte tägliche Erinnerung?',
+    nudgeBody: 'Aktiviere Benachrichtigungen und wir erinnern dich täglich ans Eintragen.',
+    nudgeEnableAction: 'Aktivieren',
+    nudgeNotNowAction: 'Nicht jetzt',
+    nudgeEnabled: 'Tägliche Erinnerung aktiviert.',
+    nudgeEnableInSettings: 'Du kannst Erinnerungen jederzeit in den Einstellungen aktivieren.',
   },
   updates: {
     title: 'Neue Version verfügbar',

@@ -13,6 +13,7 @@ export const STORAGE_KEYS = {
   RATED_GOOGLE_PLAY: 'rythm_rated_google_play',
   DAILY_REMINDER_ENABLED: 'dailyReminderEnabled',
   DAILY_REMINDER_TIME: 'dailyReminderTime',
+  DAILY_REMINDER_NUDGE_DISMISSED: 'dailyReminderNudgeDismissed',
 } as const
 
 export type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS]

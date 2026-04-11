@@ -530,6 +530,12 @@ const fr = {
     channelDescription: 'Rappels quotidiens pour enregistrer votre journée',
     title: 'Notez votre journée',
     body: 'Ajoutez votre sommeil et votre humeur pour maintenir votre série.',
+    nudgeTitle: 'Voulez-vous un rappel quotidien discret ?',
+    nudgeBody: 'Activez les notifications et nous vous rappellerons de noter chaque jour.',
+    nudgeEnableAction: 'Activer',
+    nudgeNotNowAction: 'Pas maintenant',
+    nudgeEnabled: 'Rappel quotidien activé.',
+    nudgeEnableInSettings: 'Vous pouvez activer les rappels à tout moment dans les paramètres.',
   },
   updates: {
     title: 'Nouvelle version disponible',
