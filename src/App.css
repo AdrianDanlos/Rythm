@@ -4139,6 +4139,10 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   color: #facc15;
 }
 
+.timeline-card-metric-moon {
+  fill: currentColor;
+}
+
 .timeline-card-mood-dot {
   width: 9px;
   height: 9px;

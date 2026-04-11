@@ -172,7 +172,7 @@ export const Timeline = ({
                     <span>{moodNumericValue}</span>
                   </span>
                   <span className="timeline-card-metric">
-                    <Moon size={14} aria-hidden />
+                    <Moon className="timeline-card-metric-moon" size={14} aria-hidden />
                     <span>{sleepLabel}</span>
                   </span>
                 </div>
