@@ -3555,6 +3555,10 @@
   gap: 22px;
 }
 
+.insights-panel--timeline {
+  gap: 0;
+}
+
 .your-daily-events-list {
   list-style: none;
   margin: 0;
@@ -3944,6 +3948,17 @@
   margin: 0;
 }
 
+.timeline-empty-state--centered {
+  min-height: 45vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.timeline-total-count {
+  margin: 2px 0 0;
+}
+
 .timeline-top-actions {
   display: inline-flex;
   align-items: center;
@@ -3957,6 +3972,13 @@
   border-radius: 999px;
   padding: 7px 12px;
   font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  flex: 0 0 auto;
 }
 
 .timeline-month-picker {
@@ -3964,13 +3986,14 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   padding: 12px;
+  margin-bottom: 12px;
 }
 
 .timeline-month-option {
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text);
-  border-radius: 10px;
+  border-radius: 999px;
   padding: 8px 10px;
   text-align: left;
 }
@@ -3989,13 +4012,15 @@
 }
 
 .timeline-active-filter-chip {
-  border: 1px solid var(--border-soft);
-  background: var(--surface-2);
-  color: var(--text);
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 0.82rem;
-  line-height: 1.1;
+  border-color: var(--border);
+  padding: 7px 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
 }
 
 .timeline-cards {
@@ -6006,6 +6031,10 @@ button.toggle-group__btn--disabled:disabled {
 
   .insights-panel {
     gap: 28px;
+  }
+
+  .timeline-month-picker {
+    margin-top: -28px;
   }
 
   .app {

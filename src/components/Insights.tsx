@@ -279,15 +279,26 @@ export const Insights = ({
   const monthOptions = useMemo(() => {
     const locale = i18n.resolvedLanguage || i18n.language || undefined
     const now = new Date()
-    return Array.from({ length: 12 }, (_, index) => {
+    const monthFormatter = new Intl.DateTimeFormat(locale, { month: 'long' })
+    const yearFormatter = new Intl.DateTimeFormat(locale, { year: 'numeric' })
+    const capitalizeMonthLabel = (monthLabel: string) => {
+      if (!monthLabel) return monthLabel
+      return monthLabel.charAt(0).toLocaleUpperCase(locale) + monthLabel.slice(1)
+    }
+    const monthlyOptions = Array.from({ length: 12 }, (_, index) => {
       const date = new Date(now.getFullYear(), now.getMonth() - index, 1)
       const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+      const formattedMonth = capitalizeMonthLabel(monthFormatter.format(date))
       return {
         key,
-        label: date.toLocaleDateString(locale, { month: 'long', year: 'numeric' }),
+        label: `${formattedMonth} ${yearFormatter.format(date)}`,
       }
     })
-  }, [i18n.language, i18n.resolvedLanguage])
+    return [
+      { key: 'all', label: t('insights.timelineFilters.allEntries') },
+      ...monthlyOptions,
+    ]
+  }, [i18n.language, i18n.resolvedLanguage, t])
   const selectedMonthLabel = useMemo(() => {
     return monthOptions.find(option => option.key === selectedMonth)?.label ?? selectedMonth
   }, [monthOptions, selectedMonth])
@@ -299,7 +310,7 @@ export const Insights = ({
   const filteredTimelineEntries = useMemo(() => {
     const normalizedTagSet = new Set(appliedTimelineFilters.tags)
     return timelineEntries.filter((entry) => {
-      if (!entry.entry_date.startsWith(selectedMonth)) return false
+      if (selectedMonth !== 'all' && !entry.entry_date.startsWith(selectedMonth)) return false
       if (appliedTimelineFilters.moodValue !== null) {
         if (entry.mood == null) return false
         if (!matchesOperator(entry.mood, appliedTimelineFilters.moodValue, appliedTimelineFilters.moodOperator)) {
@@ -384,6 +395,23 @@ export const Insights = ({
       window.removeEventListener('app:close-transient-panels', closeTransientPanels)
     }
   }, [])
+
+  useEffect(() => {
+    if (!isMonthPickerOpen || typeof document === 'undefined') return
+    const handlePointerOutside = (event: MouseEvent | TouchEvent) => {
+      const target = event.target
+      if (!(target instanceof Element)) return
+      if (target.closest('.timeline-month-picker')) return
+      if (target.closest('.timeline-month-pill')) return
+      setIsMonthPickerOpen(false)
+    }
+    document.addEventListener('mousedown', handlePointerOutside)
+    document.addEventListener('touchstart', handlePointerOutside)
+    return () => {
+      document.removeEventListener('mousedown', handlePointerOutside)
+      document.removeEventListener('touchstart', handlePointerOutside)
+    }
+  }, [isMonthPickerOpen])
 
   const startEditingTag = (tag: string) => {
     setEditingTag(tag)
@@ -520,6 +548,7 @@ export const Insights = ({
               panelTransition={panelTransition}
               t={t}
               selectedMonthLabel={selectedMonthLabel}
+              displayedEntriesCount={filteredTimelineEntries.length}
               onToggleMonthPicker={() => setIsMonthPickerOpen(prev => !prev)}
               isMonthPickerOpen={isMonthPickerOpen}
               monthOptions={monthOptions}

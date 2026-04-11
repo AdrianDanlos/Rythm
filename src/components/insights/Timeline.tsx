@@ -15,6 +15,7 @@ export type TimelineProps = {
   panelTransition: Transition
   t: (key: string, options?: Record<string, unknown>) => string
   selectedMonthLabel: string
+  displayedEntriesCount: number
   onToggleMonthPicker: () => void
   isMonthPickerOpen: boolean
   monthOptions: { key: string, label: string }[]
@@ -55,6 +56,7 @@ export const Timeline = ({
   panelTransition,
   t,
   selectedMonthLabel,
+  displayedEntriesCount,
   onToggleMonthPicker,
   isMonthPickerOpen,
   monthOptions,
@@ -91,7 +93,7 @@ export const Timeline = ({
 }: TimelineProps) => {
   return (
     <motion.div
-      className="insights-panel"
+      className="insights-panel insights-panel--timeline"
       initial={reduceMotion ? false : { opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={panelTransition}
@@ -100,6 +102,7 @@ export const Timeline = ({
         <div>
           <h2>{t('nav.timeline')}</h2>
           <p className="muted">{t('insights.overviewDailyLogs')}</p>
+          <p className="muted timeline-total-count">{t('insights.entriesCount', { count: displayedEntriesCount })}</p>
         </div>
         <TimelineMonthAction
           selectedMonthLabel={selectedMonthLabel}
@@ -143,7 +146,7 @@ export const Timeline = ({
         <p className="muted timeline-empty-state">{t('common.loading')}</p>
       )}
       {!entriesLoading && filteredTimelineEntries.length === 0 && (
-        <p className="muted timeline-empty-state">{t('insights.noEntryForDay')}</p>
+        <p className="muted timeline-empty-state timeline-empty-state--centered">{t('insights.noEntryForDay')}</p>
       )}
       {!entriesLoading && filteredTimelineEntries.length > 0 && (
         <div className="timeline-cards">

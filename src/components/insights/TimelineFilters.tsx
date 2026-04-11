@@ -124,18 +124,24 @@ export const TimelineFilters = ({
 }: TimelineFiltersProps) => {
   const { t } = useTranslation()
   const moodFaceOptions = [1, 2, 3, 4, 5] as const
-  const sleepSliderValue = draftTimelineFilters.sleepValue ?? 8
+  const sleepSliderValue = draftTimelineFilters.sleepValue ?? 0
   const [isMoodSectionOpen, setIsMoodSectionOpen] = useState(false)
   const [isSleepSectionOpen, setIsSleepSectionOpen] = useState(false)
   const [isEventsSectionOpen, setIsEventsSectionOpen] = useState(false)
   const sectionTransition = reduceMotion ? { duration: 0 } : { duration: 0.2, ease: 'easeOut' as const }
 
   useEffect(() => {
-    if (isFilterSheetOpen) return
-    setIsMoodSectionOpen(false)
-    setIsSleepSectionOpen(false)
-    setIsEventsSectionOpen(false)
-  }, [isFilterSheetOpen])
+    if (!isFilterSheetOpen) {
+      setIsMoodSectionOpen(false)
+      setIsSleepSectionOpen(false)
+      setIsEventsSectionOpen(false)
+      return
+    }
+
+    setIsMoodSectionOpen(draftTimelineFilters.moodValue !== null)
+    setIsSleepSectionOpen(draftTimelineFilters.sleepValue !== null)
+    setIsEventsSectionOpen(draftTimelineFilters.tags.length > 0)
+  }, [isFilterSheetOpen, draftTimelineFilters.moodValue, draftTimelineFilters.sleepValue, draftTimelineFilters.tags.length])
 
   const getFallbackTagColor = (key: string) => {
     let hash = 0
@@ -168,12 +174,18 @@ export const TimelineFilters = ({
           {appliedTimelineFilters.moodValue !== null && (
             <button
               type="button"
-              className="timeline-active-filter-chip"
+              className="timeline-active-filter-chip timeline-month-pill"
               onClick={onClearAppliedMood}
             >
               {t('insights.timelineFilters.mood')}
-              {' '}
-              {operatorLabelByValue.get(appliedTimelineFilters.moodOperator)}
+              {appliedTimelineFilters.moodOperator !== 'eq'
+                ? (
+                    <>
+                      {' '}
+                      {operatorLabelByValue.get(appliedTimelineFilters.moodOperator)}
+                    </>
+                  )
+                : null}
               {' '}
               {t(`log.moodName${appliedTimelineFilters.moodValue}`)}
               {' '}×
@@ -182,12 +194,18 @@ export const TimelineFilters = ({
           {appliedTimelineFilters.sleepValue !== null && (
             <button
               type="button"
-              className="timeline-active-filter-chip"
+              className="timeline-active-filter-chip timeline-month-pill"
               onClick={onClearAppliedSleep}
             >
               {t('insights.timelineFilters.sleep')}
-              {' '}
-              {operatorLabelByValue.get(appliedTimelineFilters.sleepOperator)}
+              {appliedTimelineFilters.sleepOperator !== 'eq'
+                ? (
+                    <>
+                      {' '}
+                      {operatorLabelByValue.get(appliedTimelineFilters.sleepOperator)}
+                    </>
+                  )
+                : null}
               {' '}
               {formatSleepHours(appliedTimelineFilters.sleepValue)}
               {' '}×
@@ -197,7 +215,7 @@ export const TimelineFilters = ({
             <button
               type="button"
               key={tag}
-              className="timeline-active-filter-chip"
+              className="timeline-active-filter-chip timeline-month-pill"
               onClick={() => onRemoveAppliedTag(tag)}
             >
               #
@@ -271,7 +289,7 @@ export const TimelineFilters = ({
                         <button
                           type="button"
                           key={option.value}
-                          className={`ghost ${draftTimelineFilters.moodOperator === option.value ? 'active' : ''}`}
+                          className={`ghost ${draftTimelineFilters.moodValue !== null && draftTimelineFilters.moodOperator === option.value ? 'active' : ''}`}
                           onClick={() => onDraftMoodOperatorChange(option.value)}
                         >
                           {option.label}
@@ -332,7 +350,7 @@ export const TimelineFilters = ({
                         <button
                           type="button"
                           key={option.value}
-                          className={`ghost ${draftTimelineFilters.sleepOperator === option.value ? 'active' : ''}`}
+                          className={`ghost ${draftTimelineFilters.sleepValue !== null && draftTimelineFilters.sleepOperator === option.value ? 'active' : ''}`}
                           onClick={() => onDraftSleepOperatorChange(option.value)}
                         >
                           {option.label}
