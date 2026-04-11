@@ -60,7 +60,7 @@ const en = {
   },
   intro: {
     title: 'Welcome to Rythm',
-    subtitle: 'Creemos que entender cómo te sientes debería de ser sencillo.',
+    subtitle: 'We believe that understanding how you feel should be simple.',
     step1Title: 'Log your sleep in seconds',
     step1Body: 'Track how many hours you slept and how you felt each day.',
     step2Title: 'Capture what shaped your day',
