@@ -18,3 +18,14 @@ export const tagColorPalette = [
   '#16a34a', // --tag-pill-6
   '#ea580c', // --tag-pill-7
 ]
+
+/** Deterministic palette color when the user has not set a custom tag color (same hash as timeline filters). */
+export const getFallbackTagColor = (tagKey: string) => {
+  let hash = 0
+  for (let i = 0; i < tagKey.length; i += 1) {
+    hash = (hash << 5) - hash + tagKey.charCodeAt(i)
+    hash |= 0
+  }
+  const index = Math.abs(hash) % tagColorPalette.length
+  return tagColorPalette[index]
+}

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Angry, ChevronDown, Filter, Frown, Laugh, Meh, Moon, Smile } from 'lucide-react'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { getHighContrastTextColor } from '../../lib/utils/colorContrast'
-import { tagColorPalette } from '../../lib/colors'
+import { getFallbackTagColor } from '../../lib/colors'
 
 export type FilterOperator = 'eq' | 'gte' | 'lte'
 
@@ -141,16 +141,6 @@ export const TimelineFilters = ({
     setIsEventsSectionOverride(null)
     setIsMoodOperatorTouched(false)
     onOpenFilter()
-  }
-
-  const getFallbackTagColor = (key: string) => {
-    let hash = 0
-    for (let i = 0; i < key.length; i += 1) {
-      hash = (hash << 5) - hash + key.charCodeAt(i)
-      hash |= 0
-    }
-    const index = Math.abs(hash) % tagColorPalette.length
-    return tagColorPalette[index]
   }
 
   return (

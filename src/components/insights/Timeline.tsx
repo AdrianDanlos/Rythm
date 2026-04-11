@@ -1,6 +1,7 @@
 import { Moon } from 'lucide-react'
 import { motion, type Transition } from 'framer-motion'
 import type { Entry } from '../../lib/entries'
+import { getFallbackTagColor } from '../../lib/colors'
 import { getHighContrastTextColor } from '../../lib/utils/colorContrast'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import {
@@ -180,18 +181,14 @@ export const Timeline = ({
                   <div className="timeline-card-tags">
                     {entry.tags.map((tag) => {
                       const colorKey = tag.trim().toLowerCase()
-                      const tagColor = tagColors[colorKey]
+                      const tagColor = tagColors[colorKey] ?? getFallbackTagColor(colorKey)
                       const textColor = getHighContrastTextColor(tagColor)
 
                       return (
                         <span
                           className="timeline-card-tag"
                           key={tag}
-                          style={
-                            tagColor
-                              ? { backgroundColor: tagColor, color: textColor, borderColor: 'transparent' }
-                              : undefined
-                          }
+                          style={{ backgroundColor: tagColor, color: textColor, borderColor: 'transparent' }}
                         >
                           #
                           {tag}
