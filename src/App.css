@@ -4209,7 +4209,6 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   border-radius: 999px;
   background: var(--accent, #5b7fff);
   color: #fff;
-  border: 2px solid var(--card);
   font-size: 0.68rem;
   font-weight: 700;
   display: inline-flex;
