@@ -120,6 +120,7 @@ type AppMainContentProps = {
   isPro: boolean
   onOpenPaywall: () => void
   onOpenFeedback: () => void
+  onGoToTimeline: () => void
   settingsName: string
   settingsEmail: string
   settingsDateFormat: DateFormatPreference
@@ -206,6 +207,7 @@ export function AppMainContent({
   isPro,
   onOpenPaywall,
   onOpenFeedback,
+  onGoToTimeline,
   settingsName,
   settingsEmail,
   settingsDateFormat,
@@ -476,6 +478,7 @@ export function AppMainContent({
                       onOpenPaywall={onOpenPaywall}
                       onOpenFeedback={onOpenFeedback}
                       goToLog={() => onNavigateToPage(AppPage.Log)}
+                      onGoToTimeline={onGoToTimeline}
                       activeTab={activeInsightsTab}
                       onRenameTag={onRenameTag}
                       onTagColorChange={onTagColorChange}

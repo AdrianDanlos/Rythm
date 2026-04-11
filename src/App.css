@@ -3149,6 +3149,49 @@
   flex: 1;
 }
 
+.your-daily-events-open-timeline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+.your-daily-events-open-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.your-daily-events-open-icon {
+  color: var(--muted);
+  transition: transform 0.15s ease;
+}
+
+.your-daily-events-item-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.your-daily-events-open-timeline:hover .your-daily-events-open-icon,
+.your-daily-events-open-timeline:focus-visible .your-daily-events-open-icon {
+  transform: translateX(2px);
+}
+
+.your-daily-events-open-timeline:focus-visible {
+  outline: 2px solid var(--input-focus-border);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
 .your-daily-events-edit-input {
   flex: 1;
   min-width: 0;
@@ -4724,6 +4767,7 @@ button.toggle-group__btn--disabled:disabled {
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
+  min-width: 0;
 }
 
 .tag-delta--pc {
@@ -4899,7 +4943,15 @@ button.toggle-group__btn--disabled:disabled {
 }
 
 .tag-title {
+  display: block;
   font-weight: 600;
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .heatmap-grid {

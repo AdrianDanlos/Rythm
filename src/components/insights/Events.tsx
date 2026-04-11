@@ -1,4 +1,4 @@
-import { Info, Pencil } from 'lucide-react'
+import { ChevronRight, Info, Pencil } from 'lucide-react'
 import { motion, type Transition } from 'framer-motion'
 import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
 import { tagColorPalette } from '../../lib/colors'
@@ -26,6 +26,7 @@ export type EventsProps = {
   showAllTags: boolean
   onToggleShowAllTags: () => void
   goToLog: () => void
+  onOpenTagInTimeline: (tag: string) => void
   hasEnoughEntries: boolean
   isPro: boolean
   tagDrivers: TagDriver[]
@@ -52,6 +53,7 @@ export const Events = ({
   showAllTags,
   onToggleShowAllTags,
   goToLog,
+  onOpenTagInTimeline,
   hasEnoughEntries,
   isPro,
   tagDrivers,
@@ -121,26 +123,39 @@ export const Events = ({
                             )
                           : (
                               <>
-                                <span className="your-daily-events-list-label">
-                                  {t('insights.dailyEventCount', { tag: display, count })}
-                                </span>
                                 <button
                                   type="button"
-                                  className="tag-color-trigger"
-                                  style={{ backgroundColor: tagColor }}
-                                  onClick={() => onSetColorPickerTag(display)}
-                                  aria-label={t('insights.changeTagColor', { tag: display })}
+                                  className="your-daily-events-open-timeline"
+                                  onClick={() => onOpenTagInTimeline(display)}
+                                  aria-label={t('insights.openTagTimelineAria', { tag: display })}
                                 >
-                                  <span className="tag-color-trigger-inner" />
+                                  <span className="your-daily-events-list-label">
+                                    {t('insights.dailyEventCount', { tag: display, count })}
+                                  </span>
+                                  <span className="your-daily-events-open-hint">
+                                    {t('insights.openInTimeline')}
+                                  </span>
+                                  <ChevronRight className="your-daily-events-open-icon" size={16} aria-hidden />
                                 </button>
-                                <button
-                                  type="button"
-                                  className="ghost icon-button your-daily-events-edit-button"
-                                  onClick={() => onStartEditingTag(display)}
-                                  aria-label={t('common.edit')}
-                                >
-                                  <Pencil className="icon" aria-hidden />
-                                </button>
+                                <div className="your-daily-events-item-actions">
+                                  <button
+                                    type="button"
+                                    className="tag-color-trigger"
+                                    style={{ backgroundColor: tagColor }}
+                                    onClick={() => onSetColorPickerTag(display)}
+                                    aria-label={t('insights.changeTagColor', { tag: display })}
+                                  >
+                                    <span className="tag-color-trigger-inner" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="ghost icon-button your-daily-events-edit-button"
+                                    onClick={() => onStartEditingTag(display)}
+                                    aria-label={t('common.edit')}
+                                  >
+                                    <Pencil className="icon" aria-hidden />
+                                  </button>
+                                </div>
                               </>
                             )}
                       </li>

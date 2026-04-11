@@ -915,6 +915,7 @@ function App() {
               activeTab={activeTab}
               onNavigateToPage={navigateToPage}
               activeInsightsTab={activeInsightsTab}
+              onGoToTimeline={() => navigateToPage(AppPage.Timeline)}
               saveLogWhenLeaving={saveLogWhenLeaving}
               entriesSettled={entriesSettled}
               entries={entries}

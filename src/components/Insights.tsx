@@ -125,6 +125,7 @@ type InsightsProps = {
   onOpenFeedback: () => void
   activeTab: InsightsTab
   goToLog: () => void
+  onGoToTimeline: () => void
   onRenameTag: (fromTag: string, toTag: string) => void
   onTagColorChange: (tag: string, color: string) => void
 }
@@ -159,6 +160,7 @@ export const Insights = ({
   onOpenPaywall,
   activeTab,
   goToLog,
+  onGoToTimeline,
   onRenameTag,
   onTagColorChange,
 }: InsightsProps) => {
@@ -605,6 +607,21 @@ export const Insights = ({
                 })
               }}
               goToLog={goToLog}
+              onOpenTagInTimeline={(tag) => {
+                const normalizedTag = tag.trim().toLowerCase()
+                if (!normalizedTag) return
+                const nextFilters: TimelineFilterState = {
+                  ...DEFAULT_TIMELINE_FILTERS,
+                  tags: [normalizedTag],
+                }
+                setSelectedMonth('all')
+                setAppliedTimelineFilters(nextFilters)
+                setDraftTimelineFilters(nextFilters)
+                setTimelineTagSearch('')
+                setIsFilterSheetOpen(false)
+                setIsMonthPickerOpen(false)
+                onGoToTimeline()
+              }}
               hasEnoughEntries={hasEnoughEntries}
               isPro={isPro}
               tagDrivers={tagDrivers}
