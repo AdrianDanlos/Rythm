@@ -6,13 +6,14 @@ import { createFeedback } from '../lib/feedback.ts'
 type FeedbackModalProps = {
   isOpen: boolean
   onClose: () => void
-  userEmail: string | null
+  /** Present for signed-in and guest (anonymous) sessions; used to authorize feedback. */
+  userId: string | null
 }
 
 export const FeedbackModal = ({
   isOpen,
   onClose,
-  userEmail,
+  userId,
 }: FeedbackModalProps) => {
   const { t } = useTranslation()
   const [message, setMessage] = useState('')
@@ -32,7 +33,7 @@ export const FeedbackModal = ({
     if (isLoading) return
 
     const trimmedMessage = message.trim()
-    if (!userEmail) {
+    if (!userId) {
       toast.error(t('feedback.signInRequired'))
       onClose()
       return
@@ -61,7 +62,7 @@ export const FeedbackModal = ({
     }
   }
 
-  const canSubmit = Boolean(userEmail && message.trim() && !isLoading)
+  const canSubmit = Boolean(userId && message.trim() && !isLoading)
 
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
@@ -87,7 +88,7 @@ export const FeedbackModal = ({
           </button>
         </div>
         <p className="muted">
-          {!userEmail
+          {!userId
             ? t('feedback.signInRequired')
             : null}
         </p>
@@ -99,7 +100,7 @@ export const FeedbackModal = ({
             value={message}
             onChange={event => setMessage(event.target.value)}
             rows={5}
-            disabled={!userEmail || isLoading}
+            disabled={!userId || isLoading}
           />
           <div className="modal-actions modal-actions-right">
             <button

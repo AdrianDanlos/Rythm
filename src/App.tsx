@@ -924,7 +924,7 @@ function App() {
       <FeedbackModal
         isOpen={isFeedbackOpen}
         onClose={closeFeedback}
-        userEmail={session?.user?.email ?? null}
+        userId={session?.user?.id ?? null}
       />
 
       {authInitialized && session && activePage === AppPage.Pro

@@ -72,13 +72,7 @@ serve(async (req) => {
     })
   }
 
-  const userEmail = data.user.email
-  if (!userEmail) {
-    return new Response(JSON.stringify({ error: 'User email is required.' }), {
-      status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
-  }
+  const userEmail = data.user.email?.trim() || null
 
   const { error: insertError } = await supabaseAdmin
     .from('feedback')
