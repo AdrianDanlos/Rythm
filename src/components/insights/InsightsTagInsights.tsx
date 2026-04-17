@@ -74,10 +74,10 @@ export const InsightsTagInsights = ({
     ? Math.max(0, allNegativeSleepDrivers.length - FREE_VISIBLE_PER_SECTION)
     : 0
 
-  const hasMoreThanTopTwo = allPositiveDrivers.length > 2
-    || allNegativeDrivers.length > 2
-    || allPositiveSleepDrivers.length > 2
-    || allNegativeSleepDrivers.length > 2
+  const hasMoreMoodToShow = allPositiveDrivers.length > FREE_VISIBLE_PER_SECTION
+    || allNegativeDrivers.length > FREE_VISIBLE_PER_SECTION
+  const hasMoreSleepToShow = allPositiveSleepDrivers.length > FREE_VISIBLE_PER_SECTION
+    || allNegativeSleepDrivers.length > FREE_VISIBLE_PER_SECTION
 
   const moodDeltaPercent = (tag: TagDriver): number | null => {
     if (tag.delta === null || tag.moodWithout === null || tag.moodWithout === 0) return null
@@ -359,6 +359,17 @@ export const InsightsTagInsights = ({
                   : (
                       <p className="muted">{t('insights.addEventsToSeeMoodImpact')}</p>
                     )}
+                {isPro && hasMoreMoodToShow && (
+                  <div className="tag-insights-show-more">
+                    <button
+                      type="button"
+                      className="link-button link-button--text"
+                      onClick={() => setShowAllTags(prev => !prev)}
+                    >
+                      {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="tag-insights-block">
                 <div className="tag-insights-block-header">
@@ -391,18 +402,18 @@ export const InsightsTagInsights = ({
                   : (
                       <p className="muted">{t('insights.addEventsToSeeSleepImpact')}</p>
                     )}
+                {isPro && hasMoreSleepToShow && (
+                  <div className="tag-insights-show-more">
+                    <button
+                      type="button"
+                      className="link-button link-button--text"
+                      onClick={() => setShowAllTags(prev => !prev)}
+                    >
+                      {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
+                    </button>
+                  </div>
+                )}
               </div>
-              {isPro && hasMoreThanTopTwo && (
-                <div className="tag-insights-show-more">
-                  <button
-                    type="button"
-                    className="link-button link-button--text"
-                    onClick={() => setShowAllTags(prev => !prev)}
-                  >
-                    {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
-                  </button>
-                </div>
-              )}
             </>
           )
         : (
