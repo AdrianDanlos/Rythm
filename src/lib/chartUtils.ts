@@ -17,7 +17,7 @@ function hasRollingData(p: RollingPoint): boolean {
 
 /**
  * Trim trend points to the extent of actual data (first to last non-null).
- * Keeps the selected range (30/90/365) intact; only removes leading/trailing empty days
+ * Keeps the selected range (7/30/90) intact; only removes leading/trailing empty days
  * so the chart uses full width for the days that have data.
  */
 export function trimToDataExtentTrend(points: TrendPoint[]): TrendPoint[] {

@@ -14,19 +14,18 @@ import type { TrendPoint } from '../../lib/types/stats'
 import { Info } from 'lucide-react'
 import { trimToDataExtentTrend } from '../../lib/chartUtils'
 import { buildMockTrendSeries } from '../../lib/insightsMock'
-import { buildBucketedTrendSeries, buildWeeklyTrendSeries } from '../../lib/stats'
+import { buildBucketedTrendSeries } from '../../lib/stats'
 import { formatLongDate, formatShortDate } from '../../lib/utils/dateFormatters'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 
 const DAILY_HISTORY_THRESHOLD_90 = 30
-const DAILY_HISTORY_THRESHOLD_365 = 90
 
 type InsightsDailyHistoryProps = {
   isPro: boolean
   isMobile: boolean
   entryCount: number
-  trendSeries: { last30: TrendPoint[], last90: TrendPoint[], last365: TrendPoint[] }
+  trendSeries: { last7: TrendPoint[], last30: TrendPoint[], last90: TrendPoint[] }
   onOpenPaywall: () => void
   goToLog: () => void
 }
@@ -81,37 +80,16 @@ export const InsightsDailyHistory = ({
   goToLog,
 }: InsightsDailyHistoryProps) => {
   const { t } = useTranslation()
-  const [trendRange, setTrendRange] = useState<'last30' | 'last90' | 'last365'>('last30')
+  const [trendRange, setTrendRange] = useState<'last7' | 'last30' | 'last90'>('last7')
   const show90 = entryCount >= DAILY_HISTORY_THRESHOLD_90
-  const show365 = entryCount >= DAILY_HISTORY_THRESHOLD_365
-  const trendPoints = trendSeries[trendRange]
-  const weeklyTrendPoints = trendRange === 'last365'
-    ? buildWeeklyTrendSeries(trendSeries.last365)
-    : []
-  const threeDayTrendPoints = trendRange === 'last90'
+  const trendDisplayPoints = trendRange === 'last90'
     ? buildBucketedTrendSeries(trendSeries.last90, 3)
-    : []
-  const isYearly = trendRange === 'last365'
-  const is90Days = trendRange === 'last90'
-  const trendDisplayPoints = isYearly
-    ? weeklyTrendPoints
-    : is90Days
-      ? threeDayTrendPoints
-      : trendPoints
+    : trendSeries[trendRange]
   const trimmedTrendPoints = trimToDataExtentTrend(trendDisplayPoints)
   const previewTrendSeries = buildMockTrendSeries()
-  const previewTrendPoints = previewTrendSeries[trendRange]
-  const previewWeeklyTrendPoints = trendRange === 'last365'
-    ? buildWeeklyTrendSeries(previewTrendSeries.last365)
-    : []
-  const previewThreeDayTrendPoints = trendRange === 'last90'
+  const previewTrendDisplayPoints = trendRange === 'last90'
     ? buildBucketedTrendSeries(previewTrendSeries.last90, 3)
-    : []
-  const previewTrendDisplayPoints = isYearly
-    ? previewWeeklyTrendPoints
-    : is90Days
-      ? previewThreeDayTrendPoints
-      : previewTrendPoints
+    : previewTrendSeries[trendRange]
   const trimmedPreviewPoints = trimToDataExtentTrend(previewTrendDisplayPoints)
   const trendTickInterval = getDateTickInterval(trimmedTrendPoints.length)
   const previewTickInterval = getDateTickInterval(trimmedPreviewPoints.length)
@@ -159,6 +137,15 @@ export const InsightsDailyHistory = ({
         <div className="toggle-group">
           <button
             type="button"
+            className={`ghost ${trendRange === 'last7' ? 'active' : ''}`}
+            onClick={() => handleProAction(() => {
+              setTrendRange('last7')
+            })}
+          >
+            {t('insights.scatterRange7Days')}
+          </button>
+          <button
+            type="button"
             className={`ghost ${trendRange === 'last30' ? 'active' : ''}`}
             onClick={() => handleProAction(() => {
               setTrendRange('last30')
@@ -182,25 +169,6 @@ export const InsightsDailyHistory = ({
                 <Tooltip label={t('insights.logDaysToSee90', { count: DAILY_HISTORY_THRESHOLD_90 })}>
                   <span className="ghost toggle-group__btn--disabled">
                     {t('insights.scatterRange90Days')}
-                  </span>
-                </Tooltip>
-              )}
-          {show365
-            ? (
-                <button
-                  type="button"
-                  className={`ghost ${trendRange === 'last365' ? 'active' : ''}`}
-                  onClick={() => handleProAction(() => {
-                    setTrendRange('last365')
-                  })}
-                >
-                  {t('insights.last365Days')}
-                </button>
-              )
-            : (
-                <Tooltip label={t('insights.logDaysToSee365', { count: DAILY_HISTORY_THRESHOLD_365 })}>
-                  <span className="ghost toggle-group__btn--disabled">
-                    {t('insights.last365Days')}
                   </span>
                 </Tooltip>
               )}

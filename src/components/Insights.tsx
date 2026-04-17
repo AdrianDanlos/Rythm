@@ -111,7 +111,7 @@ type InsightsProps = {
   moodBySleepBucketCounts: { high: number, low: number }
   sleepThreshold: number
   moodColors: string[]
-  trendSeries: { last30: TrendPoint[], last90: TrendPoint[], last365: TrendPoint[] }
+  trendSeries: { last7: TrendPoint[], last30: TrendPoint[], last90: TrendPoint[] }
   rollingSeries: RollingPoint[]
   rollingSummaries: RollingSummary[]
   weekdayAverages: WeekdayAveragePoint[]

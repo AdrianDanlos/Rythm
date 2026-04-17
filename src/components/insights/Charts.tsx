@@ -33,7 +33,7 @@ export type ChartsProps = {
   idealSleepRangeBand: { x1: number, x2: number } | null
   rollingSeries: RollingPoint[]
   rollingSummaries: RollingSummary[]
-  trendSeries: { last30: TrendPoint[], last90: TrendPoint[], last365: TrendPoint[] }
+  trendSeries: { last7: TrendPoint[], last30: TrendPoint[], last90: TrendPoint[] }
   onOpenPaywall: () => void
 }
 

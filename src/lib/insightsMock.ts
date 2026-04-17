@@ -57,9 +57,9 @@ const buildMockTrendPoints = (pointCount: number): TrendPoint[] => {
 }
 
 export const buildMockTrendSeries = () => ({
+  last7: buildMockTrendPoints(7),
   last30: buildMockTrendPoints(30),
   last90: buildMockTrendPoints(90),
-  last365: buildMockTrendPoints(365),
 })
 
 export const buildMockTagDrivers = (): TagDriver[] => [

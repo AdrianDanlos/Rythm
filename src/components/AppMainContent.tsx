@@ -105,9 +105,9 @@ type AppMainContentProps = {
   moodBySleepBucketCounts: { high: number, low: number }
   sleepThreshold: number
   trendSeries: {
+    last7: TrendPoint[]
     last30: TrendPoint[]
     last90: TrendPoint[]
-    last365: TrendPoint[]
   }
   rollingSeries: RollingPoint[]
   rollingSummaries: RollingSummary[]
