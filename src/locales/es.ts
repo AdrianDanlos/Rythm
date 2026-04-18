@@ -384,7 +384,7 @@ const es = {
     changeTagColorTitle: 'Elige un color para este evento',
     changeTagColorDescription: 'Escoge un color para que este evento diario destaque en tus calendarios y gráficos.',
     tagColorRandomTooltip:
-      'Estos colores se visualizan a la hora de registrar eventos, en el calendario y en la gráfica de sueño-ánimo. Cuando no se proporciona un color, se asigna uno aleatoriamente de forma automática.',
+      'Estos colores se mostrarán en todos los lugares donde se visualicen los eventos. Si no se proporciona ningún color, se asigna uno de forma aleatoria y automática.',
     eventsInfluence: 'Mira cómo lo que pasa en el día influye en tu ánimo y sueño.',
     eventsPredictMood: 'Eventos diarios que predicen tu ánimo',
     eventsPredictSleep: 'Eventos diarios que predicen tu sueño',

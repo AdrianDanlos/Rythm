@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest'
 import type { Entry } from '../entries'
 import { buildStats } from '../stats'
 import { getCurrentCompleteStreak, getLongestCompleteStreak } from '../utils/streak'
-import { getMonthlyMilestoneBadge, getTieredBadges } from '../utils/tieredBadges'
+import {
+  getMonthlyMilestoneBadge,
+  getTieredBadges,
+  visibleBadgesForInsightsEntryCount,
+} from '../utils/tieredBadges'
 
 const formatLocalDate = (date: Date) => {
   const year = date.getFullYear()
@@ -137,5 +141,29 @@ describe('monthly milestone badge (30-day streak)', () => {
     const badges = getTieredBadges([], 30, 30)
     const monthly = badges.find(b => b.id === 'monthly-milestone')
     expect(monthly?.unlocked).toBe(true)
+  })
+})
+
+describe('visibleBadgesForInsightsEntryCount', () => {
+  const twoDayEntries = [
+    makeEntry({ id: 'a', entry_date: '2026-01-01' }),
+    makeEntry({ id: 'b', entry_date: '2026-01-02' }),
+  ]
+  const badges = getTieredBadges(twoDayEntries, 2, 2)
+
+  it('shows only four starter badges below five logged days', () => {
+    const visible = visibleBadgesForInsightsEntryCount(badges, 2)
+    expect(visible.map(b => b.id)).toEqual([
+      'mood-steady',
+      'logger-beast',
+      'eight-hour-elite',
+      'monthly-milestone',
+    ])
+  })
+
+  it('shows full list from five logged days onward', () => {
+    const visible = visibleBadgesForInsightsEntryCount(badges, 5)
+    expect(visible).toHaveLength(badges.length)
+    expect(visible.map(b => b.id)).toEqual(badges.map(b => b.id))
   })
 })

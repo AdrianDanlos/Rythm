@@ -458,3 +458,20 @@ export function getTieredBadges(
     getBounceBackBadge(entries),
   ]
 }
+
+/** Matches `UNLOCK_DAYS` in Insights first-week cards: full badge roster unlocks after this many logged days. */
+export const INSIGHTS_FULL_BADGE_LIST_MIN_ENTRIES = 5
+
+const BADGE_IDS_EARLY_INSIGHTS_ONLY = [
+  'mood-steady',
+  'logger-beast',
+  'eight-hour-elite',
+  'monthly-milestone',
+] as const
+
+/** Before {@link INSIGHTS_FULL_BADGE_LIST_MIN_ENTRIES} logged days, Insights shows only starter badges; order is fixed for consistent UI. */
+export function visibleBadgesForInsightsEntryCount(badges: Badge[], entryCount: number): Badge[] {
+  if (entryCount >= INSIGHTS_FULL_BADGE_LIST_MIN_ENTRIES) return badges
+  const byId = new Map(badges.map(b => [b.id, b]))
+  return BADGE_IDS_EARLY_INSIGHTS_ONLY.map(id => byId.get(id)).filter((b): b is Badge => b != null)
+}

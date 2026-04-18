@@ -381,7 +381,8 @@ const de = {
     changeTagColor: 'Farbe für {{tag}} ändern',
     changeTagColorTitle: 'Wähle eine Farbe für dieses Ereignis',
     changeTagColorDescription: 'Wähle eine Farbe, damit dieses Tagesereignis in deinen Kalendern und Diagrammen hervorsticht.',
-    tagColorRandomTooltip: 'Diese Farben werden beim Eintragen von Ereignissen, im Kalender und im Schlaf-Stimmungs-Diagramm angezeigt. Wenn keine Farbe angegeben wird, wird automatisch eine zufällige Farbe zugewiesen.',
+    tagColorRandomTooltip:
+      'Diese Farben werden überall dort angezeigt, wo Ereignisse dargestellt werden. Wird keine Farbe angegeben, wird automatisch eine zufällige Farbe zugewiesen.',
     eventsInfluence: 'Sieh, wie dein Alltag deine Stimmung und deinen Schlaf beeinflusst.',
     eventsPredictMood: 'Tagesereignisse, die deine Stimmung vorhersagen',
     eventsPredictSleep: 'Tagesereignisse, die deinen Schlaf vorhersagen',

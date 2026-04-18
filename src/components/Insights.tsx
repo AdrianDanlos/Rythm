@@ -25,6 +25,7 @@ import {
 import { useIsMobile } from '../hooks/useIsMobile'
 import { buildMockScatterPlottedData } from '../lib/insightsMock'
 import { getMotivationMessage } from '../lib/utils/motivationMessage'
+import { visibleBadgesForInsightsEntryCount } from '../lib/utils/tieredBadges'
 import { motionTransition } from '../lib/motion'
 import { MAX_TAG_LENGTH } from '../lib/utils/stringUtils'
 
@@ -228,18 +229,23 @@ export const Insights = ({
     ],
   )
 
+  const insightsVisibleBadges = useMemo(
+    () => visibleBadgesForInsightsEntryCount(sleepConsistencyBadges, entries.length),
+    [sleepConsistencyBadges, entries.length],
+  )
+
   const sortedBadges = useMemo(() => {
     const isCompleted = (b: Badge) =>
       b.unlocked && (b.tierCount === 1 || b.currentTierIndex === b.tierCount - 1)
     const progressRatio = (b: Badge) =>
       b.progressTotal > 0 ? b.progressValue / b.progressTotal : 0
-    return [...sleepConsistencyBadges].sort((a, b) => {
+    return [...insightsVisibleBadges].sort((a, b) => {
       const aDone = isCompleted(a)
       const bDone = isCompleted(b)
       if (aDone !== bDone) return aDone ? -1 : 1
       return progressRatio(b) - progressRatio(a)
     })
-  }, [sleepConsistencyBadges])
+  }, [insightsVisibleBadges])
 
   const scatterEntries = useMemo(() => {
     if (!isPro) return []
@@ -542,7 +548,7 @@ export const Insights = ({
               rhythmScore={rhythmScore}
               streak={streak}
               sleepConsistencyLabel={sleepConsistencyLabel}
-              sleepConsistencyBadges={sleepConsistencyBadges}
+              sleepConsistencyBadges={insightsVisibleBadges}
               sortedBadges={sortedBadges}
               correlationLabel={correlationLabel}
               correlationDirection={correlationDirection}
