@@ -319,6 +319,14 @@ export const Insights = ({
   }, [timelineTagOptions])
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false)
   const [isMonthPickerOpen, setIsMonthPickerOpen] = useState(false)
+  const [prevActiveTab, setPrevActiveTab] = useState(activeTab)
+  if (activeTab !== prevActiveTab) {
+    setPrevActiveTab(activeTab)
+    if (prevActiveTab === 'timeline' && activeTab !== 'timeline') {
+      setIsFilterSheetOpen(false)
+      setIsMonthPickerOpen(false)
+    }
+  }
   const [selectedMonth, setSelectedMonth] = useState(parsePersistedSelectedMonth)
   const [appliedTimelineFilters, setAppliedTimelineFilters] = useState<TimelineFilterState>(parsePersistedTimelineFilters)
   const [draftTimelineFilters, setDraftTimelineFilters] = useState<TimelineFilterState>(appliedTimelineFilters)
@@ -450,7 +458,8 @@ export const Insights = ({
   useEffect(() => {
     if (typeof document === 'undefined') return
     const className = 'timeline-filter-sheet-open'
-    if (isFilterSheetOpen) {
+    const sheetOpenOnTimeline = isFilterSheetOpen && activeTab === 'timeline'
+    if (sheetOpenOnTimeline) {
       document.body.classList.add(className)
     }
     else {
@@ -459,7 +468,7 @@ export const Insights = ({
     return () => {
       document.body.classList.remove(className)
     }
-  }, [isFilterSheetOpen])
+  }, [isFilterSheetOpen, activeTab])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
