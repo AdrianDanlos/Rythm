@@ -366,6 +366,8 @@ export function AppMainContent({
                     onLanguageChange={onSettingsLanguageChange}
                     onThemeChange={onSettingsThemeChange}
                     onPersonalSleepTargetChange={onSettingsPersonalSleepTargetChange}
+                    showSaveAccountWithGoogle={Boolean(session?.user?.is_anonymous)}
+                    onSaveAccountWithGoogle={onGoogleSignIn}
                   />
                 </Suspense>
               </motion.div>

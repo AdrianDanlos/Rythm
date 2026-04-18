@@ -918,6 +918,7 @@ function App() {
         onReviewApp={() => window.open(PLAY_STORE_APP_URL, '_blank', 'noreferrer')}
         onOpenFeedback={openFeedback}
         onSignOut={handleSignOut}
+        onSaveAccountWithGoogle={handleGoogleSignIn}
       />
 
       <StreakModal isOpen={isStreakOpen} onClose={closeStreak} />

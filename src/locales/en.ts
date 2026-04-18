@@ -57,6 +57,9 @@ const en = {
     signInBenefit:
       'Sign in so your progress and settings stay with you on any device.',
     tryWithoutSigningIn: 'Continue as Guest',
+    saveAccountWithGoogle: 'Save account with Google',
+    saveAccountWithGoogleHint:
+      'Link Google to keep your logs if you sign out or change devices.',
   },
   intro: {
     title: 'Welcome to Rythm',

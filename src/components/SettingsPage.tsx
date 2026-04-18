@@ -17,6 +17,7 @@ import type {
 } from '../lib/settings'
 import appleLogo from '../assets/apple.png'
 import fitbitLogo from '../assets/fitbit.png'
+import googleLogo from '../assets/google-logo.png'
 import { useScrollToSettingsReminderOnMount } from '../hooks/useScrollToSettingsReminderOnMount'
 
 type SettingsPageProps = {
@@ -33,6 +34,8 @@ type SettingsPageProps = {
   onLanguageChange: (value: LanguagePreference) => void
   onThemeChange: (value: ThemePreference) => void
   onPersonalSleepTargetChange: (value: number) => void
+  showSaveAccountWithGoogle?: boolean
+  onSaveAccountWithGoogle?: () => void
 }
 
 export function SettingsPage({
@@ -49,6 +52,8 @@ export function SettingsPage({
   onLanguageChange,
   onThemeChange,
   onPersonalSleepTargetChange,
+  showSaveAccountWithGoogle = false,
+  onSaveAccountWithGoogle = () => {},
 }: SettingsPageProps) {
   const { t } = useTranslation()
   const remindersSupported = Capacitor.isNativePlatform()
@@ -174,6 +179,28 @@ export function SettingsPage({
       <div className="settings-form">
         <section className="settings-section">
           <p className="eyebrow">{t('settings.account')}</p>
+          {showSaveAccountWithGoogle
+            ? (
+                <div className="settings-guest-google">
+                  <p className="settings-guest-google__hint">
+                    {t('auth.saveAccountWithGoogleHint')}
+                  </p>
+                  <button
+                    type="button"
+                    className="ghost oauth-button settings-guest-google__btn"
+                    onClick={onSaveAccountWithGoogle}
+                  >
+                    <img
+                      className="oauth-logo"
+                      src={googleLogo}
+                      alt=""
+                      aria-hidden={true}
+                    />
+                    {t('auth.saveAccountWithGoogle')}
+                  </button>
+                </div>
+              )
+            : null}
           <div className="settings-grid">
             <label className="field" htmlFor="settings-name">
               <span>{t('settings.name')}</span>

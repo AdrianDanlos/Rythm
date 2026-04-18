@@ -2,6 +2,7 @@ import {
   CreditCard,
   FileDown,
   FileText,
+  Link2,
   LogOut,
   MessageSquare,
   Settings,
@@ -13,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 type AppSidePanelProps = {
   isOpen: boolean
   onClose: () => void
-  session: { user: { email?: string } } | null
+  session: { user: { email?: string, is_anonymous?: boolean } } | null
   isPro: boolean
   canManageSubscription: boolean
   isSignOutLoading: boolean
@@ -25,6 +26,7 @@ type AppSidePanelProps = {
   onReviewApp: () => void
   onOpenFeedback: () => void
   onSignOut: () => void
+  onSaveAccountWithGoogle: () => void
 }
 
 function PanelButton({
@@ -74,6 +76,7 @@ export function AppSidePanel(props: AppSidePanelProps) {
     onReviewApp,
     onOpenFeedback,
     onSignOut,
+    onSaveAccountWithGoogle,
   } = props
   const { t } = useTranslation()
   const runAndClose = (fn: () => void) => {
@@ -144,6 +147,13 @@ export function AppSidePanel(props: AppSidePanelProps) {
             label={t('insights.sendFeedback')}
             onClick={() => runAndClose(onOpenFeedback)}
           />
+          {session?.user?.is_anonymous && (
+            <PanelButton
+              icon={Link2}
+              label={t('auth.saveAccountWithGoogle')}
+              onClick={() => runAndClose(onSaveAccountWithGoogle)}
+            />
+          )}
           {session && (
             <PanelButton
               icon={LogOut}

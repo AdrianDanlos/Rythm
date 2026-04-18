@@ -1038,6 +1038,64 @@
   margin-top: 0;
 }
 
+.settings-guest-google {
+  --guest-tint: var(--chart-sleep-bar);
+  --guest-bg-mix: 11%;
+  --guest-border-mix: 24%;
+  display: grid;
+  gap: 10px;
+  margin-bottom: 4px;
+  padding: 14px 16px;
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--guest-tint) var(--guest-border-mix),
+      var(--border)
+    );
+  border-radius: 14px;
+  background: color-mix(
+    in srgb,
+    var(--guest-tint) var(--guest-bg-mix),
+    var(--card)
+  );
+  box-shadow: var(--card-shadow);
+}
+
+:root[data-theme="dark"] .settings-guest-google {
+  --guest-bg-mix: 14%;
+  --guest-border-mix: 30%;
+}
+
+.settings-guest-google__hint {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--text) 30%, var(--muted));
+}
+
+:root[data-theme="light"] .settings-guest-google__hint {
+  color: color-mix(in srgb, var(--text) 38%, var(--muted));
+}
+
+.settings-guest-google__btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Ghost OAuth on tinted panel: default ghost is too faint on light indigo wash */
+:root[data-theme="light"] .settings-guest-google__btn.ghost {
+  border-color: color-mix(in srgb, var(--chart-sleep-bar) 32%, var(--border));
+  background: var(--card);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+:root[data-theme="light"] .settings-guest-google__btn.ghost:hover,
+:root[data-theme="light"] .settings-guest-google__btn.ghost:focus-visible {
+  border-color: color-mix(in srgb, var(--chart-sleep-bar) 45%, var(--border));
+  background: color-mix(in srgb, var(--chart-sleep-bar) 6%, var(--card));
+}
+
 .settings-section {
   display: grid;
   gap: 12px;
@@ -2161,7 +2219,6 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 16px;
 }
 
 .oauth-button--standalone {
