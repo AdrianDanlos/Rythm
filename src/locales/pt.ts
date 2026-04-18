@@ -220,8 +220,6 @@ const pt = {
     maxTagLength: 'Cada evento do dia deve ter no máximo {{count}} caracteres.',
     maxTagsPerEntry: 'Limite de {{count}} eventos por entrada.',
     addAtLeastOneValue: 'Adicione pelo menos um valor antes de salvar.',
-    firstDayNeedSleepAndMood: 'Informe quanto dormiu e escolha um humor antes de salvar o primeiro dia.',
-    firstDayNeedSleep: 'Informe quanto dormiu antes de salvar o primeiro dia.',
     firstDayNeedMood: 'Escolha um humor antes de salvar o primeiro dia.',
     saveEntryError: 'Não foi possível salvar a entrada.',
     postSaveSuggestions: {

@@ -221,8 +221,6 @@ const en = {
     maxTagLength: 'Each daily event must be {{count}} characters or less.',
     maxTagsPerEntry: 'Limit {{count}} daily events per entry.',
     addAtLeastOneValue: 'Add at least one value before saving.',
-    firstDayNeedSleepAndMood: 'Enter how long you slept and select a mood before saving your first day.',
-    firstDayNeedSleep: 'Enter how long you slept before saving your first day.',
     firstDayNeedMood: 'Select a mood before saving your first day.',
     saveEntryError: 'Unable to save entry.',
     postSaveSuggestions: {

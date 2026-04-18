@@ -220,8 +220,6 @@ const fr = {
     maxTagLength: 'Chaque événement du jour doit faire {{count}} caractères maximum.',
     maxTagsPerEntry: 'Limite de {{count}} événements par entrée.',
     addAtLeastOneValue: 'Ajoutez au moins une valeur avant d\'enregistrer.',
-    firstDayNeedSleepAndMood: 'Indiquez votre sommeil et choisissez une humeur avant d\'enregistrer votre premier jour.',
-    firstDayNeedSleep: 'Indiquez votre sommeil avant d\'enregistrer votre premier jour.',
     firstDayNeedMood: 'Choisissez une humeur avant d\'enregistrer votre premier jour.',
     saveEntryError: 'Impossible d\'enregistrer l\'entrée.',
     postSaveSuggestions: {

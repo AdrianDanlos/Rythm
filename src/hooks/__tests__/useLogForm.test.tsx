@@ -105,10 +105,10 @@ describe('useLogForm', () => {
     })
   }
 
-  it('starts with empty sleep on first-ever log so quick start requires explicit sleep', async () => {
+  it('starts with default sleep on first-ever log', async () => {
     await renderHook([])
 
-    expect(latest?.sleepHours).toBe('')
+    expect(latest?.sleepHours).toBe(formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS))
   })
 
   it('uses default 8h when existing entry has null sleep_hours', async () => {
@@ -121,7 +121,7 @@ describe('useLogForm', () => {
     expect(latest?.sleepHours).toBe(formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS))
   })
 
-  it('blocks save on first day until sleep and mood are set', async () => {
+  it('blocks first day save without mood', async () => {
     await renderHook([])
 
     await act(async () => {
@@ -131,16 +131,15 @@ describe('useLogForm', () => {
     })
 
     expect(upsertEntryMock).not.toHaveBeenCalled()
-    expect(toastErrorMock).toHaveBeenCalledWith('log.firstDayNeedSleepAndMood')
+    expect(toastErrorMock).toHaveBeenCalledWith('log.firstDayNeedMood')
   })
 
-  it('saves first day when both sleep and mood are set', async () => {
+  it('saves first day with default sleep when mood is set without touching sleep', async () => {
     const savedEntry = makeEntry({ mood: 4 })
     upsertEntryMock.mockResolvedValue(savedEntry)
     await renderHook([])
 
     await act(async () => {
-      latest?.setSleepHours(formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS))
       latest?.setMood(4)
     })
 

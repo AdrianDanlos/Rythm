@@ -183,8 +183,7 @@ export const useLogForm = ({
       setTagsState(existing.tags?.join(', ') ?? '')
     }
     else {
-      /* First-ever log: empty sleep so Save requires explicit hours + mood (quick start). */
-      setSleepHoursState(entries.length === 0 ? '' : defaultSleepHoursOption)
+      setSleepHoursState(defaultSleepHoursOption)
       setMoodState(null)
       setNoteState('')
       setTagsState('')
@@ -208,29 +207,6 @@ export const useLogForm = ({
     if (hasSleepInput && parsedSleep === null) {
       if (!options?.silent) showEntriesError(t('log.invalidSleep'))
       return
-    }
-
-    const isFirstEverEntry = entries.length === 0
-    if (isFirstEverEntry) {
-      const hasValidSleep = hasSleepInput && parsedSleep !== null
-      const hasMood = mood !== null
-      if (!hasValidSleep || !hasMood) {
-        if (!options?.silent) {
-          if (!hasValidSleep && !hasMood) {
-            showEntriesError(t('log.firstDayNeedSleepAndMood'))
-          }
-          else if (!hasValidSleep) {
-            showEntriesError(t('log.firstDayNeedSleep'))
-          }
-          else {
-            showEntriesError(t('log.firstDayNeedMood'))
-          }
-        }
-        else {
-          setSaved(false)
-        }
-        return
-      }
     }
 
     const sleepHoursToSave = hasSleepInput ? parsedSleep! : DEFAULT_LOG_SLEEP_HOURS
@@ -264,6 +240,16 @@ export const useLogForm = ({
       || hasSleepInput
     if (!hasAnyValue) {
       if (!options?.silent) showEntriesError(t('log.addAtLeastOneValue'))
+      return
+    }
+
+    if (entries.length === 0 && mood === null) {
+      if (!options?.silent) {
+        showEntriesError(t('log.firstDayNeedMood'))
+      }
+      else {
+        setSaved(false)
+      }
       return
     }
 

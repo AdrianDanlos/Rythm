@@ -221,8 +221,6 @@ const es = {
     maxTagLength: 'Cada evento diario debe tener {{count}} caracteres o menos.',
     maxTagsPerEntry: 'Límite de {{count}} eventos diarios por entrada.',
     addAtLeastOneValue: 'Agrega al menos un valor antes de guardar.',
-    firstDayNeedSleepAndMood: 'Indica cuánto dormiste y elige un estado de ánimo antes de guardar tu primer día.',
-    firstDayNeedSleep: 'Indica cuánto dormiste antes de guardar tu primer día.',
     firstDayNeedMood: 'Elige un estado de ánimo antes de guardar tu primer día.',
     saveEntryError: 'No se pudo guardar la entrada.',
     postSaveSuggestions: {
