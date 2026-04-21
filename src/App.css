@@ -2416,23 +2416,88 @@
   background: linear-gradient(135deg, #5869ff 0%, #455596 100%);
 }
 
-/* Sleep timepicker: align Material-style accent with sleep-duration-picker__picker-button blues. */
+/* Sleep timepicker: match Log sleep card + app theme tokens (backdrop, surface, type, accent). */
+.tp-ui-modal:has(.sleep-timepicker) {
+  background-color: var(--modal-backdrop);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: inherit;
+}
+
+.tp-ui-modal.tp-ui-popover:has(.sleep-timepicker) {
+  /* Library makes popover modal transparent; restore themed dimmer for consistency. */
+  background-color: var(--modal-backdrop);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
 .tp-ui-wrapper.sleep-timepicker {
+  font-family: inherit;
+  --tp-bg: #ffffff;
+  --tp-text: var(--text);
+  --tp-text-secondary: var(--muted);
+  --tp-text-type-time: var(--muted);
+  --tp-text-icon: var(--muted);
+  --tp-text-disabled: color-mix(in srgb, var(--muted) 55%, transparent);
+  --tp-on-surface: var(--text);
+  --tp-on-surface-variant: var(--muted);
+  --tp-on-surface-rgb: 15, 23, 42;
+  --tp-surface: #eef2f7;
+  --tp-surface-hover: #e2e8f0;
+  --tp-surface-container: #f1f5f9;
+  --tp-input-bg: #f1f5f9;
+  --tp-hover-bg: rgba(15, 23, 42, 0.06);
+  --tp-border: var(--border);
+  --tp-outline: #4a5cff;
+  --tp-outline-variant: rgba(15, 23, 42, 0.1);
+  --tp-dropdown-option-bg: #ffffff;
+  --tp-dropdown-option-text: var(--text);
+  --tp-shadow: var(--modal-shadow);
+  --tp-border-radius: 24px;
+  --tp-popover-radius: 24px;
+  --tp-popover-shadow: 0 18px 44px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  --tp-radius-md: 12px;
+  --tp-radius-sm: 10px;
+  --tp-btn-radius: 14px;
   --tp-primary: #4052ff;
   --tp-primary-rgb: 64, 82, 255;
   --tp-on-primary: #ffffff;
   --tp-primary-container: #e2e8ff;
   --tp-on-primary-container: #1a237e;
-  --tp-outline: #4a5cff;
-  --tp-surface-hover: #c8d2ff;
+  --tp-tertiary-container: #dce4ff;
+  --tp-on-tertiary-container: #1a237e;
   --tp-am-pm-active: #dce4ff;
   --tp-am-pm-text-selected: #1a237e;
+  --tp-am-pm-text-unselected: #64748b;
   --tp-wheel-highlight-bg: rgba(64, 82, 255, 0.12);
+  --tp-wheel-highlight-border: rgba(15, 23, 42, 0.1);
   --tp-wheel-selected-color: #4052ff;
+  --tp-wheel-text-color: var(--text);
   --tp-shadow-focus: 0 0 0 4px rgba(64, 82, 255, 0.22);
 }
 
 .tp-ui-modal[data-theme="dark"] .tp-ui-wrapper.sleep-timepicker {
+  --tp-bg: #101b31;
+  --tp-text: #f8fbff;
+  --tp-text-secondary: #95a8c8;
+  --tp-text-type-time: #95a8c8;
+  --tp-text-icon: #95a8c8;
+  --tp-text-disabled: color-mix(in srgb, #95a8c8 45%, transparent);
+  --tp-on-surface: #f8fbff;
+  --tp-on-surface-variant: #95a8c8;
+  --tp-on-surface-rgb: 248, 251, 255;
+  --tp-surface: #1a2744;
+  --tp-surface-hover: #243558;
+  --tp-surface-container: #152238;
+  --tp-input-bg: #152238;
+  --tp-hover-bg: rgba(110, 157, 255, 0.1);
+  --tp-border: rgba(148, 163, 184, 0.22);
+  --tp-outline: #8fa0ff;
+  --tp-outline-variant: rgba(148, 163, 184, 0.22);
+  --tp-dropdown-option-bg: #1a2744;
+  --tp-dropdown-option-text: #f8fbff;
+  --tp-shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+  --tp-popover-shadow: 0 20px 48px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(110, 157, 255, 0.12);
   --tp-primary: #5869ff;
   --tp-primary-rgb: 88, 105, 255;
   --tp-on-primary: #ffffff;
@@ -2440,11 +2505,13 @@
   --tp-on-primary-container: #ffffff;
   --tp-tertiary-container: #5869ff;
   --tp-on-tertiary-container: #ffffff;
-  --tp-outline: #8fa0ff;
   --tp-am-pm-active: #5869ff;
   --tp-am-pm-text-selected: #0f1424;
+  --tp-am-pm-text-unselected: #94a8c8;
   --tp-wheel-highlight-bg: rgba(88, 105, 255, 0.14);
-  --tp-wheel-selected-color: #8fa0ff;
+  --tp-wheel-highlight-border: rgba(148, 163, 184, 0.2);
+  --tp-wheel-selected-color: #a8b6ff;
+  --tp-wheel-text-color: #eff5ff;
   --tp-shadow-focus: 0 0 0 4px rgba(88, 105, 255, 0.28);
 }
 
