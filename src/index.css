@@ -45,7 +45,7 @@
   --modal-backdrop: rgba(15, 23, 42, 0.55);
   --chart-sleep: #7dd3fc;
   --chart-mood: #22c55e;
-  --chart-sleep-bar: #6366f1;
+  --chart-sleep-bar: #5b7fff;
   --chart-ideal-sleep: var(--neutral-500);
   --streak-icon: #d97706;
   --tooltip-bg: var(--white);

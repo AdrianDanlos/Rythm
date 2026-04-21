@@ -14,6 +14,7 @@ import { FeedbackModal } from './components/FeedbackModal'
 import { StreakModal } from './components/StreakModal'
 import { AppSidePanel } from './components/AppSidePanel'
 import { applySupabaseSessionFromAuthUrl } from './lib/authDeepLink'
+import { hasSupabaseAuthCallbackPayload } from './lib/authCallbackUrl'
 import { useAuth } from './hooks/useAuth'
 import { useAuthActions } from './hooks/useAuthActions'
 import { useBillingActions } from './billing/shared/useBillingActions'
@@ -33,66 +34,19 @@ import {
   getPathForPage,
   getTabForPage,
 } from './lib/appTabs'
-import { moodColors, tagColorPalette } from './lib/colors'
+import { moodColors } from './lib/colors'
 import { KO_FI_URL, PLAY_STORE_APP_URL } from './lib/constants'
 import { openExternalUrl } from './lib/openExternalUrl'
-import { STORAGE_KEYS } from './lib/storageKeys'
-import {
-  DAILY_REMINDER_ID,
-  dismissDailyReminderNudge,
-  shouldShowDailyReminderNudge,
-} from './lib/notifications'
-import { Toaster, toast } from 'sonner'
-import { requestScrollToSettingsReminder } from './hooks/useScrollToSettingsReminderOnMount'
+import { DAILY_REMINDER_ID } from './lib/notifications'
+import { Toaster } from 'sonner'
 import './App.css'
-import { upsertEntry } from './lib/entries'
-import { MAX_TAG_LENGTH } from './lib/utils/stringUtils'
 import { needsEmailVerification } from './lib/authEmailVerification'
-
-const CLOSE_TRANSIENT_PANELS_EVENT = 'app:close-transient-panels'
-
-function getReturningUserStorageKey(userId: string): string {
-  return `${STORAGE_KEYS.RETURNING_USER}:${userId}`
-}
-
-function isReturningUser(userId?: string): boolean {
-  if (!userId) {
-    return false
-  }
-
-  try {
-    return window.localStorage.getItem(getReturningUserStorageKey(userId)) === 'true'
-  }
-  catch {
-    return false
-  }
-}
-
-function getDefaultPageForUser(userId?: string): AppPage {
-  return isReturningUser(userId) ? AppPage.Summary : AppPage.Log
-}
-
-/** True while the URL still carries tokens from an OAuth redirect (must not navigate away before Supabase reads them). */
-function hasSupabaseAuthCallbackPayload(search: string, hash: string): boolean {
-  try {
-    const q = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search)
-    if (q.has('code') || q.has('error')) {
-      return true
-    }
-    const fragment = hash.startsWith('#') ? hash.slice(1) : hash
-    if (!fragment) {
-      return false
-    }
-    if (fragment.includes('access_token') || fragment.includes('error=')) {
-      return true
-    }
-    const hp = new URLSearchParams(fragment)
-    return hp.has('access_token') || hp.has('error')
-  }
-  catch {
-    return false
-  }
-}
+import { getDefaultPageForUser, getReturningUserStorageKey, isReturningUser } from './lib/returningUser'
+import { CLOSE_TRANSIENT_PANELS_EVENT } from './lib/appEvents'
+import { useDailyReminderPostSave } from './hooks/useDailyReminderPostSave'
+import { useAndroidBackButton } from './hooks/useAndroidBackButton'
+import { useTagColors } from './hooks/useTagColors'
+import { useAppMenuPanelGestures } from './hooks/useAppMenuPanelGestures'
 
 function App() {
   const { t } = useTranslation()
@@ -155,7 +109,6 @@ function App() {
       && !window.matchMedia('(min-width: 768px)').matches,
   )
   const [isMenuPanelOpen, setIsMenuPanelOpen] = useState(false)
-  const swipeStartXRef = useRef<number | null>(null)
 
   // Must not memoize with [] — SPA stays mounted across midnight; stale "today" breaks Log.
   const todayDate = new Date()
@@ -187,39 +140,9 @@ function App() {
     goToInsightsSummary,
   } = shell
 
-  const handleEnableReminderNudge = useCallback(() => {
-    dismissDailyReminderNudge()
-    requestScrollToSettingsReminder()
-    navigateToPage(AppPage.Settings)
-  }, [navigateToPage])
-
-  const handleEntrySavedForToday = useCallback((entryCount: number) => {
-    goToInsightsSummary()
-    if (entryCount !== 3) {
-      return
-    }
-    if (!shouldShowDailyReminderNudge()) {
-      return
-    }
-
-    toast(t('notifications.nudgeTitle'), {
-      description: t('notifications.nudgeBody'),
-      duration: Number.POSITIVE_INFINITY,
-      dismissible: true,
-      closeButton: true,
-      action: {
-        label: t('notifications.nudgeEnableAction'),
-        onClick: () => {
-          void handleEnableReminderNudge()
-        },
-      },
-      onDismiss: () => dismissDailyReminderNudge(),
-    })
-  }, [goToInsightsSummary, handleEnableReminderNudge, t])
-
-  const shouldSuppressPostSaveToast = useCallback(
-    (entryCount: number) => entryCount === 3 && shouldShowDailyReminderNudge(),
-    [],
+  const { handleEntrySavedForToday, shouldSuppressPostSaveToast } = useDailyReminderPostSave(
+    navigateToPage,
+    goToInsightsSummary,
   )
 
   const openPaywall = useCallback(() => {
@@ -301,68 +224,12 @@ function App() {
     formatLocalDate,
   })
 
-  const [tagColors, setTagColors] = useState<Record<string, string>>({})
-
-  useEffect(() => {
-    const uid = session?.user?.id
-    if (!uid) {
-      setTagColors({})
-      return
-    }
-    try {
-      const stored = window.localStorage.getItem(`rythm:tagColors:${uid}`)
-      if (stored) {
-        setTagColors(JSON.parse(stored))
-      }
-    }
-    catch {
-      setTagColors({})
-    }
-  }, [session?.user?.id])
-
-  const ensureTagColorForTag = (tag: string) => {
-    const key = tag.trim().toLowerCase()
-    if (!key) return
-    setTagColors((prev) => {
-      if (prev[key]) return prev
-
-      const existingColors = new Set(Object.values(prev))
-      const available = tagColorPalette.filter(color => !existingColors.has(color))
-      const pool = available.length > 0 ? available : tagColorPalette
-      const randomIndex = Math.floor(Math.random() * pool.length)
-      const color = pool[randomIndex]
-
-      const next = { ...prev, [key]: color }
-      const uid = session?.user?.id
-      if (uid) {
-        try {
-          window.localStorage.setItem(`rythm:tagColors:${uid}`, JSON.stringify(next))
-        }
-        catch {
-          // ignore storage errors
-        }
-      }
-      return next
-    })
-  }
-
-  const handleTagColorChange = (tag: string, color: string) => {
-    const key = tag.trim().toLowerCase()
-    if (!key) return
-    setTagColors((prev) => {
-      const next = { ...prev, [key]: color }
-      const uid = session?.user?.id
-      if (uid) {
-        try {
-          window.localStorage.setItem(`rythm:tagColors:${uid}`, JSON.stringify(next))
-        }
-        catch {
-          // ignore storage errors
-        }
-      }
-      return next
-    })
-  }
+  const {
+    tagColors,
+    ensureTagColorForTag,
+    handleTagColorChange,
+    handleRenameTag,
+  } = useTagColors(session?.user?.id, entries, setEntries)
 
   const {
     setEntryDate,
@@ -416,6 +283,19 @@ function App() {
       setEntryDate(newDateStr)
     }
   }
+
+  useAndroidBackButton({
+    isNativeApp,
+    isFeedbackOpen,
+    closeFeedback,
+    activePage,
+    closePaywall,
+    isStreakOpen,
+    closeStreak,
+    canGoBackInApp,
+    runSaveBeforeLeavingTab,
+    goBackInApp,
+  })
 
   const {
     handleAuth,
@@ -478,49 +358,6 @@ function App() {
       void listenerPromise.then(listener => listener.remove())
     }
   }, [])
-
-  useEffect(() => {
-    if (!isNativeApp || Capacitor.getPlatform() !== 'android') return
-
-    const listenerPromise = CapacitorApp.addListener('backButton', () => {
-      if (isFeedbackOpen) {
-        closeFeedback()
-        return
-      }
-      if (activePage === AppPage.Pro) {
-        closePaywall()
-        return
-      }
-      if (isStreakOpen) {
-        closeStreak()
-        return
-      }
-
-      if (canGoBackInApp) {
-        runSaveBeforeLeavingTab()
-        if (goBackInApp()) {
-          return
-        }
-      }
-
-      CapacitorApp.exitApp()
-    })
-
-    return () => {
-      void listenerPromise.then(listener => listener.remove())
-    }
-  }, [
-    isNativeApp,
-    isFeedbackOpen,
-    isStreakOpen,
-    activePage,
-    closeFeedback,
-    closePaywall,
-    closeStreak,
-    canGoBackInApp,
-    runSaveBeforeLeavingTab,
-    goBackInApp,
-  ])
 
   useEffect(() => {
     void checkForAndroidUpdate()
@@ -662,7 +499,7 @@ function App() {
   useEffect(() => {
     if (entriesLoading || entries.length === 0 || !userId) return
     try {
-      window.localStorage.setItem(`${STORAGE_KEYS.RETURNING_USER}:${userId}`, 'true')
+      window.localStorage.setItem(getReturningUserStorageKey(userId), 'true')
     }
     catch {
       // Ignore storage write failures.
@@ -721,97 +558,6 @@ function App() {
     }
   }
 
-  const handleRenameTag = (fromTag: string, toTag: string) => {
-    const fromKey = fromTag.trim().toLowerCase()
-    const toKey = toTag.trim().slice(0, MAX_TAG_LENGTH).toLowerCase()
-    if (!fromKey || !toKey) return
-    if (fromKey === toKey) return
-
-    // Preserve any custom color when renaming.
-    setTagColors((prev) => {
-      const fromColor = prev[fromKey]
-      if (!fromColor) return prev
-      if (toKey === fromKey) return prev
-      const next: Record<string, string> = { ...prev }
-      // Only move color if new key doesn't already have one.
-      if (!next[toKey]) {
-        next[toKey] = fromColor
-      }
-      delete next[fromKey]
-      const uid = session?.user?.id
-      if (uid) {
-        try {
-          window.localStorage.setItem(`rythm:tagColors:${uid}`, JSON.stringify(next))
-        }
-        catch {
-          // ignore storage errors
-        }
-      }
-      return next
-    })
-
-    // Optimistic UI update: change tags in local state immediately.
-    const nextEntries = entries.map((entry) => {
-      if (!entry.tags?.length) return entry
-      let changed = false
-      const updatedTags = entry.tags.map((tag) => {
-        const normalized = tag.trim().toLowerCase()
-        if (!normalized) return tag
-        if (normalized === fromKey) {
-          changed = true
-          return toKey
-        }
-        return tag
-      })
-      return changed ? { ...entry, tags: updatedTags } : entry
-    })
-    setEntries(nextEntries)
-
-    // Persist in background; keep UI responsive.
-    if (!userId) return
-
-    const affectedEntries = entries.filter(entry =>
-      (entry.tags ?? []).some(tag => tag.trim().toLowerCase() === fromKey),
-    )
-    if (!affectedEntries.length) return
-
-    void (async () => {
-      try {
-        const updatedEntries = await Promise.all(
-          affectedEntries.map(async (entry) => {
-            const nextTags = (entry.tags ?? []).map((tag) => {
-              const normalized = tag.trim().toLowerCase()
-              if (!normalized) return tag
-              return normalized === fromKey ? toKey : tag
-            })
-
-            const saved = await upsertEntry({
-              user_id: userId,
-              entry_date: entry.entry_date,
-              tags: nextTags,
-            })
-
-            return saved
-          }),
-        )
-
-        const updatedByKey = new Map(
-          updatedEntries.map(e => [`${e.user_id}:${e.entry_date}`, e]),
-        )
-
-        setEntries(prev =>
-          prev.map((entry) => {
-            const key = `${entry.user_id}:${entry.entry_date}`
-            return updatedByKey.get(key) ?? entry
-          }),
-        )
-      }
-      catch {
-        // If rename fails, keep optimistic UI; next reload will refetch from server.
-      }
-    })()
-  }
-
   useEffect(() => {
     if (!isNativeApp) return
 
@@ -842,67 +588,17 @@ function App() {
     setIsMenuPanelOpen(false)
   }, [lockNonLogTabs])
 
+  const { handleSwipeStart, handleSwipeMove, handleSwipeEnd, handleAppClick } = useAppMenuPanelGestures({
+    lockNonLogTabs,
+    isMenuPanelOpen,
+    setIsMenuPanelOpen,
+  })
+
   if (showDeleteAccountPage) {
     return <DeleteAccountPage />
   }
   if (showPrivacyPage) {
     return <Privacy />
-  }
-
-  const shouldIgnoreMenuSwipe = (target: EventTarget | null) => {
-    if (!(target instanceof Element)) return false
-    return Boolean(
-      target.closest(
-        '.timeline-filter-sheet, input, textarea, select, button, [role="slider"]',
-      ),
-    )
-  }
-
-  const handleSwipeStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    if (lockNonLogTabs) {
-      swipeStartXRef.current = null
-      return
-    }
-    if (shouldIgnoreMenuSwipe(event.target)) {
-      swipeStartXRef.current = null
-      return
-    }
-    const touch = event.touches[0]
-    // Only start a swipe if it begins near the left edge to avoid conflicts
-    swipeStartXRef.current = touch.clientX <= 32 ? touch.clientX : null
-  }
-
-  const handleSwipeMove = (event: React.TouchEvent<HTMLDivElement>) => {
-    if (lockNonLogTabs) return
-    if (shouldIgnoreMenuSwipe(event.target)) return
-    if (swipeStartXRef.current == null || isMenuPanelOpen) return
-    const touch = event.touches[0]
-    const deltaX = touch.clientX - swipeStartXRef.current
-    // Simple threshold: a rightward swipe of at least 40px from the edge opens the menu
-    if (deltaX > 40) {
-      swipeStartXRef.current = null
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new Event(CLOSE_TRANSIENT_PANELS_EVENT))
-      }
-      setIsMenuPanelOpen(true)
-    }
-  }
-
-  const handleSwipeEnd = () => {
-    swipeStartXRef.current = null
-  }
-
-  const handleAppClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (!isMenuPanelOpen) return
-
-    const target = event.target as HTMLElement | null
-    if (!target) return
-
-    if (target.closest('.side-panel') || target.closest('.app-header-menu-btn')) {
-      return
-    }
-
-    setIsMenuPanelOpen(false)
   }
 
   return (
