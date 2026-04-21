@@ -765,8 +765,8 @@
 
 :root[data-theme="light"] .tab-button.active:not(.tab-button--log-fab) {
   background: transparent;
-  color: #5b7fff;
-  border-color: #5b7fff;
+  color: var(--brand-accent);
+  border-color: var(--brand-accent);
 }
 
 .tab-button:disabled {
@@ -2366,7 +2366,7 @@
   padding: 4px 0;
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--accent, #2563eb);
+  color: var(--accent);
   background: none;
   border: none;
   cursor: pointer;
@@ -2560,7 +2560,7 @@
   border: none;
   border-radius: 12px;
   padding: 0 16px;
-  background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
+  background: var(--brand-accent);
   color: #ffffff;
   font-size: 0.95rem;
   font-weight: 700;
@@ -2580,7 +2580,7 @@
 }
 
 :root[data-theme="dark"] .sleep-duration-picker__picker-button {
-  background: linear-gradient(135deg, #5869ff 0%, #455596 100%);
+  background: var(--brand-accent);
 }
 
 /* Sleep timepicker: match Log sleep card + app theme tokens (backdrop, surface, type, accent).
@@ -3888,9 +3888,9 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 
 .insights-bottom-nav .tab-button.active:not(.tab-button--log-fab) {
   background: transparent;
-  color: #5b7fff;
+  color: var(--brand-accent);
   border-color: transparent;
-  border-bottom: 2px solid #5b7fff;
+  border-bottom: 2px solid var(--brand-accent);
   border-radius: 0;
 }
 
@@ -4274,7 +4274,7 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 
 :root[data-theme="dark"] .timeline-month-option.active {
   border-color: transparent;
-  background-color: #5b7fff;
+  background-color: var(--brand-accent);
 }
 
 .timeline-active-filters {
@@ -4294,7 +4294,7 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   .timeline-active-filters
   > .timeline-month-pill:first-child {
   border-color: transparent;
-  background-color: #5b7fff;
+  background-color: var(--brand-accent);
 }
 
 .timeline-active-filter-chip {
@@ -4313,7 +4313,7 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 
 :root[data-theme="dark"] .timeline-active-filter-chip {
   border-color: transparent;
-  background-color: #5b7fff;
+  background-color: var(--brand-accent);
 }
 
 .timeline-cards {
@@ -4466,7 +4466,7 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   min-width: 18px;
   height: 18px;
   border-radius: 999px;
-  background: var(--accent, #5b7fff);
+  background: var(--accent);
   color: #fff;
   font-size: 0.68rem;
   font-weight: 700;
@@ -4588,7 +4588,7 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 
 :root[data-theme="dark"] .timeline-filter-operator-row .ghost.active {
   border-color: transparent;
-  background-color: #5b7fff;
+  background-color: var(--brand-accent);
 }
 
 .timeline-filter-mood-row {
@@ -4647,7 +4647,7 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 
 .timeline-sleep-slider-wrap input[type="range"] {
   width: 100%;
-  accent-color: var(--accent, #5b7fff);
+  accent-color: var(--accent);
   cursor: pointer;
   outline: none;
 }
@@ -4808,7 +4808,7 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 
 :root[data-theme="dark"] .toggle-group .ghost.active {
   border-color: transparent;
-  background-color: #5b7fff;
+  background-color: var(--brand-accent);
 }
 
 :root[data-theme="dark"] .toggle-group__btn--disabled,
@@ -6285,8 +6285,8 @@ button.toggle-group__btn--disabled:disabled {
 
   .insights-bottom-nav .tab-button.active:not(.tab-button--log-fab) {
     background: transparent;
-    color: #5b7fff;
-    border-bottom: 2px solid #5b7fff;
+    color: var(--brand-accent);
+    border-bottom: 2px solid var(--brand-accent);
     padding-block: 6px;
   }
 
@@ -6535,8 +6535,8 @@ button.toggle-group__btn--disabled:disabled {
   }
 
   .insights-bottom-nav__tabs .tab-button.active:not(.tab-button--log-fab) {
-    color: #5b7fff;
-    border-bottom: 2px solid #5b7fff;
+    color: var(--brand-accent);
+    border-bottom: 2px solid var(--brand-accent);
     padding-block: 6px;
   }
 

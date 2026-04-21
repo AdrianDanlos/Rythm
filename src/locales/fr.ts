@@ -587,7 +587,7 @@ const fr = {
     weekdayPattern: 'Vous avez tendance à mieux dormir le {{day}}. Connaître votre rythme, c\'est déjà la moitié du chemin.',
     loggingLowMoodDays: 'Vous continuez d\'enregistrer même les jours difficiles. Ça permet de faire ressortir les bons jours dans vos données.',
     longTermTracker:
-      "Tu as enregistré {{count}} jours. C'est ce genre de régularité qui donne vraiment du sens à tes insights.",
+      'Tu as enregistré {{count}} jours. C\'est ce genre de régularité qui donne vraiment du sens à tes insights.',
     tipAnchorWake: 'Se lever à une heure similaire la plupart des jours aide à stabiliser votre horloge biologique.',
     tipMorningLight: 'S\'exposer à la lumière naturelle dans la première heure de la journée améliore la concentration et le sommeil du soir.',
     tipMoveOften: 'Bouger un peu chaque jour, même juste une petite marche, fait vraiment du bien à l\'humeur et au stress.',

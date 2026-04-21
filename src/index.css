@@ -19,6 +19,11 @@
   --neutral-500: #64748b;
   --white: #ffffff;
 
+  /* Primary brand blue — links, selection, accents, charts (light), range inputs */
+  --brand-accent: #5b7fff;
+  --brand-accent-rgb: 91, 127, 255;
+  --accent: var(--brand-accent);
+
   --bg: var(--neutral-50);
   --card: var(--white);
   --border: var(--neutral-200);
@@ -28,10 +33,10 @@
   --ghost-bg: rgba(214, 219, 231, 0.11);
   --text: var(--neutral-900);
   --muted: var(--neutral-500);
-  --selected-bg: #5b7fff;
+  --selected-bg: var(--brand-accent);
   --selected-text: var(--white);
-  --selected-border: #5b7fff;
-  --selected-surface: rgba(91, 127, 255, 0.12);
+  --selected-border: var(--brand-accent);
+  --selected-surface: color-mix(in srgb, var(--brand-accent) 12%, transparent);
   --button-hover-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
   --button-hover-shadow-strong: 0 16px 30px rgba(15, 23, 42, 0.28);
   --button-hover-surface: rgba(15, 23, 42, 0.04);
@@ -46,7 +51,7 @@
   --modal-backdrop: rgba(15, 23, 42, 0.55);
   --chart-sleep: #7dd3fc;
   --chart-mood: #22c55e;
-  --chart-sleep-bar: #5b7fff;
+  --chart-sleep-bar: var(--brand-accent);
   --chart-ideal-sleep: var(--neutral-500);
   --streak-icon: #d97706;
   --tooltip-bg: var(--white);
