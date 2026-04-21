@@ -226,7 +226,7 @@ const en = {
     },
     futureError: 'You cannot log entries in the future.',
     invalidSleep: 'Sleep hours are invalid.',
-    sleepRange: 'Sleep hours must be between 0 and 24.',
+    sleepRange: 'Sleep duration must be between 0 and 12 hours 55 minutes.',
     moodRange: 'Mood rating must be between 1 and 5.',
     maxTagLength: 'Each daily event must be {{count}} characters or less.',
     maxTagsPerEntry: 'Limit {{count}} daily events per entry.',

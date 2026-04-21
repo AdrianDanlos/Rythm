@@ -226,7 +226,7 @@ const es = {
     },
     futureError: 'No puedes registrar entradas en el futuro.',
     invalidSleep: 'Las horas de sueño no son válidas.',
-    sleepRange: 'Las horas de sueño deben estar entre 0 y 24.',
+    sleepRange: 'La duración del sueño debe estar entre 0 y 12 h 55 min.',
     moodRange: 'El ánimo debe estar entre 1 y 5.',
     maxTagLength: 'Cada evento diario debe tener {{count}} caracteres o menos.',
     maxTagsPerEntry: 'Límite de {{count}} eventos diarios por entrada.',

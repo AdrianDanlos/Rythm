@@ -225,7 +225,7 @@ const de = {
     },
     futureError: 'Einträge in der Zukunft sind nicht möglich.',
     invalidSleep: 'Die Schlafstunden sind ungültig.',
-    sleepRange: 'Die Schlafstunden müssen zwischen 0 und 24 liegen.',
+    sleepRange: 'Die Schlafdauer muss zwischen 0 und 12 Stunden 55 Minuten liegen.',
     moodRange: 'Die Stimmung muss zwischen 1 und 5 liegen.',
     maxTagLength: 'Jedes Tagesereignis darf maximal {{count}} Zeichen haben.',
     maxTagsPerEntry: 'Maximal {{count}} Tagesereignisse pro Eintrag.',

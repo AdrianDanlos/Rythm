@@ -2416,8 +2416,41 @@
   background: linear-gradient(135deg, #5869ff 0%, #455596 100%);
 }
 
-/* Sleep picker uses 12h clock face but hides AM/PM controls for duration-style input. */
-.sleep-timepicker .tp-ui-wrapper-type-time {
+/* Sleep timepicker: align Material-style accent with sleep-duration-picker__picker-button blues. */
+.tp-ui-wrapper.sleep-timepicker {
+  --tp-primary: #4052ff;
+  --tp-primary-rgb: 64, 82, 255;
+  --tp-on-primary: #ffffff;
+  --tp-primary-container: #e2e8ff;
+  --tp-on-primary-container: #1a237e;
+  --tp-outline: #4a5cff;
+  --tp-surface-hover: #c8d2ff;
+  --tp-am-pm-active: #dce4ff;
+  --tp-am-pm-text-selected: #1a237e;
+  --tp-wheel-highlight-bg: rgba(64, 82, 255, 0.12);
+  --tp-wheel-selected-color: #4052ff;
+  --tp-shadow-focus: 0 0 0 4px rgba(64, 82, 255, 0.22);
+}
+
+.tp-ui-modal[data-theme="dark"] .tp-ui-wrapper.sleep-timepicker {
+  --tp-primary: #5869ff;
+  --tp-primary-rgb: 88, 105, 255;
+  --tp-on-primary: #ffffff;
+  --tp-primary-container: #4a5cff;
+  --tp-on-primary-container: #ffffff;
+  --tp-tertiary-container: #5869ff;
+  --tp-on-tertiary-container: #ffffff;
+  --tp-outline: #8fa0ff;
+  --tp-am-pm-active: #5869ff;
+  --tp-am-pm-text-selected: #0f1424;
+  --tp-wheel-highlight-bg: rgba(88, 105, 255, 0.14);
+  --tp-wheel-selected-color: #8fa0ff;
+  --tp-shadow-focus: 0 0 0 4px rgba(88, 105, 255, 0.28);
+}
+
+/* Sleep picker uses 12h mode but hides AM/PM (clock tabs or wheel column) for duration-style input. */
+.sleep-timepicker .tp-ui-wrapper-type-time,
+.sleep-timepicker .tp-ui-wheel-column-wrapper:has(.tp-ui-wheel-ampm) {
   display: none;
 }
 

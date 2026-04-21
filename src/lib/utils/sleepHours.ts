@@ -1,10 +1,10 @@
 /** Hours shown in the log form when sleep hasn’t been set; also saved on submit if still unset. */
 export const DEFAULT_LOG_SLEEP_HOURS = 0
 
-/** Max sleep duration users can log (picker + validation). */
-export const MAX_LOG_SLEEP_HOURS = 24
+/** Max sleep duration: 12h 55m (picker + validation). */
+export const MAX_LOG_SLEEP_MINUTES = 12 * 60 + 55
 
-export const MAX_LOG_SLEEP_MINUTES = MAX_LOG_SLEEP_HOURS * 60
+export const MAX_LOG_SLEEP_HOURS = MAX_LOG_SLEEP_MINUTES / 60
 
 /**
  * Parse a variety of human-friendly sleep hour inputs into a numeric value.

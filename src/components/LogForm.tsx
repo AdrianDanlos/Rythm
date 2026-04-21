@@ -3,7 +3,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { DayPicker } from 'react-day-picker'
 import { useTranslation } from 'react-i18next'
 import { Angry, ChevronDown, Frown, Info, Laugh, Meh, Moon, Smile, Sun } from 'lucide-react'
-import { TimepickerUI } from 'timepicker-ui'
+import { PluginRegistry, TimepickerUI } from 'timepicker-ui'
+import { WheelPlugin } from 'timepicker-ui/plugins/wheel'
 import 'react-day-picker/dist/style.css'
 import 'timepicker-ui/main.css'
 import 'timepicker-ui/theme-dark.css'
@@ -16,6 +17,8 @@ import {
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import { useScrollToLogDailyEventsOnMount } from '../hooks/useScrollToLogDailyEventsOnMount'
 import { Tooltip } from './Tooltip'
+
+PluginRegistry.register(WheelPlugin)
 
 const MOOD_ICONS: Record<1 | 2 | 3 | 4 | 5, ComponentType<{ 'className'?: string, 'size'?: number, 'aria-hidden'?: boolean }>> = {
   1: Angry,
@@ -139,11 +142,10 @@ export const LogForm = ({
   const sleepMinuteNumber = totalSleepMinutes % 60
 
   const formatTimeInputValue = useCallback((minutesTotal: number) => {
-    const hours24 = Math.floor(minutesTotal / 60)
-    const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12
-    const hours = String(hours12).padStart(2, '0')
-    const minutes = String(minutesTotal % 60).padStart(2, '0')
-    return `${hours}:${minutes}`
+    const clamped = Math.max(0, Math.min(MAX_LOG_SLEEP_MINUTES, minutesTotal))
+    const h = Math.floor(clamped / 60)
+    const m = clamped % 60
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
   }, [])
 
   useEffect(() => {
@@ -163,9 +165,11 @@ export const LogForm = ({
     if (!sleepTimeInputRef.current) return
     const picker = new TimepickerUI(sleepTimeInputRef.current, {
       clock: {
-        type: '12h',
-        incrementHours: 1,
-        incrementMinutes: 15,
+        type: '24h',
+        incrementMinutes: 5,
+        disabledTime: {
+          hours: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+        },
       },
       labels: {
         ok: t('log.sleepTimePickerOk'),
@@ -179,16 +183,22 @@ export const LogForm = ({
         pm: t('log.sleepTimePickerPm'),
       },
       ui: {
+        mode: 'compact-wheel',
         theme: isDarkTheme ? 'dark' : 'basic',
         cssClass: 'sleep-timepicker',
+        backdrop: true,
+      },
+      wheel: {
+        hideDisabled: true,
       },
     })
     picker.on('confirm', ({ hour, minutes }) => {
       if (hour == null || minutes == null) return
-      const parsedHourRaw = Number(hour)
+      const parsedHour = Number(hour)
       const parsedMinute = Number(minutes)
-      if (!Number.isFinite(parsedHourRaw) || !Number.isFinite(parsedMinute)) return
-      const parsedHour = parsedHourRaw === 12 ? 12 : parsedHourRaw % 12
+      if (!Number.isFinite(parsedHour) || !Number.isFinite(parsedMinute)) return
+      if (parsedHour < 0 || parsedHour > 12 || parsedMinute < 0 || parsedMinute > 59) return
+      if (parsedHour === 12 && parsedMinute > 55) return
       updateSleepFromMinutes(parsedHour * 60 + parsedMinute)
     })
     picker.create()

@@ -225,7 +225,7 @@ const fr = {
     },
     futureError: 'Vous ne pouvez pas enregistrer des entrées dans le futur.',
     invalidSleep: 'Les heures de sommeil ne sont pas valides.',
-    sleepRange: 'Les heures de sommeil doivent être comprises entre 0 et 24.',
+    sleepRange: 'La durée de sommeil doit être entre 0 et 12 h 55 min.',
     moodRange: 'L\'humeur doit être comprise entre 1 et 5.',
     maxTagLength: 'Chaque événement du jour doit faire {{count}} caractères maximum.',
     maxTagsPerEntry: 'Limite de {{count}} événements par entrée.',
