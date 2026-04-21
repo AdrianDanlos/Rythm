@@ -55,6 +55,15 @@ In the [Supabase Dashboard](https://supabase.com/dashboard) → **Authentication
 
 **Android:** Native builds use `redirect_to` = `https://rythm-one.vercel.app` (or override with `VITE_AUTH_EMAIL_REDIRECT_ORIGIN`). For reset links to open the app instead of Chrome, that `https` URL must be verified as an [Android App Link](https://developer.android.com/training/app-links): add the intent filter and host `assetlinks.json` on the site (see `public/.well-known/assetlinks.json` and `AndroidManifest.xml`). `App.tsx` applies tokens from the link via `appUrlOpen` / `getLaunchUrl()`.
 
+**SHA-256 KEYS:**
+Debug signing SHA-256 (for `assetlinks.json`): in PowerShell, run keytool from Android Studio’s JBR and copy the **SHA256** fingerprint from the output (no colons in JSON).
+
+```powershell
+& "C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe" -list -v -keystore "$env:USERPROFILE\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
+```
+
+For Play Store builds, use **Play Console → App signing** (app signing certificate SHA-256), or `./gradlew signingReport` from `android/` for local release keystores.
+
 ### Supabase + Google Play: Dev vs Prod
 
 ##### Local development

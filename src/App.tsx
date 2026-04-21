@@ -439,7 +439,7 @@ function App() {
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return
 
-    void CapacitorApp.getLaunchUrl().then(result => {
+    void CapacitorApp.getLaunchUrl().then((result) => {
       if (result?.url) {
         applySupabaseSessionFromAuthUrl(result.url)
       }

@@ -5,7 +5,8 @@
       "namespace": "android_app",
       "package_name": "com.rythm.app",
       "sha256_cert_fingerprints": [
-        "REPLACE_WITH_YOUR_UPLOAD_OR_APP_SIGNING_SHA256"
+        "60:F1:E7:AF:82:E9:85:00:78:3B:92:7E:C4:0E:1B:E1:67:09:B1:FB:28:8B:0B:F3:61:F7:DB:6C:62:BF:CA:C0",
+        "24:B0:E4:FF:5E:7F:A9:A4:ED:E2:E5:89:6D:6A:F1:A5:20:0E:41:E8:AE:21:82:4A:CB:60:D9:C1:DE:E8:74:84"
       ]
     }
   }
