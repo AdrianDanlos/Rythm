@@ -2416,19 +2416,13 @@
   background: linear-gradient(135deg, #5869ff 0%, #455596 100%);
 }
 
-/* Sleep timepicker: match Log sleep card + app theme tokens (backdrop, surface, type, accent). */
+/* Sleep timepicker: match Log sleep card + app theme tokens (backdrop, surface, type, accent).
+   Popover mode sets the modal to transparent — one rule overrides after main.css (same specificity, later source). */
 .tp-ui-modal:has(.sleep-timepicker) {
   background-color: var(--modal-backdrop);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   font-family: inherit;
-}
-
-.tp-ui-modal.tp-ui-popover:has(.sleep-timepicker) {
-  /* Library makes popover modal transparent; restore themed dimmer for consistency. */
-  background-color: var(--modal-backdrop);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .tp-ui-wrapper.sleep-timepicker {
@@ -2476,7 +2470,7 @@
   --tp-shadow-focus: 0 0 0 4px rgba(64, 82, 255, 0.22);
 }
 
-.tp-ui-modal[data-theme="dark"] .tp-ui-wrapper.sleep-timepicker {
+:root[data-theme="dark"] .tp-ui-wrapper.sleep-timepicker {
   --tp-bg: #101b31;
   --tp-text: #f8fbff;
   --tp-text-secondary: #95a8c8;

@@ -7,7 +7,6 @@ import { PluginRegistry, TimepickerUI } from 'timepicker-ui'
 import { WheelPlugin } from 'timepicker-ui/plugins/wheel'
 import 'react-day-picker/dist/style.css'
 import 'timepicker-ui/main.css'
-import 'timepicker-ui/theme-dark.css'
 import { getHighContrastTextColor } from '../lib/utils/colorContrast'
 import { formatLongDate } from '../lib/utils/dateFormatters'
 import {
@@ -84,9 +83,6 @@ export const LogForm = ({
   const sleepTimeInputRef = useRef<HTMLInputElement | null>(null)
   const sleepTimepickerRef = useRef<TimepickerUI | null>(null)
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false)
-  const [isDarkTheme, setIsDarkTheme] = useState(() =>
-    typeof document !== 'undefined' && document.documentElement.dataset.theme === 'dark',
-  )
 
   const openTagDropdownAfterScroll = useCallback((el: HTMLElement) => {
     setTagDropdownOpen(true)
@@ -149,19 +145,6 @@ export const LogForm = ({
   }, [])
 
   useEffect(() => {
-    if (typeof document === 'undefined') return
-    const root = document.documentElement
-    const syncTheme = () => setIsDarkTheme(root.dataset.theme === 'dark')
-    syncTheme()
-    const observer = new MutationObserver(syncTheme)
-    observer.observe(root, {
-      attributes: true,
-      attributeFilter: ['data-theme'],
-    })
-    return () => observer.disconnect()
-  }, [])
-
-  useEffect(() => {
     if (!sleepTimeInputRef.current) return
 
     // This is a workaround to prevent the modal being slow at closing itself
@@ -200,7 +183,7 @@ export const LogForm = ({
       },
       ui: {
         mode: 'compact-wheel',
-        theme: isDarkTheme ? 'dark' : 'basic',
+        theme: 'basic',
         cssClass: 'sleep-timepicker',
         backdrop: true,
       },
@@ -233,7 +216,7 @@ export const LogForm = ({
       picker.destroy()
       sleepTimepickerRef.current = null
     }
-  }, [isDarkTheme, t, updateSleepFromMinutes])
+  }, [t, updateSleepFromMinutes])
 
   useEffect(() => {
     if (!sleepTimeInputRef.current || !sleepTimepickerRef.current) return
