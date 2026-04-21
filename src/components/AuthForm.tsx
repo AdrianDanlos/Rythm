@@ -170,7 +170,11 @@ export const AuthForm = ({
               autoComplete="email"
             />
           </label>
-          <button type="submit" disabled={authLoading}>
+          <button
+            type="submit"
+            className="native-auth-screen__primary-submit"
+            disabled={authLoading}
+          >
             {authLoading ? t('auth.working') : t('auth.sendResetLink')}
           </button>
         </form>
