@@ -52,14 +52,29 @@ const fr = {
     loadingAccount: 'Chargement de votre compte',
     checkingSession: 'Vérification de votre session...',
     welcome: 'Bienvenue sur Rythm',
-    signInToContinue: 'Connectez-vous pour continuer',
     secureSignIn: 'Connexion sécurisée',
-    signInBenefit:
-      'Sign in so your progress and settings stay with you on any device.',
     tryWithoutSigningIn: 'Continuer en tant qu\'invité',
     saveAccountWithGoogle: 'Enregistrer le compte avec Google',
     saveAccountWithGoogleHint:
       'Associez Google pour conserver vos données si vous vous déconnectez ou changez d’appareil.',
+    confirmEmailSent: 'Consultez vos e-mails pour confirmer votre compte.',
+    forgotPassword: 'Mot de passe oublié ?',
+    forgotPasswordTitle: 'Réinitialiser le mot de passe',
+    forgotPasswordBody:
+      'Saisissez votre e-mail : nous vous enverrons un lien pour choisir un nouveau mot de passe.',
+    sendResetLink: 'Envoyer le lien',
+    backToSignIn: 'Retour à la connexion',
+    resetPasswordEmailSent:
+      'Si un compte existe pour cet e-mail, vous recevrez un lien de réinitialisation sous peu.',
+    resetPasswordEmailError: 'Impossible d’envoyer l’e-mail de réinitialisation.',
+    setNewPassword: 'Définir un nouveau mot de passe',
+    setNewPasswordHint: 'Choisissez un mot de passe pour votre compte.',
+    newPassword: 'Nouveau mot de passe',
+    confirmNewPassword: 'Confirmer le mot de passe',
+    passwordMismatch: 'Les mots de passe ne correspondent pas.',
+    saveNewPassword: 'Enregistrer le mot de passe',
+    passwordUpdated: 'Mot de passe mis à jour. Vous êtes connecté.',
+    setNewPasswordError: 'Impossible de mettre à jour le mot de passe.',
   },
   intro: {
     title: 'Bienvenue dans Rythm',

@@ -1,13 +1,22 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { t } from 'i18next'
 import { toast } from 'sonner'
 import { supabase } from '../lib/supabaseClient'
+
+function getEmailAuthRedirectUrl(): string | undefined {
+  if (typeof window === 'undefined') {
+    return undefined
+  }
+  return `${window.location.origin}/`
+}
 
 export const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
   const [authInitialized, setAuthInitialized] = useState(false)
+  const [passwordRecoveryPending, setPasswordRecoveryPending] = useState(false)
 
   useEffect(() => {
     let isMounted = true
@@ -28,6 +37,14 @@ export const useAuth = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, newSession) => {
       if (!isMounted) return
+
+      if (event === 'SIGNED_OUT') {
+        setPasswordRecoveryPending(false)
+      }
+      if (event === 'PASSWORD_RECOVERY') {
+        setPasswordRecoveryPending(true)
+      }
+
       if (!newSession && event !== 'SIGNED_OUT') {
         return
       }
@@ -59,13 +76,57 @@ export const useAuth = () => {
   const signUp = async (email: string, password: string) => {
     setAuthLoading(true)
     setAuthError(null)
-    const { error } = await supabase.auth.signUp({
+    const redirectTo = getEmailAuthRedirectUrl()
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      ...(redirectTo ? { options: { emailRedirectTo: redirectTo } } : {}),
     })
     if (error) {
       toast.error(error.message ?? 'Unable to authenticate.')
       setAuthError(null)
+    }
+    else if (!data.session) {
+      toast.info(t('auth.confirmEmailSent'))
+    }
+    setAuthLoading(false)
+    return { error }
+  }
+
+  const resetPasswordForEmail = async (email: string) => {
+    setAuthLoading(true)
+    setAuthError(null)
+    const redirectTo = getEmailAuthRedirectUrl()
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      ...(redirectTo ? { redirectTo } : {}),
+    })
+    if (error) {
+      toast.error(error.message ?? t('auth.resetPasswordEmailError'))
+    }
+    else {
+      toast.info(t('auth.resetPasswordEmailSent'))
+    }
+    setAuthLoading(false)
+    return { error }
+  }
+
+  const completePasswordRecovery = async (newPassword: string) => {
+    setAuthLoading(true)
+    setAuthError(null)
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    if (error) {
+      toast.error(error.message ?? t('auth.setNewPasswordError'))
+    }
+    else {
+      setPasswordRecoveryPending(false)
+      toast.success(t('auth.passwordUpdated'))
+      if (typeof window !== 'undefined') {
+        window.history.replaceState(
+          {},
+          '',
+          `${window.location.pathname}${window.location.search}`,
+        )
+      }
     }
     setAuthLoading(false)
     return { error }
@@ -129,8 +190,11 @@ export const useAuth = () => {
     authLoading,
     authError,
     authInitialized,
+    passwordRecoveryPending,
     signIn,
     signUp,
+    resetPasswordForEmail,
+    completePasswordRecovery,
     signInAnonymously,
     signOut,
     refreshSession,

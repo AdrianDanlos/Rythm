@@ -101,6 +101,7 @@ function App() {
   const showPrivacyPage = isPrivacyPage(pathname)
   const showDeleteAccountPage = isDeleteAccountPage(pathname)
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
+  const [authEmailFlow, setAuthEmailFlow] = useState<'credentials' | 'forgot'>('credentials')
   const [authEmail, setAuthEmail] = useState('')
   const [authPassword, setAuthPassword] = useState('')
   const isNativeApp = Capacitor.isNativePlatform()
@@ -108,13 +109,21 @@ function App() {
     session,
     authLoading,
     authInitialized,
+    passwordRecoveryPending,
     signIn,
     signUp,
+    resetPasswordForEmail,
+    completePasswordRecovery,
     signInAnonymously,
     signOut,
     refreshSession,
     setAuthError,
   } = useAuth()
+
+  const toggleAuthMode = useCallback(() => {
+    setAuthEmailFlow('credentials')
+    setAuthMode(mode => (mode === 'signin' ? 'signup' : 'signin'))
+  }, [])
 
   const [exportError, setExportError] = useState<string | null>(null)
   const [isPortalLoading, setIsPortalLoading] = useState(false)
@@ -235,7 +244,10 @@ function App() {
     trimmedUpgradeUrl,
   } = billing
 
-  const settings = useSettingsSync(session)
+  const nativeLoginChromeActive
+    = passwordRecoveryPending || (!session && !isIntroVisible)
+
+  const settings = useSettingsSync(session, { nativeLoginChromeActive })
   const {
     dateFormat,
     language,
@@ -384,13 +396,21 @@ function App() {
     }
   }
 
-  const { handleAuth, handleGoogleSignIn, handleTryWithoutAccount } = useAuthActions({
+  const {
+    handleAuth,
+    handleGoogleSignIn,
+    handleTryWithoutAccount,
+    handleForgotPassword,
+    handleSetNewPassword,
+  } = useAuthActions({
     session,
     authMode,
     authEmail,
     authPassword,
     signIn,
     signUp,
+    resetPasswordForEmail,
+    completePasswordRecovery,
     signInAnonymously,
     setAuthError,
   })
@@ -863,13 +883,13 @@ function App() {
 
   return (
     <div
-      className={`app ${session ? 'app-authenticated' : 'app-unauthenticated'}${!session && isNativeApp && Capacitor.getPlatform() === 'android' ? ' app-native-login' : ''}${session && activePage === AppPage.Pro ? ' app-pro-page' : ''}${isIntroVisible ? ' app-intro' : ''}`}
+      className={`app ${session && !passwordRecoveryPending ? 'app-authenticated' : 'app-unauthenticated'}${(passwordRecoveryPending || (!session && !isIntroVisible)) ? ' app-native-login' : ''}${session && activePage === AppPage.Pro ? ' app-pro-page' : ''}${isIntroVisible ? ' app-intro' : ''}${passwordRecoveryPending ? ' app-password-recovery' : ''}`}
       onClick={handleAppClick}
       onTouchStart={handleSwipeStart}
       onTouchMove={handleSwipeMove}
       onTouchEnd={handleSwipeEnd}
     >
-      {!isIntroVisible
+      {!isIntroVisible && !passwordRecoveryPending
         ? (
             <AppHeader
               onOpenMenu={() =>
@@ -888,7 +908,7 @@ function App() {
         : null}
 
       <AppSidePanel
-        isOpen={isMenuPanelOpen && !lockNonLogTabs}
+        isOpen={isMenuPanelOpen && !lockNonLogTabs && !passwordRecoveryPending}
         onClose={() => setIsMenuPanelOpen(false)}
         session={session}
         isPro={isPro}
@@ -913,7 +933,7 @@ function App() {
         userId={session?.user?.id ?? null}
       />
 
-      {authInitialized && session && activePage === AppPage.Pro
+      {authInitialized && session && !passwordRecoveryPending && activePage === AppPage.Pro
         ? (
             <PaywallPage
               onClose={closePaywall}
@@ -929,14 +949,19 @@ function App() {
               authInitialized={authInitialized}
               session={session}
               isNativeApp={isNativeApp}
+              passwordRecoveryPending={passwordRecoveryPending}
+              onPasswordRecoverySubmit={handleSetNewPassword}
               authMode={authMode}
-              setAuthMode={setAuthMode}
+              toggleAuthMode={toggleAuthMode}
+              authEmailFlow={authEmailFlow}
+              setAuthEmailFlow={setAuthEmailFlow}
               authEmail={authEmail}
               authPassword={authPassword}
               authLoading={authLoading}
               onAuth={handleAuth}
               onGoogleSignIn={handleGoogleSignIn}
               onTryWithoutAccount={handleTryWithoutAccount}
+              onForgotSubmit={handleForgotPassword}
               onEmailChange={setAuthEmail}
               onPasswordChange={setAuthPassword}
               activeTab={activeTab}
@@ -1011,7 +1036,7 @@ function App() {
             />
           )}
 
-      {authInitialized && session && activePage !== AppPage.Pro
+      {authInitialized && session && !passwordRecoveryPending && activePage !== AppPage.Pro
         ? (
             <AppBottomNav
               session={session}

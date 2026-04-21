@@ -25,6 +25,15 @@
   overflow: hidden;
 }
 
+/* Full-bleed stage for intro ↔ login cross-fade (framer-motion wrappers). */
+.auth-intro-route {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}
+
 /* Pro upgrade full page — bottom nav hidden, immersive paywall */
 .app-authenticated.app-pro-page {
   padding: env(safe-area-inset-top, 0px) 0 0;
@@ -90,6 +99,128 @@
   box-sizing: border-box;
 }
 
+.native-auth-screen__inner--form {
+  align-items: stretch;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* With align-items: stretch, the padlock row is full-width and the circle sat on the start — center it in the row */
+.native-auth-screen__inner--form .native-auth-screen__icon-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.native-auth-screen__form-block {
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto 8px;
+}
+
+.native-auth-screen__form-stack {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.native-auth-screen__form-stack .field {
+  text-align: left;
+}
+
+.native-auth-screen__primary-submit {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px 20px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #4a7dff 0%, #7d4bff 100%);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(74, 125, 255, 0.2);
+}
+
+.native-auth-screen__primary-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.native-auth-screen__text-link {
+  margin-top: 8px;
+  padding: 10px 8px;
+  width: 100%;
+  max-width: 340px;
+  align-self: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #64748b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-family: inherit;
+}
+
+:root[data-theme="dark"] .native-auth-screen__text-link {
+  color: #94a3b8;
+}
+
+.native-auth-screen__footer-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 340px;
+  margin-top: 8px;
+  align-self: center;
+}
+
+.native-auth-screen__text-link.native-auth-screen__text-link--toggle {
+  margin-top: 0;
+}
+
+.native-auth-screen__guest-text-link {
+  margin: 0;
+  padding: 2px 8px 10px;
+  width: auto;
+  max-width: none;
+  align-self: center;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #64748b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  text-underline-offset: 2px;
+  font-family: inherit;
+  line-height: 1.35;
+}
+
+.native-auth-screen__guest-text-link:hover:not(:disabled) {
+  color: #475569;
+  text-decoration: underline;
+}
+
+.native-auth-screen__guest-text-link:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+:root[data-theme="dark"] .native-auth-screen__guest-text-link {
+  color: #94a3b8;
+}
+
+:root[data-theme="dark"]
+  .native-auth-screen__guest-text-link:hover:not(:disabled) {
+  color: #cbd5e1;
+}
+
 .native-auth-screen__icon-wrap {
   margin-bottom: 28px;
 }
@@ -133,17 +264,6 @@
   color: #f8fafc;
 }
 
-.native-auth-screen__subtitle {
-  margin: 0 0 36px;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #64748b;
-}
-
-:root[data-theme="dark"] .native-auth-screen__subtitle {
-  color: #94a3b8;
-}
-
 .native-auth-screen__google-btn {
   width: 100%;
   max-width: 340px;
@@ -176,55 +296,6 @@
   transform: none;
 }
 
-.native-auth-screen__skip-btn {
-  width: 100%;
-  max-width: 340px;
-  margin-top: 14px;
-  padding: 14px 24px;
-  border-radius: 999px;
-  border: 1px solid #cbd5e1;
-  background: transparent;
-  color: #475569;
-  font-size: 0.95rem;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.native-auth-screen__skip-btn:hover {
-  background: rgba(148, 163, 184, 0.12);
-}
-
-.native-auth-screen__skip-btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-:root[data-theme="dark"] .native-auth-screen__skip-btn {
-  border-color: #4b5563;
-  color: #e2e8f0;
-}
-
-:root[data-theme="dark"] .native-auth-screen__skip-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.native-auth-screen--compact .native-auth-screen__inner {
-  padding-top: 24px;
-  gap: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.native-auth-screen__skip-btn--inline {
-  margin-top: 0;
-  max-width: 280px;
-}
-
 :root[data-theme="dark"] .native-auth-screen__google-btn {
   background: #2d3748;
   border-color: transparent;
@@ -249,6 +320,28 @@
   margin: 32px 0 28px;
 }
 
+/* Divider directly under the hero title (replaces subtitle); default divider margins are for mid-screen use */
+.native-auth-screen__divider--under-title {
+  margin: 4px 0 28px;
+  align-self: center;
+}
+
+.native-auth-screen__chrome-lead {
+  margin: 0 0 22px;
+  width: 100%;
+  max-width: 340px;
+  align-self: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: #64748b;
+  text-align: center;
+}
+
+:root[data-theme="dark"] .native-auth-screen__chrome-lead {
+  color: #94a3b8;
+}
+
 .native-auth-screen__divider-line {
   flex: 1;
   height: 1px;
@@ -270,28 +363,6 @@
 
 :root[data-theme="dark"] .native-auth-screen__divider-text {
   color: #6b7280;
-}
-
-.native-auth-screen__legal {
-  margin: 0;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: #94a3b8;
-  max-width: 320px;
-}
-
-:root[data-theme="dark"] .native-auth-screen__legal {
-  color: #6b7280;
-}
-
-.native-auth-screen__legal-link {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.native-auth-screen__legal-link:active {
-  opacity: 0.85;
 }
 
 .intro-carousel {
@@ -325,13 +396,7 @@
     var(--intro-svg-accent) 28%,
     var(--intro-svg-ink) 72%
   );
-  background:
-    radial-gradient(
-      circle at 50% -20%,
-      color-mix(in srgb, var(--button-bg) 16%, transparent),
-      transparent 58%
-    ),
-    var(--bg);
+  background: var(--bg);
   overflow: hidden;
 }
 
@@ -2225,13 +2290,6 @@
   margin-bottom: 0;
 }
 
-.auth-try-without {
-  width: 100%;
-  margin-bottom: 12px;
-  font-weight: 600;
-  color: var(--muted);
-}
-
 .oauth-logo {
   width: 18px;
   height: 18px;
@@ -2242,6 +2300,101 @@
   display: block;
   width: fit-content;
   margin-left: auto;
+}
+
+.auth-footer-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.auth-footer-links .auth-toggle {
+  margin-left: 0;
+}
+
+.auth-guest-text-link {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: right;
+  line-height: 1.35;
+}
+
+.auth-guest-text-link:hover:not(:disabled) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.auth-guest-text-link:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.auth-helper-text {
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.auth-forgot-link {
+  align-self: flex-start;
+  margin: -4px 0 4px;
+  padding: 4px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent, #2563eb);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.auth-forgot-link:hover {
+  opacity: 0.9;
+}
+
+/* Keeps card height stable when toggling sign in (forgot link) vs sign up (min length hint) */
+.auth-password-extras {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 1.4rem;
+  box-sizing: border-box;
+}
+
+.auth-password-extras .auth-forgot-link {
+  margin: 0;
+  padding: 0;
+  align-self: flex-start;
+}
+
+.auth-password-extras .field-hint {
+  margin: 0;
+  padding-top: 2px;
+}
+
+.auth-password-extras--android {
+  width: 100%;
+}
+
+.field-hint--error {
+  color: var(--destructive, #dc2626);
+  font-weight: 500;
+}
+
+.app-password-recovery .app-main {
+  padding-top: env(safe-area-inset-top);
 }
 
 .field {
@@ -2449,7 +2602,8 @@
   --tp-shadow: var(--modal-shadow);
   --tp-border-radius: 24px;
   --tp-popover-radius: 24px;
-  --tp-popover-shadow: 0 18px 44px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  --tp-popover-shadow:
+    0 18px 44px rgba(15, 23, 42, 0.14), 0 0 0 1px rgba(15, 23, 42, 0.06);
   --tp-radius-md: 12px;
   --tp-radius-sm: 10px;
   --tp-btn-radius: 14px;
@@ -2491,7 +2645,8 @@
   --tp-dropdown-option-bg: #1a2744;
   --tp-dropdown-option-text: #f8fbff;
   --tp-shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
-  --tp-popover-shadow: 0 20px 48px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(110, 157, 255, 0.12);
+  --tp-popover-shadow:
+    0 20px 48px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(110, 157, 255, 0.12);
   --tp-primary: #5869ff;
   --tp-primary-rgb: 88, 105, 255;
   --tp-on-primary: #ffffff;

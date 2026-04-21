@@ -1,36 +1,21 @@
-import type { FormEvent } from 'react'
-import { Capacitor } from '@capacitor/core'
+import type { FormEvent, ReactNode } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import googleLogo from '../assets/google-logo.png'
 
-type AuthFormProps = {
-  authMode: 'signin' | 'signup'
-  authEmail: string
-  authPassword: string
-  authLoading: boolean
-  showEmailPassword?: boolean
-  onEmailChange: (value: string) => void
-  onPasswordChange: (value: string) => void
-  onSubmit: (event: FormEvent) => void
-  onGoogleSignIn: () => void
-  onTryWithoutAccount: () => void
-  onToggleMode: () => void
-}
-
-function NativeGoogleLoginScreen({
-  authLoading,
-  onGoogleSignIn,
-  onTryWithoutAccount,
+function AndroidAuthChrome({
+  children,
+  title,
 }: {
-  authLoading: boolean
-  onGoogleSignIn: () => void
-  onTryWithoutAccount: () => void
+  children: ReactNode
+  title?: string
 }) {
   const { t } = useTranslation()
+  const heading = title ?? t('auth.welcome')
 
   return (
     <div className="native-auth-screen">
-      <div className="native-auth-screen__inner">
+      <div className="native-auth-screen__inner native-auth-screen__inner--form">
         <div className="native-auth-screen__icon-wrap" aria-hidden="true">
           <div className="native-auth-screen__icon-gradient">
             <svg
@@ -47,33 +32,108 @@ function NativeGoogleLoginScreen({
             </svg>
           </div>
         </div>
-        <h1 className="native-auth-screen__title">{t('auth.welcome')}</h1>
-        <p className="native-auth-screen__subtitle">{t('auth.signInToContinue')}</p>
-        <button
-          className="native-auth-screen__google-btn"
-          type="button"
-          disabled={authLoading}
-          onClick={onGoogleSignIn}
+        <h1 className="native-auth-screen__title">{heading}</h1>
+        <div
+          className="native-auth-screen__divider native-auth-screen__divider--under-title"
+          role="presentation"
         >
-          <img className="native-auth-screen__google-logo" src={googleLogo} alt="" />
-          <span>{t('auth.continueWithGoogle')}</span>
-        </button>
-        <button
-          className="native-auth-screen__skip-btn"
-          type="button"
-          disabled={authLoading}
-          onClick={onTryWithoutAccount}
-        >
-          {t('auth.tryWithoutSigningIn')}
-        </button>
-        <div className="native-auth-screen__divider" role="presentation">
           <span className="native-auth-screen__divider-line" />
           <span className="native-auth-screen__divider-text">{t('auth.secureSignIn')}</span>
           <span className="native-auth-screen__divider-line" />
         </div>
-        <p className="native-auth-screen__legal">{t('auth.signInBenefit')}</p>
+        {children}
       </div>
     </div>
+  )
+}
+
+type AuthFormProps = {
+  authMode: 'signin' | 'signup'
+  authEmail: string
+  authPassword: string
+  authLoading: boolean
+  emailFlow: 'credentials' | 'forgot'
+  onEmailFlowChange: (flow: 'credentials' | 'forgot') => void
+  onEmailChange: (value: string) => void
+  onPasswordChange: (value: string) => void
+  onSubmit: (event: FormEvent) => void
+  onForgotSubmit: (event: FormEvent) => void
+  onGoogleSignIn: () => void
+  onTryWithoutAccount: () => void
+  onToggleMode: () => void
+}
+
+export function PasswordRecoveryForm({
+  authLoading,
+  onSubmit,
+}: {
+  authLoading: boolean
+  onSubmit: (event: FormEvent, newPassword: string) => void
+}) {
+  const { t } = useTranslation()
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault()
+    if (newPassword.length < 6) {
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      return
+    }
+    onSubmit(event, newPassword)
+  }
+
+  return (
+    <AndroidAuthChrome title={t('auth.setNewPassword')}>
+      <p className="native-auth-screen__chrome-lead">{t('auth.setNewPasswordHint')}</p>
+      <form onSubmit={handleSubmit} className="stack native-auth-screen__form-stack">
+        <label className="field">
+          {t('auth.newPassword')}
+          <input
+            type="password"
+            value={newPassword}
+            onChange={event => setNewPassword(event.target.value)}
+            placeholder="••••••••"
+            required
+            minLength={6}
+            autoComplete="new-password"
+          />
+        </label>
+        <label className="field">
+          {t('auth.confirmNewPassword')}
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={event => setConfirmPassword(event.target.value)}
+            placeholder="••••••••"
+            required
+            minLength={6}
+            autoComplete="new-password"
+          />
+        </label>
+        {newPassword.length > 0
+          && confirmPassword.length > 0
+          && newPassword !== confirmPassword
+          ? (
+              <p className="field-hint field-hint--error" role="alert">
+                {t('auth.passwordMismatch')}
+              </p>
+            )
+          : null}
+        <button
+          type="submit"
+          disabled={
+            authLoading
+            || newPassword.length < 6
+            || newPassword !== confirmPassword
+          }
+        >
+          {authLoading ? t('auth.working') : t('auth.saveNewPassword')}
+        </button>
+      </form>
+    </AndroidAuthChrome>
   )
 }
 
@@ -82,95 +142,105 @@ export const AuthForm = ({
   authEmail,
   authPassword,
   authLoading,
-  showEmailPassword = true,
+  emailFlow,
+  onEmailFlowChange,
   onEmailChange,
   onPasswordChange,
   onSubmit,
+  onForgotSubmit,
   onGoogleSignIn,
   onTryWithoutAccount,
   onToggleMode,
 }: AuthFormProps) => {
   const { t } = useTranslation()
-  if (!showEmailPassword) {
-    if (Capacitor.getPlatform() === 'android') {
-      return (
-        <NativeGoogleLoginScreen
-          authLoading={authLoading}
-          onGoogleSignIn={onGoogleSignIn}
-          onTryWithoutAccount={onTryWithoutAccount}
-        />
-      )
-    }
+
+  if (emailFlow === 'forgot') {
     return (
-      <div className="native-auth-screen native-auth-screen--compact">
-        <div className="native-auth-screen__inner">
-          <button
-            className="ghost oauth-button oauth-button--standalone"
-            type="button"
-            disabled={authLoading}
-            onClick={onGoogleSignIn}
-          >
-            <img className="oauth-logo" src={googleLogo} alt={t('common.googleLogoAlt')} />
-            {t('auth.continueWithGoogle')}
+      <AndroidAuthChrome title={t('auth.forgotPasswordTitle')}>
+        <p className="native-auth-screen__chrome-lead">{t('auth.forgotPasswordBody')}</p>
+        <form onSubmit={onForgotSubmit} className="stack native-auth-screen__form-stack">
+          <label className="field">
+            {t('auth.email')}
+            <input
+              type="email"
+              value={authEmail}
+              onChange={event => onEmailChange(event.target.value)}
+              placeholder={t('auth.email')}
+              required
+              autoComplete="email"
+            />
+          </label>
+          <button type="submit" disabled={authLoading}>
+            {authLoading ? t('auth.working') : t('auth.sendResetLink')}
           </button>
-          <button
-            className="native-auth-screen__skip-btn native-auth-screen__skip-btn--inline"
-            type="button"
-            disabled={authLoading}
-            onClick={onTryWithoutAccount}
-          >
-            {t('auth.tryWithoutSigningIn')}
-          </button>
-        </div>
-      </div>
+        </form>
+        <button
+          className="native-auth-screen__text-link"
+          type="button"
+          onClick={() => onEmailFlowChange('credentials')}
+        >
+          {t('auth.backToSignIn')}
+        </button>
+      </AndroidAuthChrome>
     )
   }
 
   return (
-    <section className="card auth-card">
-      <h2 className="auth-title">
-        {authMode === 'signin' ? t('auth.signIn') : t('auth.createAccount')}
-      </h2>
-      <form onSubmit={onSubmit} className="stack">
-        <label className="field">
-          {t('auth.email')}
-          <input
-            type="email"
-            value={authEmail}
-            onChange={event => onEmailChange(event.target.value)}
-            placeholder={t('auth.email')}
-            required
-          />
-        </label>
-        <label className="field">
-          {t('auth.password')}
-          <input
-            type="password"
-            value={authPassword}
-            onChange={event => onPasswordChange(event.target.value)}
-            placeholder="••••••••"
-            required
-            minLength={authMode === 'signup' ? 6 : undefined}
-            title={authMode === 'signup' ? t('auth.passwordMinLength') : undefined}
-          />
-          {authMode === 'signup'
-            ? (
-                <span className="field-hint" aria-live="polite">
-                  {t('auth.passwordMinLength')}
-                </span>
-              )
-            : null}
-        </label>
-        <button type="submit" disabled={authLoading}>
-          {authLoading
-            ? t('auth.working')
-            : authMode === 'signin'
-              ? t('auth.signIn')
-              : t('auth.signUp')}
-        </button>
-      </form>
+    <AndroidAuthChrome>
+      <div className="native-auth-screen__form-block">
+        <form onSubmit={onSubmit} className="stack native-auth-screen__form-stack">
+          <label className="field">
+            {t('auth.email')}
+            <input
+              type="email"
+              value={authEmail}
+              onChange={event => onEmailChange(event.target.value)}
+              placeholder={t('auth.email')}
+              required
+              autoComplete="email"
+            />
+          </label>
+          <label className="field">
+            {t('auth.password')}
+            <input
+              type="password"
+              value={authPassword}
+              onChange={event => onPasswordChange(event.target.value)}
+              placeholder="••••••••"
+              required
+              minLength={authMode === 'signup' ? 6 : undefined}
+              autoComplete={authMode === 'signin' ? 'current-password' : 'new-password'}
+              title={authMode === 'signup' ? t('auth.passwordMinLength') : undefined}
+            />
+          </label>
+          <div className="auth-password-extras auth-password-extras--android" aria-live="polite">
+            {authMode === 'signup'
+              ? (
+                  <span className="field-hint">
+                    {t('auth.passwordMinLength')}
+                  </span>
+                )
+              : (
+                  <button
+                    className="auth-forgot-link"
+                    type="button"
+                    onClick={() => onEmailFlowChange('forgot')}
+                  >
+                    {t('auth.forgotPassword')}
+                  </button>
+                )}
+          </div>
+          <button type="submit" className="native-auth-screen__primary-submit" disabled={authLoading}>
+            {authLoading
+              ? t('auth.working')
+              : authMode === 'signin'
+                ? t('auth.signIn')
+                : t('auth.signUp')}
+          </button>
+        </form>
+      </div>
       <button
-        className="ghost oauth-button"
+        className="native-auth-screen__google-btn"
         type="button"
         disabled={authLoading}
         onClick={(event) => {
@@ -178,22 +248,28 @@ export const AuthForm = ({
           onGoogleSignIn()
         }}
       >
-        <img className="oauth-logo" src={googleLogo} alt={t('common.googleLogoAlt')} />
-        {t('auth.continueWithGoogle')}
+        <img className="native-auth-screen__google-logo" src={googleLogo} alt="" />
+        <span>{t('auth.continueWithGoogle')}</span>
       </button>
-      <button
-        className="ghost auth-try-without"
-        type="button"
-        disabled={authLoading}
-        onClick={onTryWithoutAccount}
-      >
-        {t('auth.tryWithoutSigningIn')}
-      </button>
-      <button className="ghost auth-toggle" type="button" onClick={onToggleMode}>
-        {authMode === 'signin'
-          ? t('auth.needAccount')
-          : t('auth.alreadyHaveAccount')}
-      </button>
-    </section>
+      <div className="native-auth-screen__footer-links">
+        <button
+          className="native-auth-screen__text-link native-auth-screen__text-link--toggle"
+          type="button"
+          onClick={onToggleMode}
+        >
+          {authMode === 'signin'
+            ? t('auth.needAccount')
+            : t('auth.alreadyHaveAccount')}
+        </button>
+        <button
+          type="button"
+          className="native-auth-screen__guest-text-link"
+          disabled={authLoading}
+          onClick={onTryWithoutAccount}
+        >
+          {t('auth.tryWithoutSigningIn')}
+        </button>
+      </div>
+    </AndroidAuthChrome>
   )
 }

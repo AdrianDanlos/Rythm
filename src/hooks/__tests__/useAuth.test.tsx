@@ -12,6 +12,8 @@ const onAuthStateChangeMock = vi.fn()
 const signInWithPasswordMock = vi.fn()
 const signUpMock = vi.fn()
 const signInAnonymouslyMock = vi.fn()
+const resetPasswordForEmailMock = vi.fn()
+const updateUserMock = vi.fn()
 const signOutMock = vi.fn()
 const refreshSessionMock = vi.fn()
 const unsubscribeMock = vi.fn()
@@ -24,6 +26,10 @@ vi.mock('sonner', () => ({
   },
 }))
 
+vi.mock('i18next', () => ({
+  t: (key: string) => key,
+}))
+
 vi.mock('../../lib/supabaseClient', () => ({
   supabase: {
     auth: {
@@ -32,6 +38,8 @@ vi.mock('../../lib/supabaseClient', () => ({
       signInWithPassword: (...args: unknown[]) => signInWithPasswordMock(...args),
       signUp: (...args: unknown[]) => signUpMock(...args),
       signInAnonymously: (...args: unknown[]) => signInAnonymouslyMock(...args),
+      resetPasswordForEmail: (...args: unknown[]) => resetPasswordForEmailMock(...args),
+      updateUser: (...args: unknown[]) => updateUserMock(...args),
       signOut: (...args: unknown[]) => signOutMock(...args),
       refreshSession: (...args: unknown[]) => refreshSessionMock(...args),
     },
@@ -60,6 +68,8 @@ describe('useAuth', () => {
     signInWithPasswordMock.mockReset()
     signUpMock.mockReset()
     signInAnonymouslyMock.mockReset()
+    resetPasswordForEmailMock.mockReset()
+    updateUserMock.mockReset()
     signOutMock.mockReset()
     refreshSessionMock.mockReset()
     unsubscribeMock.mockReset()
@@ -73,6 +83,8 @@ describe('useAuth', () => {
     signInWithPasswordMock.mockResolvedValue({ error: null })
     signUpMock.mockResolvedValue({ error: null })
     signInAnonymouslyMock.mockResolvedValue({ error: null })
+    resetPasswordForEmailMock.mockResolvedValue({ error: null })
+    updateUserMock.mockResolvedValue({ data: { user: {} }, error: null })
     signOutMock.mockResolvedValue({ error: null })
     refreshSessionMock.mockResolvedValue({ data: { session: null }, error: null })
   })

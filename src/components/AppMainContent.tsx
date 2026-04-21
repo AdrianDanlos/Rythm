@@ -1,5 +1,13 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
+import {
+  Suspense,
+  lazy,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Session } from '@supabase/supabase-js'
 import type { Entry } from '../lib/entries'
@@ -15,7 +23,7 @@ import type {
   WeekdayAveragePoint,
   WindowStats,
 } from '../lib/types/stats'
-import { AuthForm } from './AuthForm'
+import { AuthForm, PasswordRecoveryForm } from './AuthForm'
 import { IntroCarousel } from './IntroCarousel'
 import { InsightsQuickStart } from './InsightsQuickStart'
 import { LogForm } from './LogForm'
@@ -43,14 +51,19 @@ type AppMainContentProps = {
   authInitialized: boolean
   session: Session | null
   isNativeApp: boolean
+  passwordRecoveryPending: boolean
+  onPasswordRecoverySubmit: (event: FormEvent, newPassword: string) => void
   authMode: 'signin' | 'signup'
-  setAuthMode: (mode: 'signin' | 'signup') => void
+  toggleAuthMode: () => void
+  authEmailFlow: 'credentials' | 'forgot'
+  setAuthEmailFlow: (flow: 'credentials' | 'forgot') => void
   authEmail: string
   authPassword: string
   authLoading: boolean
   onAuth: (e: React.FormEvent) => void
   onGoogleSignIn: () => void
   onTryWithoutAccount: () => void
+  onForgotSubmit: (e: React.FormEvent) => void
   onEmailChange: (value: string) => void
   onPasswordChange: (value: string) => void
   activeTab: TabKey
@@ -144,14 +157,19 @@ export function AppMainContent({
   authInitialized,
   session,
   isNativeApp,
+  passwordRecoveryPending,
+  onPasswordRecoverySubmit,
   authMode,
-  setAuthMode,
+  toggleAuthMode,
+  authEmailFlow,
+  setAuthEmailFlow,
   authEmail,
   authPassword,
   authLoading,
   onAuth,
   onGoogleSignIn,
   onTryWithoutAccount,
+  onForgotSubmit,
   onEmailChange,
   onPasswordChange,
   activeTab,
@@ -228,6 +246,11 @@ export function AppMainContent({
   const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
   const tabTransition = reduceMotion ? { duration: 0 } : motionTransition
+  const introToAuthTransition = reduceMotion
+    ? { duration: 0 }
+    : { duration: 0.32, ease: 'easeOut' as const }
+  /** True only for the auth screen mount that follows completing the intro (not cold load). */
+  const authEnterFromIntroRef = useRef(false)
   const [introCompleted, setIntroCompleted] = useState(() => {
     if (typeof window === 'undefined') return false
     try {
@@ -250,6 +273,7 @@ export function AppMainContent({
   }, [session, introCompleted])
 
   const handleCompleteIntro = useCallback(() => {
+    authEnterFromIntroRef.current = true
     setIntroCompleted(true)
     if (typeof window === 'undefined') return
     try {
@@ -289,26 +313,59 @@ export function AppMainContent({
     )
   }
 
-  if (!session) {
-    if (shouldShowIntro) {
-      return <IntroCarousel onComplete={handleCompleteIntro} />
-    }
-
+  if (session && passwordRecoveryPending) {
     return (
-      <AuthForm
-        authMode={authMode}
-        authEmail={authEmail}
-        authPassword={authPassword}
+      <PasswordRecoveryForm
         authLoading={authLoading}
-        showEmailPassword={!isNativeApp}
-        onEmailChange={onEmailChange}
-        onPasswordChange={onPasswordChange}
-        onSubmit={onAuth}
-        onGoogleSignIn={onGoogleSignIn}
-        onTryWithoutAccount={onTryWithoutAccount}
-        onToggleMode={() =>
-          setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}
+        onSubmit={onPasswordRecoverySubmit}
       />
+    )
+  }
+
+  if (!session) {
+    return (
+      <AnimatePresence mode="wait">
+        {shouldShowIntro ? (
+          <motion.div
+            key="intro"
+            className="auth-intro-route"
+            initial={false}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={introToAuthTransition}
+          >
+            <IntroCarousel onComplete={handleCompleteIntro} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="auth"
+            className="auth-intro-route"
+            initial={
+              authEnterFromIntroRef.current
+                ? { opacity: 0, y: 18 }
+                : false
+            }
+            animate={{ opacity: 1, y: 0 }}
+            transition={introToAuthTransition}
+          >
+            <AuthForm
+              authMode={authMode}
+              authEmail={authEmail}
+              authPassword={authPassword}
+              authLoading={authLoading}
+              emailFlow={authEmailFlow}
+              onEmailFlowChange={setAuthEmailFlow}
+              onEmailChange={onEmailChange}
+              onPasswordChange={onPasswordChange}
+              onSubmit={onAuth}
+              onForgotSubmit={onForgotSubmit}
+              onGoogleSignIn={onGoogleSignIn}
+              onTryWithoutAccount={onTryWithoutAccount}
+              onToggleMode={toggleAuthMode}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     )
   }
 

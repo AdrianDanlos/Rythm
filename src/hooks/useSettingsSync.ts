@@ -3,6 +3,10 @@ import { Capacitor } from '@capacitor/core'
 import { StatusBar, Style } from '@capacitor/status-bar'
 import { NavigationBar } from '@capgo/capacitor-navigation-bar'
 import type { Session } from '@supabase/supabase-js'
+import {
+  NATIVE_LOGIN_SCREEN_BG_DARK,
+  NATIVE_LOGIN_SCREEN_BG_LIGHT,
+} from '../lib/nativeLoginChrome'
 import i18n from '../i18n'
 import {
   detectSystemTheme,
@@ -23,7 +27,18 @@ import {
   type ThemePreference,
 } from '../lib/settings'
 
-export function useSettingsSync(session: Session | null) {
+export type UseSettingsSyncOptions = {
+  /**
+   * True while the native login / password-recovery chrome is shown (`.app-native-login`),
+   * not intro. Android status / nav bars use the same colors as the login background.
+   */
+  nativeLoginChromeActive: boolean
+}
+
+export function useSettingsSync(
+  session: Session | null,
+  options: UseSettingsSyncOptions,
+) {
   const [dateFormat, setDateFormat] = useState<DateFormatPreference>(() =>
     getStoredDateFormat(),
   )
@@ -41,6 +56,8 @@ export function useSettingsSync(session: Session | null) {
   const [sleepTarget, setSleepTarget] = useState(() =>
     getStoredPersonalSleepTarget(),
   )
+
+  const { nativeLoginChromeActive } = options
 
   useEffect(() => {
     document.documentElement.dataset.theme = resolvedTheme
@@ -64,10 +81,13 @@ export function useSettingsSync(session: Session | null) {
     }
   }, [language])
 
-  // Keep Android status bar colors/icons aligned with the selected app theme.
+  // Android: status / nav bar color matches current shell — login bg vs main app bg.
   useEffect(() => {
     if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') return
-    const backgroundColor = resolvedTheme === 'dark' ? '#0B1220' : '#F8FAFC'
+
+    const backgroundColor = nativeLoginChromeActive
+      ? (resolvedTheme === 'dark' ? NATIVE_LOGIN_SCREEN_BG_DARK : NATIVE_LOGIN_SCREEN_BG_LIGHT)
+      : (resolvedTheme === 'dark' ? '#0B1220' : '#F8FAFC')
     const style = resolvedTheme === 'dark' ? Style.Dark : Style.Light
     const darkButtons = resolvedTheme !== 'dark'
 
@@ -80,7 +100,7 @@ export function useSettingsSync(session: Session | null) {
         darkButtons,
       })
     })()
-  }, [resolvedTheme])
+  }, [resolvedTheme, nativeLoginChromeActive])
 
   const sessionFallbackName
     = session?.user?.user_metadata?.full_name

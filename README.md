@@ -47,6 +47,12 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 - Prod Google auth account: `danlosadrian@gmail.com`
 - Dev Google auth account: `adrianf1team@gmail.com`
 
+##### Email and password (Supabase Auth)
+
+The app uses `signUp`, `signInWithPassword`, `resetPasswordForEmail`, and `updateUser` for password recovery. Supabase sends confirmation and reset emails using its **default SMTP** unless you configure custom SMTP in the project.
+
+In the [Supabase Dashboard](https://supabase.com/dashboard) → **Authentication** → **Providers**: enable **Email**. Set **Site URL** to your deployed web origin (for example `https://your-app.vercel.app`) and add the same URL under **Redirect URLs** so confirmation and password-reset links return users to the app. For local dev with `npm run dev`, add `http://localhost:5173` (or your Vite port). Native apps still open deep links via `appUrlOpen`; reset links should use a URL that loads your app and the Supabase client (same as web when applicable).
+
 ### Supabase + Google Play: Dev vs Prod
 
 ##### Local development

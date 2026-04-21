@@ -52,14 +52,29 @@ const pt = {
     loadingAccount: 'Carregando sua conta',
     checkingSession: 'Verificando sua sessão...',
     welcome: 'Bem-vindo ao Rythm',
-    signInToContinue: 'Entre para continuar',
     secureSignIn: 'Acesso seguro',
-    signInBenefit:
-      'Sign in so your progress and settings stay with you on any device.',
     tryWithoutSigningIn: 'Continuar como convidado',
     saveAccountWithGoogle: 'Salvar conta com Google',
     saveAccountWithGoogleHint:
       'Conecte o Google para não perder seus registros ao sair ou trocar de aparelho.',
+    confirmEmailSent: 'Verifique seu e-mail para confirmar sua conta.',
+    forgotPassword: 'Esqueceu a senha?',
+    forgotPasswordTitle: 'Redefinir senha',
+    forgotPasswordBody:
+      'Digite seu e-mail e enviaremos um link para você escolher uma nova senha.',
+    sendResetLink: 'Enviar link',
+    backToSignIn: 'Voltar ao login',
+    resetPasswordEmailSent:
+      'Se existir uma conta para este e-mail, você receberá um link em breve.',
+    resetPasswordEmailError: 'Não foi possível enviar o e-mail de redefinição.',
+    setNewPassword: 'Definir nova senha',
+    setNewPasswordHint: 'Escolha uma senha para sua conta.',
+    newPassword: 'Nova senha',
+    confirmNewPassword: 'Confirmar senha',
+    passwordMismatch: 'As senhas não coincidem.',
+    saveNewPassword: 'Salvar senha',
+    passwordUpdated: 'Senha atualizada. Você está conectado.',
+    setNewPasswordError: 'Não foi possível atualizar a senha.',
   },
   intro: {
     title: 'Bem-vindo ao Rythm',
