@@ -16,6 +16,7 @@ import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import {
   DEFAULT_LOG_SLEEP_HOURS,
   formatSleepHoursOption,
+  MAX_LOG_SLEEP_HOURS,
   parseSleepHours,
 } from '../lib/utils/sleepHours'
 
@@ -85,7 +86,7 @@ export const useLogForm = ({
   /**
    * True after the user changes sleep, mood, note, or tags for the current day.
    * Resets when we load a day from `entries` / `entryDate`. Silent auto-save no-ops if false;
-   * explicit Save ignores this (default 8h in the UI still persists on submit).
+   * explicit Save ignores this (default 0h in the UI still persists on submit).
    */
   const userEditedLogRef = useRef(false)
 
@@ -210,7 +211,7 @@ export const useLogForm = ({
     }
 
     const sleepHoursToSave = hasSleepInput ? parsedSleep! : DEFAULT_LOG_SLEEP_HOURS
-    if (sleepHoursToSave < 0 || sleepHoursToSave > 12) {
+    if (sleepHoursToSave < 0 || sleepHoursToSave > MAX_LOG_SLEEP_HOURS) {
       if (!options?.silent) showEntriesError(t('log.sleepRange'))
       return
     }

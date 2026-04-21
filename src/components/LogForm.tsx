@@ -1,12 +1,18 @@
-import { useCallback, useEffect, useRef, useState, type ComponentType, type CSSProperties, type FormEvent, type ChangeEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type CSSProperties, type FormEvent, type ChangeEvent } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { DayPicker } from 'react-day-picker'
 import { useTranslation } from 'react-i18next'
 import { Angry, ChevronDown, Frown, Info, Laugh, Meh, Moon, Smile, Sun } from 'lucide-react'
+import { TimepickerUI } from 'timepicker-ui'
 import 'react-day-picker/dist/style.css'
+import 'timepicker-ui/main.css'
+import 'timepicker-ui/theme-dark.css'
 import { getHighContrastTextColor } from '../lib/utils/colorContrast'
 import { formatLongDate } from '../lib/utils/dateFormatters'
-import { DEFAULT_LOG_SLEEP_HOURS } from '../lib/utils/sleepHours'
+import {
+  DEFAULT_LOG_SLEEP_HOURS,
+  MAX_LOG_SLEEP_MINUTES,
+} from '../lib/utils/sleepHours'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import { useScrollToLogDailyEventsOnMount } from '../hooks/useScrollToLogDailyEventsOnMount'
 import { Tooltip } from './Tooltip'
@@ -18,9 +24,6 @@ const MOOD_ICONS: Record<1 | 2 | 3 | 4 | 5, ComponentType<{ 'className'?: string
   4: Smile,
   5: Laugh,
 }
-
-const QUICK_SLEEP_HOUR_OPTIONS = [4, 5, 6, 7, 8, 9, 10]
-const MAX_SLEEP_MINUTES = 12 * 60
 
 export type LogFormProps = {
   selectedDate: Date
@@ -72,17 +75,15 @@ export const LogForm = ({
   onSave,
 }: LogFormProps) => {
   const { t } = useTranslation()
-  const parsedSleepHours = Number(sleepHours)
-  const hasSleepValue = sleepHours.trim().length > 0 && Number.isFinite(parsedSleepHours)
-  const totalSleepMinutes = hasSleepValue
-    ? Math.round(parsedSleepHours * 60)
-    : DEFAULT_LOG_SLEEP_HOURS * 60
-  const sleepHourNumber = Math.floor(totalSleepMinutes / 60)
-  const sleepMinuteNumber = totalSleepMinutes % 60
   const noteTextareaRef = useRef<HTMLTextAreaElement | null>(null)
   const tagDropdownWrapRef = useRef<HTMLDivElement | null>(null)
   const tagInputRef = useRef<HTMLInputElement | null>(null)
+  const sleepTimeInputRef = useRef<HTMLInputElement | null>(null)
+  const sleepTimepickerRef = useRef<TimepickerUI | null>(null)
   const [tagDropdownOpen, setTagDropdownOpen] = useState(false)
+  const [isDarkTheme, setIsDarkTheme] = useState(() =>
+    typeof document !== 'undefined' && document.documentElement.dataset.theme === 'dark',
+  )
 
   const openTagDropdownAfterScroll = useCallback((el: HTMLElement) => {
     setTagDropdownOpen(true)
@@ -120,12 +121,90 @@ export const LogForm = ({
     : allMatchingSuggestions
   const atMaxTags = usedTags.length >= maxTagsPerEntry
 
-  const updateSleepFromMinutes = (nextMinutes: number) => {
-    const clampedMinutes = Math.max(0, Math.min(MAX_SLEEP_MINUTES, nextMinutes))
+  const updateSleepFromMinutes = useCallback((nextMinutes: number) => {
+    const clampedMinutes = Math.max(0, Math.min(MAX_LOG_SLEEP_MINUTES, nextMinutes))
     const nextValue = clampedMinutes / 60
     const formatted = nextValue.toFixed(2).replace(/\.?0+$/, '')
     onSleepHoursChange(formatted)
-  }
+  }, [onSleepHoursChange])
+
+  const totalSleepMinutes = useMemo(() => {
+    const parsedSleepHours = Number(sleepHours)
+    const hasSleepValue = sleepHours.trim().length > 0 && Number.isFinite(parsedSleepHours)
+    return hasSleepValue
+      ? Math.round(parsedSleepHours * 60)
+      : DEFAULT_LOG_SLEEP_HOURS * 60
+  }, [sleepHours])
+  const sleepHourNumber = Math.floor(totalSleepMinutes / 60)
+  const sleepMinuteNumber = totalSleepMinutes % 60
+
+  const formatTimeInputValue = useCallback((minutesTotal: number) => {
+    const hours24 = Math.floor(minutesTotal / 60)
+    const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12
+    const hours = String(hours12).padStart(2, '0')
+    const minutes = String(minutesTotal % 60).padStart(2, '0')
+    return `${hours}:${minutes}`
+  }, [])
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+    const root = document.documentElement
+    const syncTheme = () => setIsDarkTheme(root.dataset.theme === 'dark')
+    syncTheme()
+    const observer = new MutationObserver(syncTheme)
+    observer.observe(root, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    })
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!sleepTimeInputRef.current) return
+    const picker = new TimepickerUI(sleepTimeInputRef.current, {
+      clock: {
+        type: '12h',
+        incrementHours: 1,
+        incrementMinutes: 15,
+      },
+      labels: {
+        ok: t('log.sleepTimePickerOk'),
+        cancel: t('log.sleepTimePickerCancel'),
+        time: t('log.sleepTimePickerSelectTime'),
+        mobileTime: t('log.sleepTimePickerEnterTime'),
+        mobileHour: t('log.sleepTimePickerHour'),
+        mobileMinute: t('log.sleepTimePickerMinute'),
+        clear: t('log.sleepTimePickerClear'),
+        am: t('log.sleepTimePickerAm'),
+        pm: t('log.sleepTimePickerPm'),
+      },
+      ui: {
+        theme: isDarkTheme ? 'dark' : 'basic',
+        cssClass: 'sleep-timepicker',
+      },
+    })
+    picker.on('confirm', ({ hour, minutes }) => {
+      if (hour == null || minutes == null) return
+      const parsedHourRaw = Number(hour)
+      const parsedMinute = Number(minutes)
+      if (!Number.isFinite(parsedHourRaw) || !Number.isFinite(parsedMinute)) return
+      const parsedHour = parsedHourRaw === 12 ? 12 : parsedHourRaw % 12
+      updateSleepFromMinutes(parsedHour * 60 + parsedMinute)
+    })
+    picker.create()
+    sleepTimepickerRef.current = picker
+    return () => {
+      picker.destroy()
+      sleepTimepickerRef.current = null
+    }
+  }, [isDarkTheme, t, updateSleepFromMinutes])
+
+  useEffect(() => {
+    if (!sleepTimeInputRef.current || !sleepTimepickerRef.current) return
+    const timeValue = formatTimeInputValue(totalSleepMinutes)
+    sleepTimeInputRef.current.value = timeValue
+    sleepTimepickerRef.current.setValue(timeValue)
+  }, [formatTimeInputValue, totalSleepMinutes])
 
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -310,79 +389,39 @@ export const LogForm = ({
             </span>
           </Tooltip>
         </p>
-        <div className="sleep-duration-picker__value" role="status" aria-live="polite">
+        <div
+          className="sleep-duration-picker__value"
+          role="button"
+          tabIndex={0}
+          aria-label={t('log.pickTime', { defaultValue: 'Pick time' })}
+          onClick={() => sleepTimepickerRef.current?.open()}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault()
+              sleepTimepickerRef.current?.open()
+            }
+          }}
+        >
           <span className="sleep-duration-picker__value-main">{sleepHourNumber}</span>
           <span className="sleep-duration-picker__value-unit">{t('log.hours').charAt(0).toLowerCase()}</span>
           <span className="sleep-duration-picker__value-main">{String(sleepMinuteNumber).padStart(2, '0')}</span>
           <span className="sleep-duration-picker__value-unit">{t('log.minutes').charAt(0).toLowerCase()}</span>
         </div>
-        <div className="sleep-duration-picker__section">
-          <p className="sleep-duration-picker__section-label">
-            {t('log.quickSelect', { defaultValue: 'Quick select' })}
-          </p>
-          <div className="sleep-duration-picker__quick-grid">
-            {QUICK_SLEEP_HOUR_OPTIONS.map(hours => (
-              <button
-                key={hours}
-                type="button"
-                className={`sleep-duration-picker__quick-option${sleepHourNumber === hours ? ' is-active' : ''}`}
-                onClick={() => updateSleepFromMinutes(hours * 60)}
-              >
-                {hours}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="sleep-duration-picker__section">
-          <p className="sleep-duration-picker__section-label">
-            {t('log.fineTune', { defaultValue: 'Fine-tune' })}
-          </p>
-          <div className="sleep-duration-picker__fine-tune-grid">
-            <div className="sleep-duration-picker__fine-tune-block">
-              <span className="sleep-duration-picker__fine-tune-label">{t('log.hours')}</span>
-              <div className="sleep-duration-picker__stepper">
-                <button
-                  type="button"
-                  className="sleep-duration-picker__stepper-button"
-                  onClick={() => updateSleepFromMinutes(totalSleepMinutes - 60)}
-                  aria-label={t('log.decreaseHours', { defaultValue: 'Decrease hours slept' })}
-                >
-                  -
-                </button>
-                <button
-                  type="button"
-                  className="sleep-duration-picker__stepper-button"
-                  onClick={() => updateSleepFromMinutes(totalSleepMinutes + 60)}
-                  aria-label={t('log.increaseHours', { defaultValue: 'Increase hours slept' })}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            <div className="sleep-duration-picker__fine-tune-block">
-              <span className="sleep-duration-picker__fine-tune-label">
-                {t('log.minutesStep')}
-              </span>
-              <div className="sleep-duration-picker__stepper">
-                <button
-                  type="button"
-                  className="sleep-duration-picker__stepper-button"
-                  onClick={() => updateSleepFromMinutes(totalSleepMinutes - 15)}
-                  aria-label={t('log.decreaseMinutes', { defaultValue: 'Decrease minutes slept' })}
-                >
-                  -
-                </button>
-                <button
-                  type="button"
-                  className="sleep-duration-picker__stepper-button"
-                  onClick={() => updateSleepFromMinutes(totalSleepMinutes + 15)}
-                  aria-label={t('log.increaseMinutes', { defaultValue: 'Increase minutes slept' })}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
+        <div className="sleep-duration-picker__picker-row">
+          <input
+            ref={sleepTimeInputRef}
+            type="text"
+            className="sleep-duration-picker__picker-anchor"
+            aria-hidden="true"
+            tabIndex={-1}
+          />
+          <button
+            type="button"
+            className="sleep-duration-picker__picker-button"
+            onClick={() => sleepTimepickerRef.current?.open()}
+          >
+            {t('log.pickTime', { defaultValue: 'Pick time' })}
+          </button>
         </div>
       </div>
       <div

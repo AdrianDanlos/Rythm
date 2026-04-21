@@ -405,7 +405,7 @@ export function AppMainContent({
                             hasNoEntries={entries.length === 0}
                             goToLog={() =>
                               document
-                                .querySelector('.sleep-duration-picker__quick-grid')
+                                .querySelector('.sleep-duration-picker__picker-row')
                                 ?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
                           />
                           {entries.length > 0 && (

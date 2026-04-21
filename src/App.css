@@ -1051,11 +1051,7 @@
   margin-bottom: 4px;
   padding: 14px 16px;
   border: 1px solid
-    color-mix(
-      in srgb,
-      var(--guest-tint) var(--guest-border-mix),
-      var(--border)
-    );
+    color-mix(in srgb, var(--guest-tint) var(--guest-border-mix), var(--border));
   border-radius: 14px;
   background: color-mix(
     in srgb,
@@ -2284,7 +2280,7 @@
 
 .sleep-duration-picker {
   margin-top: 8px;
-  padding: 20px 16px 25px;
+  padding: 20px 16px 22px;
   border-radius: 24px;
   border: none;
   background: #ffffff;
@@ -2349,7 +2345,7 @@
 }
 
 .sleep-duration-picker__value {
-  margin-top: 30px;
+  margin-top: 20px;
   display: inline-flex;
   align-items: baseline;
   gap: 8px;
@@ -2375,172 +2371,54 @@
   opacity: 0.9;
 }
 
-.sleep-duration-picker__section {
+.sleep-duration-picker__picker-row {
   margin-top: 18px;
-  text-align: left;
-}
-
-.sleep-duration-picker__section-label {
-  margin: 30px 0 10px 0;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #8a97ad;
-}
-
-:root[data-theme="dark"] .sleep-duration-picker__section-label {
-  color: #8294b2;
-}
-
-.sleep-duration-picker__quick-grid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.sleep-duration-picker__quick-option {
-  height: 44px;
-  padding: 0;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  border-radius: 10px;
-  background: #f8fafd;
-  color: #22314f;
-  font-size: 1.1rem;
-  font-weight: 600;
-  line-height: 1;
-  font-family: inherit;
-  cursor: pointer;
-  transition:
-    transform 0.1s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.sleep-duration-picker__quick-option:hover {
-  box-shadow: 0 0 0 1px rgba(201, 215, 243, 0.85) inset;
-}
-
-.sleep-duration-picker__quick-option:active {
-  transform: scale(0.98);
-}
-
-.sleep-duration-picker__quick-option.is-active {
-  border-color: transparent;
-  color: #ffffff;
-  background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
-  box-shadow: none;
-}
-
-:root[data-theme="dark"] .sleep-duration-picker__quick-option {
-  background: rgba(18, 34, 61, 0.9);
-  color: #d6e4ff;
-}
-
-:root[data-theme="dark"] .sleep-duration-picker__quick-option:hover {
-  box-shadow: none;
-}
-
-/* Dark base (above) beats .is-active specificity — restore purple for selected hour */
-:root[data-theme="dark"] .sleep-duration-picker__quick-option.is-active {
-  color: #ffffff;
-  background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
-  box-shadow: none;
-}
-
-:root[data-theme="dark"] .sleep-duration-picker__quick-option.is-active:hover {
-  box-shadow: none;
-}
-
-.sleep-duration-picker__fine-tune-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
-.sleep-duration-picker__fine-tune-block {
-  min-width: 0;
+.sleep-duration-picker__picker-anchor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.sleep-duration-picker__fine-tune-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 1rem;
-  text-align: center;
-  color: #7e8da8;
-}
-
-:root[data-theme="dark"] .sleep-duration-picker__fine-tune-label {
-  color: #9cb0d3;
-}
-
-.sleep-duration-picker__stepper {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.sleep-duration-picker__stepper-button {
+.sleep-duration-picker__picker-button {
+  width: 100%;
   height: 44px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   border: none;
-  border-radius: 14px;
-  background: #f8fafd;
-  color: #2f3f62;
-  font-size: 2rem;
-  font-weight: 300;
-  line-height: 1;
-  text-align: center;
-  font-family: inherit;
+  border-radius: 12px;
+  padding: 0 16px;
+  background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   cursor: pointer;
   transition:
     transform 0.1s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    filter 0.2s ease;
 }
 
-.sleep-duration-picker__stepper-button:hover {
-  box-shadow: 0 0 0 1px rgba(201, 215, 243, 0.85) inset;
+.sleep-duration-picker__picker-button:hover {
+  filter: brightness(1.05);
 }
 
-.sleep-duration-picker__stepper-button:active {
-  transform: scale(0.98);
+.sleep-duration-picker__picker-button:active {
+  transform: scale(0.99);
 }
 
-.sleep-duration-picker__quick-option:focus,
-.sleep-duration-picker__quick-option:focus-visible {
-  outline: none;
-  color: #ffffff;
-  background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
-  box-shadow: 0 8px 16px rgba(76, 82, 255, 0.35);
+:root[data-theme="dark"] .sleep-duration-picker__picker-button {
+  background: linear-gradient(135deg, #5869ff 0%, #455596 100%);
 }
 
-:root[data-theme="dark"] .sleep-duration-picker__quick-option:focus,
-:root[data-theme="dark"] .sleep-duration-picker__quick-option:focus-visible {
-  color: #ffffff;
-  background: linear-gradient(135deg, #4052ff 0%, #394c82 100%);
-  box-shadow: 0 8px 16px rgba(76, 82, 255, 0.35);
-}
-
-.sleep-duration-picker__stepper-button:focus-visible {
-  outline: 2px solid #7e5bff;
-  outline-offset: 2px;
-}
-
-:root[data-theme="dark"] .sleep-duration-picker__stepper-button {
-  background: rgba(18, 34, 61, 0.9);
-  color: #d6e4ff;
-}
-
-:root[data-theme="dark"] .sleep-duration-picker__stepper-button:hover {
-  box-shadow: none;
+/* Sleep picker uses 12h clock face but hides AM/PM controls for duration-style input. */
+.sleep-timepicker .tp-ui-wrapper-type-time {
+  display: none;
 }
 
 @media (max-width: 430px) {
@@ -2559,6 +2437,14 @@
   .sleep-duration-picker__title,
   .log-reflection-title {
     font-size: 1.55rem;
+  }
+
+  .sleep-duration-picker__picker-row {
+    justify-content: center;
+  }
+
+  .sleep-duration-picker__picker-button {
+    width: 100%;
   }
 
   .sleep-duration-picker__value-main {
