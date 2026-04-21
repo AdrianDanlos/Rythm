@@ -40,14 +40,17 @@
 /* Native (Capacitor) Google-only login — Figma-style full screen */
 .app-native-login {
   background: #ffffff;
-  min-height: 100dvh;
-  min-height: 100vh;
+  height: 100dvh;
+  height: 100vh;
+  box-sizing: border-box;
   padding-top: max(16px, env(safe-area-inset-top, 0px));
   padding-left: max(20px, env(safe-area-inset-left, 0px));
   padding-right: max(20px, env(safe-area-inset-right, 0px));
   padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
   justify-content: center;
   align-items: stretch;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 :root[data-theme="dark"] .app-native-login {
@@ -64,11 +67,12 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: min(100dvh, 100vh);
+  min-height: 0;
   margin: 0 auto;
   max-width: 400px;
   background: #ffffff;
   color: #0f172a;
+  overflow: hidden;
 }
 
 :root[data-theme="dark"] .native-auth-screen {
