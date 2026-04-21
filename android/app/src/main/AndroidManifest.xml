@@ -30,6 +30,22 @@
                 <data android:scheme="capacitor" android:host="localhost" />
             </intent-filter>
 
+            <!-- Optional custom scheme (also add exact URL to Supabase Redirect URLs if you use it). -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.rythm.app" android:host="auth-callback" />
+            </intent-filter>
+
+            <!-- Same https host as native email redirect_to → opens app instead of browser (requires assetlinks.json on host). -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="rythm-one.vercel.app" android:pathPrefix="/" />
+            </intent-filter>
+
         </activity>
 
         <provider

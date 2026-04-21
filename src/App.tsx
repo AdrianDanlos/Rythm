@@ -13,7 +13,7 @@ import { PaywallPage } from './billing/shared/PaywallPage'
 import { FeedbackModal } from './components/FeedbackModal'
 import { StreakModal } from './components/StreakModal'
 import { AppSidePanel } from './components/AppSidePanel'
-import { supabase } from './lib/supabaseClient'
+import { applySupabaseSessionFromAuthUrl } from './lib/authDeepLink'
 import { useAuth } from './hooks/useAuth'
 import { useAuthActions } from './hooks/useAuthActions'
 import { useBillingActions } from './billing/shared/useBillingActions'
@@ -435,19 +435,19 @@ function App() {
     return () => mql.removeEventListener('change', handler)
   }, [])
 
-  // Capacitor: set session when app is opened from auth link
+  // Capacitor: set session when app is opened from auth link (recovery, magic link, OAuth)
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return
+
+    void CapacitorApp.getLaunchUrl().then(result => {
+      if (result?.url) {
+        applySupabaseSessionFromAuthUrl(result.url)
+      }
+    })
+
     const listenerPromise = CapacitorApp.addListener('appUrlOpen', ({ url }) => {
-      const fragment = url?.split('#')[1] ?? ''
-      const params = new URLSearchParams(fragment)
-      const accessToken = params.get('access_token')
-      const refreshToken = params.get('refresh_token')
-      if (accessToken && refreshToken) {
-        void supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        })
+      if (url) {
+        applySupabaseSessionFromAuthUrl(url)
       }
     })
     return () => {

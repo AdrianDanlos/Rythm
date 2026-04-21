@@ -51,7 +51,9 @@ These are set per Supabase project using `npx supabase secrets set` and are not 
 
 The app uses `signUp`, `signInWithPassword`, `resetPasswordForEmail`, and `updateUser` for password recovery. Supabase sends confirmation and reset emails using its **default SMTP** unless you configure custom SMTP in the project.
 
-In the [Supabase Dashboard](https://supabase.com/dashboard) → **Authentication** → **Providers**: enable **Email**. Set **Site URL** to your deployed web origin (for example `https://your-app.vercel.app`) and add the same URL under **Redirect URLs** so confirmation and password-reset links return users to the app. For local dev with `npm run dev`, add `http://localhost:5173` (or your Vite port). Native apps still open deep links via `appUrlOpen`; reset links should use a URL that loads your app and the Supabase client (same as web when applicable).
+In the [Supabase Dashboard](https://supabase.com/dashboard) → **Authentication**: enable **Email**, set **Site URL** to your deployed origin (e.g. `https://rythm-one.vercel.app`), and under **Redirect URLs** allow that origin, `http://localhost:5173`, and any other origins you use (`capacitor://localhost`, etc.).
+
+**Android:** Native builds use `redirect_to` = `https://rythm-one.vercel.app` (or override with `VITE_AUTH_EMAIL_REDIRECT_ORIGIN`). For reset links to open the app instead of Chrome, that `https` URL must be verified as an [Android App Link](https://developer.android.com/training/app-links): add the intent filter and host `assetlinks.json` on the site (see `public/.well-known/assetlinks.json` and `AndroidManifest.xml`). `App.tsx` applies tokens from the link via `appUrlOpen` / `getLaunchUrl()`.
 
 ### Supabase + Google Play: Dev vs Prod
 

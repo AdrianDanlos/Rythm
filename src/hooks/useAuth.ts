@@ -1,14 +1,30 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { Capacitor } from '@capacitor/core'
 import { t } from 'i18next'
 import { toast } from 'sonner'
 import { supabase } from '../lib/supabaseClient'
 
+/**
+ * Password-reset / confirmation emails use this as `redirect_to` after Supabase verifies the link.
+ * - **Web:** `window.location.origin` (e.g. dev server or Vercel).
+ * - **Native:** Prefer `VITE_AUTH_EMAIL_REDIRECT_ORIGIN`; otherwise the hosted app origin must match
+ *   Android App Links in `AndroidManifest` so the **same https URL opens the app** instead of Chrome.
+ *   Add that exact URL under Supabase → Authentication → URL Configuration → Redirect URLs.
+ */
 function getEmailAuthRedirectUrl(): string | undefined {
   if (typeof window === 'undefined') {
     return undefined
   }
-  return `${window.location.origin}/`
+  const configured = (import.meta.env.VITE_AUTH_EMAIL_REDIRECT_ORIGIN as string | undefined)
+    ?.trim()
+  if (configured) {
+    return configured.replace(/\/$/, '')
+  }
+  if (Capacitor.isNativePlatform()) {
+    return 'https://rythm-one.vercel.app'
+  }
+  return window.location.origin
 }
 
 export const useAuth = () => {

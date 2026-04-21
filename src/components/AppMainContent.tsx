@@ -4,7 +4,6 @@ import {
   lazy,
   useCallback,
   useEffect,
-  useRef,
   useState,
   type FormEvent,
 } from 'react'
@@ -249,8 +248,7 @@ export function AppMainContent({
   const introToAuthTransition = reduceMotion
     ? { duration: 0 }
     : { duration: 0.32, ease: 'easeOut' as const }
-  /** True only for the auth screen mount that follows completing the intro (not cold load). */
-  const authEnterFromIntroRef = useRef(false)
+  const [authEnterFromIntro, setAuthEnterFromIntro] = useState(false)
   const [introCompleted, setIntroCompleted] = useState(() => {
     if (typeof window === 'undefined') return false
     try {
@@ -273,7 +271,7 @@ export function AppMainContent({
   }, [session, introCompleted])
 
   const handleCompleteIntro = useCallback(() => {
-    authEnterFromIntroRef.current = true
+    setAuthEnterFromIntro(true)
     setIntroCompleted(true)
     if (typeof window === 'undefined') return
     try {
@@ -325,46 +323,48 @@ export function AppMainContent({
   if (!session) {
     return (
       <AnimatePresence mode="wait">
-        {shouldShowIntro ? (
-          <motion.div
-            key="intro"
-            className="auth-intro-route"
-            initial={false}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={introToAuthTransition}
-          >
-            <IntroCarousel onComplete={handleCompleteIntro} />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="auth"
-            className="auth-intro-route"
-            initial={
-              authEnterFromIntroRef.current
-                ? { opacity: 0, y: 18 }
-                : false
-            }
-            animate={{ opacity: 1, y: 0 }}
-            transition={introToAuthTransition}
-          >
-            <AuthForm
-              authMode={authMode}
-              authEmail={authEmail}
-              authPassword={authPassword}
-              authLoading={authLoading}
-              emailFlow={authEmailFlow}
-              onEmailFlowChange={setAuthEmailFlow}
-              onEmailChange={onEmailChange}
-              onPasswordChange={onPasswordChange}
-              onSubmit={onAuth}
-              onForgotSubmit={onForgotSubmit}
-              onGoogleSignIn={onGoogleSignIn}
-              onTryWithoutAccount={onTryWithoutAccount}
-              onToggleMode={toggleAuthMode}
-            />
-          </motion.div>
-        )}
+        {shouldShowIntro
+          ? (
+              <motion.div
+                key="intro"
+                className="auth-intro-route"
+                initial={false}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={introToAuthTransition}
+              >
+                <IntroCarousel onComplete={handleCompleteIntro} />
+              </motion.div>
+            )
+          : (
+              <motion.div
+                key="auth"
+                className="auth-intro-route"
+                initial={
+                  authEnterFromIntro
+                    ? { opacity: 0, y: 18 }
+                    : false
+                }
+                animate={{ opacity: 1, y: 0 }}
+                transition={introToAuthTransition}
+              >
+                <AuthForm
+                  authMode={authMode}
+                  authEmail={authEmail}
+                  authPassword={authPassword}
+                  authLoading={authLoading}
+                  emailFlow={authEmailFlow}
+                  onEmailFlowChange={setAuthEmailFlow}
+                  onEmailChange={onEmailChange}
+                  onPasswordChange={onPasswordChange}
+                  onSubmit={onAuth}
+                  onForgotSubmit={onForgotSubmit}
+                  onGoogleSignIn={onGoogleSignIn}
+                  onTryWithoutAccount={onTryWithoutAccount}
+                  onToggleMode={toggleAuthMode}
+                />
+              </motion.div>
+            )}
       </AnimatePresence>
     )
   }
