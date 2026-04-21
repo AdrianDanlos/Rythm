@@ -65,7 +65,7 @@ async function setupGoogleSignInTest() {
       responseType: 'online',
       idToken: 'test-id-token',
     },
-  })
+  } as Awaited<ReturnType<typeof SocialLogin.login>>)
 
   const digestBuffer = Uint8Array.from({ length: 32 }, (_, index) => index + 1).buffer
   vi.stubGlobal('crypto', {
@@ -170,7 +170,7 @@ describe('useAuthActions', () => {
       result: {
         responseType: 'online',
       },
-    })
+    } as Awaited<ReturnType<typeof SocialLogin.login>>)
     vi.stubGlobal('crypto', {
       getRandomValues: (array: Uint8Array) => array,
       subtle: {
