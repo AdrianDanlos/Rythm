@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   CartesianGrid,
@@ -21,6 +22,8 @@ import { Equal, Info, TrendingDown, TrendingUp } from 'lucide-react'
 
 const ENTRY_THRESHOLD_30 = 7
 const ENTRY_THRESHOLD_90 = 30
+
+const smoothedTrendsRechartsTooltipWrapperStyle: CSSProperties = { top: -111 }
 
 type InsightsSmoothedTrendsProps = {
   isPro: boolean
@@ -125,7 +128,7 @@ type RollingLegendProps = {
     logDaysToSee30: string
     logDaysToSee90: string
   }
-  wrapperStyle?: React.CSSProperties
+  wrapperStyle?: CSSProperties
 }
 
 const RollingLegend = ({ show30, show90, labels, wrapperStyle }: RollingLegendProps) => (
@@ -265,6 +268,7 @@ export const InsightsSmoothedTrends = ({
                         tick={baseTickProps}
                       />
                       <RechartsTooltip
+                        wrapperStyle={smoothedTrendsRechartsTooltipWrapperStyle}
                         labelFormatter={value =>
                           formatLongDate(new Date(`${value}T00:00:00`))}
                         formatter={(value) => {
@@ -398,6 +402,7 @@ export const InsightsSmoothedTrends = ({
                         tick={baseTickProps}
                       />
                       <RechartsTooltip
+                        wrapperStyle={smoothedTrendsRechartsTooltipWrapperStyle}
                         labelFormatter={value =>
                           formatLongDate(new Date(`${value}T00:00:00`))}
                         formatter={(value) => {
