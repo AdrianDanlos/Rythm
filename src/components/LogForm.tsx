@@ -163,6 +163,22 @@ export const LogForm = ({
 
   useEffect(() => {
     if (!sleepTimeInputRef.current) return
+
+    // This is a workaround to prevent the modal being slow at closing itself
+    const setSleepPickerModalOpacityHidden = (hidden: boolean) => {
+      const wrap = document.querySelector<HTMLElement>('.tp-ui-wrapper.sleep-timepicker')
+      const modal = wrap?.closest<HTMLElement>('.tp-ui-modal')
+      if (!modal) return
+      if (hidden) {
+        modal.style.opacity = '0'
+        modal.style.transition = 'none'
+      }
+      else {
+        modal.style.removeProperty('opacity')
+        modal.style.removeProperty('transition')
+      }
+    }
+
     const picker = new TimepickerUI(sleepTimeInputRef.current, {
       clock: {
         type: '24h',
@@ -188,11 +204,21 @@ export const LogForm = ({
         cssClass: 'sleep-timepicker',
         backdrop: true,
       },
+      behavior: {
+        delayHandler: 0,
+      },
       wheel: {
         hideDisabled: true,
       },
     })
+    picker.on('open', () => {
+      setSleepPickerModalOpacityHidden(false)
+    })
+    picker.on('cancel', () => {
+      setSleepPickerModalOpacityHidden(true)
+    })
     picker.on('confirm', ({ hour, minutes }) => {
+      setSleepPickerModalOpacityHidden(true)
       if (hour == null || minutes == null) return
       const parsedHour = Number(hour)
       const parsedMinute = Number(minutes)
