@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FocusEvent } from 'react'
+import classNames from 'classnames'
 import { Capacitor } from '@capacitor/core'
 import { ChevronRight, Crown } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -344,21 +345,21 @@ export function SettingsPage({
               <div className="toggle-group">
                 <button
                   type="button"
-                  className={`ghost ${theme === 'system' ? 'active' : ''}`}
+                  className={classNames('ghost', { active: theme === 'system' })}
                   onClick={() => onThemeChange('system')}
                 >
                   {t('settings.system')}
                 </button>
                 <button
                   type="button"
-                  className={`ghost ${theme === 'dark' ? 'active' : ''}`}
+                  className={classNames('ghost', { active: theme === 'dark' })}
                   onClick={() => onThemeChange('dark')}
                 >
                   {t('settings.dark')}
                 </button>
                 <button
                   type="button"
-                  className={`ghost ${theme === 'light' ? 'active' : ''}`}
+                  className={classNames('ghost', { active: theme === 'light' })}
                   onClick={() => onThemeChange('light')}
                 >
                   {t('settings.light')}

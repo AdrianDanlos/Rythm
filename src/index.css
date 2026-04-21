@@ -37,7 +37,8 @@
   --button-hover-surface: rgba(15, 23, 42, 0.04);
   --button-disabled-bg: var(--neutral-200);
   --button-disabled-text: var(--neutral-500);
-  --button-disabled-border: #cbd5f5;
+  /* Match dark theme: avoid periwinkle (#cbd5f5) ring on disabled buttons in light UI */
+  --button-disabled-border: transparent;
   --button-primary-border: var(--neutral-900);
   --input-focus-border: var(--neutral-900);
   --input-focus-shadow: 0 0 0 2px rgba(15, 23, 42, 0.12);

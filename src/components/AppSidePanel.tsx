@@ -10,6 +10,7 @@ import {
   Sparkles,
   Star,
 } from 'lucide-react'
+import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 
 type AppSidePanelProps = {
@@ -49,7 +50,7 @@ function PanelButton({
   return (
     <button
       type="button"
-      className={['side-panel__item', className].filter(Boolean).join(' ')}
+      className={classNames('side-panel__item', className)}
       onClick={onClick}
       disabled={disabled}
     >
@@ -98,7 +99,7 @@ export function AppSidePanel(props: AppSidePanelProps) {
         />
       )}
       <aside
-        className={`side-panel${isOpen ? ' side-panel--open' : ''}`}
+        className={classNames('side-panel', { 'side-panel--open': isOpen })}
         aria-modal="true"
         aria-label="Menu"
         aria-hidden={!isOpen}

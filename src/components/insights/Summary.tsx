@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { motion, type Transition } from 'framer-motion'
 import type { Entry } from '../../lib/entries'
 import type { StatCounts } from '../../lib/stats'
@@ -141,7 +142,7 @@ export const Summary = ({
                 : [rankingBadge1, rankingBadge2, rankingBadge3, rankingBadge4, rankingBadge5][step - 1]
               return (
                 <div
-                  className={`badge-row ${badge.unlocked ? 'unlocked' : 'locked'}`}
+                  className={classNames('badge-row', badge.unlocked ? 'unlocked' : 'locked')}
                   key={badge.id}
                 >
                   <div className="badge-row-header">
@@ -156,22 +157,28 @@ export const Summary = ({
                     </div>
                     <p className="badge-helper">{badge.description}</p>
                   </div>
-                  {badge.progressTotal > 0 && !isMaxTier && (
-                    <div className="badge-progress-track" aria-hidden="true">
-                      <span
-                        className="badge-progress-fill"
-                        style={{
-                          width: `${Math.min(
-                            100,
-                            Math.max(0, (badge.progressValue / (badge.progressTotal || 1)) * 100),
-                          )}%`,
-                        }}
-                      />
-                    </div>
-                  )}
-                  {badge.progressText
+                  {((badge.progressTotal > 0 && !isMaxTier) || badge.progressText)
                     ? (
-                        <p className="badge-progress-text">{badge.progressText}</p>
+                        <div className="badge-row-footer">
+                          {badge.progressTotal > 0 && !isMaxTier && (
+                            <div className="badge-progress-track" aria-hidden="true">
+                              <span
+                                className="badge-progress-fill"
+                                style={{
+                                  width: `${Math.min(
+                                    100,
+                                    Math.max(0, (badge.progressValue / (badge.progressTotal || 1)) * 100),
+                                  )}%`,
+                                }}
+                              />
+                            </div>
+                          )}
+                          {badge.progressText
+                            ? (
+                                <p className="badge-progress-text">{badge.progressText}</p>
+                              )
+                            : null}
+                        </div>
                       )
                     : null}
                 </div>

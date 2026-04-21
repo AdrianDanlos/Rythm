@@ -106,7 +106,8 @@ const es = {
     monthDayYear: 'Mes / Día / Año',
     yearMonthDay: 'Año / Mes / Día',
     personalSleepTargetHours: 'Objetivo personal de sueño (horas)',
-    sleepTargetHelper: 'Se usa para el objetivo promedio de sueño y comparaciones ánimo/sueño.',
+    sleepTargetHelper:
+      'Se usa para mostrarte datos y estadísticas personalizadas.',
     appearance: 'Apariencia',
     system: 'Sistema',
     dark: 'Oscuro',
@@ -586,7 +587,8 @@ const es = {
     unlockedSeveralStats: 'Ya tienes suficientes datos para ver la conexión entre sueño y ánimo. Unos días más y los patrones se verán con más claridad.',
     weekdayPattern: 'Tiendes a dormir mejor los {{day}}. Conocer tu patrón ya es la mitad del camino.',
     loggingLowMoodDays: 'Sigues registrando incluso cuando el día es difícil. Eso hace que los buenos días se vean en tus datos.',
-    longTermTracker: 'Llevas {{count}} días registrando. Cuantos más datos tienes, más confiables son.',
+    longTermTracker:
+      'Llevas {{count}} días registrados. Ese nivel de constancia es lo que hace que tus datos realmente tengan valor.',
     tipAnchorWake: 'Despertarte a una hora parecida la mayoría de días ayuda a estabilizar tu reloj biológico.',
     tipMorningLight: 'Exponerte a luz natural en la primera hora del día mejora el enfoque y el sueño de la noche.',
     tipMoveOften: 'Moverte un poco todos los días, aunque sea salir a caminar, ayuda mucho al ánimo y al estrés.',
@@ -603,7 +605,8 @@ const es = {
     greatSleepGoodMood: 'Buen sueño y buen ánimo, hoy es tu día!',
     restButLowMood: 'Ayer descansaste bien y aún así ha sido un día difícil. No seas duro contigo mismo, algunos días son más difíciles que otros.',
     exerciseGoodMood: 'Ejercicio y buen ánimo! Estás viendo la conexión. Sigue así.',
-    loggedPatterns: 'Guardado. Cada día estás mas cerca de entender tus patrones. Sigue así!',
+    loggedPatterns:
+      '¡Guardado! Con cada entrada, construyes una imagen más clara de ti mismo.',
   },
   badges: {
     maxLevel: 'Nivel máximo',

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type CSSProperties, type FormEvent, type ChangeEvent } from 'react'
+import classNames from 'classnames'
 import { AnimatePresence, motion } from 'framer-motion'
 import { DayPicker } from 'react-day-picker'
 import { useTranslation } from 'react-i18next'
@@ -333,7 +334,7 @@ export const LogForm = ({
           </span>
           <span className="log-date-picker-toggle" aria-hidden>
             <ChevronDown
-              className={`log-date-picker-chevron${calendarOpen ? ' is-open' : ''}`}
+              className={classNames('log-date-picker-chevron', { 'is-open': calendarOpen })}
               size={22}
               aria-hidden
             />
@@ -444,7 +445,9 @@ export const LogForm = ({
         </div>
       </div>
       <div
-        className={`log-reflection-card log-reflection-block${mood != null ? ' log-reflection-card--mood-selected' : ''}`}
+        className={classNames('log-reflection-card', 'log-reflection-block', {
+          'log-reflection-card--mood-selected': mood != null,
+        })}
         style={
           mood != null
             ? ({ '--reflection-mood-tint': moodColors[mood - 1] ?? moodColors[2] } as CSSProperties)
@@ -515,7 +518,10 @@ export const LogForm = ({
                           <button
                             key={suggestion}
                             type="button"
-                            className={`tag-suggestion${isAdded ? ' tag-suggestion--added' : ''}${isCreatableOption ? ' tag-suggestion--creatable' : ''}`}
+                            className={classNames('tag-suggestion', {
+                              'tag-suggestion--added': isAdded,
+                              'tag-suggestion--creatable': isCreatableOption,
+                            })}
                             aria-label={isAdded ? t('log.removeTag', { tag: suggestion }) : undefined}
                             onMouseDown={e => e.preventDefault()}
                             onClick={() => isAdded ? removeTag(suggestion.toLowerCase()) : addTag(suggestion)}
@@ -602,7 +608,7 @@ export const LogForm = ({
                 <button
                   key={value}
                   type="button"
-                  className={`mood-button ${mood === value ? 'active' : ''}`}
+                  className={classNames('mood-button', { active: mood === value })}
                   onClick={() => onMoodChange(value)}
                   style={
                     {
@@ -627,7 +633,9 @@ export const LogForm = ({
             })}
           </div>
           <p
-            className={`mood-selected-name${mood == null ? ' mood-selected-name--placeholder' : ''}`}
+            className={classNames('mood-selected-name', {
+              'mood-selected-name--placeholder': mood == null,
+            })}
             aria-live="polite"
           >
             {mood != null

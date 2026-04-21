@@ -106,7 +106,8 @@ const de = {
     monthDayYear: 'Monat / Tag / Jahr',
     yearMonthDay: 'Jahr / Monat / Tag',
     personalSleepTargetHours: 'Persönliches Schafziel (Stunden)',
-    sleepTargetHelper: 'Wird für das durchschnittliche Schafziel und Stimmungs-/Schlafvergleiche verwendet.',
+    sleepTargetHelper:
+      'Wird verwendet, um dir personalisierte Einblicke und Statistiken anzuzeigen.',
     appearance: 'Darstellung',
     system: 'System',
     dark: 'Dunkel',
@@ -584,7 +585,8 @@ const de = {
     unlockedSeveralStats: 'Du hast genug Daten, um den Zusammenhang zwischen Schlaf und Stimmung zu sehen. Noch ein paar Tage und die Muster werden noch klarer.',
     weekdayPattern: 'Du schläfst tendenziell am {{day}} am besten. Dein Muster zu kennen, ist schon die halbe Miete.',
     loggingLowMoodDays: 'Du trägst auch an schwierigen Tagen ein. Das lässt die guten Tage in deinen Daten hervorstechen.',
-    longTermTracker: 'Du trägst seit {{count}} Tagen ein. Je mehr Daten du hast, desto verlässlicher werden sie.',
+    longTermTracker:
+      'Du hast {{count}} Tage erfasst. Diese Beständigkeit ist es, die deine Einblicke wirklich bedeutsam macht.',
     tipAnchorWake: 'An den meisten Tagen zur ähnlichen Zeit aufzustehen hilft dabei, deine innere Uhr zu stabilisieren.',
     tipMorningLight: 'Natürliches Licht in der ersten Stunde des Tages verbessert die Konzentration und den Schlaf in der Nacht.',
     tipMoveOften: 'Etwas Bewegung jeden Tag – selbst nur ein kurzer Spaziergang – tut der Stimmung und dem Stresslevel richtig gut.',
@@ -601,7 +603,8 @@ const de = {
     greatSleepGoodMood: 'Guter Schlaf und gute Stimmung – heute ist dein Tag!',
     restButLowMood: 'Du hast gut geschlafen und trotzdem war es ein schwieriger Tag. Sei nicht zu hart zu dir – manche Tage sind eben schwerer als andere.',
     exerciseGoodMood: 'Sport und gute Stimmung! Du siehst den Zusammenhang. Weiter so.',
-    loggedPatterns: 'Gespeichert. Jeden Tag kommst du deinen Mustern ein Stück näher. Mach weiter!',
+    loggedPatterns:
+      'Gespeichert! Mit jedem Eintrag bekommst du ein klareres Bild von dir selbst.',
   },
   badges: {
     maxLevel: 'Max. Level',

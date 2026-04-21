@@ -106,7 +106,8 @@ const pt = {
     monthDayYear: 'Mês / Dia / Ano',
     yearMonthDay: 'Ano / Mês / Dia',
     personalSleepTargetHours: 'Meta pessoal de sono (horas)',
-    sleepTargetHelper: 'Usada para a meta média de sono e comparações de humor/sono.',
+    sleepTargetHelper:
+      'Usado para mostrar insights e estatísticas personalizados para você.',
     appearance: 'Aparência',
     system: 'Sistema',
     dark: 'Escuro',
@@ -584,7 +585,8 @@ const pt = {
     unlockedSeveralStats: 'Você já tem dados suficientes para ver a conexão entre sono e humor. Mais alguns dias e os padrões vão ficar ainda mais claros.',
     weekdayPattern: 'Você tende a dormir melhor nas {{day}}. Conhecer seu padrão já é metade do caminho.',
     loggingLowMoodDays: 'Você continua registrando mesmo nos dias difíceis. Isso faz os bons dias se destacarem nos seus dados.',
-    longTermTracker: 'Você está registrando há {{count}} dias. Quanto mais dados, mais confiáveis eles ficam.',
+    longTermTracker:
+      'Você registrou {{count}} dias. Esse tipo de consistência é o que faz seus insights realmente valerem algo.',
     tipAnchorWake: 'Acordar em horários parecidos na maioria dos dias ajuda a estabilizar seu relógio biológico.',
     tipMorningLight: 'Se expor à luz natural na primeira hora do dia melhora o foco e o sono da noite.',
     tipMoveOften: 'Se movimentar um pouco todo dia — mesmo que seja só uma caminhada curta — faz muito bem para o humor e o estresse.',
@@ -601,7 +603,8 @@ const pt = {
     greatSleepGoodMood: 'Boa noite de sono e bom humor — hoje é o seu dia!',
     restButLowMood: 'Você descansou bem e ainda assim foi um dia difícil. Não seja duro consigo — alguns dias são assim mesmo.',
     exerciseGoodMood: 'Exercício e bom humor! Você está vendo a conexão. Continue assim.',
-    loggedPatterns: 'Salvo. Cada dia você chega mais perto de entender seus padrões. Segue em frente!',
+    loggedPatterns:
+      'Salvo! A cada registro, você constrói uma imagem mais clara de si mesmo.',
   },
   badges: {
     maxLevel: 'Nível máximo',

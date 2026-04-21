@@ -104,7 +104,7 @@ const en = {
     monthDayYear: 'Month / Day / Year',
     yearMonthDay: 'Year / Month / Day',
     personalSleepTargetHours: 'Personal sleep target (hours)',
-    sleepTargetHelper: 'Used for avg sleep target and mood-by-sleep comparisons.',
+    sleepTargetHelper: 'Used to show you personalized insights and stats.',
     appearance: 'Appearance',
     system: 'System',
     dark: 'Dark',
@@ -584,7 +584,8 @@ const en = {
     unlockedSeveralStats: 'You have logged enough to see how sleep and mood connect. A few more days and the patterns will really pop.',
     weekdayPattern: 'You tend to sleep better on {{day}}. Knowing your pattern is half the battle.',
     loggingLowMoodDays: 'You are still logging on the hard days. That is what makes the good days show up in your data.',
-    longTermTracker: 'You have logged {{count}} days. That history is what makes your insights reliable.',
+    longTermTracker:
+      'You\'ve logged {{count}} days. That kind of consistency is what makes your insights actually mean something.',
     tipAnchorWake: 'Waking up around the same time most days, even on weekends, helps your body clock so you sleep better and feel more alert.',
     tipMorningLight: 'Getting some daylight in the first hour after you wake helps you stay focused during the day and fall asleep easier at night.',
     tipMoveOften: 'Moving regularly, even short walks, can lift your mood and help you handle stress better.',
@@ -601,7 +602,8 @@ const en = {
     greatSleepGoodMood: 'Great sleep and a good mood, you are in a strong place today!',
     restButLowMood: 'Despite giving your body good rest last night, today was still tough. Be kind to yourself, some days are just harder.',
     exerciseGoodMood: 'Exercise and a good mood! You are seeing the connection. Keep it up.',
-    loggedPatterns: 'Saved. Every entry brings you closer to understanding your patterns. Keep going!',
+    loggedPatterns:
+      'Saved! You\'re building a clearer picture of yourself with every entry.',
   },
   badges: {
     maxLevel: 'Max level',

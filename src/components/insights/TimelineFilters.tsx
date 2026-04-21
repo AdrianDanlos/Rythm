@@ -1,4 +1,5 @@
 import { type ComponentType, type CSSProperties, useState } from 'react'
+import classNames from 'classnames'
 import { AnimatePresence, motion, type Transition } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Angry, ChevronDown, Filter, Frown, Laugh, Meh, Moon, Smile } from 'lucide-react'
@@ -220,7 +221,7 @@ export const TimelineFilters = ({
             <button
               type="button"
               key={option.key}
-              className={`timeline-month-option ${option.key === selectedMonth ? 'active' : ''}`}
+              className={classNames('timeline-month-option', { active: option.key === selectedMonth })}
               onClick={() => onSelectMonth(option.key)}
             >
               {option.label}
@@ -230,7 +231,7 @@ export const TimelineFilters = ({
       )}
       <button
         type="button"
-        className={`timeline-filter-fab ${isFilterSheetOpen ? 'is-sheet-open' : ''}`}
+        className={classNames('timeline-filter-fab', { 'is-sheet-open': isFilterSheetOpen })}
         aria-label={t('common.filter')}
         title={t('common.filter')}
         onClick={handleOpenFilter}
@@ -275,7 +276,7 @@ export const TimelineFilters = ({
                     </span>
                     <ChevronDown
                       size={18}
-                      className={`timeline-filter-section-chevron ${isMoodSectionOpen ? 'open' : ''}`}
+                      className={classNames('timeline-filter-section-chevron', { open: isMoodSectionOpen })}
                       aria-hidden
                     />
                   </button>
@@ -289,28 +290,28 @@ export const TimelineFilters = ({
                         transition={sectionTransition}
                       >
                         <div className="timeline-filter-operator-row">
-                          {operatorOptions.map(option => (
-                            <button
-                              type="button"
-                              key={option.value}
-                              className={`ghost ${
-                                draftTimelineFilters.moodOperator === option.value
+                          {operatorOptions.map((option) => {
+                            const moodOperatorActive
+                              = draftTimelineFilters.moodOperator === option.value
                                 && (
                                   draftTimelineFilters.moodValue !== null
                                   || draftTimelineFilters.moodOperator !== 'eq'
                                   || isMoodOperatorTouched
                                 )
-                                  ? 'active'
-                                  : ''
-                              }`}
-                              onClick={() => {
-                                setIsMoodOperatorTouched(true)
-                                onDraftMoodOperatorChange(option.value)
-                              }}
-                            >
-                              {option.label}
-                            </button>
-                          ))}
+                            return (
+                              <button
+                                type="button"
+                                key={option.value}
+                                className={classNames('ghost', { active: moodOperatorActive })}
+                                onClick={() => {
+                                  setIsMoodOperatorTouched(true)
+                                  onDraftMoodOperatorChange(option.value)
+                                }}
+                              >
+                                {option.label}
+                              </button>
+                            )
+                          })}
                         </div>
                         <div className="timeline-filter-mood-row">
                           {moodFaceOptions.map((value) => {
@@ -320,7 +321,7 @@ export const TimelineFilters = ({
                               <button
                                 key={value}
                                 type="button"
-                                className={`timeline-mood-face ${draftTimelineFilters.moodValue === value ? 'active' : ''}`}
+                                className={classNames('timeline-mood-face', { active: draftTimelineFilters.moodValue === value })}
                                 style={{ '--mood-color': moodColor } as CSSProperties}
                                 onClick={() => onDraftMoodValueChange(value)}
                                 aria-label={t(`log.moodName${value}`)}
@@ -348,7 +349,7 @@ export const TimelineFilters = ({
                     </span>
                     <ChevronDown
                       size={18}
-                      className={`timeline-filter-section-chevron ${isSleepSectionOpen ? 'open' : ''}`}
+                      className={classNames('timeline-filter-section-chevron', { open: isSleepSectionOpen })}
                       aria-hidden
                     />
                   </button>
@@ -366,7 +367,11 @@ export const TimelineFilters = ({
                             <button
                               type="button"
                               key={option.value}
-                              className={`ghost ${draftTimelineFilters.sleepValue !== null && draftTimelineFilters.sleepOperator === option.value ? 'active' : ''}`}
+                              className={classNames('ghost', {
+                                active:
+                                  draftTimelineFilters.sleepValue !== null
+                                  && draftTimelineFilters.sleepOperator === option.value,
+                              })}
                               onClick={() => onDraftSleepOperatorChange(option.value)}
                             >
                               {option.label}
@@ -423,7 +428,7 @@ export const TimelineFilters = ({
                     </span>
                     <ChevronDown
                       size={18}
-                      className={`timeline-filter-section-chevron ${isEventsSectionOpen ? 'open' : ''}`}
+                      className={classNames('timeline-filter-section-chevron', { open: isEventsSectionOpen })}
                       aria-hidden
                     />
                   </button>
@@ -457,7 +462,10 @@ export const TimelineFilters = ({
                                   <button
                                     key={tag.key}
                                     type="button"
-                                    className={`timeline-filter-tag-option ${isSelected ? 'active tag-pill' : ''}`}
+                                    className={classNames('timeline-filter-tag-option', {
+                                      'active': isSelected,
+                                      'tag-pill': isSelected,
+                                    })}
                                     data-color-index={index % 8}
                                     style={
                                       isSelected

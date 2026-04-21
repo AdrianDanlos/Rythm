@@ -106,7 +106,8 @@ const fr = {
     monthDayYear: 'Mois / Jour / Année',
     yearMonthDay: 'Année / Mois / Jour',
     personalSleepTargetHours: 'Objectif de sommeil personnel (heures)',
-    sleepTargetHelper: 'Utilisé pour l\'objectif moyen de sommeil et les comparaisons humeur/sommeil.',
+    sleepTargetHelper:
+      'Utilisé pour t\'afficher des insights et des statistiques personnalisés.',
     appearance: 'Apparence',
     system: 'Système',
     dark: 'Sombre',
@@ -585,7 +586,8 @@ const fr = {
     unlockedSeveralStats: 'Vous avez assez de données pour voir le lien entre sommeil et humeur. Quelques jours de plus et les tendances seront encore plus nettes.',
     weekdayPattern: 'Vous avez tendance à mieux dormir le {{day}}. Connaître votre rythme, c\'est déjà la moitié du chemin.',
     loggingLowMoodDays: 'Vous continuez d\'enregistrer même les jours difficiles. Ça permet de faire ressortir les bons jours dans vos données.',
-    longTermTracker: 'Vous enregistrez depuis {{count}} jours. Plus vous avez de données, plus elles sont fiables.',
+    longTermTracker:
+      "Tu as enregistré {{count}} jours. C'est ce genre de régularité qui donne vraiment du sens à tes insights.",
     tipAnchorWake: 'Se lever à une heure similaire la plupart des jours aide à stabiliser votre horloge biologique.',
     tipMorningLight: 'S\'exposer à la lumière naturelle dans la première heure de la journée améliore la concentration et le sommeil du soir.',
     tipMoveOften: 'Bouger un peu chaque jour, même juste une petite marche, fait vraiment du bien à l\'humeur et au stress.',
@@ -602,7 +604,8 @@ const fr = {
     greatSleepGoodMood: 'Bonne nuit et bonne humeur — c\'est votre journée !',
     restButLowMood: 'Vous avez bien dormi et pourtant la journée a été dure. Ne soyez pas trop dur avec vous-même, certains jours sont plus difficiles que d\'autres.',
     exerciseGoodMood: 'Sport et bonne humeur ! Vous voyez le lien. Continuez comme ça.',
-    loggedPatterns: 'Enregistré. Chaque jour vous rapproche un peu plus de la compréhension de vos tendances. Continuez !',
+    loggedPatterns:
+      'Enregistré ! À chaque entrée, tu te construis une image plus claire de toi-même.',
   },
   badges: {
     maxLevel: 'Niveau max',

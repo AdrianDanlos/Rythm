@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
+import classNames from 'classnames'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
 import { LocalNotifications } from '@capacitor/local-notifications'
@@ -603,7 +604,21 @@ function App() {
 
   return (
     <div
-      className={`app ${session && !passwordRecoveryPending && !sessionBlocksForUnverifiedEmail ? 'app-authenticated' : 'app-unauthenticated'}${(passwordRecoveryPending || sessionBlocksForUnverifiedEmail || (!session && !isIntroVisible)) ? ' app-native-login' : ''}${session && activePage === AppPage.Pro ? ' app-pro-page' : ''}${isIntroVisible ? ' app-intro' : ''}${passwordRecoveryPending ? ' app-password-recovery' : ''}`}
+      className={classNames(
+        'app',
+        session && !passwordRecoveryPending && !sessionBlocksForUnverifiedEmail
+          ? 'app-authenticated'
+          : 'app-unauthenticated',
+        {
+          'app-native-login':
+            passwordRecoveryPending
+            || sessionBlocksForUnverifiedEmail
+            || (!session && (!isIntroVisible || (isNativeApp && authInitialized && isIntroVisible))),
+          'app-pro-page': session && activePage === AppPage.Pro,
+          'app-intro': isIntroVisible,
+          'app-password-recovery': passwordRecoveryPending,
+        },
+      )}
       onClick={handleAppClick}
       onTouchStart={handleSwipeStart}
       onTouchMove={handleSwipeMove}

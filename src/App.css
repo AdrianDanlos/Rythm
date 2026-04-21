@@ -9,12 +9,6 @@
   gap: 16px;
 }
 
-.app-unauthenticated {
-  /* On the login screen, don't reserve extra space for the fixed bottom nav
-     so the screen can use the full viewport height. */
-  padding-bottom: 16px;
-}
-
 .app.app-intro {
   max-width: none;
   margin: 0;
@@ -23,6 +17,16 @@
   min-height: 100dvh;
   min-height: 100vh;
   overflow: hidden;
+}
+
+/* Native: same outer shell during intro as on login — avoid a layout jump at transition.
+   Intro carousel already applies insets; strip duplicate top padding from the sheet. */
+.app.app-intro.app-native-login .intro-carousel {
+  padding-top: 0;
+}
+
+.app.app-intro.app-native-login .intro-carousel__hero {
+  margin-top: 14px;
 }
 
 /* Full-bleed stage for intro ↔ login cross-fade (framer-motion wrappers). */
@@ -55,7 +59,8 @@
   padding-top: max(16px, env(safe-area-inset-top, 0px));
   padding-left: max(20px, env(safe-area-inset-left, 0px));
   padding-right: max(20px, env(safe-area-inset-right, 0px));
-  padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
+  /* Override .app bottom padding (reserved for bottom nav) so login stays vertically centered */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
   justify-content: center;
   align-items: stretch;
   overflow: hidden;
@@ -432,6 +437,15 @@
   color: var(--muted);
   line-height: 1.5;
   font-size: clamp(0.95rem, 3.2vw, 1.05rem);
+}
+
+/* Illustration + step text: grouped for slide cross-fade */
+.intro-carousel__slide {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
 }
 
 .intro-carousel__illustration-wrap {
@@ -4407,7 +4421,8 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   align-items: center;
   justify-content: center;
   box-shadow: var(--card-shadow);
-  z-index: 35;
+  /* Under menu backdrop (35); above insights nav (30). */
+  z-index: 34;
   overflow: visible;
 }
 
@@ -5110,7 +5125,17 @@ button.toggle-group__btn--disabled:disabled {
   border-radius: 12px;
   padding: 10px 12px;
   background: var(--card);
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+}
+
+.badge-row-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
@@ -6180,14 +6205,6 @@ button.toggle-group__btn--disabled:disabled {
 @media (max-width: 540px) {
   .app-header {
     align-items: flex-start;
-  }
-  .badge-row {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .badge-progress-track {
-    margin-top: auto;
   }
 
   .tag-bar-item {

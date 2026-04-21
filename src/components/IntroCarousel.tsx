@@ -1,5 +1,8 @@
 import { useState } from 'react'
+import classNames from 'classnames'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import { motionTransition } from '../lib/motion'
 import { introThemedSvgMarkup } from '../lib/introThemedSvg'
 
 type IntroCarouselProps = {
@@ -8,7 +11,9 @@ type IntroCarouselProps = {
 
 export const IntroCarousel = ({ onComplete }: IntroCarouselProps) => {
   const { t } = useTranslation()
+  const reduceMotion = useReducedMotion()
   const [activeIndex, setActiveIndex] = useState(0)
+  const slideTransition = reduceMotion ? { duration: 0 } : motionTransition
 
   const slides = [
     {
@@ -34,24 +39,35 @@ export const IntroCarousel = ({ onComplete }: IntroCarouselProps) => {
         <p className="intro-carousel__hero-subtitle">{t('intro.subtitle')}</p>
       </header>
 
-      <div className="intro-carousel__illustration-wrap" aria-hidden="true">
-        {/* Local SVG markup; colors mapped to CSS variables in introThemedSvg.ts */}
-        <div
-          className="intro-carousel__illustration-svg"
-          dangerouslySetInnerHTML={{ __html: introThemedSvgMarkup[activeIndex] }}
-        />
-      </div>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={activeIndex}
+          className="intro-carousel__slide"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={slideTransition}
+        >
+          <div className="intro-carousel__illustration-wrap" aria-hidden="true">
+            {/* Local SVG markup; colors mapped to CSS variables in introThemedSvg.ts */}
+            <div
+              className="intro-carousel__illustration-svg"
+              dangerouslySetInnerHTML={{ __html: introThemedSvgMarkup[activeIndex] }}
+            />
+          </div>
 
-      <div className="intro-carousel__content">
-        <h2 className="intro-carousel__title">{slides[activeIndex].title}</h2>
-        <p className="intro-carousel__body">{slides[activeIndex].body}</p>
-      </div>
+          <div className="intro-carousel__content">
+            <h2 className="intro-carousel__title">{slides[activeIndex].title}</h2>
+            <p className="intro-carousel__body">{slides[activeIndex].body}</p>
+          </div>
+        </motion.div>
+      </AnimatePresence>
 
       <div className="intro-carousel__pagination" aria-hidden="true">
         {slides.map((_, index) => (
           <span
             key={index}
-            className={`intro-carousel__dot ${index === activeIndex ? 'is-active' : ''}`}
+            className={classNames('intro-carousel__dot', { 'is-active': index === activeIndex })}
           />
         ))}
       </div>

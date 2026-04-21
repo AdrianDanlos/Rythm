@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import classNames from 'classnames'
 import { CreditCard, LogOut, Settings } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { AppBrand } from './AppBrand'
@@ -93,7 +94,12 @@ export function AppBottomNav({
               >
                 <button
                   type="button"
-                  className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Summary ? 'active' : ''}`}
+                  className={classNames('tab-button', {
+                    active:
+                      showActiveStyles
+                      && activeTab === Tabs.Insights
+                      && activeInsightsTab === Tabs.Summary,
+                  })}
                   {...handleTabInteraction(goToSummary)}
                   disabled={lockNonLogTabs}
                 >
@@ -122,7 +128,12 @@ export function AppBottomNav({
                 </button>
                 <button
                   type="button"
-                  className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Timeline ? 'active' : ''}`}
+                  className={classNames('tab-button', {
+                    active:
+                      showActiveStyles
+                      && activeTab === Tabs.Insights
+                      && activeInsightsTab === Tabs.Timeline,
+                  })}
                   {...handleTabInteraction(goToTimeline)}
                   disabled={lockNonLogTabs}
                 >
@@ -151,7 +162,9 @@ export function AppBottomNav({
                 </button>
                 <button
                   type="button"
-                  className={`tab-button tab-button--log-fab ${showActiveStyles && activeTab === Tabs.Log ? 'active' : ''}`}
+                  className={classNames('tab-button', 'tab-button--log-fab', {
+                    active: showActiveStyles && activeTab === Tabs.Log,
+                  })}
                   {...handleTabInteraction(goToLog)}
                   aria-label={t('nav.log')}
                 >
@@ -159,7 +172,12 @@ export function AppBottomNav({
                 </button>
                 <button
                   type="button"
-                  className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Charts ? 'active' : ''}`}
+                  className={classNames('tab-button', {
+                    active:
+                      showActiveStyles
+                      && activeTab === Tabs.Insights
+                      && activeInsightsTab === Tabs.Charts,
+                  })}
                   {...handleTabInteraction(goToCharts)}
                   disabled={lockNonLogTabs}
                 >
@@ -183,7 +201,12 @@ export function AppBottomNav({
                 </button>
                 <button
                   type="button"
-                  className={`tab-button ${showActiveStyles && activeTab === Tabs.Insights && activeInsightsTab === Tabs.Events ? 'active' : ''}`}
+                  className={classNames('tab-button', {
+                    active:
+                      showActiveStyles
+                      && activeTab === Tabs.Insights
+                      && activeInsightsTab === Tabs.Events,
+                  })}
                   {...handleTabInteraction(goToEvents)}
                   disabled={lockNonLogTabs}
                 >

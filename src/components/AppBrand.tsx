@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { PLAY_STORE_APP_URL } from '../lib/constants'
 import { useTranslation } from 'react-i18next'
 import logo from '../assets/rythm-logo.png'
@@ -7,7 +8,7 @@ export function AppBrand({ className, logoOnly }: { className?: string, logoOnly
   const { t } = useTranslation()
   return (
     <a
-      className={`app-brand ${className ?? ''}`.trim()}
+      className={classNames('app-brand', className)}
       href={PLAY_STORE_APP_URL}
       target="_blank"
       rel="noreferrer"

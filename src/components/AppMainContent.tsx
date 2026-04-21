@@ -1,9 +1,11 @@
+import classNames from 'classnames'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import {
   Suspense,
   lazy,
   useCallback,
   useEffect,
+  useRef,
   useState,
   type FormEvent,
 } from 'react'
@@ -295,9 +297,27 @@ export function AppMainContent({
     }
   }, [])
   const shouldShowIntro = authInitialized && !session && !introCompleted
+  /** Tracks that the intro route mounted at least once (vs. opening straight to login). */
+  const introEverMountedRef = useRef(false)
 
   useEffect(() => {
-    onIntroVisibilityChange?.(shouldShowIntro)
+    if (shouldShowIntro) {
+      introEverMountedRef.current = true
+      onIntroVisibilityChange?.(true)
+    }
+  }, [onIntroVisibilityChange, shouldShowIntro])
+
+  /** Skipped intro (e.g. returning user): shell never used full-bleed intro layout. */
+  useEffect(() => {
+    if (!shouldShowIntro && !introEverMountedRef.current) {
+      onIntroVisibilityChange?.(false)
+    }
+  }, [onIntroVisibilityChange, shouldShowIntro])
+
+  const handleIntroRouteExitComplete = useCallback(() => {
+    if (!shouldShowIntro) {
+      onIntroVisibilityChange?.(false)
+    }
   }, [onIntroVisibilityChange, shouldShowIntro])
 
   // On native apps (Android/iOS), rely on the native splash screen (R logo)
@@ -346,15 +366,15 @@ export function AppMainContent({
 
   if (!session) {
     return (
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" onExitComplete={handleIntroRouteExitComplete}>
         {shouldShowIntro
           ? (
               <motion.div
                 key="intro"
                 className="auth-intro-route"
                 initial={false}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={introToAuthTransition}
               >
                 <IntroCarousel onComplete={handleCompleteIntro} />
@@ -366,10 +386,10 @@ export function AppMainContent({
                 className="auth-intro-route"
                 initial={
                   authEnterFromIntro
-                    ? { opacity: 0, y: 18 }
+                    ? { opacity: 0 }
                     : false
                 }
-                animate={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 1 }}
                 transition={introToAuthTransition}
               >
                 <AuthForm
@@ -400,7 +420,7 @@ export function AppMainContent({
       <div className="tabs primary-tabs">
         <button
           type="button"
-          className={`tab-button ${activeTab === Tabs.Insights ? 'active' : ''}`}
+          className={classNames('tab-button', { active: activeTab === Tabs.Insights })}
           disabled={lockNonLogTabs}
           onClick={() => {
             if (lockNonLogTabs) return
@@ -417,7 +437,7 @@ export function AppMainContent({
         </button>
         <button
           type="button"
-          className={`tab-button ${activeTab === Tabs.Log ? 'active' : ''}`}
+          className={classNames('tab-button', { active: activeTab === Tabs.Log })}
           onClick={() => onNavigateToPage(AppPage.Log)}
         >
           {t('nav.log')}
