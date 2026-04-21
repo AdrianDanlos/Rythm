@@ -58,6 +58,12 @@ const pt = {
     saveAccountWithGoogleHint:
       'Conecte o Google para não perder seus registros ao sair ou trocar de aparelho.',
     confirmEmailSent: 'Verifique seu e-mail para confirmar sua conta.',
+    verifyEmailTitle: 'Confirme seu e-mail',
+    verifyEmailBody:
+      'Enviamos um link para {{email}}. Abra-o para verificar e entre aqui em seguida.',
+    verifyEmailResend: 'Reenviar e-mail de confirmação',
+    verifyEmailSignOut: 'Sair',
+    resendVerificationError: 'Não foi possível reenviar o e-mail de confirmação.',
     forgotPassword: 'Esqueceu a senha?',
     forgotPasswordTitle: 'Redefinir senha',
     forgotPasswordBody:

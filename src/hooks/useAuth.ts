@@ -106,6 +106,32 @@ export const useAuth = () => {
       toast.info(t('auth.confirmEmailSent'))
     }
     setAuthLoading(false)
+    return {
+      error,
+      needsEmailConfirmation: Boolean(!error && !data.session),
+    }
+  }
+
+  const resendVerificationEmail = async (email: string) => {
+    const trimmed = email.trim()
+    if (!trimmed) {
+      return { error: new Error('Missing email') as Error | null }
+    }
+    setAuthLoading(true)
+    setAuthError(null)
+    const redirectTo = getEmailAuthRedirectUrl()
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: trimmed,
+      options: redirectTo ? { emailRedirectTo: redirectTo } : undefined,
+    })
+    if (error) {
+      toast.error(error.message ?? t('auth.resendVerificationError'))
+    }
+    else {
+      toast.info(t('auth.confirmEmailSent'))
+    }
+    setAuthLoading(false)
     return { error }
   }
 
@@ -214,6 +240,7 @@ export const useAuth = () => {
     signInAnonymously,
     signOut,
     refreshSession,
+    resendVerificationEmail,
     setAuthError,
   }
 }

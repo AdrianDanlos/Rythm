@@ -98,7 +98,7 @@ describe('useAuthActions', () => {
     vi.mocked(toast.error).mockReset()
 
     signIn.mockResolvedValue({ error: null })
-    signUp.mockResolvedValue({ error: null })
+    signUp.mockResolvedValue({ error: null, needsEmailConfirmation: false })
     resetPasswordForEmail.mockResolvedValue({ error: null })
     completePasswordRecovery.mockResolvedValue({ error: null })
     signInAnonymously.mockResolvedValue({ error: null })

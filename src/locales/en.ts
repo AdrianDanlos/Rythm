@@ -58,6 +58,11 @@ const en = {
     saveAccountWithGoogleHint:
       'Link Google to keep your logs if you sign out or change devices.',
     confirmEmailSent: 'Check your email to confirm your account.',
+    verifyEmailTitle: 'Confirm your email',
+    verifyEmailBody: 'We sent a link to {{email}}. Open it to verify, then sign in here.',
+    verifyEmailResend: 'Resend confirmation email',
+    verifyEmailSignOut: 'Sign out',
+    resendVerificationError: 'Unable to resend confirmation email.',
     forgotPassword: 'Forgot password?',
     forgotPasswordTitle: 'Reset password',
     forgotPasswordBody:

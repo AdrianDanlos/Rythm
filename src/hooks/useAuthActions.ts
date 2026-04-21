@@ -11,11 +11,15 @@ type UseAuthActionsParams = {
   authEmail: string
   authPassword: string
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>
+  signUp: (
+    email: string,
+    password: string,
+  ) => Promise<{ error: Error | null, needsEmailConfirmation: boolean }>
   resetPasswordForEmail: (email: string) => Promise<{ error: Error | null }>
   completePasswordRecovery: (newPassword: string) => Promise<{ error: Error | null }>
   signInAnonymously: () => Promise<{ error: Error | null }>
   setAuthError: (value: string | null) => void
+  onSignupAwaitingEmailConfirmation?: () => void
 }
 
 export const useAuthActions = ({
@@ -29,6 +33,7 @@ export const useAuthActions = ({
   completePasswordRecovery,
   signInAnonymously,
   setAuthError,
+  onSignupAwaitingEmailConfirmation,
 }: UseAuthActionsParams) => {
   const handleAuth = async (event: FormEvent) => {
     event.preventDefault()
@@ -36,8 +41,11 @@ export const useAuthActions = ({
 
     try {
       if (authMode === 'signup') {
-        const { error } = await signUp(authEmail, authPassword)
+        const { error, needsEmailConfirmation } = await signUp(authEmail, authPassword)
         if (error) throw error
+        if (needsEmailConfirmation) {
+          onSignupAwaitingEmailConfirmation?.()
+        }
       }
       else {
         const { error } = await signIn(authEmail, authPassword)

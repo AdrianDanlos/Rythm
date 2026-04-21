@@ -58,6 +58,12 @@ const fr = {
     saveAccountWithGoogleHint:
       'Associez Google pour conserver vos données si vous vous déconnectez ou changez d’appareil.',
     confirmEmailSent: 'Consultez vos e-mails pour confirmer votre compte.',
+    verifyEmailTitle: 'Confirmez votre e-mail',
+    verifyEmailBody:
+      'Nous avons envoyé un lien à {{email}}. Ouvrez-le pour confirmer, puis connectez-vous ici.',
+    verifyEmailResend: 'Renvoyer l’e-mail de confirmation',
+    verifyEmailSignOut: 'Se déconnecter',
+    resendVerificationError: 'Impossible de renvoyer l’e-mail de confirmation.',
     forgotPassword: 'Mot de passe oublié ?',
     forgotPasswordTitle: 'Réinitialiser le mot de passe',
     forgotPasswordBody:

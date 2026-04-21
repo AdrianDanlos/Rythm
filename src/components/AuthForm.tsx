@@ -47,20 +47,70 @@ function AndroidAuthChrome({
   )
 }
 
+export type EmailAuthFlow = 'credentials' | 'forgot' | 'verifyPending'
+
 type AuthFormProps = {
   authMode: 'signin' | 'signup'
   authEmail: string
   authPassword: string
   authLoading: boolean
-  emailFlow: 'credentials' | 'forgot'
-  onEmailFlowChange: (flow: 'credentials' | 'forgot') => void
+  emailFlow: EmailAuthFlow
+  onEmailFlowChange: (flow: EmailAuthFlow) => void
   onEmailChange: (value: string) => void
   onPasswordChange: (value: string) => void
   onSubmit: (event: FormEvent) => void
   onForgotSubmit: (event: FormEvent) => void
+  onResendVerification: () => void
+  onBackFromVerifyPending: () => void
   onGoogleSignIn: () => void
   onTryWithoutAccount: () => void
   onToggleMode: () => void
+}
+
+export function VerifyEmailScreen({
+  email,
+  authLoading,
+  onResend,
+  onBackToSignIn,
+  onSignOut,
+}: {
+  email: string
+  authLoading: boolean
+  onResend: () => void
+  onBackToSignIn?: () => void
+  onSignOut?: () => void
+}) {
+  const { t } = useTranslation()
+
+  return (
+    <AndroidAuthChrome title={t('auth.verifyEmailTitle')}>
+      <p className="native-auth-screen__chrome-lead">{t('auth.verifyEmailBody', { email })}</p>
+      <div className="stack native-auth-screen__form-stack">
+        <button
+          type="button"
+          className="native-auth-screen__primary-submit"
+          disabled={authLoading}
+          onClick={onResend}
+        >
+          {authLoading ? t('auth.working') : t('auth.verifyEmailResend')}
+        </button>
+        {onBackToSignIn
+          ? (
+              <button className="native-auth-screen__text-link" type="button" onClick={onBackToSignIn}>
+                {t('auth.backToSignIn')}
+              </button>
+            )
+          : null}
+        {onSignOut
+          ? (
+              <button className="native-auth-screen__text-link" type="button" disabled={authLoading} onClick={onSignOut}>
+                {t('auth.verifyEmailSignOut')}
+              </button>
+            )
+          : null}
+      </div>
+    </AndroidAuthChrome>
+  )
 }
 
 export function PasswordRecoveryForm({
@@ -148,11 +198,24 @@ export const AuthForm = ({
   onPasswordChange,
   onSubmit,
   onForgotSubmit,
+  onResendVerification,
+  onBackFromVerifyPending,
   onGoogleSignIn,
   onTryWithoutAccount,
   onToggleMode,
 }: AuthFormProps) => {
   const { t } = useTranslation()
+
+  if (emailFlow === 'verifyPending') {
+    return (
+      <VerifyEmailScreen
+        email={authEmail.trim()}
+        authLoading={authLoading}
+        onResend={onResendVerification}
+        onBackToSignIn={onBackFromVerifyPending}
+      />
+    )
+  }
 
   if (emailFlow === 'forgot') {
     return (

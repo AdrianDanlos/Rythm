@@ -58,6 +58,12 @@ const es = {
     saveAccountWithGoogleHint:
       'Vincula Google para no perder tus registros si cierras sesión o cambias de dispositivo.',
     confirmEmailSent: 'Revisa tu correo para confirmar tu cuenta.',
+    verifyEmailTitle: 'Confirma tu correo',
+    verifyEmailBody:
+      'Enviamos un enlace a {{email}}. Ábrelo para verificar y luego inicia sesión aquí.',
+    verifyEmailResend: 'Reenviar correo de confirmación',
+    verifyEmailSignOut: 'Cerrar sesión',
+    resendVerificationError: 'No se pudo reenviar el correo de confirmación.',
     forgotPassword: '¿Olvidaste la contraseña?',
     forgotPasswordTitle: 'Restablecer contraseña',
     forgotPasswordBody:

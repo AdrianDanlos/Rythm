@@ -47,6 +47,7 @@ import { requestScrollToSettingsReminder } from './hooks/useScrollToSettingsRemi
 import './App.css'
 import { upsertEntry } from './lib/entries'
 import { MAX_TAG_LENGTH } from './lib/utils/stringUtils'
+import { needsEmailVerification } from './lib/authEmailVerification'
 
 const CLOSE_TRANSIENT_PANELS_EVENT = 'app:close-transient-panels'
 
@@ -101,7 +102,7 @@ function App() {
   const showPrivacyPage = isPrivacyPage(pathname)
   const showDeleteAccountPage = isDeleteAccountPage(pathname)
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
-  const [authEmailFlow, setAuthEmailFlow] = useState<'credentials' | 'forgot'>('credentials')
+  const [authEmailFlow, setAuthEmailFlow] = useState<'credentials' | 'forgot' | 'verifyPending'>('credentials')
   const [authEmail, setAuthEmail] = useState('')
   const [authPassword, setAuthPassword] = useState('')
   const isNativeApp = Capacitor.isNativePlatform()
@@ -117,8 +118,27 @@ function App() {
     signInAnonymously,
     signOut,
     refreshSession,
+    resendVerificationEmail,
     setAuthError,
   } = useAuth()
+
+  const handleResendVerificationEmail = useCallback(() => {
+    void resendVerificationEmail(authEmail.trim())
+  }, [authEmail, resendVerificationEmail])
+
+  const handleResendSessionVerificationEmail = useCallback(() => {
+    const email = session?.user?.email?.trim()
+    if (email) {
+      void resendVerificationEmail(email)
+    }
+  }, [session?.user?.email, resendVerificationEmail])
+
+  const handleBackFromVerifyPending = useCallback(() => {
+    setAuthEmailFlow('credentials')
+    setAuthMode('signin')
+  }, [])
+
+  const sessionBlocksForUnverifiedEmail = needsEmailVerification(session)
 
   const toggleAuthMode = useCallback(() => {
     setAuthEmailFlow('credentials')
@@ -244,8 +264,9 @@ function App() {
     trimmedUpgradeUrl,
   } = billing
 
-  const nativeLoginChromeActive
-    = passwordRecoveryPending || (!session && !isIntroVisible)
+  const nativeLoginChromeActive = passwordRecoveryPending
+    || sessionBlocksForUnverifiedEmail
+    || (!session && !isIntroVisible)
 
   const settings = useSettingsSync(session, { nativeLoginChromeActive })
   const {
@@ -413,6 +434,9 @@ function App() {
     completePasswordRecovery,
     signInAnonymously,
     setAuthError,
+    onSignupAwaitingEmailConfirmation: () => {
+      setAuthEmailFlow('verifyPending')
+    },
   })
 
   const {
@@ -883,13 +907,13 @@ function App() {
 
   return (
     <div
-      className={`app ${session && !passwordRecoveryPending ? 'app-authenticated' : 'app-unauthenticated'}${(passwordRecoveryPending || (!session && !isIntroVisible)) ? ' app-native-login' : ''}${session && activePage === AppPage.Pro ? ' app-pro-page' : ''}${isIntroVisible ? ' app-intro' : ''}${passwordRecoveryPending ? ' app-password-recovery' : ''}`}
+      className={`app ${session && !passwordRecoveryPending && !sessionBlocksForUnverifiedEmail ? 'app-authenticated' : 'app-unauthenticated'}${(passwordRecoveryPending || sessionBlocksForUnverifiedEmail || (!session && !isIntroVisible)) ? ' app-native-login' : ''}${session && activePage === AppPage.Pro ? ' app-pro-page' : ''}${isIntroVisible ? ' app-intro' : ''}${passwordRecoveryPending ? ' app-password-recovery' : ''}`}
       onClick={handleAppClick}
       onTouchStart={handleSwipeStart}
       onTouchMove={handleSwipeMove}
       onTouchEnd={handleSwipeEnd}
     >
-      {!isIntroVisible && !passwordRecoveryPending
+      {!isIntroVisible && !passwordRecoveryPending && !sessionBlocksForUnverifiedEmail
         ? (
             <AppHeader
               onOpenMenu={() =>
@@ -908,7 +932,7 @@ function App() {
         : null}
 
       <AppSidePanel
-        isOpen={isMenuPanelOpen && !lockNonLogTabs && !passwordRecoveryPending}
+        isOpen={isMenuPanelOpen && !lockNonLogTabs && !passwordRecoveryPending && !sessionBlocksForUnverifiedEmail}
         onClose={() => setIsMenuPanelOpen(false)}
         session={session}
         isPro={isPro}
@@ -933,7 +957,7 @@ function App() {
         userId={session?.user?.id ?? null}
       />
 
-      {authInitialized && session && !passwordRecoveryPending && activePage === AppPage.Pro
+      {authInitialized && session && !passwordRecoveryPending && !sessionBlocksForUnverifiedEmail && activePage === AppPage.Pro
         ? (
             <PaywallPage
               onClose={closePaywall}
@@ -955,6 +979,10 @@ function App() {
               toggleAuthMode={toggleAuthMode}
               authEmailFlow={authEmailFlow}
               setAuthEmailFlow={setAuthEmailFlow}
+              onResendVerificationEmail={handleResendVerificationEmail}
+              onResendSessionVerificationEmail={handleResendSessionVerificationEmail}
+              onBackFromVerifyPending={handleBackFromVerifyPending}
+              onVerificationSignOut={handleSignOut}
               authEmail={authEmail}
               authPassword={authPassword}
               authLoading={authLoading}
@@ -1036,7 +1064,7 @@ function App() {
             />
           )}
 
-      {authInitialized && session && !passwordRecoveryPending && activePage !== AppPage.Pro
+      {authInitialized && session && !passwordRecoveryPending && !sessionBlocksForUnverifiedEmail && activePage !== AppPage.Pro
         ? (
             <AppBottomNav
               session={session}

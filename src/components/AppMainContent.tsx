@@ -22,7 +22,12 @@ import type {
   WeekdayAveragePoint,
   WindowStats,
 } from '../lib/types/stats'
-import { AuthForm, PasswordRecoveryForm } from './AuthForm'
+import {
+  AuthForm,
+  PasswordRecoveryForm,
+  VerifyEmailScreen,
+} from './AuthForm'
+import { needsEmailVerification } from '../lib/authEmailVerification'
 import { IntroCarousel } from './IntroCarousel'
 import { InsightsQuickStart } from './InsightsQuickStart'
 import { LogForm } from './LogForm'
@@ -54,8 +59,12 @@ type AppMainContentProps = {
   onPasswordRecoverySubmit: (event: FormEvent, newPassword: string) => void
   authMode: 'signin' | 'signup'
   toggleAuthMode: () => void
-  authEmailFlow: 'credentials' | 'forgot'
-  setAuthEmailFlow: (flow: 'credentials' | 'forgot') => void
+  authEmailFlow: 'credentials' | 'forgot' | 'verifyPending'
+  setAuthEmailFlow: (flow: 'credentials' | 'forgot' | 'verifyPending') => void
+  onResendVerificationEmail: () => void
+  onResendSessionVerificationEmail: () => void
+  onBackFromVerifyPending: () => void
+  onVerificationSignOut: () => void
   authEmail: string
   authPassword: string
   authLoading: boolean
@@ -162,6 +171,10 @@ export function AppMainContent({
   toggleAuthMode,
   authEmailFlow,
   setAuthEmailFlow,
+  onResendVerificationEmail,
+  onResendSessionVerificationEmail,
+  onBackFromVerifyPending,
+  onVerificationSignOut,
   authEmail,
   authPassword,
   authLoading,
@@ -320,6 +333,17 @@ export function AppMainContent({
     )
   }
 
+  if (session && needsEmailVerification(session)) {
+    return (
+      <VerifyEmailScreen
+        email={session.user.email ?? ''}
+        authLoading={authLoading}
+        onResend={onResendSessionVerificationEmail}
+        onSignOut={onVerificationSignOut}
+      />
+    )
+  }
+
   if (!session) {
     return (
       <AnimatePresence mode="wait">
@@ -359,6 +383,8 @@ export function AppMainContent({
                   onPasswordChange={onPasswordChange}
                   onSubmit={onAuth}
                   onForgotSubmit={onForgotSubmit}
+                  onResendVerification={onResendVerificationEmail}
+                  onBackFromVerifyPending={onBackFromVerifyPending}
                   onGoogleSignIn={onGoogleSignIn}
                   onTryWithoutAccount={onTryWithoutAccount}
                   onToggleMode={toggleAuthMode}

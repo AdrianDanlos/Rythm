@@ -58,6 +58,12 @@ const de = {
     saveAccountWithGoogleHint:
       'Google verknüpfen, damit deine Einträge erhalten bleiben.',
     confirmEmailSent: 'Bitte prüfe deine E-Mails, um dein Konto zu bestätigen.',
+    verifyEmailTitle: 'E-Mail bestätigen',
+    verifyEmailBody:
+      'Wir haben einen Link an {{email}} gesendet. Öffne ihn zur Bestätigung und melde dich dann hier an.',
+    verifyEmailResend: 'Bestätigungs-E-Mail erneut senden',
+    verifyEmailSignOut: 'Abmelden',
+    resendVerificationError: 'Bestätigungs-E-Mail konnte nicht erneut gesendet werden.',
     forgotPassword: 'Passwort vergessen?',
     forgotPasswordTitle: 'Passwort zurücksetzen',
     forgotPasswordBody:
