@@ -5,15 +5,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-const supabaseUrl = Deno.env.get('SUPABASE_URL') || Deno.env.get('URL')
-const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('ANON_KEY')
-const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SERVICE_ROLE_KEY')
+const { supabaseUrl, supabaseAnonKey, supabaseServiceRoleKey } = (() => {
+  const url = Deno.env.get('SUPABASE_URL') || Deno.env.get('URL')
+  const anon = Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('ANON_KEY')
+  const service = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || Deno.env.get('SERVICE_ROLE_KEY')
+  if (!url || !anon || !service) {
+    throw new Error('Missing required Supabase environment variables.')
+  }
+  return { supabaseUrl: url, supabaseAnonKey: anon, supabaseServiceRoleKey: service }
+})()
 const packageName = Deno.env.get('PLAY_PACKAGE_NAME') || 'com.rythm.app'
 const serviceAccountJson = Deno.env.get('GOOGLE_SERVICE_ACCOUNT_JSON')
-
-if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceRoleKey) {
-  throw new Error('Missing required Supabase environment variables.')
-}
 
 function base64urlEncode(input: string | ArrayBuffer): string {
   const bytes = typeof input === 'string'
@@ -80,11 +82,16 @@ async function getGoogleAccessToken(): Promise<string> {
   })
   if (!tokenRes.ok) {
     const text = await tokenRes.text()
+    console.error('[play-verify-purchase] Google OAuth token failed', {
+      status: tokenRes.status,
+      bodyPreview: text.slice(0, 500),
+    })
     throw new Error(`Google token error: ${tokenRes.status} ${text}`)
   }
   const tokenData = await tokenRes.json() as { access_token?: string }
   const accessToken = tokenData.access_token
   if (!accessToken) {
+    console.error('[play-verify-purchase] Google token response missing access_token')
     throw new Error('Missing access_token in Google response.')
   }
   return accessToken
@@ -105,6 +112,12 @@ async function getSubscriptionFromPlay(
   })
   if (!res.ok) {
     const text = await res.text()
+    console.error('[play-verify-purchase] Play API subscription lookup failed', {
+      status: res.status,
+      packageName: pkg,
+      subscriptionId,
+      bodyPreview: text.slice(0, 500),
+    })
     throw new Error(`Play API error: ${res.status} ${text}`)
   }
   const data = await res.json() as {
@@ -134,6 +147,10 @@ async function updateUserAppMetadata(
     headers: adminHeaders,
   })
   if (!userRes.ok) {
+    console.error('[play-verify-purchase] auth admin GET user failed', {
+      userId,
+      status: userRes.status,
+    })
     return { error: 'Unable to fetch user.' }
   }
   const userPayload = await userRes.json()
@@ -146,6 +163,12 @@ async function updateUserAppMetadata(
     }),
   })
   if (!updateRes.ok) {
+    const errText = await updateRes.text()
+    console.error('[play-verify-purchase] auth admin PUT user failed', {
+      userId,
+      status: updateRes.status,
+      bodyPreview: errText.slice(0, 300),
+    })
     return { error: 'Failed to update user.' }
   }
   return { error: null }
@@ -270,6 +293,12 @@ Deno.serve(async (req) => {
   }
   catch (err) {
     const message = err instanceof Error ? err.message : 'Verification failed.'
+    console.error('[play-verify-purchase] verification error', {
+      message,
+      userId: user.id,
+      packageName: pkg,
+      subscriptionId,
+    })
     return new Response(
       JSON.stringify({ error: message }),
       { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
