@@ -34,7 +34,8 @@ import {
   getTabForPage,
 } from './lib/appTabs'
 import { moodColors, tagColorPalette } from './lib/colors'
-import { PLAY_STORE_APP_URL } from './lib/constants'
+import { KO_FI_URL, PLAY_STORE_APP_URL } from './lib/constants'
+import { openExternalUrl } from './lib/openExternalUrl'
 import { STORAGE_KEYS } from './lib/storageKeys'
 import {
   DAILY_REMINDER_ID,
@@ -900,6 +901,7 @@ function App() {
         onManageSubscription={handleManageSubscription}
         onReviewApp={() => window.open(PLAY_STORE_APP_URL, '_blank', 'noreferrer')}
         onOpenFeedback={openFeedback}
+        onOpenKoFi={() => { void openExternalUrl(KO_FI_URL) }}
         onSignOut={handleSignOut}
         onSaveAccountWithGoogle={handleGoogleSignIn}
       />

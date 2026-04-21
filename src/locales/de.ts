@@ -252,6 +252,7 @@ const de = {
     quickReviewHelps: 'Eine kurze Bewertung hilft uns sehr.',
     rateOnGooglePlay: 'Bei Google Play bewerten',
     sendFeedback: 'Feedback senden',
+    donate: 'Spenden',
     feedbackCta: 'Anregungen, Fehler oder Ideen – wir freuen uns auf deine Nachricht.',
     summaryTitle: 'Deine Übersicht auf einen Blick',
     summaryIntro: 'Hier siehst du deine Rhythm-Punkte, deine Serie und den Zusammenhang zwischen Schlaf und Stimmung.',

@@ -252,6 +252,7 @@ const pt = {
     quickReviewHelps: 'Uma avaliação rápida ajuda muito.',
     rateOnGooglePlay: 'Avaliar no Google Play',
     sendFeedback: 'Enviar feedback',
+    donate: 'Doar',
     feedbackCta: 'Sugestões, bugs ou ideias — a gente quer saber.',
     summaryTitle: 'Seu resumo de um jeito fácil',
     summaryIntro: 'Aqui você vê seus pontos Rhythm, sua sequência e como sono e humor se conectam.',

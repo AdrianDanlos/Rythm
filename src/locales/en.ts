@@ -253,6 +253,7 @@ const en = {
     quickReviewHelps: 'A quick review helps a ton.',
     rateOnGooglePlay: 'Rate on Google Play',
     sendFeedback: 'Send feedback',
+    donate: 'Donate',
     feedbackCta: 'Suggestions, bugs, or ideas—we would love to hear from you.',
     summaryTitle: 'Your overview at a glance',
     summaryIntro: 'This is where you will see your Rhythm score, streak, and how your sleep and mood connect.',

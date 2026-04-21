@@ -253,6 +253,7 @@ const es = {
     quickReviewHelps: 'Una reseña rápida ayuda mucho.',
     rateOnGooglePlay: 'Calificar en Google Play',
     sendFeedback: 'Enviar comentarios',
+    donate: 'Donar',
     feedbackCta: 'Sugerencias, errores o ideas: queremos escucharte.',
     summaryTitle: 'Tu resumen de un vistazo',
     summaryIntro: 'Aquí verás tus puntos Rhythm, racha y cómo se conectan sueño y ánimo.',

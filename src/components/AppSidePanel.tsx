@@ -1,5 +1,6 @@
 import {
   CreditCard,
+  HandCoins,
   FileDown,
   FileText,
   Link2,
@@ -25,6 +26,7 @@ type AppSidePanelProps = {
   onManageSubscription: () => void
   onReviewApp: () => void
   onOpenFeedback: () => void
+  onOpenKoFi: () => void
   onSignOut: () => void
   onSaveAccountWithGoogle: () => void
 }
@@ -75,6 +77,7 @@ export function AppSidePanel(props: AppSidePanelProps) {
     onManageSubscription,
     onReviewApp,
     onOpenFeedback,
+    onOpenKoFi,
     onSignOut,
     onSaveAccountWithGoogle,
   } = props
@@ -146,6 +149,11 @@ export function AppSidePanel(props: AppSidePanelProps) {
             icon={MessageSquare}
             label={t('insights.sendFeedback')}
             onClick={() => runAndClose(onOpenFeedback)}
+          />
+          <PanelButton
+            icon={HandCoins}
+            label={t('insights.donate')}
+            onClick={() => runAndClose(onOpenKoFi)}
           />
           {session?.user?.is_anonymous && (
             <PanelButton

@@ -252,6 +252,7 @@ const fr = {
     quickReviewHelps: 'Un avis rapide aide vraiment.',
     rateOnGooglePlay: 'Noter sur Google Play',
     sendFeedback: 'Envoyer un commentaire',
+    donate: 'Faire un don',
     feedbackCta: 'Suggestions, bugs ou idées : on veut tout entendre.',
     summaryTitle: 'Votre résumé en un coup d\'œil',
     summaryIntro: 'Retrouvez vos points Rhythm, votre série et le lien entre sommeil et humeur.',
