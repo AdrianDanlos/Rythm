@@ -60,10 +60,9 @@ export function Privacy() {
             </p>
             <h4>Where your data is stored</h4>
             <p>
-              Your account and log data are stored and processed by Supabase. If
-              you subscribe on the web, payment data is processed by Stripe. On
+              Your account and log data are stored and processed by Supabase. On
               Android, in-app subscriptions are handled by Google Play. We do not
-              store your payment card details.
+              store your payment card details in the app.
             </p>
             <h4>Your rights</h4>
             <p>

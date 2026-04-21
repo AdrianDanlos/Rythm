@@ -12,7 +12,7 @@ type UseBillingActionsParams = {
   trimmedUpgradeUrl?: string
   isPortalLoading: boolean
   setIsPortalLoading: (value: boolean) => void
-  subscriptionSource?: 'stripe' | 'play'
+  subscriptionSource?: 'play'
   refreshSession?: () => Promise<unknown>
 }
 
@@ -71,25 +71,6 @@ export const useBillingActions = ({
       }
     }
 
-    try {
-      const platform = Capacitor.isNativePlatform() ? 'mobile' : 'web'
-      const { data, error } = await supabase.functions.invoke(
-        'stripe-checkout-session',
-        { body: { platform } },
-      )
-      if (error) {
-        throw error
-      }
-      const checkoutUrl = data?.url as string | undefined
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl
-        return true
-      }
-    }
-    catch {
-      // Fall back to static upgrade URL if configured.
-    }
-
     if (trimmedUpgradeUrl) {
       window.open(trimmedUpgradeUrl, '_blank', 'noreferrer')
       return true
@@ -131,19 +112,11 @@ export const useBillingActions = ({
         await Browser.open({ url: PLAY_SUBSCRIPTIONS_URL })
         return
       }
-      const { data, error } = await supabase.functions.invoke(
-        'stripe-portal-session',
-        { body: {} },
-      )
-      if (error) {
-        throw error
-      }
-      const portalUrl = data?.url as string | undefined
-      if (portalUrl) {
-        window.location.href = portalUrl
+      if (trimmedUpgradeUrl) {
+        window.open(trimmedUpgradeUrl, '_blank', 'noreferrer')
         return
       }
-      throw new Error(t('errors.missingPortalUrl'))
+      window.alert(t('errors.unableToOpenSubscriptionManagement'))
     }
     catch {
       window.alert(t('errors.unableToOpenSubscriptionManagement'))
@@ -151,7 +124,7 @@ export const useBillingActions = ({
     finally {
       setIsPortalLoading(false)
     }
-  }, [isPortalLoading, setIsPortalLoading, subscriptionSource])
+  }, [isPortalLoading, setIsPortalLoading, subscriptionSource, trimmedUpgradeUrl])
 
   return {
     handleStartCheckout,

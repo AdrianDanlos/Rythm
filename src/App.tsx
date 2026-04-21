@@ -22,15 +22,10 @@ import { useSettingsSync } from './hooks/useSettingsSync'
 import { useAppShell } from './hooks/useAppShell'
 import { useEntries } from './hooks/useEntries'
 import { useLogForm } from './hooks/useLogForm'
-import { Privacy } from './billing/stripe/Privacy'
-import { DeleteAccountPage } from './billing/stripe/DeleteAccountPage'
+import { Privacy } from './billing/legal/Privacy'
+import { DeleteAccountPage } from './billing/legal/DeleteAccountPage'
 import { checkForAndroidUpdate } from './lib/appUpdate'
-import {
-  ROUTES,
-  isPrivacyPage,
-  isDeleteAccountPage,
-  isStripeReturn,
-} from './billing/stripe/routes'
+import { isPrivacyPage, isDeleteAccountPage } from './billing/legal/routes'
 import {
   AppPage,
   getInsightsSectionForPage,
@@ -104,7 +99,6 @@ function App() {
   const pathname = location.pathname
   const showPrivacyPage = isPrivacyPage(pathname)
   const showDeleteAccountPage = isDeleteAccountPage(pathname)
-  const showStripeReturnPage = isStripeReturn(pathname)
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin')
   const [authEmail, setAuthEmail] = useState('')
   const [authPassword, setAuthPassword] = useState('')
@@ -513,16 +507,7 @@ function App() {
   }, [isMenuPanelOpen])
 
   useEffect(() => {
-    if (!showStripeReturnPage) return
-    if (!authInitialized) return
-    if (pathname === ROUTES.stripeSuccess) {
-      void refreshSession()
-    }
-    navigate(getPathForPage(getDefaultPageForUser(userId)), { replace: true })
-  }, [showStripeReturnPage, pathname, refreshSession, navigate, userId, authInitialized])
-
-  useEffect(() => {
-    if (showPrivacyPage || showDeleteAccountPage || showStripeReturnPage) return
+    if (showPrivacyPage || showDeleteAccountPage) return
 
     if (hasSupabaseAuthCallbackPayload(location.search, location.hash)) {
       return
@@ -543,7 +528,6 @@ function App() {
   }, [
     showPrivacyPage,
     showDeleteAccountPage,
-    showStripeReturnPage,
     pathname,
     location.search,
     location.hash,
@@ -553,7 +537,7 @@ function App() {
   ])
 
   useEffect(() => {
-    if (!userId || showPrivacyPage || showDeleteAccountPage || showStripeReturnPage) {
+    if (!userId || showPrivacyPage || showDeleteAccountPage) {
       return
     }
 
@@ -565,10 +549,10 @@ function App() {
     if (!isReturningUser(userId)) {
       navigate(getPathForPage(AppPage.Log), { replace: true })
     }
-  }, [userId, showPrivacyPage, showDeleteAccountPage, showStripeReturnPage, pathname, navigate])
+  }, [userId, showPrivacyPage, showDeleteAccountPage, pathname, navigate])
 
   useEffect(() => {
-    if (showPrivacyPage || showDeleteAccountPage || showStripeReturnPage) return
+    if (showPrivacyPage || showDeleteAccountPage) return
     if (pathname !== getPathForPage(AppPage.Pro)) return
     if (!authInitialized) return
     if (hasSupabaseAuthCallbackPayload(location.search, location.hash)) return
@@ -582,7 +566,6 @@ function App() {
   }, [
     showPrivacyPage,
     showDeleteAccountPage,
-    showStripeReturnPage,
     pathname,
     location.search,
     location.hash,

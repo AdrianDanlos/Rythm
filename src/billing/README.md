@@ -1,10 +1,9 @@
-# Billing (Stripe + Google Play)
+# Billing (Google Play)
 
-- **`stripe/`** – Web (Stripe): landing page, checkout/portal routes.
+- **`legal/`** – Static pages: privacy policy and delete-account instructions.
 - **`play/`** – Mobile (Google Play): subscription product config.
 - **`shared/`** – Paywall UI, billing actions hook, pricing label; used by both.
 
-Supabase functions follow the same split by name:
+Supabase functions:
 
-- **Stripe (web):** `stripe-checkout-session`, `stripe-portal-session`, `stripe-webhook`
 - **Play (mobile):** `play-verify-purchase`, `play-rtdn`
