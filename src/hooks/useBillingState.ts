@@ -10,11 +10,16 @@ export function useBillingState(session: Session | null) {
   const canManageSubscription = isPro && subPlay
   const upgradeUrl = import.meta.env.VITE_UPGRADE_URL as string | undefined
   const trimmedUpgradeUrl = upgradeUrl?.trim() ?? undefined
+  const playIntroOfferConsumed = Boolean(
+    (session?.user?.app_metadata as { play_intro_offer_consumed?: unknown } | undefined)
+      ?.play_intro_offer_consumed,
+  )
 
   return {
     isPro,
     subscriptionSource,
     canManageSubscription,
     trimmedUpgradeUrl,
+    playIntroOfferConsumed,
   }
 }

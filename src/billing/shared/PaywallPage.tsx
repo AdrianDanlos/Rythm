@@ -27,6 +27,7 @@ type PaywallPageProps = {
   onUpgrade?: (basePlanId?: string) => Promise<boolean> | boolean
   onRestore?: () => Promise<boolean>
   showRestore?: boolean
+  playIntroOfferConsumed?: boolean
 }
 
 const premiumFeatures: { key: string, Icon: LucideIcon }[] = [
@@ -56,6 +57,7 @@ export const PaywallPage = ({
   onUpgrade,
   onRestore,
   showRestore,
+  playIntroOfferConsumed = false,
 }: PaywallPageProps) => {
   const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
@@ -70,7 +72,7 @@ export const PaywallPage = ({
       : 'paywall.proPriceLabel'
   const { amount, periodPart } = splitPriceLabel(t(priceLabelKey))
   const trialDays = getPlayFreeTrialDays()
-  const showTrialOffer = isAndroidPlayBilling() && trialDays > 0
+  const showTrialOffer = isAndroidPlayBilling() && trialDays > 0 && !playIntroOfferConsumed
   const fullPriceLabel = [amount, periodPart].filter(Boolean).join(' ')
 
   const handleUpgrade = async () => {
