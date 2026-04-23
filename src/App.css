@@ -14,19 +14,17 @@
   margin: 0;
   padding: 0;
   gap: 0;
-  min-height: 100dvh;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
 }
 
-/* Native: same outer shell during intro as on login — avoid a layout jump at transition.
-   Intro carousel already applies insets; strip duplicate top padding from the sheet. */
+/* Native: keep intro close to login spacing, but preserve a top buffer so the
+   hero title never slips under system UI on real devices. */
 .app.app-intro.app-native-login .intro-carousel {
-  padding-top: 0;
-}
-
-.app.app-intro.app-native-login .intro-carousel__hero {
-  margin-top: 14px;
+  /* Keep a small top buffer in native webviews to avoid title clipping while
+     still preventing a large visual jump from the login sheet. */
+  padding-top: max(8px, env(safe-area-inset-top, 0px));
 }
 
 /* Full-bleed stage for intro ↔ login cross-fade (framer-motion wrappers). */
@@ -42,8 +40,8 @@
 .app-authenticated.app-pro-page {
   padding: env(safe-area-inset-top, 0px) 0 0;
   gap: 0;
-  min-height: 100dvh;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .app-authenticated.app-pro-page .app-header {
@@ -53,8 +51,8 @@
 /* Native (Capacitor) Google-only login — Figma-style full screen */
 .app-native-login {
   background: #ffffff;
-  height: 100dvh;
   height: 100vh;
+  height: 100dvh;
   box-sizing: border-box;
   padding-top: max(16px, env(safe-area-inset-top, 0px));
   padding-left: max(20px, env(safe-area-inset-left, 0px));
@@ -402,7 +400,9 @@
     var(--intro-svg-ink) 72%
   );
   background: var(--bg);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
 }
 
 :root[data-theme="dark"] .intro-carousel {
