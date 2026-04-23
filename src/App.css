@@ -131,19 +131,66 @@
   text-align: left;
 }
 
+/* CTA: min-height + no vertical padding centers label/icon consistently in WebKit/WebView.
+   (Padding-only buttons inherit loose line-height and can look off-center on some devices.) */
+.native-auth-screen__primary-submit,
+.native-auth-screen__google-btn {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  margin: 0;
+  min-height: 48px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  line-height: 1.15;
+  font-family: inherit;
+  border-radius: 999px;
+  cursor: pointer;
+  text-align: center;
+}
+
 .native-auth-screen__primary-submit {
   width: 100%;
   margin-top: 8px;
-  padding: 14px 20px;
-  border-radius: 999px;
   border: none;
   background: linear-gradient(135deg, #4a7dff 0%, #7d4bff 100%);
   color: #ffffff;
-  font-size: 1rem;
   font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
   box-shadow: 0 4px 14px rgba(74, 125, 255, 0.2);
+}
+
+/* Match centered form (margin: 0 auto); stretch would leave the pill left of the primary on wide inner widths. */
+.native-auth-screen__inner--form > .native-auth-screen__google-btn {
+  align-self: center;
+}
+
+.native-auth-screen__btn-content {
+  display: block;
+  min-width: 0;
+  width: 100%;
+}
+
+.native-auth-screen__btn-row {
+  display: flex;
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: 100%;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 12px;
+}
+
+.native-auth-screen__btn-row .native-auth-screen__btn-text {
+  display: block;
+  width: auto;
+  line-height: 1.2;
+  text-align: start;
+  word-break: normal;
 }
 
 .native-auth-screen__primary-submit:disabled {
@@ -270,19 +317,11 @@
 .native-auth-screen__google-btn {
   width: 100%;
   max-width: 340px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 16px 24px;
-  border-radius: 999px;
+  padding: 0 24px;
   border: 1px solid #e2e8f0;
   background: #ffffff;
   color: #1e3a5f;
-  font-size: 1rem;
   font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
   transition:
     transform 0.15s ease,
@@ -308,6 +347,7 @@
 }
 
 .native-auth-screen__google-logo {
+  display: block;
   width: 22px;
   height: 22px;
   object-fit: contain;

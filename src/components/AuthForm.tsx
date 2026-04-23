@@ -298,11 +298,13 @@ export const AuthForm = ({
                 )}
           </div>
           <button type="submit" className="native-auth-screen__primary-submit" disabled={authLoading}>
-            {authLoading
-              ? t('auth.working')
-              : authMode === 'signin'
-                ? t('auth.signIn')
-                : t('auth.signUp')}
+            <span className="native-auth-screen__btn-content">
+              {authLoading
+                ? t('auth.working')
+                : authMode === 'signin'
+                  ? t('auth.signIn')
+                  : t('auth.signUp')}
+            </span>
           </button>
         </form>
       </div>
@@ -315,8 +317,10 @@ export const AuthForm = ({
           onGoogleSignIn()
         }}
       >
-        <img className="native-auth-screen__google-logo" src={googleLogo} alt="" />
-        <span>{t('auth.continueWithGoogle')}</span>
+        <span className="native-auth-screen__btn-row">
+          <img className="native-auth-screen__google-logo" src={googleLogo} alt="" />
+          <span className="native-auth-screen__btn-text">{t('auth.continueWithGoogle')}</span>
+        </span>
       </button>
       <div className="native-auth-screen__footer-links">
         <button

@@ -6,16 +6,23 @@ import { formatLongDate } from '../utils/dateFormatters'
 import { formatSleepHours } from '../utils/sleepHours'
 import type { ReportData } from './reportData'
 import {
-  drawBullets,
-  drawLines,
+  CONTENT_WIDTH,
+  PAGE,
+  drawCard,
+  drawDualSeriesChart,
+  drawHorizontalBars,
+  drawImpactBars,
   drawSectionHeader,
-  drawSparkline,
+  drawStatCard,
+  ensurePageSpace,
   startNewPage,
 } from './reportLayout'
 
 type YRef = {
   value: number
 }
+
+const getCardLabel = (value: string) => value.split(':')[0] ?? value
 
 type ReportHeaderParams = {
   doc: jsPDF
@@ -37,48 +44,39 @@ export const renderReportHeader = ({
   brandImage,
 }: ReportHeaderParams) => {
   const pageWidth = doc.internal.pageSize.getWidth()
-  const marginLeft = 14
-  // Match app nav (dark theme): column layout (eyebrow on top, logo below), dark bar, logo 100×34 proportion
-  const logoHeight = 10
+  const marginLeft = PAGE.marginLeft
+  const logoHeight = 12
   const logoWidth = (100 / 34) * logoHeight
-  const eyebrowBaseline = 5
-  const gap = 5
-  const logoY = eyebrowBaseline + gap
-  const bannerHeight = logoY + logoHeight + 4
-  const bannerY = 0
+  const heroHeight = 70
 
-  doc.setFillColor(17, 24, 39)
-  doc.rect(0, bannerY, pageWidth, bannerHeight, 'F')
-  doc.setDrawColor(31, 41, 55)
-  doc.setLineWidth(0.3)
-  doc.line(0, bannerY + bannerHeight, pageWidth, bannerY + bannerHeight)
+  doc.setFillColor(15, 23, 42)
+  doc.rect(0, 0, pageWidth, heroHeight, 'F')
+  doc.setFillColor(30, 41, 59)
+  doc.rect(0, heroHeight - 8, pageWidth, 8, 'F')
 
-  doc.setFontSize(7)
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(9)
   doc.setTextColor(148, 163, 184)
-  doc.text(t('reports.reportLogoLabel'), marginLeft, eyebrowBaseline)
-
+  doc.text(t('reports.reportLogoLabel'), marginLeft, 12)
   if (brandImage) {
-    doc.addImage(brandImage, 'PNG', marginLeft, logoY, logoWidth, logoHeight)
+    doc.addImage(brandImage, 'PNG', marginLeft, 16, logoWidth, logoHeight)
   }
 
-  yRef.value = bannerY + bannerHeight + 10
-
-  doc.setFontSize(18)
-  doc.setTextColor(15, 23, 42)
-  doc.text(title, marginLeft, yRef.value)
-  yRef.value += 8
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(22)
+  doc.setTextColor(248, 250, 252)
+  doc.text(title, marginLeft, 42)
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(11)
+  doc.setTextColor(226, 232, 240)
+  doc.text(`${formatLongDate(start)} - ${formatLongDate(end)}`, marginLeft, 50)
 
   if (welcomeName) {
-    doc.setFontSize(12)
-    doc.setTextColor(100, 116, 139)
-    doc.text(t('reports.welcomeReport', { name: welcomeName }), marginLeft, yRef.value)
-    yRef.value += 7
+    doc.setFontSize(10)
+    doc.text(t('reports.welcomeReport', { name: welcomeName }), marginLeft, 57)
   }
 
-  doc.setFontSize(11)
-  doc.setTextColor(80)
-  doc.text(`${formatLongDate(start)} - ${formatLongDate(end)}`, marginLeft, yRef.value)
-  yRef.value += 10
+  yRef.value = heroHeight + 8
 }
 
 type Last30DaysParams = {
@@ -97,161 +95,179 @@ export const renderLast30DaysSection = ({
     recentEntries,
     monthlyConsistency,
     monthlyCorrelation,
+    monthlyTags,
     avgSleep,
     avgMood,
-    sleepDelta,
-    moodDelta,
     bestDay,
     bestNight,
     biggestMoodDip,
     weeklySummaries,
   } = data
 
-  doc.setTextColor(20)
+  doc.setTextColor(15, 23, 42)
   drawSectionHeader(doc, yRef, t('reports.last30Days'))
 
-  if (recentEntries.length > 1) {
-    const chartWidth = 182
-    const chartHeight = 22
-    doc.setFontSize(12)
-    doc.text(t('reports.overview'), 16, yRef.value)
-    yRef.value += 5
-    const sorted = [...recentEntries].sort((a, b) =>
-      a.entry_date.localeCompare(b.entry_date),
-    )
-    const sleepSeries = sorted.map(entry =>
-      entry.sleep_hours === null ? null : Number(entry.sleep_hours),
-    )
-    const moodSeries = sorted.map(entry =>
-      entry.mood === null ? null : Number(entry.mood),
-    )
-    drawSparkline(doc, sleepSeries, 14, yRef.value, chartWidth, chartHeight, [79, 70, 229])
-    drawSparkline(doc, moodSeries, 14, yRef.value, chartWidth, chartHeight, [14, 165, 233])
-    const legendY = yRef.value + chartHeight + 6
-    doc.setFontSize(10)
-    doc.setTextColor(60)
-    doc.setLineWidth(1.2)
-    doc.setDrawColor(79, 70, 229)
-    doc.line(16, legendY, 26, legendY)
-    doc.text(t('common.sleep'), 30, legendY + 1)
-    doc.setDrawColor(14, 165, 233)
-    doc.line(60, legendY, 70, legendY)
-    doc.text(t('common.mood'), 74, legendY + 1)
-    doc.setTextColor(20)
-    yRef.value += chartHeight + 18
-  }
+  ensurePageSpace(doc, yRef, 58)
+  const cardGap = 4
+  const cardWidth = (CONTENT_WIDTH - cardGap) / 2
+  const cardHeight = 24
+  const firstRowY = yRef.value
+  const secondRowY = yRef.value + cardHeight + 4
+  drawStatCard(doc, PAGE.marginLeft, firstRowY, cardWidth, cardHeight, {
+    label: getCardLabel(t('reports.entriesLogged', { count: 0 })),
+    value: `${recentEntries.length}`,
+    helper: t('reports.last30Days'),
+    accent: [56, 189, 248],
+  })
+  drawStatCard(doc, PAGE.marginLeft + cardWidth + cardGap, firstRowY, cardWidth, cardHeight, {
+    label: getCardLabel(t('reports.averageSleep', { value: '—' })),
+    value: avgSleep !== null ? formatSleepHours(avgSleep) : '—',
+    helper: t('common.sleep'),
+    accent: [99, 102, 241],
+  })
+  drawStatCard(doc, PAGE.marginLeft, secondRowY, cardWidth, cardHeight, {
+    label: getCardLabel(t('reports.averageMood', { value: '—' })),
+    value: avgMood !== null ? `${avgMood.toFixed(1)} / 5` : '—',
+    helper: t('common.mood'),
+    accent: [16, 185, 129],
+  })
+  drawStatCard(doc, PAGE.marginLeft + cardWidth + cardGap, secondRowY, cardWidth, cardHeight, {
+    label: getCardLabel(t('reports.sleepConsistency', { value: '—' })),
+    value: monthlyConsistency ? t(`insights.sleepConsistencyLevels.${monthlyConsistency}`) : '—',
+    helper: monthlyCorrelation ? t(`insights.correlationLevels.${monthlyCorrelation}`) : '—',
+    accent: [234, 179, 8],
+  })
+  yRef.value += cardHeight * 2 + 10
 
-  drawBullets(doc, yRef, [
-    t('reports.entriesLogged', { count: recentEntries.length }),
-    t('reports.averageSleep', { value: avgSleep !== null ? formatSleepHours(avgSleep) : '—' }),
-    t('reports.averageMood', { value: avgMood !== null ? avgMood.toFixed(1) : '—' }),
-    t('reports.sleepConsistency', { value: monthlyConsistency ? t(`insights.sleepConsistencyLevels.${monthlyConsistency}`) : '—' }),
-    t('reports.sleepMoodLink', { value: monthlyCorrelation ? t(`insights.correlationLevels.${monthlyCorrelation}`) : '—' }),
-  ])
+  if (recentEntries.length > 1) {
+    ensurePageSpace(doc, yRef, 72)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(12)
+    doc.text(t('reports.overview'), PAGE.marginLeft, yRef.value)
+    doc.setFont('helvetica', 'normal')
+    yRef.value += 5
+    const sorted = [...recentEntries].sort((a, b) => a.entry_date.localeCompare(b.entry_date))
+    const points = sorted.map(entry => ({
+      label: entry.entry_date,
+      primary: entry.sleep_hours === null ? null : Number(entry.sleep_hours),
+      secondary: entry.mood === null ? null : Number(entry.mood),
+    }))
+    drawDualSeriesChart(doc, points, {
+      x: PAGE.marginLeft,
+      y: yRef.value,
+      width: CONTENT_WIDTH,
+      height: 54,
+      primaryColor: [99, 102, 241],
+      secondaryColor: [16, 185, 129],
+      primaryRange: { min: 4, max: 10 },
+      secondaryRange: { min: 1, max: 5 },
+    })
+    yRef.value += 60
+  }
 
   if (bestDay) {
+    ensurePageSpace(doc, yRef, 22)
     const bestTags = bestDay.tags?.length ? bestDay.tags.join(', ') : '—'
-    drawBullets(doc, yRef, [
-      t('reports.bestDay', { date: formatLongDate(new Date(`${bestDay.entry_date}T00:00:00`)) }),
-    ])
-    drawLines(
-      doc,
-      yRef,
-      [
-        t('reports.moodValue', { value: bestDay.mood !== null ? bestDay.mood : '—' }),
-        t('reports.sleepValue', { value: bestDay.sleep_hours !== null ? formatSleepHours(Number(bestDay.sleep_hours)) : '—' }),
-        t('reports.dailyEventsValue', { value: bestTags }),
-      ],
-      22,
-    )
+    drawCard(doc, PAGE.marginLeft, yRef.value, CONTENT_WIDTH, 18, {
+      bg: [240, 253, 250],
+      border: [167, 243, 208],
+    })
+    doc.setFontSize(10)
+    doc.setTextColor(6, 95, 70)
+    doc.setFont('helvetica', 'bold')
+    doc.text(t('reports.bestDay', { date: formatLongDate(new Date(`${bestDay.entry_date}T00:00:00`)) }), PAGE.marginLeft + 3, yRef.value + 6)
+    doc.setFont('helvetica', 'normal')
+    doc.text(`${t('reports.moodValue', { value: bestDay.mood ?? '—' })} · ${t('reports.sleepValue', { value: bestDay.sleep_hours !== null ? formatSleepHours(Number(bestDay.sleep_hours)) : '—' })}`, PAGE.marginLeft + 3, yRef.value + 12)
+    doc.setFontSize(9)
+    doc.text(t('reports.dailyEventsValue', { value: bestTags }), PAGE.marginLeft + 3, yRef.value + 16)
+    yRef.value += 22
   }
 
-  if (weeklySummaries.length) {
-    yRef.value += 6
+  if (weeklySummaries.length > 0) {
+    ensurePageSpace(doc, yRef, 50)
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text(t('reports.weeklyAverages'), 16, yRef.value)
+    doc.text(t('reports.weeklyAverages'), PAGE.marginLeft, yRef.value)
     doc.setFont('helvetica', 'normal')
-    yRef.value += 7
-    drawLines(
+    yRef.value += 6
+    const maxSleep = Math.max(...weeklySummaries.map(week => week.avgSleep ?? 0), 1)
+    const barHeight = drawHorizontalBars(
       doc,
-      yRef,
-      weeklySummaries.map(
-        week =>
-          `${week.label} · ${t('common.sleep')} ${
-            week.avgSleep !== null ? formatSleepHours(week.avgSleep) : '—'
-          } · ${t('common.mood')} ${week.avgMood !== null ? week.avgMood.toFixed(1) : '—'}`,
-      ),
-      18,
+      weeklySummaries.map(week => ({
+        label: week.label.split(' - ')[0] ?? week.label,
+        value: week.avgSleep ?? 0,
+        displayValue: `${week.avgSleep !== null ? formatSleepHours(week.avgSleep) : '—'} / ${week.avgMood !== null ? week.avgMood.toFixed(1) : '—'}`,
+      })),
+      {
+        x: PAGE.marginLeft,
+        y: yRef.value,
+        width: CONTENT_WIDTH - 12,
+        itemHeight: 8,
+        gap: 2,
+        maxValue: maxSleep,
+        color: [99, 102, 241],
+      },
     )
+    yRef.value += barHeight + 6
   }
 
-  const highlightLines: string[] = []
   if (bestNight) {
-    const sleepValue = Number(bestNight.sleep_hours)
-    if (Number.isFinite(sleepValue)) {
-      highlightLines.push(
-        t('reports.bestNight', {
-          date: formatLongDate(new Date(`${bestNight.entry_date}T00:00:00`)),
-          value: formatSleepHours(sleepValue),
-        }),
-      )
-    }
+    ensurePageSpace(doc, yRef, 10)
+    doc.setFontSize(10)
+    doc.setTextColor(30, 41, 59)
+    doc.text(t('reports.bestNight', {
+      date: formatLongDate(new Date(`${bestNight.entry_date}T00:00:00`)),
+      value: formatSleepHours(Number(bestNight.sleep_hours)),
+    }), PAGE.marginLeft, yRef.value)
+    yRef.value += 6
   }
   const mostConsistentWeek = weeklySummaries
     .filter(week => week.sleepStdDev !== null)
     .sort((a, b) => (a.sleepStdDev ?? 0) - (b.sleepStdDev ?? 0))[0]
   if (mostConsistentWeek?.sleepStdDev !== null) {
-    highlightLines.push(
-      t('reports.mostConsistentWeek', {
-        label: mostConsistentWeek.label,
-        value: formatSleepHours(mostConsistentWeek.sleepStdDev),
-      }),
-    )
+    ensurePageSpace(doc, yRef, 10)
+    doc.text(t('reports.mostConsistentWeek', {
+      label: mostConsistentWeek.label,
+      value: formatSleepHours(mostConsistentWeek.sleepStdDev),
+    }), PAGE.marginLeft, yRef.value)
+    yRef.value += 6
   }
   if (biggestMoodDip) {
-    highlightLines.push(
-      t('reports.biggestMoodDip', {
-        from: formatLongDate(new Date(`${biggestMoodDip.from.entry_date}T00:00:00`)),
-        to: formatLongDate(new Date(`${biggestMoodDip.to.entry_date}T00:00:00`)),
-        delta: biggestMoodDip.delta.toFixed(1),
-      }),
-    )
+    ensurePageSpace(doc, yRef, 10)
+    doc.text(t('reports.biggestMoodDip', {
+      from: formatLongDate(new Date(`${biggestMoodDip.from.entry_date}T00:00:00`)),
+      to: formatLongDate(new Date(`${biggestMoodDip.to.entry_date}T00:00:00`)),
+      delta: biggestMoodDip.delta.toFixed(1),
+    }), PAGE.marginLeft, yRef.value)
+    yRef.value += 8
   }
-  if (highlightLines.length) {
+
+  if (monthlyTags.length) {
+    ensurePageSpace(doc, yRef, 44)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(12)
+    doc.text(t('reports.mostUsedEvents'), PAGE.marginLeft, yRef.value)
+    doc.setFont('helvetica', 'normal')
     yRef.value += 6
-    doc.setFontSize(12)
-    doc.setFont('helvetica', 'bold')
-    doc.text(t('reports.highlights'), 16, yRef.value)
-    doc.setFont('helvetica', 'normal')
-    yRef.value += 7
-    drawBullets(doc, yRef, highlightLines.slice(0, 4), 18)
-  }
-
-  const summaryLines: string[] = []
-  if (sleepDelta !== null) {
-    summaryLines.push(
-      sleepDelta >= 0
-        ? t('reports.sleepIncreased', { value: formatSleepHours(sleepDelta) })
-        : t('reports.sleepDecreased', { value: formatSleepHours(Math.abs(sleepDelta)) }),
+    const maxCount = Math.max(...monthlyTags.map(tag => tag.count), 1)
+    const usedHeight = drawHorizontalBars(
+      doc,
+      monthlyTags.slice(0, 5).map(tag => ({
+        label: tag.tag,
+        value: tag.count,
+        displayValue: `${tag.count}`,
+      })),
+      {
+        x: PAGE.marginLeft,
+        y: yRef.value,
+        width: CONTENT_WIDTH - 12,
+        itemHeight: 8,
+        gap: 2,
+        maxValue: maxCount,
+        color: [56, 189, 248],
+      },
     )
-  }
-  if (moodDelta !== null) {
-    summaryLines.push(
-      moodDelta >= 0
-        ? t('reports.moodImproved', { value: moodDelta.toFixed(1) })
-        : t('reports.moodDropped', { value: Math.abs(moodDelta).toFixed(1) }),
-    )
-  }
-
-  if (summaryLines.length) {
-    yRef.value += 4
-    doc.setFontSize(12)
-    doc.setFont('helvetica', 'bold')
-    doc.text(t('reports.summary'), 16, yRef.value)
-    doc.setFont('helvetica', 'normal')
-    yRef.value += 7
-    drawBullets(doc, yRef, summaryLines.slice(0, 4), 18)
+    yRef.value += usedHeight + 4
   }
 }
 
@@ -279,22 +295,36 @@ export const renderAllTimeSection = ({
   allTimeTagSleepDrivers,
 }: AllTimeParams) => {
   startNewPage(doc, yRef)
-  doc.setFontSize(12)
-
   drawSectionHeader(doc, yRef, t('reports.allTime'))
-
-  drawBullets(doc, yRef, [
-    t('reports.entriesLogged', { count: entries.length }),
-    t('reports.averageSleep', { value: allTimeAvgSleep !== null ? formatSleepHours(allTimeAvgSleep) : '—' }),
-    t('reports.averageMood', { value: allTimeAvgMood !== null ? allTimeAvgMood.toFixed(1) : '—' }),
-    t('reports.sleepConsistency', { value: stats.sleepConsistencyLabel ? t(`insights.sleepConsistencyLevels.${stats.sleepConsistencyLabel}`) : '—' }),
-    t('reports.sleepMoodLink', { value: stats.correlationLabel ? t(`insights.correlationLevels.${stats.correlationLabel}`) : '—' }),
-  ])
-
-  drawBullets(doc, yRef, [t('reports.streakValue', {
-    count: stats.streak,
-    unit: stats.streak === 1 ? t('common.day') : t('common.days'),
-  })])
+  ensurePageSpace(doc, yRef, 58)
+  const cardGap = 4
+  const cardWidth = (CONTENT_WIDTH - cardGap) / 2
+  const cardHeight = 24
+  drawStatCard(doc, PAGE.marginLeft, yRef.value, cardWidth, cardHeight, {
+    label: getCardLabel(t('reports.entriesLogged', { count: 0 })),
+    value: `${entries.length}`,
+    helper: t('reports.allTime'),
+    accent: [56, 189, 248],
+  })
+  drawStatCard(doc, PAGE.marginLeft + cardWidth + cardGap, yRef.value, cardWidth, cardHeight, {
+    label: getCardLabel(t('reports.streakValue', { count: 0, unit: t('common.days') })),
+    value: `${stats.streak} ${stats.streak === 1 ? t('common.day') : t('common.days')}`,
+    helper: t('reports.summary'),
+    accent: [20, 184, 166],
+  })
+  drawStatCard(doc, PAGE.marginLeft, yRef.value + cardHeight + 4, cardWidth, cardHeight, {
+    label: getCardLabel(t('reports.averageSleep', { value: '—' })),
+    value: allTimeAvgSleep !== null ? formatSleepHours(allTimeAvgSleep) : '—',
+    helper: stats.sleepConsistencyLabel ? t(`insights.sleepConsistencyLevels.${stats.sleepConsistencyLabel}`) : '—',
+    accent: [99, 102, 241],
+  })
+  drawStatCard(doc, PAGE.marginLeft + cardWidth + cardGap, yRef.value + cardHeight + 4, cardWidth, cardHeight, {
+    label: getCardLabel(t('reports.averageMood', { value: '—' })),
+    value: allTimeAvgMood !== null ? `${allTimeAvgMood.toFixed(1)} / 5` : '—',
+    helper: stats.correlationLabel ? t(`insights.correlationLevels.${stats.correlationLabel}`) : '—',
+    accent: [251, 146, 60],
+  })
+  yRef.value += cardHeight * 2 + 10
 
   const moodPos = allTimeTagDrivers.filter(d => (d.delta ?? 0) > 0).sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0)).slice(0, 4)
   const moodNeg = allTimeTagDrivers.filter(d => (d.delta ?? 0) < 0).sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)).slice(0, 4)
@@ -302,93 +332,72 @@ export const renderAllTimeSection = ({
   const sleepNeg = allTimeTagSleepDrivers.filter(d => (d.delta ?? 0) < 0).sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)).slice(0, 4)
 
   if (moodPos.length > 0 || moodNeg.length > 0) {
-    yRef.value += 4
+    ensurePageSpace(doc, yRef, 58)
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text(t('reports.eventsPredictMood'), 16, yRef.value)
+    doc.text(t('reports.eventsPredictMood'), PAGE.marginLeft, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 6
-    if (moodPos.length > 0) {
-      doc.setFontSize(10)
-      doc.setTextColor(60)
-      doc.text(t('reports.top4Positive'), 18, yRef.value)
-      yRef.value += 5
-      doc.setTextColor(20)
-      drawBullets(
-        doc,
-        yRef,
-        moodPos.map(d => t('reports.moodDeltaLine', { tag: d.tag, delta: `+${(d.delta ?? 0).toFixed(1)}` })),
-        20,
-      )
-      yRef.value += 2
-    }
-    if (moodNeg.length > 0) {
-      doc.setFontSize(10)
-      doc.setTextColor(60)
-      doc.text(t('reports.top4Negative'), 18, yRef.value)
-      yRef.value += 5
-      doc.setTextColor(20)
-      drawBullets(
-        doc,
-        yRef,
-        moodNeg.map(d => t('reports.moodDeltaLine', { tag: d.tag, delta: (d.delta ?? 0).toFixed(1) })),
-        20,
-      )
-      yRef.value += 2
-    }
-    doc.setFontSize(12)
+    const moodItems = [...moodPos, ...moodNeg]
+      .sort((a, b) => Math.abs(b.delta ?? 0) - Math.abs(a.delta ?? 0))
+      .slice(0, 6)
+      .map(item => ({ label: item.tag, delta: item.delta ?? 0 }))
+    const maxMoodAbs = Math.max(...moodItems.map(item => Math.abs(item.delta)), 0.1)
+    const usedHeight = drawImpactBars(doc, moodItems, {
+      x: PAGE.marginLeft,
+      y: yRef.value,
+      width: CONTENT_WIDTH - 12,
+      maxAbs: maxMoodAbs,
+    })
+    yRef.value += usedHeight + 6
   }
 
   if (sleepPos.length > 0 || sleepNeg.length > 0) {
-    yRef.value += 4
+    ensurePageSpace(doc, yRef, 58)
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text(t('reports.eventsPredictSleep'), 16, yRef.value)
+    doc.text(t('reports.eventsPredictSleep'), PAGE.marginLeft, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 6
-    if (sleepPos.length > 0) {
-      doc.setFontSize(10)
-      doc.setTextColor(60)
-      doc.text(t('reports.top4Positive'), 18, yRef.value)
-      yRef.value += 5
-      doc.setTextColor(20)
-      drawBullets(
-        doc,
-        yRef,
-        sleepPos.map(d => t('reports.sleepDeltaLine', { tag: d.tag, delta: `+${(d.delta ?? 0).toFixed(1)}` })),
-        20,
-      )
-      yRef.value += 2
-    }
-    if (sleepNeg.length > 0) {
-      doc.setFontSize(10)
-      doc.setTextColor(60)
-      doc.text(t('reports.top4Negative'), 18, yRef.value)
-      yRef.value += 5
-      doc.setTextColor(20)
-      drawBullets(
-        doc,
-        yRef,
-        sleepNeg.map(d => t('reports.sleepDeltaLine', { tag: d.tag, delta: (d.delta ?? 0).toFixed(1) })),
-        20,
-      )
-      yRef.value += 2
-    }
-    doc.setFontSize(12)
+    const sleepItems = [...sleepPos, ...sleepNeg]
+      .sort((a, b) => Math.abs(b.delta ?? 0) - Math.abs(a.delta ?? 0))
+      .slice(0, 6)
+      .map(item => ({ label: item.tag, delta: item.delta ?? 0 }))
+    const maxSleepAbs = Math.max(...sleepItems.map(item => Math.abs(item.delta)), 0.1)
+    const usedHeight = drawImpactBars(doc, sleepItems, {
+      x: PAGE.marginLeft,
+      y: yRef.value,
+      width: CONTENT_WIDTH - 12,
+      maxAbs: maxSleepAbs,
+    })
+    yRef.value += usedHeight + 6
   }
 
   if (allTimeTags.length) {
-    yRef.value += 4
+    ensurePageSpace(doc, yRef, 46)
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
-    doc.text(t('reports.mostUsedEvents'), 16, yRef.value)
+    doc.text(t('reports.mostUsedEvents'), PAGE.marginLeft, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 6
-    drawBullets(
+    const maxCount = Math.max(...allTimeTags.map(tag => tag.count), 1)
+    const barsHeight = drawHorizontalBars(
       doc,
-      yRef,
-      allTimeTags.slice(0, 5).map(tag => t('reports.tagCountLine', { tag: tag.tag, count: tag.count })),
-      18,
+      allTimeTags.slice(0, 6).map(tag => ({
+        label: tag.tag,
+        value: tag.count,
+        displayValue: `${tag.count}`,
+      })),
+      {
+        x: PAGE.marginLeft,
+        y: yRef.value,
+        width: CONTENT_WIDTH - 12,
+        itemHeight: 8,
+        gap: 2,
+        maxValue: maxCount,
+        color: [56, 189, 248],
+      },
     )
+    yRef.value += barsHeight + 4
   }
 }

@@ -1,9 +1,20 @@
 import type { FormEvent } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { Capacitor } from '@capacitor/core'
 import { t } from 'i18next'
 import { toast } from 'sonner'
 import { SocialLogin } from '@capgo/capacitor-social-login'
 import { supabase } from '../lib/supabaseClient'
+
+/** Return URL for Supabase Google OAuth in the browser (must match allowed Redirect URLs). */
+function getWebOAuthRedirectTo(): string {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  const { origin, pathname } = window.location
+  const withoutTrailingSlash = `${origin}${pathname}`.replace(/\/$/, '')
+  return withoutTrailingSlash || origin
+}
 
 type UseAuthActionsParams = {
   session: Session | null
@@ -97,6 +108,32 @@ export const useAuthActions = ({
     const linkGoogleToCurrentUser = Boolean(session?.user?.is_anonymous)
 
     try {
+      if (typeof window !== 'undefined' && !Capacitor.isNativePlatform()) {
+        const redirectTo = getWebOAuthRedirectTo()
+        if (linkGoogleToCurrentUser) {
+          const { error } = await supabase.auth.linkIdentity({
+            provider: 'google',
+            options: { redirectTo },
+          })
+          if (error) {
+            throw error
+          }
+        }
+        else {
+          const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo,
+              queryParams: { prompt: 'select_account' },
+            },
+          })
+          if (error) {
+            throw error
+          }
+        }
+        return
+      }
+
       await SocialLogin.initialize({
         google: {
           webClientId: import.meta.env.VITE_GOOGLE_WEB_CLIENT_ID,

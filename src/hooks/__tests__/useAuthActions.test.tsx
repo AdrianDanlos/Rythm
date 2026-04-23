@@ -25,10 +25,18 @@ vi.mock('sonner', () => ({
   },
 }))
 
-const { supabaseAuthMock } = vi.hoisted(() => ({
+const { supabaseAuthMock, mockIsNativePlatform } = vi.hoisted(() => ({
   supabaseAuthMock: {
     linkIdentity: vi.fn(),
     signInWithIdToken: vi.fn(),
+    signInWithOAuth: vi.fn(),
+  },
+  mockIsNativePlatform: vi.fn(() => true),
+}))
+
+vi.mock('@capacitor/core', () => ({
+  Capacitor: {
+    isNativePlatform: () => mockIsNativePlatform(),
   },
 }))
 
@@ -90,8 +98,10 @@ describe('useAuthActions', () => {
     completePasswordRecovery.mockReset()
     signInAnonymously.mockReset()
 
+    mockIsNativePlatform.mockReturnValue(true)
     supabaseAuthMock.linkIdentity.mockReset()
     supabaseAuthMock.signInWithIdToken.mockReset()
+    supabaseAuthMock.signInWithOAuth.mockReset()
 
     vi.mocked(SocialLogin.initialize).mockReset()
     vi.mocked(SocialLogin.login).mockReset()
@@ -102,8 +112,9 @@ describe('useAuthActions', () => {
     resetPasswordForEmail.mockResolvedValue({ error: null })
     completePasswordRecovery.mockResolvedValue({ error: null })
     signInAnonymously.mockResolvedValue({ error: null })
-    supabaseAuthMock.linkIdentity.mockResolvedValue({ error: null })
+    supabaseAuthMock.linkIdentity.mockResolvedValue({ data: { url: 'https://auth.example' }, error: null })
     supabaseAuthMock.signInWithIdToken.mockResolvedValue({ error: null })
+    supabaseAuthMock.signInWithOAuth.mockResolvedValue({ data: { provider: 'google' }, error: null })
   })
 
   it('handles signup mode with signUp', async () => {
@@ -184,5 +195,47 @@ describe('useAuthActions', () => {
     expect(vi.mocked(toast.error)).toHaveBeenCalled()
     expect(supabase.auth.signInWithIdToken).not.toHaveBeenCalled()
     vi.unstubAllGlobals()
+  })
+
+  it('on web, uses signInWithOAuth for Google sign-in', async () => {
+    mockIsNativePlatform.mockReturnValue(false)
+    vi.stubGlobal('window', {
+      ...window,
+      location: { origin: 'http://localhost:5173', pathname: '/' },
+    })
+    const { handleGoogleSignIn } = useAuthActions(makeParams())
+
+    await handleGoogleSignIn()
+    vi.unstubAllGlobals()
+
+    expect(supabase.auth.signInWithOAuth).toHaveBeenCalledWith({
+      provider: 'google',
+      options: {
+        redirectTo: 'http://localhost:5173',
+        queryParams: { prompt: 'select_account' },
+      },
+    })
+    expect(supabase.auth.signInWithIdToken).not.toHaveBeenCalled()
+    expect(SocialLogin.initialize).not.toHaveBeenCalled()
+  })
+
+  it('on web, uses linkIdentity (OAuth) when session is anonymous', async () => {
+    mockIsNativePlatform.mockReturnValue(false)
+    vi.stubGlobal('window', {
+      ...window,
+      location: { origin: 'http://localhost:5173', pathname: '/settings' },
+    })
+    const anonymousSession = { user: { is_anonymous: true } } as Session
+    const { handleGoogleSignIn } = useAuthActions(makeParams({ session: anonymousSession }))
+
+    await handleGoogleSignIn()
+    vi.unstubAllGlobals()
+
+    expect(supabase.auth.linkIdentity).toHaveBeenCalledWith({
+      provider: 'google',
+      options: { redirectTo: 'http://localhost:5173/settings' },
+    })
+    expect(supabase.auth.signInWithIdToken).not.toHaveBeenCalled()
+    expect(SocialLogin.initialize).not.toHaveBeenCalled()
   })
 })
