@@ -529,6 +529,7 @@ const pt = {
     highlights: 'Destaques',
     summary: 'Resumo',
     weeklyAverages: 'Médias semanais',
+    weekLabel: 'Semana',
     last30Days: 'Últimos 30 dias',
     allTime: 'Histórico completo',
     entriesLogged: 'Dias registrados: {{count}}',

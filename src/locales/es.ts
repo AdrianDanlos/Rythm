@@ -531,6 +531,7 @@ const es = {
     highlights: 'Destacados',
     summary: 'Resumen',
     weeklyAverages: 'Promedios semanales',
+    weekLabel: 'Semana',
     last30Days: 'Últimos 30 días',
     allTime: 'Total',
     entriesLogged: 'Días registrados: {{count}}',

@@ -528,6 +528,7 @@ const en = {
     highlights: 'Highlights',
     summary: 'Summary',
     weeklyAverages: 'Weekly averages',
+    weekLabel: 'Week',
     last30Days: 'Last 30 days',
     allTime: 'All time',
     entriesLogged: 'Entries logged: {{count}}',

@@ -32,11 +32,22 @@ export const startNewPage = (doc: jsPDF, yRef: YRef) => {
   yRef.value = PAGE.top
 }
 
-export const drawSectionHeader = (doc: jsPDF, yRef: YRef, label: string) => {
+type SectionHeaderOptions = {
+  showTopRule?: boolean
+}
+
+export const drawSectionHeader = (
+  doc: jsPDF,
+  yRef: YRef,
+  label: string,
+  options: SectionHeaderOptions = {},
+) => {
   ensurePageSpace(doc, yRef, 18)
-  doc.setDrawColor(203, 213, 225)
-  doc.setLineWidth(0.4)
-  doc.line(PAGE.marginLeft, yRef.value - 4, PAGE.marginLeft + CONTENT_WIDTH, yRef.value - 4)
+  if (options.showTopRule !== false) {
+    doc.setDrawColor(203, 213, 225)
+    doc.setLineWidth(0.4)
+    doc.line(PAGE.marginLeft, yRef.value - 4, PAGE.marginLeft + CONTENT_WIDTH, yRef.value - 4)
+  }
   doc.setTextColor(15, 23, 42)
   doc.setFontSize(14)
   doc.setFont('helvetica', 'bold')
@@ -316,7 +327,7 @@ export const drawDualSeriesChart = (
   const chartX = options.x + 6
   const chartY = options.y + 6
   const chartWidth = options.width - 12
-  const chartHeight = options.height - 14
+  const chartHeight = options.height - 18
 
   doc.setDrawColor(226, 232, 240)
   doc.setLineWidth(0.2)
@@ -365,6 +376,15 @@ export const drawDualSeriesChart = (
 
   drawSeries(points.map(point => point.primary), options.primaryColor, options.primaryRange)
   drawSeries(points.map(point => point.secondary), options.secondaryColor, options.secondaryRange)
+
+  // Axis labels and scales for readability.
+  doc.setFontSize(7)
+  doc.setTextColor(99, 102, 241)
+  doc.text(`${options.primaryRange.max}h`, chartX - 1, chartY + 2, { align: 'right' })
+  doc.text(`${options.primaryRange.min}h`, chartX - 1, chartY + chartHeight, { align: 'right' })
+  doc.setTextColor(16, 185, 129)
+  doc.text(`${options.secondaryRange.max.toFixed(0)}`, chartX + chartWidth + 1, chartY + 2)
+  doc.text(`${options.secondaryRange.min.toFixed(0)}`, chartX + chartWidth + 1, chartY + chartHeight)
 
   const firstLabel = points[0]?.label ?? ''
   const lastLabel = points[points.length - 1]?.label ?? ''

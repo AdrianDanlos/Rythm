@@ -94,7 +94,6 @@ export const renderLast30DaysSection = ({
   const {
     recentEntries,
     monthlyConsistency,
-    monthlyCorrelation,
     monthlyTags,
     avgSleep,
     avgMood,
@@ -105,7 +104,7 @@ export const renderLast30DaysSection = ({
   } = data
 
   doc.setTextColor(15, 23, 42)
-  drawSectionHeader(doc, yRef, t('reports.last30Days'))
+  drawSectionHeader(doc, yRef, t('reports.last30Days'), { showTopRule: false })
 
   ensurePageSpace(doc, yRef, 58)
   const cardGap = 4
@@ -116,36 +115,41 @@ export const renderLast30DaysSection = ({
   drawStatCard(doc, PAGE.marginLeft, firstRowY, cardWidth, cardHeight, {
     label: getCardLabel(t('reports.entriesLogged', { count: 0 })),
     value: `${recentEntries.length}`,
-    helper: t('reports.last30Days'),
     accent: [56, 189, 248],
   })
   drawStatCard(doc, PAGE.marginLeft + cardWidth + cardGap, firstRowY, cardWidth, cardHeight, {
     label: getCardLabel(t('reports.averageSleep', { value: '—' })),
     value: avgSleep !== null ? formatSleepHours(avgSleep) : '—',
-    helper: t('common.sleep'),
     accent: [99, 102, 241],
   })
   drawStatCard(doc, PAGE.marginLeft, secondRowY, cardWidth, cardHeight, {
     label: getCardLabel(t('reports.averageMood', { value: '—' })),
     value: avgMood !== null ? `${avgMood.toFixed(1)} / 5` : '—',
-    helper: t('common.mood'),
     accent: [16, 185, 129],
   })
   drawStatCard(doc, PAGE.marginLeft + cardWidth + cardGap, secondRowY, cardWidth, cardHeight, {
     label: getCardLabel(t('reports.sleepConsistency', { value: '—' })),
     value: monthlyConsistency ? t(`insights.sleepConsistencyLevels.${monthlyConsistency}`) : '—',
-    helper: monthlyCorrelation ? t(`insights.correlationLevels.${monthlyCorrelation}`) : '—',
     accent: [234, 179, 8],
   })
   yRef.value += cardHeight * 2 + 10
 
   if (recentEntries.length > 1) {
-    ensurePageSpace(doc, yRef, 72)
+    yRef.value += 6
+    ensurePageSpace(doc, yRef, 82)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(12)
     doc.text(t('reports.overview'), PAGE.marginLeft, yRef.value)
     doc.setFont('helvetica', 'normal')
-    yRef.value += 5
+    yRef.value += 9
+    doc.setFontSize(9)
+    doc.setTextColor(99, 102, 241)
+    doc.text(t('common.sleep'), PAGE.marginLeft, yRef.value)
+    doc.setTextColor(16, 185, 129)
+    doc.text(t('common.mood'), PAGE.marginLeft + 24, yRef.value)
+    doc.setTextColor(100, 116, 139)
+    doc.text(t('reports.last30Days'), PAGE.marginLeft + CONTENT_WIDTH, yRef.value, { align: 'right' })
+    yRef.value += 3
     const sorted = [...recentEntries].sort((a, b) => a.entry_date.localeCompare(b.entry_date))
     const points = sorted.map(entry => ({
       label: entry.entry_date,
@@ -162,53 +166,60 @@ export const renderLast30DaysSection = ({
       primaryRange: { min: 4, max: 10 },
       secondaryRange: { min: 1, max: 5 },
     })
-    yRef.value += 60
+    yRef.value += 62
   }
+  yRef.value += 4
 
   if (bestDay) {
-    ensurePageSpace(doc, yRef, 22)
+    ensurePageSpace(doc, yRef, 26)
     const bestTags = bestDay.tags?.length ? bestDay.tags.join(', ') : '—'
-    drawCard(doc, PAGE.marginLeft, yRef.value, CONTENT_WIDTH, 18, {
+    drawCard(doc, PAGE.marginLeft, yRef.value, CONTENT_WIDTH, 22, {
       bg: [240, 253, 250],
       border: [167, 243, 208],
     })
     doc.setFontSize(10)
     doc.setTextColor(6, 95, 70)
     doc.setFont('helvetica', 'bold')
-    doc.text(t('reports.bestDay', { date: formatLongDate(new Date(`${bestDay.entry_date}T00:00:00`)) }), PAGE.marginLeft + 3, yRef.value + 6)
+    doc.text(`${t('reports.bestDay', { date: formatLongDate(new Date(`${bestDay.entry_date}T00:00:00`)) })} (${t('common.mood')})`, PAGE.marginLeft + 3, yRef.value + 5)
     doc.setFont('helvetica', 'normal')
-    doc.text(`${t('reports.moodValue', { value: bestDay.mood ?? '—' })} · ${t('reports.sleepValue', { value: bestDay.sleep_hours !== null ? formatSleepHours(Number(bestDay.sleep_hours)) : '—' })}`, PAGE.marginLeft + 3, yRef.value + 12)
+    doc.text(`${t('reports.moodValue', { value: bestDay.mood ?? '—' })} · ${t('reports.sleepValue', { value: bestDay.sleep_hours !== null ? formatSleepHours(Number(bestDay.sleep_hours)) : '—' })}`, PAGE.marginLeft + 3, yRef.value + 11)
     doc.setFontSize(9)
-    doc.text(t('reports.dailyEventsValue', { value: bestTags }), PAGE.marginLeft + 3, yRef.value + 16)
-    yRef.value += 22
+    doc.text(t('reports.dailyEventsValue', { value: bestTags }), PAGE.marginLeft + 3, yRef.value + 17)
+    yRef.value += 26
   }
 
   if (weeklySummaries.length > 0) {
-    ensurePageSpace(doc, yRef, 50)
+    yRef.value += 2
+    ensurePageSpace(doc, yRef, 60)
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
     doc.text(t('reports.weeklyAverages'), PAGE.marginLeft, yRef.value)
     doc.setFont('helvetica', 'normal')
     yRef.value += 6
-    const maxSleep = Math.max(...weeklySummaries.map(week => week.avgSleep ?? 0), 1)
-    const barHeight = drawHorizontalBars(
-      doc,
-      weeklySummaries.map(week => ({
-        label: week.label.split(' - ')[0] ?? week.label,
-        value: week.avgSleep ?? 0,
-        displayValue: `${week.avgSleep !== null ? formatSleepHours(week.avgSleep) : '—'} / ${week.avgMood !== null ? week.avgMood.toFixed(1) : '—'}`,
-      })),
-      {
-        x: PAGE.marginLeft,
-        y: yRef.value,
-        width: CONTENT_WIDTH - 12,
-        itemHeight: 8,
-        gap: 2,
-        maxValue: maxSleep,
-        color: [99, 102, 241],
-      },
-    )
-    yRef.value += barHeight + 6
+    drawCard(doc, PAGE.marginLeft, yRef.value, CONTENT_WIDTH, 8, {
+      bg: [248, 250, 252],
+      border: [226, 232, 240],
+    })
+    doc.setFontSize(8)
+    doc.setTextColor(71, 85, 105)
+    doc.text(t('reports.weekLabel'), PAGE.marginLeft + 3, yRef.value + 5)
+    doc.text(t('common.sleep'), PAGE.marginLeft + 96, yRef.value + 5)
+    doc.text(t('common.mood'), PAGE.marginLeft + 136, yRef.value + 5)
+    yRef.value += 10
+    weeklySummaries.forEach((week) => {
+      ensurePageSpace(doc, yRef, 9)
+      drawCard(doc, PAGE.marginLeft, yRef.value, CONTENT_WIDTH, 8, {
+        bg: [255, 255, 255],
+        border: [226, 232, 240],
+      })
+      doc.setTextColor(15, 23, 42)
+      doc.setFontSize(8)
+      doc.text(week.label, PAGE.marginLeft + 3, yRef.value + 5)
+      doc.text(week.avgSleep !== null ? formatSleepHours(week.avgSleep) : '—', PAGE.marginLeft + 96, yRef.value + 5)
+      doc.text(week.avgMood !== null ? `${week.avgMood.toFixed(1)} / 5` : '—', PAGE.marginLeft + 136, yRef.value + 5)
+      yRef.value += 10
+    })
+    yRef.value += 6
   }
 
   if (bestNight) {
@@ -243,7 +254,8 @@ export const renderLast30DaysSection = ({
   }
 
   if (monthlyTags.length) {
-    ensurePageSpace(doc, yRef, 44)
+    yRef.value += 7
+    ensurePageSpace(doc, yRef, 52)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(12)
     doc.text(t('reports.mostUsedEvents'), PAGE.marginLeft, yRef.value)
@@ -295,7 +307,7 @@ export const renderAllTimeSection = ({
   allTimeTagSleepDrivers,
 }: AllTimeParams) => {
   startNewPage(doc, yRef)
-  drawSectionHeader(doc, yRef, t('reports.allTime'))
+  drawSectionHeader(doc, yRef, t('reports.allTime'), { showTopRule: false })
   ensurePageSpace(doc, yRef, 58)
   const cardGap = 4
   const cardWidth = (CONTENT_WIDTH - cardGap) / 2
@@ -332,7 +344,8 @@ export const renderAllTimeSection = ({
   const sleepNeg = allTimeTagSleepDrivers.filter(d => (d.delta ?? 0) < 0).sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)).slice(0, 4)
 
   if (moodPos.length > 0 || moodNeg.length > 0) {
-    ensurePageSpace(doc, yRef, 58)
+    yRef.value += 7
+    ensurePageSpace(doc, yRef, 66)
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
     doc.text(t('reports.eventsPredictMood'), PAGE.marginLeft, yRef.value)
@@ -353,7 +366,8 @@ export const renderAllTimeSection = ({
   }
 
   if (sleepPos.length > 0 || sleepNeg.length > 0) {
-    ensurePageSpace(doc, yRef, 58)
+    yRef.value += 7
+    ensurePageSpace(doc, yRef, 66)
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
     doc.text(t('reports.eventsPredictSleep'), PAGE.marginLeft, yRef.value)
@@ -374,7 +388,8 @@ export const renderAllTimeSection = ({
   }
 
   if (allTimeTags.length) {
-    ensurePageSpace(doc, yRef, 46)
+    yRef.value += 7
+    ensurePageSpace(doc, yRef, 54)
     doc.setFontSize(12)
     doc.setFont('helvetica', 'bold')
     doc.text(t('reports.mostUsedEvents'), PAGE.marginLeft, yRef.value)

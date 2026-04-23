@@ -529,6 +529,7 @@ const de = {
     highlights: 'Highlights',
     summary: 'Zusammenfassung',
     weeklyAverages: 'Wöchentliche Durchschnittswerte',
+    weekLabel: 'Woche',
     last30Days: 'Letzte 30 Tage',
     allTime: 'Gesamt',
     entriesLogged: 'Eingetragene Tage: {{count}}',

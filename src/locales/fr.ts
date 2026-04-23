@@ -530,6 +530,7 @@ const fr = {
     highlights: 'Points clés',
     summary: 'Résumé',
     weeklyAverages: 'Moyennes hebdomadaires',
+    weekLabel: 'Semaine',
     last30Days: '30 derniers jours',
     allTime: 'Tout le temps',
     entriesLogged: 'Jours enregistrés : {{count}}',
