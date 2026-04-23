@@ -186,6 +186,7 @@ function App() {
     isPro,
     canManageSubscription,
     trimmedUpgradeUrl,
+    playIntroOfferConsumed,
   } = billing
 
   const nativeLoginChromeActive = passwordRecoveryPending
@@ -492,6 +493,22 @@ function App() {
     void handleRestorePurchases()
   }, [session?.user?.id, isNativeApp, handleRestorePurchases])
 
+  const refreshedBillingMetadataForUserIdRef = useRef<string | null>(null)
+  useEffect(() => {
+    const userId = session?.user?.id
+    if (!userId) {
+      refreshedBillingMetadataForUserIdRef.current = null
+      return
+    }
+    if (activePage !== AppPage.Pro) return
+    if (refreshedBillingMetadataForUserIdRef.current === userId) return
+
+    // Billing copy (for example "Start free trial") depends on auth app_metadata.
+    // Refresh once when opening Pro so CTA text reflects latest backend eligibility.
+    refreshedBillingMetadataForUserIdRef.current = userId
+    void refreshSession()
+  }, [activePage, session?.user?.id, refreshSession])
+
   useEffect(() => {
     if (entries.length && exportError) {
       setExportError(null)
@@ -677,6 +694,7 @@ function App() {
               onUpgrade={basePlanId => handleStartCheckout(basePlanId)}
               onRestore={handleRestorePurchases}
               showRestore={false}
+              playIntroOfferConsumed={playIntroOfferConsumed}
             />
           )
         : (

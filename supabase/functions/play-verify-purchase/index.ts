@@ -103,10 +103,10 @@ async function getSubscriptionFromPlay(
   subscriptionId: string,
   token: string,
 ): Promise<{
-  valid: boolean
-  expiryTimeMillis?: string
-  obfuscatedExternalAccountId?: string
-}> {
+    valid: boolean
+    expiryTimeMillis?: string
+    obfuscatedExternalAccountId?: string
+  }> {
   const url = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${encodeURIComponent(pkg)}/purchases/subscriptions/${encodeURIComponent(subscriptionId)}/tokens/${encodeURIComponent(token)}`
   const res = await fetch(url, {
     headers: {
