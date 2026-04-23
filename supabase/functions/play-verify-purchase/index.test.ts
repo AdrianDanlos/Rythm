@@ -201,6 +201,54 @@ describe('play-verify-purchase edge function', () => {
     expect(appMetadata.play_subscription_id).toBe('sub-id')
   })
 
+  it('returns 403 when purchase account does not match signed-in user', async () => {
+    const { handler } = await setupEdgeFunction(async (input, init) => {
+      const url = String(input)
+
+      if (url.endsWith('/auth/v1/user')) {
+        return jsonResponse({ id: 'user-1' })
+      }
+      if (url === 'https://oauth2.googleapis.com/token') {
+        return jsonResponse({ access_token: 'google-access-token' })
+      }
+      if (url.includes('androidpublisher.googleapis.com')) {
+        return jsonResponse({
+          expiryTimeMillis: String(Date.now() + 60_000),
+          paymentState: 1,
+          acknowledgementState: 1,
+          obfuscatedExternalAccountId: 'another-user-id',
+        })
+      }
+      if (url.endsWith('/auth/v1/admin/users/user-1') && !init?.method) {
+        return jsonResponse({ app_metadata: { existing: true } })
+      }
+      if (url.endsWith('/auth/v1/admin/users/user-1') && init?.method === 'PUT') {
+        throw new Error('Metadata should not be updated when account IDs mismatch')
+      }
+      if (url.endsWith('/rest/v1/play_subscription_user')) {
+        throw new Error('purchase token mapping should not be persisted when account IDs mismatch')
+      }
+
+      throw new Error(`Unexpected fetch call: ${url}`)
+    })
+
+    const response = await handler(new Request('https://example.com', {
+      method: 'POST',
+      headers: {
+        'authorization': 'Bearer token',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        purchaseToken: 'purchase-token',
+        subscriptionId: 'sub-id',
+      }),
+    }))
+
+    const payload = await parseJson(response)
+    expect(response.status).toBe(403)
+    expect(payload.error).toBe('Purchase account does not match signed-in user.')
+  })
+
   it('returns 502 when Google token request fails', async () => {
     const { handler } = await setupEdgeFunction(async (input) => {
       const url = String(input)

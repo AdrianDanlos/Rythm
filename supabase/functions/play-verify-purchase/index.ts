@@ -102,7 +102,11 @@ async function getSubscriptionFromPlay(
   pkg: string,
   subscriptionId: string,
   token: string,
-): Promise<{ valid: boolean, expiryTimeMillis?: string }> {
+): Promise<{
+  valid: boolean
+  expiryTimeMillis?: string
+  obfuscatedExternalAccountId?: string
+}> {
   const url = `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${encodeURIComponent(pkg)}/purchases/subscriptions/${encodeURIComponent(subscriptionId)}/tokens/${encodeURIComponent(token)}`
   const res = await fetch(url, {
     headers: {
@@ -124,6 +128,7 @@ async function getSubscriptionFromPlay(
     expiryTimeMillis?: string
     paymentState?: number
     acknowledgementState?: number
+    obfuscatedExternalAccountId?: string
   }
   const expiryMs = data.expiryTimeMillis ? Number(data.expiryTimeMillis) : 0
   const paymentState = data.paymentState ?? 0
@@ -131,7 +136,11 @@ async function getSubscriptionFromPlay(
   // 1 = payment received, 2 = free trial (Play Console base-plan offer). 0 = pending — do not grant Pro.
   const paymentOk = paymentState === 1 || paymentState === 2
   const valid = Number.isFinite(expiryMs) && expiryMs > Date.now() && paymentOk && acknowledged
-  return { valid, expiryTimeMillis: data.expiryTimeMillis }
+  return {
+    valid,
+    expiryTimeMillis: data.expiryTimeMillis,
+    obfuscatedExternalAccountId: data.obfuscatedExternalAccountId,
+  }
 }
 
 async function updateUserAppMetadata(
@@ -233,7 +242,7 @@ Deno.serve(async (req) => {
 
   try {
     const accessToken = await getGoogleAccessToken()
-    const { valid, expiryTimeMillis } = await getSubscriptionFromPlay(
+    const { valid, expiryTimeMillis, obfuscatedExternalAccountId } = await getSubscriptionFromPlay(
       accessToken,
       pkg,
       subscriptionId,
@@ -244,6 +253,15 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ error: 'Subscription is not active or not acknowledged.', valid: false }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      )
+    }
+
+    // When provided by Play, enforce that the purchase belongs to the active app user.
+    // Legacy purchases may not include this field, so we only reject on explicit mismatch.
+    if (obfuscatedExternalAccountId && obfuscatedExternalAccountId !== user.id) {
+      return new Response(
+        JSON.stringify({ error: 'Purchase account does not match signed-in user.' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       )
     }
 

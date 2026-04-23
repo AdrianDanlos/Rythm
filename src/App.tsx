@@ -331,6 +331,7 @@ function App() {
     subscriptionSource:
       billing.subscriptionSource,
     refreshSession,
+    currentUserId: session?.user?.id,
   })
 
   useEffect(() => {

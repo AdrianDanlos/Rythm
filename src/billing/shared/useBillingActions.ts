@@ -14,6 +14,7 @@ type UseBillingActionsParams = {
   setIsPortalLoading: (value: boolean) => void
   subscriptionSource?: 'play'
   refreshSession?: () => Promise<unknown>
+  currentUserId?: string
 }
 
 function isAndroid(): boolean {
@@ -26,6 +27,7 @@ export const useBillingActions = ({
   setIsPortalLoading,
   subscriptionSource,
   refreshSession,
+  currentUserId,
 }: UseBillingActionsParams) => {
   const handleStartCheckout = useCallback(async (basePlanIdOverride?: string): Promise<boolean> => {
     if (isAndroid()) {
@@ -42,6 +44,7 @@ export const useBillingActions = ({
           planIdentifier,
           productType: PURCHASE_TYPE.SUBS,
           quantity: 1,
+          appAccountToken: currentUserId,
         })
         const purchaseToken = transaction?.purchaseToken ?? transaction?.transactionId
         if (!purchaseToken || typeof purchaseToken !== 'string') {
@@ -76,13 +79,14 @@ export const useBillingActions = ({
       return true
     }
     return false
-  }, [trimmedUpgradeUrl, refreshSession])
+  }, [trimmedUpgradeUrl, refreshSession, currentUserId])
 
   const handleRestorePurchases = useCallback(async (): Promise<boolean> => {
     if (!isAndroid() || !refreshSession) return false
     try {
       const { purchases } = await NativePurchases.getPurchases({
         productType: PURCHASE_TYPE.SUBS,
+        appAccountToken: currentUserId,
       })
       const { subscriptionId: defaultSubId } = BILLING.play
       for (const p of purchases ?? []) {
@@ -102,7 +106,7 @@ export const useBillingActions = ({
       // ignore
     }
     return false
-  }, [refreshSession])
+  }, [refreshSession, currentUserId])
 
   const handleManageSubscription = useCallback(async () => {
     if (isPortalLoading) return
