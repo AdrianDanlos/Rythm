@@ -25,10 +25,8 @@ type InsightsStatsProps = {
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
-  moodBySleepBucketCounts: { high: number, low: number }
   sleepThreshold: number
   isPro: boolean
-  goToLog: () => void
   motivationMessage: string
 }
 
@@ -43,10 +41,8 @@ export const InsightsStats = ({
   correlationLabel,
   correlationDirection,
   moodBySleepThreshold,
-  moodBySleepBucketCounts,
   sleepThreshold,
   isPro,
-  goToLog,
   motivationMessage,
 }: InsightsStatsProps) => {
   const { t } = useTranslation()
@@ -125,7 +121,7 @@ export const InsightsStats = ({
         <p className="label">{label}</p>
         <div className="window-averages">
           <div className="window-average-row">
-            <p className="helper">{t('insights.sleepAverage')}</p>
+            <p className="helper">{t('insights.averageSleep')}</p>
             <p className="value window-average-value">
               {window.sleep !== null
                 ? (
@@ -158,7 +154,7 @@ export const InsightsStats = ({
             </p>
           </div>
           <div className="window-average-row">
-            <p className="helper">{t('insights.moodAverage')}</p>
+            <p className="helper">{t('insights.averageMood')}</p>
             <p className="value window-average-value">
               {window.mood !== null
                 ? (
@@ -193,12 +189,6 @@ export const InsightsStats = ({
     )
   }
 
-  const hasMissingStats = !isLoading && (
-    rhythmScore === null
-    || sleepConsistencyLabel === null
-    || correlationLabel === null
-    || (moodBySleepThreshold.high === null && moodBySleepThreshold.low === null)
-  )
   const shouldShowIdealSleepTooltip = !isLoading
     && !isPro
     && moodBySleepDeltaPercent !== null
@@ -214,7 +204,6 @@ export const InsightsStats = ({
           {isLoading
             ? <div className="skeleton-line" />
             : <p className="value">{streak} {streak === 1 ? t('common.day') : t('common.days')}</p>}
-          <p className="helper">{t('insights.consecutiveDays')}</p>
         </div>
         {(isLoading || motivationMessage)
           ? (
@@ -239,16 +228,6 @@ export const InsightsStats = ({
         )}
       </section>
 
-      {hasMissingStats
-        ? (
-            <p className="muted">
-              <button type="button" className="link-button link-button--text" onClick={goToLog}>
-                {t('insights.logFewMoreDays')}
-              </button>
-              {' '}{t('insights.unlockAllStats')}
-            </p>
-          )
-        : null}
       <div className="stats-stack-grid">
         {isLoading
           ? (
@@ -296,17 +275,15 @@ export const InsightsStats = ({
                 <div className="stat-tile">
                   <p className="label label--pre-line">{t('insights.sleepMoodLink')}</p>
                   <p className="value">{correlationLabel ? t(`insights.correlationLevels.${correlationLabel}`) : '—'}</p>
-                  {correlationDirection
-                    ? <p className="helper">{t(`insights.correlationDirections.${correlationDirection}`)}</p>
-                    : (
-                        <p className="helper">
-                          {correlationLabel
-                            ? t('insights.correlationStrength')
-                            : correlationMore > 0
-                              ? t('insights.needsMoreDays', { count: correlationMore, unit: correlationMore === 1 ? t('common.day') : t('common.days') })
-                              : t('insights.logDifferentDaysForLink')}
-                        </p>
-                      )}
+                  {correlationDirection ? (
+                    <p className="helper">{t(`insights.correlationDirections.${correlationDirection}`)}</p>
+                  ) : correlationLabel ? (
+                    <p className="helper">{t('insights.correlationStrength')}</p>
+                  ) : correlationMore > 0 ? (
+                    <p className="helper">
+                      {t('insights.needsMoreDays', { count: correlationMore, unit: correlationMore === 1 ? t('common.day') : t('common.days') })}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="stat-tile">
                   <p className="label label--with-tooltip">
@@ -341,13 +318,7 @@ export const InsightsStats = ({
                         </p>
                       )
                     : <p className="value">—</p>}
-                  <p className="helper">
-                    {moodBySleepMessage ?? (moodBySleepBucketCounts.high === 0
-                      ? t('insights.needOneDayMoreThan', { threshold: formatSleepHours(sleepThreshold) })
-                      : moodBySleepBucketCounts.low === 0
-                        ? t('insights.needOneDayLessThan', { threshold: formatSleepHours(sleepThreshold) })
-                        : null)}
-                  </p>
+                  {moodBySleepMessage != null ? <p className="helper">{moodBySleepMessage}</p> : null}
                 </div>
               </>
             )}

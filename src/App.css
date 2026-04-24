@@ -3697,28 +3697,29 @@
 .streak-card__content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  justify-content: space-around;
+  gap: 6px;
   min-width: 0;
+  flex: 1;
 }
 
 .streak-card__content .label {
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.15;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .streak-card__content .value {
-  font-size: 1.85rem;
+  font-size: clamp(2.5rem, 8vw, 3rem);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  margin-top: 2px;
-  line-height: 1.2;
+  line-height: 1;
 }
 
-.streak-card__content .helper {
-  font-size: 0.8rem;
-  margin-top: 4px;
+.streak-card__content .skeleton-line {
+  min-height: 3rem;
 }
 
 .streak-card__motivation {
@@ -5578,6 +5579,12 @@ button.toggle-group__btn--disabled:disabled {
   align-items: center;
 }
 
+.insights-first-five-card__mood-value-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .insights-first-five-card__data-item-label {
   font-size: 0.85rem;
   color: var(--muted);
@@ -5590,6 +5597,7 @@ button.toggle-group__btn--disabled:disabled {
 
 .insights-first-five-card__mood-face {
   display: inline-flex;
+  flex-shrink: 0;
   align-self: center;
 }
 

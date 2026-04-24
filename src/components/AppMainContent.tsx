@@ -125,7 +125,6 @@ type AppMainContentProps = {
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
-  moodBySleepBucketCounts: { high: number, low: number }
   sleepThreshold: number
   trendSeries: {
     last7: TrendPoint[]
@@ -225,7 +224,6 @@ export function AppMainContent({
   correlationLabel,
   correlationDirection,
   moodBySleepThreshold,
-  moodBySleepBucketCounts,
   sleepThreshold,
   trendSeries,
   rollingSeries,
@@ -567,7 +565,6 @@ export function AppMainContent({
                       correlationLabel={correlationLabel}
                       correlationDirection={correlationDirection}
                       moodBySleepThreshold={moodBySleepThreshold}
-                      moodBySleepBucketCounts={moodBySleepBucketCounts}
                       sleepThreshold={sleepThreshold}
                       moodColors={moodColors}
                       trendSeries={trendSeries}

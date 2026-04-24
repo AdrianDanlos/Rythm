@@ -43,8 +43,6 @@ export type StatsResult = {
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
-  /** Count of entries with sleep >= threshold and sleep < threshold (for helper copy) */
-  moodBySleepBucketCounts: { high: number, low: number }
   moodByPersonalThreshold: { high: number | null, low: number | null }
   personalSleepThreshold: number | null
   trendSeries: {
@@ -180,11 +178,6 @@ export const buildStats = (
       low: { sum: 0, count: 0 },
     },
   )
-
-  const moodBySleepBucketCounts = {
-    high: moodBySleepBuckets.high.count,
-    low: moodBySleepBuckets.low.count,
-  }
 
   const hasHighAndLow = moodBySleepBuckets.high.count >= 1 && moodBySleepBuckets.low.count >= 1
   const moodBySleepThreshold = hasHighAndLow
@@ -392,7 +385,6 @@ export const buildStats = (
     correlationLabel,
     correlationDirection,
     moodBySleepThreshold,
-    moodBySleepBucketCounts,
     moodByPersonalThreshold,
     personalSleepThreshold,
     trendSeries,

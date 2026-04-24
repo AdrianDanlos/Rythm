@@ -109,7 +109,6 @@ type InsightsProps = {
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
-  moodBySleepBucketCounts: { high: number, low: number }
   sleepThreshold: number
   moodColors: string[]
   trendSeries: { last7: TrendPoint[], last30: TrendPoint[], last90: TrendPoint[] }
@@ -145,7 +144,6 @@ export const Insights = ({
   correlationLabel,
   correlationDirection,
   moodBySleepThreshold,
-  moodBySleepBucketCounts,
   sleepThreshold,
   moodColors,
   trendSeries,
@@ -553,7 +551,6 @@ export const Insights = ({
               correlationLabel={correlationLabel}
               correlationDirection={correlationDirection}
               moodBySleepThreshold={moodBySleepThreshold}
-              moodBySleepBucketCounts={moodBySleepBucketCounts}
               sleepThreshold={sleepThreshold}
               isPro={isPro}
               motivationMessage={motivationMessage.text}

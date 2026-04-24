@@ -40,8 +40,8 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
   const hasSleep = sleep !== null
   const hasMood = mood !== null
   const hasAnyData = hasSleep || hasMood
-  const roundedMood = mood !== null ? Math.max(1, Math.min(5, Math.round(mood))) as 1 | 2 | 3 | 4 | 5 : null
-  const MoodIcon = roundedMood !== null ? MOOD_ICONS[roundedMood] : null
+  const roundedMood = mood !== null ? Math.max(1, Math.min(5, Math.round(mood))) as keyof typeof MOOD_ICONS : null
+  const MoodFaceIcon = roundedMood !== null ? MOOD_ICONS[roundedMood] : null
 
   const transition = reduceMotion ? { duration: 0 } : motionTransitionSlow
 
@@ -55,7 +55,9 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
         <p className="eyebrow">{t('insights.firstSummary')}</p>
         <h2>{t('insights.buildingFirstWeek')}</h2>
       </div>
-      <p className="insights-first-five-card__data">{t('insights.youLoggedDays', { count: n })}{hasAnyData ? ` ${t('insights.lastLabel')}` : '.'}</p>
+      {hasAnyData ? (
+        <p className="insights-first-five-card__data">{t('insights.lastDayHeading')}</p>
+      ) : null}
       {hasAnyData && (
         <div className="insights-first-five-card__data-row" role="list" aria-label={t('insights.lastNightSummaryAria')}>
           {hasSleep && (
@@ -64,11 +66,18 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
               <span className="insights-first-five-card__data-item-value">{formatSleepHours(sleep!)}</span>
             </div>
           )}
-          {roundedMood !== null && (
+          {roundedMood !== null && MoodFaceIcon && (
             <div className="insights-first-five-card__data-item insights-first-five-card__data-item--mood" role="listitem">
               <span className="insights-first-five-card__data-item-label">{t('common.mood')}</span>
-              <span className="insights-first-five-card__data-item-value">{roundedMood} / 5</span>
-              {MoodIcon ? <MoodIcon className="insights-first-five-card__mood-face" size={18} style={{ color: moodColors[roundedMood - 1] }} aria-hidden /> : null}
+              <span className="insights-first-five-card__mood-value-with-icon">
+                <span className="insights-first-five-card__data-item-value">{roundedMood} / 5</span>
+                <MoodFaceIcon
+                  className="insights-first-five-card__mood-face"
+                  size={18}
+                  style={{ color: moodColors[roundedMood - 1] }}
+                  aria-hidden
+                />
+              </span>
             </div>
           )}
         </div>

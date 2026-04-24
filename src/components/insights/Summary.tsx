@@ -38,7 +38,6 @@ export type SummaryProps = {
   correlationLabel: string | null
   correlationDirection: string | null
   moodBySleepThreshold: { high: number | null, low: number | null }
-  moodBySleepBucketCounts: { high: number, low: number }
   sleepThreshold: number
   isPro: boolean
   motivationMessage: string
@@ -67,7 +66,6 @@ export const Summary = ({
   correlationLabel,
   correlationDirection,
   moodBySleepThreshold,
-  moodBySleepBucketCounts,
   sleepThreshold,
   isPro,
   motivationMessage,
@@ -108,10 +106,8 @@ export const Summary = ({
         correlationLabel={correlationLabel}
         correlationDirection={correlationDirection}
         moodBySleepThreshold={moodBySleepThreshold}
-        moodBySleepBucketCounts={moodBySleepBucketCounts}
         sleepThreshold={sleepThreshold}
         isPro={isPro}
-        goToLog={goToLog}
         motivationMessage={motivationMessage}
       />
       {hasEnoughEntries && (

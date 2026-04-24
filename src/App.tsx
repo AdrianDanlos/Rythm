@@ -788,7 +788,6 @@ function App() {
               correlationLabel={stats.correlationLabel}
               correlationDirection={stats.correlationDirection}
               moodBySleepThreshold={stats.moodBySleepThreshold}
-              moodBySleepBucketCounts={stats.moodBySleepBucketCounts}
               sleepThreshold={sleepThreshold}
               trendSeries={stats.trendSeries}
               rollingSeries={stats.rollingSeries}
