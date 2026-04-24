@@ -175,6 +175,9 @@ const de = {
     title: 'Glückwunsch! — 1 Woche am Stück',
     body: 'Du hast 7 Tage in Folge eingetragen. Bleib dran!',
     cta: 'Klasse!',
+    celebrationAria: 'Feier der Serie',
+    celebrationTitle: 'Tolle Serie!',
+    celebrationBody: '{{count}} Tage am Stück – weiter so.',
   },
   log: {
     loading: 'Laden...',

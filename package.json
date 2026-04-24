@@ -27,6 +27,7 @@
     "@capgo/native-purchases": "^8.0.20",
     "@sentry/react": "^10.38.0",
     "@supabase/supabase-js": "^2.91.1",
+    "canvas-confetti": "^1.9.4",
     "classnames": "^2.5.1",
     "framer-motion": "^12.34.0",
     "i18next": "^25.6.3",
@@ -46,6 +47,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@stylistic/eslint-plugin": "^4.4.1",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",

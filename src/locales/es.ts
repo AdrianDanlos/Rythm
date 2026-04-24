@@ -175,6 +175,9 @@ const es = {
     title: '¡Felicidades! — 1 semana seguida',
     body: 'Registraste 7 días seguidos. Mantén la racha.',
     cta: '¡Genial!',
+    celebrationAria: 'Celebración de racha',
+    celebrationTitle: '¡Estás en racha!',
+    celebrationBody: 'Llevas {{count}} días seguidos. Sigue así.',
   },
   log: {
     loading: 'Cargando...',

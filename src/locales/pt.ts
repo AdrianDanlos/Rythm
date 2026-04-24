@@ -175,6 +175,9 @@ const pt = {
     title: 'Parabéns! — 1 semana seguida',
     body: 'Você registrou 7 dias seguidos. Continua assim!',
     cta: 'Arrasou!',
+    celebrationAria: 'Celebração de sequência',
+    celebrationTitle: 'Que sequência incrível!',
+    celebrationBody: 'Você completou {{count}} dias seguidos. Não para agora.',
   },
   log: {
     loading: 'Carregando...',

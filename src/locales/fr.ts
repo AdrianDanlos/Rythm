@@ -175,6 +175,9 @@ const fr = {
     title: 'Félicitations ! — 1 semaine d\'affilée',
     body: 'Vous avez enregistré 7 jours de suite. Continuez sur cette lancée !',
     cta: 'Super !',
+    celebrationAria: 'Célébration de série',
+    celebrationTitle: 'Série impressionnante !',
+    celebrationBody: 'Tu enchaînes {{count}} jours d\'affilée. Continue comme ça.',
   },
   log: {
     loading: 'Chargement...',

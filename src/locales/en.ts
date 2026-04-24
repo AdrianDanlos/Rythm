@@ -172,6 +172,9 @@ const en = {
     title: 'Congratulations — 1 week in a row!',
     body: 'You logged 7 days straight. Keep the streak going.',
     cta: 'Nice!',
+    celebrationAria: 'Streak celebration',
+    celebrationTitle: 'Amazing streak!',
+    celebrationBody: 'You hit {{count}} days in a row. Keep it going.',
   },
   log: {
     loading: 'Loading...',

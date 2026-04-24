@@ -13,6 +13,7 @@ import { AppBottomNav } from './components/AppBottomNav'
 import { PaywallPage } from './billing/shared/PaywallPage'
 import { FeedbackModal } from './components/FeedbackModal'
 import { StreakModal } from './components/StreakModal'
+import { StreakCelebration } from './components/StreakCelebration'
 import { AppSidePanel } from './components/AppSidePanel'
 import { applySupabaseSessionFromAuthUrl } from './lib/authDeepLink'
 import { hasSupabaseAuthCallbackPayload } from './lib/authCallbackUrl'
@@ -110,6 +111,8 @@ function App() {
       && !window.matchMedia('(min-width: 768px)').matches,
   )
   const [isMenuPanelOpen, setIsMenuPanelOpen] = useState(false)
+  const [isStreakCelebrationOpen, setIsStreakCelebrationOpen] = useState(false)
+  const [streakCelebrationDays, setStreakCelebrationDays] = useState<number>(3)
 
   // Must not memoize with [] — SPA stays mounted across midnight; stale "today" breaks Log.
   const todayDate = new Date()
@@ -258,7 +261,10 @@ function App() {
     sleepThreshold,
     isPro,
     maxTagsPerEntry,
-    onStreakReached: () => shell.setIsStreakOpen(true),
+    onStreakReached: (streakDays) => {
+      setStreakCelebrationDays(streakDays)
+      setIsStreakCelebrationOpen(true)
+    },
     shouldSuppressPostSaveToast,
     onEntrySavedForToday: handleEntrySavedForToday,
   })
@@ -679,6 +685,12 @@ function App() {
         onSaveAccountWithGoogle={handleGoogleSignIn}
       />
 
+      <StreakCelebration
+        isVisible={isStreakCelebrationOpen}
+        streakDays={streakCelebrationDays}
+        onComplete={() => setIsStreakCelebrationOpen(false)}
+        onDismiss={() => setIsStreakCelebrationOpen(false)}
+      />
       <StreakModal isOpen={isStreakOpen} onClose={closeStreak} />
       <FeedbackModal
         isOpen={isFeedbackOpen}

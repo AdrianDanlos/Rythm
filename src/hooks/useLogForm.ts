@@ -47,7 +47,7 @@ type UseLogFormParams = {
   sleepThreshold: number
   isPro: boolean
   maxTagsPerEntry: number
-  onStreakReached?: () => void
+  onStreakReached?: (streakDays: number) => void
   shouldSuppressPostSaveToast?: (entryCount: number) => boolean
   onEntrySavedForToday?: (entryCount: number) => void
 }
@@ -283,8 +283,15 @@ export const useLogForm = ({
       })()
       setEntries(nextEntries)
       const nextStats = buildStats(nextEntries, sleepThreshold, formatLocalDate)
-      if (nextStats.streak === 7 && stats.streak < 7) {
-        onStreakReached?.()
+      // Celebrate on key milestones: 3, 7, 14, 21, 30, then every 10 days from 40 onward.
+      const isStreakMilestone = nextStats.streak === 3
+        || nextStats.streak === 7
+        || nextStats.streak === 14
+        || nextStats.streak === 21
+        || nextStats.streak === 30
+        || (nextStats.streak >= 40 && nextStats.streak % 10 === 0)
+      if (isStreakMilestone && stats.streak < nextStats.streak) {
+        onStreakReached?.(nextStats.streak)
       }
       setSaved(true)
       const suppressPostSaveToast = shouldSuppressPostSaveToast?.(nextEntries.length) ?? false
