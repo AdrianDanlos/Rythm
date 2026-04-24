@@ -99,7 +99,6 @@ export const Timeline = ({
       <div className="card-header">
         <div>
           <h2>{t('nav.timeline')}</h2>
-          <p className="muted">{t('insights.overviewDailyLogs')}</p>
           <p className="muted timeline-total-count">{t('insights.entriesCount', { count: displayedEntriesCount })}</p>
         </div>
       </div>

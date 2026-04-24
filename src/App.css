@@ -5971,10 +5971,6 @@ button.toggle-group__btn--disabled:disabled {
   text-align: center;
 }
 
-.ideal-sleep-mood-delta__helper--advice {
-  margin-top: 6px;
-}
-
 .ideal-sleep-mood-delta .mood-by-sleep-trend {
   position: absolute;
   top: 50%;

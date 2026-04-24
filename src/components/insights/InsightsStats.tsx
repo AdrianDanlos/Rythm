@@ -57,13 +57,10 @@ export const InsightsStats = ({
         : 0)
     : null
   const isMoodBySleepPositive = moodBySleepDeltaPercent !== null && moodBySleepDeltaPercent >= 0
-  const moodBySleepDirection = moodBySleepDeltaPercent !== null && moodBySleepDeltaPercent < 0
-    ? t('insights.moodLower')
-    : t('insights.moodBetter')
   const moodBySleepMessage = moodBySleepDeltaPercent !== null
     ? t('insights.moodWhenSleepMore', {
         threshold: formatSleepHours(sleepThreshold),
-        direction: moodBySleepDirection,
+        sign: moodBySleepDeltaPercent >= 0 ? '+' : '−',
         percent: Math.abs(moodBySleepDeltaPercent).toFixed(0),
       })
     : null
@@ -316,7 +313,9 @@ export const InsightsStats = ({
                       )
                     : <p className="value">—</p>}
                   {moodBySleepMessage != null ? <p className="helper">{moodBySleepMessage}</p> : null}
-                  <p className="helper">{t('insights.logMoreDays')}</p>
+                  {moodBySleepDeltaPercent === null
+                    ? <p className="helper">{t('insights.logMoreDays')}</p>
+                    : null}
                 </div>
               </>
             )}

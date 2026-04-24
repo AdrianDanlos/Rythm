@@ -113,7 +113,6 @@ export const Summary = ({
       {hasEnoughEntries && (
         <IdeaSleepTarget
           isPro={isPro}
-          entryCount={entries.length}
           personalSleepThreshold={personalSleepThreshold}
           averageSleep={averages.sleep}
           moodByPersonalThreshold={moodByPersonalThreshold}

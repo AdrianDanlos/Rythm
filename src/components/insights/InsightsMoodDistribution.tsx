@@ -52,7 +52,6 @@ export const InsightsMoodDistribution = ({
           <h2>
             {t('insights.moodDistribution')}
           </h2>
-          <p className="muted">{t('insights.moodDistributionSubtitle')}</p>
         </div>
       </div>
       {total
@@ -91,7 +90,6 @@ export const InsightsMoodDistribution = ({
               <button type="button" className="link-button link-button--text" onClick={goToLog}>
                 {t('insights.logMoreDays')}
               </button>
-              {' '}{t('insights.moodDistributionSubtitle')}
             </p>
           )}
     </section>

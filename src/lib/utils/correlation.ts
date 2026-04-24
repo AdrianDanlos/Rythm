@@ -29,6 +29,9 @@ const DIRECTION_BY_STRENGTH: Record<
   strong: { positive: 'higherSleepClearlyBetterMood', negative: 'higherSleepClearlyLowerMood' },
 }
 
+/** |r| below this is labeled "not clear"; slightly under 0.12 so more borderline data reads as a weak link with direction. */
+const NOT_CLEAR_BELOW = 0.1
+
 export const getCorrelationInsight = (entries: Entry[]): CorrelationInsight => {
   const pairedEntries = entries.filter((entry) => {
     const sleep = entry.sleep_hours === null ? Number.NaN : Number(entry.sleep_hours)
@@ -66,7 +69,7 @@ export const getCorrelationInsight = (entries: Entry[]): CorrelationInsight => {
   const correlation = numerator / denominator
   const magnitude = Math.abs(correlation)
   const label
-    = magnitude < 0.12
+    = magnitude < NOT_CLEAR_BELOW
       ? 'notClear'
       : magnitude < 0.3
         ? 'weak'

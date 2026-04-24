@@ -1,11 +1,10 @@
 import { formatSleepHours } from '../../lib/utils/sleepHours'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { MoonStar, TrendingDown, TrendingUp } from 'lucide-react'
 import { IdeaSleepTargetTeaser } from './IdeaSleepTargetTeaser'
 
 type IdeaSleepTargetProps = {
   isPro: boolean
-  entryCount: number
   personalSleepThreshold: number | null
   averageSleep: number | null
   moodByPersonalThreshold: { high: number | null, low: number | null }
@@ -15,7 +14,6 @@ type IdeaSleepTargetProps = {
 
 export const IdeaSleepTarget = ({
   isPro,
-  entryCount,
   personalSleepThreshold,
   averageSleep,
   moodByPersonalThreshold,
@@ -27,7 +25,8 @@ export const IdeaSleepTarget = ({
   const lowMood = moodByPersonalThreshold.low
   const highMood = moodByPersonalThreshold.high
   const hasMoodAverages = lowMood !== null && highMood !== null
-  const isAboveMoodHigher = hasMoodAverages ? highMood >= lowMood : false
+  const isAboveTargetBetterMood = hasMoodAverages && highMood > lowMood
+  const isAboveMoodHigher = hasMoodAverages && highMood >= lowMood
   const aboveMoodToneClass = isAboveMoodHigher
     ? 'ideal-sleep-mood-comparison__item--high'
     : 'ideal-sleep-mood-comparison__item--down'
@@ -39,9 +38,6 @@ export const IdeaSleepTarget = ({
   const moodDeltaDirection = moodDeltaPercent !== null && moodDeltaPercent < 0
     ? t('insights.worseMoodAbove')
     : t('insights.betterMoodAbove')
-  const shouldShowReduceSleepMessage = moodDeltaPercent !== null
-    && moodDeltaPercent < 0
-    && entryCount > 21
   const progressToTarget = hasThreshold && averageSleep !== null
     ? Math.min(100, (averageSleep / personalSleepThreshold) * 100)
     : null
@@ -60,9 +56,11 @@ export const IdeaSleepTarget = ({
           <h2>
             {t('insights.idealSleepTarget')}
           </h2>
-          <p className="muted">
-            {t('insights.idealSleepSubtitle')}
-          </p>
+          {!isPro ? (
+            <p className="muted">
+              {t('insights.idealSleepSubtitle')}
+            </p>
+          ) : null}
         </div>
       </div>
       {!isPro
@@ -100,13 +98,30 @@ export const IdeaSleepTarget = ({
                   </div>
                   <p className="ideal-sleep-target-card__progress-detail">
                     {averageSleep !== null
-                      ? t('insights.progressToTargetHoursSummary', {
-                          avg: formatSleepHours(averageSleep),
-                          target: formatSleepHours(personalSleepThreshold),
-                        })
-                      : t('insights.progressToTargetTargetOnly', {
-                          target: formatSleepHours(personalSleepThreshold),
-                        })}
+                      ? (
+                          <Trans
+                            i18nKey="insights.progressToTargetHoursSummary"
+                            values={{
+                              avg: formatSleepHours(averageSleep),
+                              target: formatSleepHours(personalSleepThreshold),
+                            }}
+                            components={{
+                              avg: <span className="mood-by-sleep-percent--down" />,
+                              goal: <span className="mood-by-sleep-percent--up" />,
+                            }}
+                          />
+                        )
+                      : (
+                          <Trans
+                            i18nKey="insights.progressToTargetTargetOnly"
+                            values={{
+                              target: formatSleepHours(personalSleepThreshold),
+                            }}
+                            components={{
+                              goal: <span className="mood-by-sleep-percent--up" />,
+                            }}
+                          />
+                        )}
                   </p>
                 </div>
                 <div className="ideal-sleep-target-card__message ideal-sleep-target-card__message--success">
@@ -119,53 +134,52 @@ export const IdeaSleepTarget = ({
                 </div>
                 {hasMoodAverages
                   ? (
-                      <>
-                        <div className="ideal-sleep-mood-comparison" role="group" aria-label={t('insights.moodByPersonalSleepThresholdAria')}>
-                          <div className={`ideal-sleep-mood-comparison__item ${aboveMoodToneClass}`}>
-                            <span className="ideal-sleep-mood-comparison__label">
-                              {t('insights.moodWhenAbove', { threshold: formatSleepHours(personalSleepThreshold) })}
-                            </span>
-                            <span className="ideal-sleep-mood-comparison__circle">
-                              {highMood.toFixed(1)}
-                            </span>
-                          </div>
-                          <span className="ideal-sleep-mood-comparison__divider" aria-hidden="true" />
-                          <div className={`ideal-sleep-mood-comparison__item ${belowMoodToneClass}`}>
-                            <span className="ideal-sleep-mood-comparison__label">
-                              {t('insights.moodWhenBelow', { threshold: formatSleepHours(personalSleepThreshold) })}
-                            </span>
-                            <span className="ideal-sleep-mood-comparison__circle">
-                              {lowMood.toFixed(1)}
-                            </span>
-                          </div>
-                        </div>
-                        {moodDeltaPercent !== null && (
-                          <div className="ideal-sleep-mood-delta">
-                            <p className="ideal-sleep-mood-delta__value mood-by-sleep-value">
-                              <span className={isMoodDeltaPositive ? 'mood-by-sleep-percent--up' : 'mood-by-sleep-percent--down'}>
-                                {Math.abs(moodDeltaPercent).toFixed(0)}%
-                              </span>
-                              <span
-                                className={`mood-by-sleep-trend ${isMoodDeltaPositive ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
-                                aria-label={isMoodDeltaPositive ? t('insights.moodTrendUp') : t('insights.moodTrendDown')}
-                                role="img"
-                              >
-                                {isMoodDeltaPositive
-                                  ? <TrendingUp size={16} aria-hidden="true" />
-                                  : <TrendingDown size={16} aria-hidden="true" />}
-                              </span>
-                            </p>
-                            <p className="helper ideal-sleep-mood-delta__helper">
-                              {moodDeltaDirection}
-                            </p>
-                            {shouldShowReduceSleepMessage && (
-                              <p className="helper ideal-sleep-mood-delta__helper ideal-sleep-mood-delta__helper--advice">
-                                {t('insights.reduceSleepAdvice')}
-                              </p>
-                            )}
-                          </div>
-                        )}
-                      </>
+                      isAboveTargetBetterMood
+                        ? (
+                            <>
+                              <div className="ideal-sleep-mood-comparison" role="group" aria-label={t('insights.moodByPersonalSleepThresholdAria')}>
+                                <div className={`ideal-sleep-mood-comparison__item ${aboveMoodToneClass}`}>
+                                  <span className="ideal-sleep-mood-comparison__label">
+                                    {t('insights.moodWhenAbove', { threshold: formatSleepHours(personalSleepThreshold) })}
+                                  </span>
+                                  <span className="ideal-sleep-mood-comparison__circle">
+                                    {highMood.toFixed(1)}
+                                  </span>
+                                </div>
+                                <span className="ideal-sleep-mood-comparison__divider" aria-hidden="true" />
+                                <div className={`ideal-sleep-mood-comparison__item ${belowMoodToneClass}`}>
+                                  <span className="ideal-sleep-mood-comparison__label">
+                                    {t('insights.moodWhenBelow', { threshold: formatSleepHours(personalSleepThreshold) })}
+                                  </span>
+                                  <span className="ideal-sleep-mood-comparison__circle">
+                                    {lowMood.toFixed(1)}
+                                  </span>
+                                </div>
+                              </div>
+                              {moodDeltaPercent !== null && (
+                                <div className="ideal-sleep-mood-delta">
+                                  <p className="ideal-sleep-mood-delta__value mood-by-sleep-value">
+                                    <span className={isMoodDeltaPositive ? 'mood-by-sleep-percent--up' : 'mood-by-sleep-percent--down'}>
+                                      {Math.abs(moodDeltaPercent).toFixed(0)}%
+                                    </span>
+                                    <span
+                                      className={`mood-by-sleep-trend ${isMoodDeltaPositive ? 'mood-by-sleep-trend--up' : 'mood-by-sleep-trend--down'}`}
+                                      aria-label={isMoodDeltaPositive ? t('insights.moodTrendUp') : t('insights.moodTrendDown')}
+                                      role="img"
+                                    >
+                                      {isMoodDeltaPositive
+                                        ? <TrendingUp size={16} aria-hidden="true" />
+                                        : <TrendingDown size={16} aria-hidden="true" />}
+                                    </span>
+                                  </p>
+                                  <p className="helper ideal-sleep-mood-delta__helper">
+                                    {moodDeltaDirection}
+                                  </p>
+                                </div>
+                              )}
+                            </>
+                          )
+                        : null
                     )
                   : (
                       <p className="helper">

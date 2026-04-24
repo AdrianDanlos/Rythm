@@ -92,7 +92,6 @@ export const InsightsWeekdayAverages = ({
               </span>
             </Tooltip>
           </h2>
-          <p className="muted">{t('insights.weekdaySubtitle')}</p>
         </div>
       </div>
       {!hasAnyData
