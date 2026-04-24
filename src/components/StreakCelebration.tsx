@@ -181,52 +181,62 @@ export const StreakCelebration = ({
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    gap: 12,
                     marginBottom: 8,
                   }}
                 >
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 1.1 }}
-                    aria-hidden="true"
-                  >
-                    <svg
-                      width="56"
-                      height="56"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                  <div style={{ position: 'relative', display: 'inline-block' }}>
+                    <div
                       aria-hidden="true"
+                      style={{
+                        position: 'absolute',
+                        right: '100%',
+                        top: '50%',
+                        transform: 'translate(-8px, -50%)',
+                      }}
                     >
-                      <defs>
-                        <linearGradient id="streakGradient" x1="0" y1="24" x2="24" y2="0">
-                          <stop offset="0%" stopColor="#fde047" />
-                          <stop offset="55%" stopColor="#fb923c" />
-                          <stop offset="100%" stopColor="#ec4899" />
-                        </linearGradient>
-                      </defs>
-                      <path
-                        d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"
-                        fill="url(#streakGradient)"
-                      />
-                    </svg>
-                  </motion.div>
+                      <motion.div
+                        animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 1.1 }}
+                      >
+                        <svg
+                          width="56"
+                          height="56"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <defs>
+                            <linearGradient id="streakGradient" x1="0" y1="24" x2="24" y2="0">
+                              <stop offset="0%" stopColor="#fde047" />
+                              <stop offset="55%" stopColor="#fb923c" />
+                              <stop offset="100%" stopColor="#ec4899" />
+                            </linearGradient>
+                          </defs>
+                          <path
+                            d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"
+                            fill="url(#streakGradient)"
+                          />
+                        </svg>
+                      </motion.div>
+                    </div>
 
-                  <motion.span
-                    animate={{ scale: [1, 1.05, 1] }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
-                    style={{
-                      fontSize: 72,
-                      fontWeight: 900,
-                      lineHeight: 1,
-                      background: 'linear-gradient(135deg, #fde047, #fb923c, #ec4899)',
-                      WebkitBackgroundClip: 'text',
-                      backgroundClip: 'text',
-                      color: 'transparent',
-                    }}
-                  >
-                    {streakDays}
-                  </motion.span>
+                    <motion.span
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
+                      style={{
+                        fontSize: 72,
+                        fontWeight: 900,
+                        lineHeight: 1,
+                        background: 'linear-gradient(135deg, #fde047, #fb923c, #ec4899)',
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                        color: 'transparent',
+                      }}
+                    >
+                      {streakDays}
+                    </motion.span>
+                  </div>
                 </motion.div>
 
                 <motion.div
