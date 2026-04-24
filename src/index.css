@@ -175,8 +175,8 @@
   --chart-ideal-sleep: #dadfd8;
   --badge-progress-fill: #F6E0A6;
   --streak-icon: #f59e0b;
-  --tooltip-bg: #111827;
-  --tooltip-border: rgba(56, 189, 248, 0.45);
+  --tooltip-bg: #1b2741;
+  --tooltip-border: color-mix(in srgb, var(--text) 10%, #0b1220);
   --tooltip-shadow: 0 16px 28px rgba(2, 6, 23, 0.6);
   --day-logged-bg: rgba(56, 189, 248, 0.18);
   --day-logged-text: #e2e8f0;
