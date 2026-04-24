@@ -3,20 +3,21 @@ import confetti from 'canvas-confetti'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Sparkles, Trophy } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import type { Badge } from '../lib/types/stats'
 
-type StreakCelebrationProps = {
-  streakDays: number
+type BadgeCelebrationProps = {
+  badge: Badge | null
   isVisible: boolean
   onComplete?: () => void
   onDismiss?: () => void
 }
 
-export const StreakCelebration = ({
-  streakDays,
+export const BadgeCelebration = ({
+  badge,
   isVisible,
   onComplete,
   onDismiss,
-}: StreakCelebrationProps) => {
+}: BadgeCelebrationProps) => {
   const { t } = useTranslation()
   const hasTriggeredConfetti = useRef(false)
 
@@ -51,7 +52,7 @@ export const StreakCelebration = ({
   }
 
   useEffect(() => {
-    if (isVisible && !hasTriggeredConfetti.current) {
+    if (isVisible && badge && !hasTriggeredConfetti.current) {
       hasTriggeredConfetti.current = true
       triggerConfetti()
 
@@ -64,11 +65,15 @@ export const StreakCelebration = ({
     if (!isVisible) {
       hasTriggeredConfetti.current = false
     }
-  }, [isVisible, onComplete])
+  }, [isVisible, badge, onComplete])
+
+  const badgeLevelText = badge
+    ? `${Math.max(1, badge.currentTierIndex + 1)}/${Math.max(1, badge.tierCount)}`
+    : ''
 
   return (
     <AnimatePresence>
-      {isVisible
+      {isVisible && badge
         ? (
             <motion.div
               initial={{ opacity: 0 }}
@@ -94,7 +99,7 @@ export const StreakCelebration = ({
                 }}
                 role="dialog"
                 aria-modal="true"
-                aria-label={t('streak.celebrationAria')}
+                aria-label={t('badges.celebrationAria', { defaultValue: 'Badge milestone reached' })}
                 onClick={event => event.stopPropagation()}
               >
                 <button
@@ -178,55 +183,66 @@ export const StreakCelebration = ({
                   transition={{ delay: 0.3, type: 'spring', damping: 12 }}
                   style={{
                     width: '100%',
+                    position: 'relative',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    gap: 12,
                     marginBottom: 8,
                   }}
                 >
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 1.1 }}
-                    aria-hidden="true"
-                  >
-                    <svg
-                      width="56"
-                      height="56"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                  <div style={{ position: 'relative', display: 'inline-block' }}>
+                    <div
                       aria-hidden="true"
+                      style={{
+                        position: 'absolute',
+                        right: '100%',
+                        top: '50%',
+                        transform: 'translate(-4px, -50%)',
+                      }}
                     >
-                      <defs>
-                        <linearGradient id="streakGradient" x1="0" y1="24" x2="24" y2="0">
-                          <stop offset="0%" stopColor="#fde047" />
-                          <stop offset="55%" stopColor="#fb923c" />
-                          <stop offset="100%" stopColor="#ec4899" />
-                        </linearGradient>
-                      </defs>
-                      <path
-                        d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"
-                        fill="url(#streakGradient)"
-                      />
-                    </svg>
-                  </motion.div>
+                      <motion.div
+                        animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 1.1 }}
+                      >
+                        <svg
+                          width="56"
+                          height="56"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <defs>
+                            <linearGradient id="badgeGradient" x1="0" y1="24" x2="24" y2="0">
+                              <stop offset="0%" stopColor="#fde047" />
+                              <stop offset="55%" stopColor="#fb923c" />
+                              <stop offset="100%" stopColor="#ec4899" />
+                            </linearGradient>
+                          </defs>
+                          <path
+                            d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"
+                            fill="url(#badgeGradient)"
+                          />
+                        </svg>
+                      </motion.div>
+                    </div>
 
-                  <motion.span
-                    animate={{ scale: [1, 1.05, 1] }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
-                    style={{
-                      fontSize: 72,
-                      fontWeight: 900,
-                      lineHeight: 1,
-                      background: 'linear-gradient(135deg, #fde047, #fb923c, #ec4899)',
-                      WebkitBackgroundClip: 'text',
-                      backgroundClip: 'text',
-                      color: 'transparent',
-                    }}
-                  >
-                    {streakDays}
-                  </motion.span>
+                    <motion.span
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
+                      style={{
+                        fontSize: 56,
+                        fontWeight: 900,
+                        lineHeight: 1,
+                        background: 'linear-gradient(135deg, #fde047, #fb923c, #ec4899)',
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                        color: 'transparent',
+                      }}
+                    >
+                      {badgeLevelText}
+                    </motion.span>
+                  </div>
                 </motion.div>
 
                 <motion.div
@@ -235,10 +251,10 @@ export const StreakCelebration = ({
                   transition={{ delay: 0.45 }}
                 >
                   <h2 style={{ fontSize: '1.9rem', marginBottom: 6 }}>
-                    {t('streak.celebrationTitle')}
+                    {t('badges.celebrationTitle')}
                   </h2>
                   <p className="muted" style={{ fontSize: '1.05rem' }}>
-                    {t('streak.celebrationBody', { count: streakDays })}
+                    {badge.title}
                   </p>
                 </motion.div>
 

@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 import { upsertEntry, type Entry } from '../lib/entries'
 import { getSupportMessage } from '../lib/supportMessage'
 import { buildStats, type StatsResult } from '../lib/stats'
+import type { Badge } from '../lib/types/stats'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import {
   DEFAULT_LOG_SLEEP_HOURS,
@@ -48,6 +49,7 @@ type UseLogFormParams = {
   isPro: boolean
   maxTagsPerEntry: number
   onStreakReached?: (streakDays: number) => void
+  onBadgeMilestoneReached?: (badge: Badge) => void
   shouldSuppressPostSaveToast?: (entryCount: number) => boolean
   onEntrySavedForToday?: (entryCount: number) => void
 }
@@ -62,6 +64,7 @@ export const useLogForm = ({
   sleepThreshold,
   maxTagsPerEntry,
   onStreakReached,
+  onBadgeMilestoneReached,
   shouldSuppressPostSaveToast,
   onEntrySavedForToday,
 }: UseLogFormParams) => {
@@ -292,6 +295,19 @@ export const useLogForm = ({
         || (nextStats.streak >= 40 && nextStats.streak % 10 === 0)
       if (isStreakMilestone && stats.streak < nextStats.streak) {
         onStreakReached?.(nextStats.streak)
+      }
+
+      const prevBadgeById = new Map(stats.sleepConsistencyBadges.map(b => [b.id, b]))
+      const tierUps = nextStats.sleepConsistencyBadges.flatMap((nextBadge) => {
+        const prevTier = prevBadgeById.get(nextBadge.id)?.currentTierIndex ?? -1
+        const nextTier = nextBadge.currentTierIndex
+        return nextTier > prevTier
+          ? [{ badge: nextBadge, tierDelta: nextTier - prevTier }]
+          : []
+      })
+      if (tierUps.length > 0) {
+        tierUps.sort((a, b) => b.tierDelta - a.tierDelta || a.badge.id.localeCompare(b.badge.id))
+        onBadgeMilestoneReached?.(tierUps[0]!.badge)
       }
       setSaved(true)
       const suppressPostSaveToast = shouldSuppressPostSaveToast?.(nextEntries.length) ?? false

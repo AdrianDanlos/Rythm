@@ -614,6 +614,7 @@ const fr = {
   badges: {
     maxLevel: 'Niveau max',
     maxLevelReached: 'Niveau maximum atteint.',
+    celebrationTitle: 'Badge débloqué',
     units: {
       days: 'jours',
       day: 'jour',

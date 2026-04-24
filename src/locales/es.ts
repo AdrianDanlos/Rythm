@@ -615,6 +615,7 @@ const es = {
   badges: {
     maxLevel: 'Nivel máximo',
     maxLevelReached: 'Nivel máximo alcanzado.',
+    celebrationTitle: 'Insignia desbloqueada',
     units: {
       days: 'días',
       day: 'día',

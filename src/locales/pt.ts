@@ -613,6 +613,7 @@ const pt = {
   badges: {
     maxLevel: 'Nível máximo',
     maxLevelReached: 'Nível máximo atingido.',
+    celebrationTitle: 'Emblema desbloqueado',
     units: {
       days: 'dias',
       day: 'dia',

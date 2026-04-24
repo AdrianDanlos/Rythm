@@ -613,6 +613,7 @@ const de = {
   badges: {
     maxLevel: 'Max. Level',
     maxLevelReached: 'Maximales Level erreicht.',
+    celebrationTitle: 'Abzeichen freigeschaltet',
     units: {
       days: 'Tage',
       day: 'Tag',

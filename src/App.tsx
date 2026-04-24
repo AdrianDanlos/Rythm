@@ -14,6 +14,7 @@ import { PaywallPage } from './billing/shared/PaywallPage'
 import { FeedbackModal } from './components/FeedbackModal'
 import { StreakModal } from './components/StreakModal'
 import { StreakCelebration } from './components/StreakCelebration'
+import { BadgeCelebration } from './components/BadgeCelebration'
 import { AppSidePanel } from './components/AppSidePanel'
 import { applySupabaseSessionFromAuthUrl } from './lib/authDeepLink'
 import { hasSupabaseAuthCallbackPayload } from './lib/authCallbackUrl'
@@ -49,6 +50,7 @@ import { useDailyReminderPostSave } from './hooks/useDailyReminderPostSave'
 import { useAndroidBackButton } from './hooks/useAndroidBackButton'
 import { useTagColors } from './hooks/useTagColors'
 import { useAppMenuPanelGestures } from './hooks/useAppMenuPanelGestures'
+import type { Badge } from './lib/types/stats'
 
 function App() {
   const { t } = useTranslation()
@@ -113,6 +115,8 @@ function App() {
   const [isMenuPanelOpen, setIsMenuPanelOpen] = useState(false)
   const [isStreakCelebrationOpen, setIsStreakCelebrationOpen] = useState(false)
   const [streakCelebrationDays, setStreakCelebrationDays] = useState<number>(3)
+  const [isBadgeCelebrationOpen, setIsBadgeCelebrationOpen] = useState(false)
+  const [badgeCelebration, setBadgeCelebration] = useState<Badge | null>(null)
 
   // Must not memoize with [] — SPA stays mounted across midnight; stale "today" breaks Log.
   const todayDate = new Date()
@@ -264,6 +268,11 @@ function App() {
     onStreakReached: (streakDays) => {
       setStreakCelebrationDays(streakDays)
       setIsStreakCelebrationOpen(true)
+    },
+    onBadgeMilestoneReached: (badge) => {
+      if (isStreakCelebrationOpen) return
+      setBadgeCelebration(badge)
+      setIsBadgeCelebrationOpen(true)
     },
     shouldSuppressPostSaveToast,
     onEntrySavedForToday: handleEntrySavedForToday,
@@ -690,6 +699,12 @@ function App() {
         streakDays={streakCelebrationDays}
         onComplete={() => setIsStreakCelebrationOpen(false)}
         onDismiss={() => setIsStreakCelebrationOpen(false)}
+      />
+      <BadgeCelebration
+        isVisible={isBadgeCelebrationOpen}
+        badge={badgeCelebration}
+        onComplete={() => setIsBadgeCelebrationOpen(false)}
+        onDismiss={() => setIsBadgeCelebrationOpen(false)}
       />
       <StreakModal isOpen={isStreakOpen} onClose={closeStreak} />
       <FeedbackModal

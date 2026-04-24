@@ -612,6 +612,7 @@ const en = {
   badges: {
     maxLevel: 'Max level',
     maxLevelReached: 'Max level reached.',
+    celebrationTitle: 'Badge unlocked',
     units: {
       days: 'days',
       day: 'day',
