@@ -12,27 +12,40 @@ const daysBetween = (from: Date, to: Date) =>
   Math.round((to.getTime() - from.getTime()) / MS_PER_DAY)
 
 /**
- * Consecutive complete days ending at the latest complete entry date
- * (same logic as Insights streak).
+ * Consecutive complete calendar days, anchored to the present.
+ *
+ * Rules:
+ * - If today is complete, streak ends today.
+ * - If today is not complete, streak ends yesterday (so you get the full day to log).
+ * - If yesterday is missing, streak is 0 (old streaks don't persist indefinitely).
  */
 export function getCurrentCompleteStreak(
   entries: Entry[],
   formatLocalDate: (date: Date) => string,
+  options?: { today?: Date },
 ): number {
   const complete = entries.filter(entry => entry.is_complete)
   if (!complete.length) return 0
   const dateSet = new Set(complete.map(entry => entry.entry_date))
-  const latestDate = complete.reduce(
-    (max, entry) => (entry.entry_date > max ? entry.entry_date : max),
-    complete[0].entry_date,
-  )
+
+  const today = new Date(options?.today ?? new Date())
+  today.setHours(0, 0, 0, 0)
+  const todayKey = formatLocalDate(today)
+
+  const anchor = new Date(today)
+  if (!dateSet.has(todayKey)) {
+    anchor.setDate(anchor.getDate() - 1)
+    const anchorKey = formatLocalDate(anchor)
+    if (!dateSet.has(anchorKey)) return 0
+  }
+
   let streak = 0
-  const current = new Date(`${latestDate}T00:00:00`)
+  const cursor = new Date(anchor)
   while (true) {
-    const key = formatLocalDate(current)
+    const key = formatLocalDate(cursor)
     if (!dateSet.has(key)) break
     streak += 1
-    current.setDate(current.getDate() - 1)
+    cursor.setDate(cursor.getDate() - 1)
   }
   return streak
 }

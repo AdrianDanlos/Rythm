@@ -38,7 +38,8 @@ describe('getCurrentCompleteStreak / getLongestCompleteStreak', () => {
         entry_date: formatLocalDate(d),
       })
     })
-    expect(getCurrentCompleteStreak(entries, formatLocalDate)).toBe(30)
+    const endOfRun = new Date(2026, 0, 30)
+    expect(getCurrentCompleteStreak(entries, formatLocalDate, { today: endOfRun })).toBe(30)
     expect(getLongestCompleteStreak(entries)).toBe(30)
   })
 
@@ -49,13 +50,14 @@ describe('getCurrentCompleteStreak / getLongestCompleteStreak', () => {
         entry_date: formatLocalDate(new Date(2026, 0, 1 + i)),
       }),
     )
+    const afterGapDate = new Date(2026, 1, 15)
     const afterGap = makeEntry({
       id: 'b',
-      entry_date: formatLocalDate(new Date(2026, 1, 15)),
+      entry_date: formatLocalDate(afterGapDate),
     })
     const entries = [...thirty, afterGap]
     expect(getLongestCompleteStreak(entries)).toBe(30)
-    expect(getCurrentCompleteStreak(entries, formatLocalDate)).toBe(1)
+    expect(getCurrentCompleteStreak(entries, formatLocalDate, { today: afterGapDate })).toBe(1)
   })
 
   it('incomplete-only day breaks current streak but not longest if past run existed', () => {
@@ -70,20 +72,33 @@ describe('getCurrentCompleteStreak / getLongestCompleteStreak', () => {
       }),
       makeEntry({ id: '3', entry_date: '2026-01-03' }),
     ]
-    expect(getCurrentCompleteStreak(entries, formatLocalDate)).toBe(1)
+    expect(getCurrentCompleteStreak(entries, formatLocalDate, { today: new Date(2026, 0, 3) })).toBe(1)
     expect(getLongestCompleteStreak(entries)).toBe(1)
+  })
+
+  it('returns 0 when the latest completed entry is in the distant past', () => {
+    const entries = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(2026, 2, 1 + i)
+      return makeEntry({
+        id: `m-${i}`,
+        entry_date: formatLocalDate(d),
+      })
+    })
+    expect(getCurrentCompleteStreak(entries, formatLocalDate, { today: new Date(2026, 3, 24) })).toBe(0)
   })
 })
 
 describe('monthly milestone badge (30-day streak)', () => {
   it('unlocks at 30 consecutive complete days', () => {
-    const entries = Array.from({ length: 30 }, (_, i) =>
-      makeEntry({
+    const endOfRun = new Date(2026, 0, 30)
+    const entries = Array.from({ length: 30 }, (_, i) => {
+      const d = new Date(2026, 0, 1 + i)
+      return makeEntry({
         id: `e-${i}`,
-        entry_date: formatLocalDate(new Date(2026, 0, 1 + i)),
-      }),
-    )
-    const current = getCurrentCompleteStreak(entries, formatLocalDate)
+        entry_date: formatLocalDate(d),
+      })
+    })
+    const current = getCurrentCompleteStreak(entries, formatLocalDate, { today: endOfRun })
     const longest = getLongestCompleteStreak(entries)
     const badge = getMonthlyMilestoneBadge(current, longest)
     expect(badge.unlocked).toBe(true)
@@ -104,12 +119,18 @@ describe('monthly milestone badge (30-day streak)', () => {
   })
 
   it('buildStats exposes unlocked monthly badge for 30-day run', () => {
-    const entries = Array.from({ length: 30 }, (_, i) =>
-      makeEntry({
+    const end = new Date()
+    end.setHours(0, 0, 0, 0)
+    const start = new Date(end)
+    start.setDate(end.getDate() - 29)
+    const entries = Array.from({ length: 30 }, (_, i) => {
+      const d = new Date(start)
+      d.setDate(start.getDate() + i)
+      return makeEntry({
         id: `e-${i}`,
-        entry_date: formatLocalDate(new Date(2026, 0, 1 + i)),
-      }),
-    )
+        entry_date: formatLocalDate(d),
+      })
+    })
     const stats = buildStats(entries, 7, formatLocalDate)
     const monthly = stats.sleepConsistencyBadges.find(b => b.id === 'monthly-milestone')
     expect(monthly?.unlocked).toBe(true)
@@ -117,15 +138,23 @@ describe('monthly milestone badge (30-day streak)', () => {
   })
 
   it('draft after 30 complete days: streak 30 and badge still unlocks', () => {
-    const thirty = Array.from({ length: 30 }, (_, i) =>
-      makeEntry({
+    const end = new Date()
+    end.setHours(0, 0, 0, 0)
+    const start = new Date(end)
+    start.setDate(end.getDate() - 29)
+    const thirty = Array.from({ length: 30 }, (_, i) => {
+      const d = new Date(start)
+      d.setDate(start.getDate() + i)
+      return makeEntry({
         id: `c-${i}`,
-        entry_date: formatLocalDate(new Date(2026, 0, 1 + i)),
-      }),
-    )
+        entry_date: formatLocalDate(d),
+      })
+    })
+    const tomorrow = new Date(end)
+    tomorrow.setDate(end.getDate() + 1)
     const draftNext = makeEntry({
       id: 'draft',
-      entry_date: formatLocalDate(new Date(2026, 0, 31)),
+      entry_date: formatLocalDate(tomorrow),
       is_complete: false,
       mood: null,
       completed_at: null,

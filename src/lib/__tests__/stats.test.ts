@@ -73,6 +73,23 @@ describe('buildStats', () => {
     expect(stats.streak).toBe(1)
   })
 
+  it('keeps streak when today is incomplete but yesterday is complete', () => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const yesterday = new Date(today)
+    yesterday.setDate(today.getDate() - 1)
+    const twoDaysAgo = new Date(today)
+    twoDaysAgo.setDate(today.getDate() - 2)
+
+    const entries = [
+      makeEntry({ id: 'a', entry_date: formatLocalDate(twoDaysAgo), is_complete: true }),
+      makeEntry({ id: 'b', entry_date: formatLocalDate(yesterday), is_complete: true }),
+    ]
+
+    const stats = buildStats(entries, 7, formatLocalDate)
+    expect(stats.streak).toBe(2)
+  })
+
   it('ignores incomplete rows in mood-by-sleep stats', () => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
