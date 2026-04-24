@@ -56,11 +56,13 @@ export const IdeaSleepTarget = ({
           <h2>
             {t('insights.idealSleepTarget')}
           </h2>
-          {!isPro ? (
-            <p className="muted">
-              {t('insights.idealSleepSubtitle')}
-            </p>
-          ) : null}
+          {!isPro
+            ? (
+                <p className="muted">
+                  {t('insights.idealSleepSubtitle')}
+                </p>
+              )
+            : null}
         </div>
       </div>
       {!isPro

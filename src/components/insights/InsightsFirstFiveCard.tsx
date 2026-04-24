@@ -55,9 +55,11 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
         <p className="eyebrow">{t('insights.firstSummary')}</p>
         <h2>{t('insights.buildingFirstWeek')}</h2>
       </div>
-      {hasAnyData ? (
-        <p className="insights-first-five-card__data">{t('insights.lastDayHeading')}</p>
-      ) : null}
+      {hasAnyData
+        ? (
+            <p className="insights-first-five-card__data">{t('insights.lastDayHeading')}</p>
+          )
+        : null}
       {hasAnyData && (
         <div className="insights-first-five-card__data-row" role="list" aria-label={t('insights.lastNightSummaryAria')}>
           {hasSleep && (
