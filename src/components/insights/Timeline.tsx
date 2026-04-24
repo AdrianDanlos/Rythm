@@ -179,7 +179,7 @@ export const Timeline = ({
                 </div>
                 {entry.tags && entry.tags.length > 0 && (
                   <div className="timeline-card-tags">
-                    {entry.tags.map((tag) => {
+                    {[...entry.tags].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })).map((tag) => {
                       const colorKey = tag.trim().toLowerCase()
                       const tagColor = tagColors[colorKey] ?? getFallbackTagColor(colorKey)
                       const textColor = getHighContrastTextColor(tagColor)
