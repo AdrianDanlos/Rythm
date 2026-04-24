@@ -246,16 +246,7 @@ export const InsightsStats = ({
                 {renderWindowTile(t('insights.last7Days'), windowAverages.last7)}
                 {renderWindowTile(t('insights.last30Days'), windowAverages.last30)}
                 <div className="stat-tile">
-                  <p className="label label--with-tooltip">
-                    {t('insights.rhythmScore')}
-                    <Tooltip label={t('insights.rhythmTooltip')}>
-                      <span className="tooltip-trigger">
-                        <span className="tooltip-icon" aria-hidden="true">
-                          <Info size={14} />
-                        </span>
-                      </span>
-                    </Tooltip>
-                  </p>
+                  <p className="label">{t('insights.rhythmScore')}</p>
                   <p className="value">{rhythmScore !== null ? `${rhythmScore} / 100` : '—'}</p>
                   <p className="helper">
                     {rhythmScore !== null
@@ -275,15 +266,21 @@ export const InsightsStats = ({
                 <div className="stat-tile">
                   <p className="label label--pre-line">{t('insights.sleepMoodLink')}</p>
                   <p className="value">{correlationLabel ? t(`insights.correlationLevels.${correlationLabel}`) : '—'}</p>
-                  {correlationDirection ? (
-                    <p className="helper">{t(`insights.correlationDirections.${correlationDirection}`)}</p>
-                  ) : correlationLabel ? (
-                    <p className="helper">{t('insights.correlationStrength')}</p>
-                  ) : correlationMore > 0 ? (
-                    <p className="helper">
-                      {t('insights.needsMoreDays', { count: correlationMore, unit: correlationMore === 1 ? t('common.day') : t('common.days') })}
-                    </p>
-                  ) : null}
+                  {correlationDirection
+                    ? (
+                        <p className="helper">{t(`insights.correlationDirections.${correlationDirection}`)}</p>
+                      )
+                    : correlationLabel
+                      ? (
+                          <p className="helper">{t('insights.correlationStrength')}</p>
+                        )
+                      : correlationMore > 0
+                        ? (
+                            <p className="helper">
+                              {t('insights.needsMoreDays', { count: correlationMore, unit: correlationMore === 1 ? t('common.day') : t('common.days') })}
+                            </p>
+                          )
+                        : null}
                 </div>
                 <div className="stat-tile">
                   <p className="label label--with-tooltip">
@@ -319,6 +316,7 @@ export const InsightsStats = ({
                       )
                     : <p className="value">—</p>}
                   {moodBySleepMessage != null ? <p className="helper">{moodBySleepMessage}</p> : null}
+                  <p className="helper">{t('insights.logMoreDays')}</p>
                 </div>
               </>
             )}

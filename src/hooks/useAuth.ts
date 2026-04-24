@@ -3,6 +3,13 @@ import type { Session } from '@supabase/supabase-js'
 import { Capacitor } from '@capacitor/core'
 import { t } from 'i18next'
 import { toast } from 'sonner'
+import {
+  clearPasswordRecoverySessionFlag,
+  isPasswordRecoveryInAuthUrl,
+  PASSWORD_RECOVERY_PENDING_DOM_EVENT,
+  PASSWORD_RECOVERY_SESSION_STORAGE_KEY,
+  readPasswordRecoveryPendingFromStorage,
+} from '../lib/authCallbackUrl'
 import { supabase } from '../lib/supabaseClient'
 
 /**
@@ -32,7 +39,32 @@ export const useAuth = () => {
   const [authLoading, setAuthLoading] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
   const [authInitialized, setAuthInitialized] = useState(false)
-  const [passwordRecoveryPending, setPasswordRecoveryPending] = useState(false)
+  const [passwordRecoveryPending, setPasswordRecoveryPending] = useState(() => {
+    if (typeof window === 'undefined') {
+      return false
+    }
+    return readPasswordRecoveryPendingFromStorage()
+      || isPasswordRecoveryInAuthUrl(window.location.search, window.location.hash)
+  })
+
+  useEffect(() => {
+    const syncFromStorage = () => {
+      if (readPasswordRecoveryPendingFromStorage()) {
+        setPasswordRecoveryPending(true)
+      }
+    }
+    syncFromStorage()
+    if (typeof window === 'undefined') {
+      return
+    }
+    const onPending = () => {
+      syncFromStorage()
+    }
+    window.addEventListener(PASSWORD_RECOVERY_PENDING_DOM_EVENT, onPending)
+    return () => {
+      window.removeEventListener(PASSWORD_RECOVERY_PENDING_DOM_EVENT, onPending)
+    }
+  }, [])
 
   useEffect(() => {
     let isMounted = true
@@ -41,6 +73,9 @@ export const useAuth = () => {
       .getSession()
       .then(({ data }) => {
         if (!isMounted) return
+        if (readPasswordRecoveryPendingFromStorage()) {
+          setPasswordRecoveryPending(true)
+        }
         setSession(data.session ?? null)
         setAuthInitialized(true)
       })
@@ -55,9 +90,18 @@ export const useAuth = () => {
       if (!isMounted) return
 
       if (event === 'SIGNED_OUT') {
+        clearPasswordRecoverySessionFlag()
         setPasswordRecoveryPending(false)
       }
       if (event === 'PASSWORD_RECOVERY') {
+        try {
+          if (typeof window !== 'undefined') {
+            window.sessionStorage.setItem(PASSWORD_RECOVERY_SESSION_STORAGE_KEY, '1')
+          }
+        }
+        catch {
+          // ignore
+        }
         setPasswordRecoveryPending(true)
       }
 
@@ -161,6 +205,7 @@ export const useAuth = () => {
     }
     else {
       setPasswordRecoveryPending(false)
+      clearPasswordRecoverySessionFlag()
       toast.success(t('auth.passwordUpdated'))
       if (typeof window !== 'undefined') {
         window.history.replaceState(

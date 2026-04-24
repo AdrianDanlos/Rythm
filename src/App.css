@@ -258,11 +258,21 @@
 }
 
 .native-auth-screen__guest-text-link:disabled {
+  /* Outrank global `button:disabled` (index.css) so this stays a text link while loading */
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: #64748b;
   opacity: 0.55;
   cursor: not-allowed;
+  transform: none;
 }
 
 :root[data-theme="dark"] .native-auth-screen__guest-text-link {
+  color: #94a3b8;
+}
+
+:root[data-theme="dark"] .native-auth-screen__guest-text-link:disabled {
   color: #94a3b8;
 }
 
@@ -2137,10 +2147,15 @@
 }
 
 .mood-selected-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   margin: 14px 0 0;
-  min-height: 1.35em;
+  /* Fixed line box so placeholder vs label does not change height (avoid em-based min-height). */
   font-size: 1.05rem;
+  line-height: 1.35;
+  min-height: calc(1.05rem * 1.35);
   font-weight: 700;
   color: var(--text);
 }
@@ -2148,7 +2163,6 @@
 .mood-selected-name--placeholder {
   color: var(--muted);
   font-weight: 500;
-  font-size: 0.95rem;
 }
 
 /* Mood cards (reflection) */
@@ -2418,8 +2432,13 @@
 }
 
 .auth-guest-text-link:disabled {
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: var(--muted);
   opacity: 0.55;
   cursor: not-allowed;
+  transform: none;
 }
 
 .auth-helper-text {

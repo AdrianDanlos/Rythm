@@ -96,6 +96,14 @@ function App() {
     setAuthMode('signin')
   }, [])
 
+  useEffect(() => {
+    if (session) {
+      return
+    }
+    setAuthEmailFlow('credentials')
+    setAuthMode('signin')
+  }, [session])
+
   const sessionBlocksForUnverifiedEmail = needsEmailVerification(session)
 
   const toggleAuthMode = useCallback(() => {
@@ -413,6 +421,10 @@ function App() {
       return
     }
 
+    if (passwordRecoveryPending) {
+      return
+    }
+
     // Avoid navigating from `/` before Supabase has restored the session: with no userId,
     // getDefaultPageForUser always picks Log, and we never re-run for `/` once stuck on /log.
     if (!authInitialized) return
@@ -434,9 +446,13 @@ function App() {
     navigate,
     userId,
     authInitialized,
+    passwordRecoveryPending,
   ])
 
   useEffect(() => {
+    if (passwordRecoveryPending) {
+      return
+    }
     if (!userId || showPrivacyPage || showDeleteAccountPage) {
       return
     }
@@ -449,7 +465,7 @@ function App() {
     if (!isReturningUser(userId)) {
       navigate(getPathForPage(AppPage.Log), { replace: true })
     }
-  }, [userId, showPrivacyPage, showDeleteAccountPage, pathname, navigate])
+  }, [userId, showPrivacyPage, showDeleteAccountPage, pathname, navigate, passwordRecoveryPending])
 
   useEffect(() => {
     if (showPrivacyPage || showDeleteAccountPage) return
