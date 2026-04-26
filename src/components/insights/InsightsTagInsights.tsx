@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { DEFAULT_TAG_DRIVER_MIN_COUNT } from '../../lib/utils/tagInsights'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
-import { ChevronRight, Info, TrendingDown, TrendingUp } from 'lucide-react'
+import { ChevronRight, Info, Moon, Smile, TrendingDown, TrendingUp } from 'lucide-react'
 
 type InsightsTagInsightsProps = {
   isPro: boolean
@@ -214,7 +214,7 @@ export const InsightsTagInsights = ({
   }
 
   return (
-    <div className="tag-insights-unnested">
+    <>
       <div className="tag-insights-page-intro">
         <h2 id="tag-insights-daily-events-heading">{t('insights.dailyEventsInsights')}</h2>
         <p className="muted">{t('insights.eventsInfluence')}</p>
@@ -226,18 +226,18 @@ export const InsightsTagInsights = ({
                 className="card"
                 aria-labelledby="tag-insights-mood-heading"
               >
-                <div className="tag-insights-block tag-insights-block--in-card">
-                  <div className="tag-insights-block-header">
-                    <h3 className="tag-insights-block-title" id="tag-insights-mood-heading">{t('insights.eventsPredictMood')}</h3>
-                    <Tooltip label={t('insights.compareMoodWithWithout')}>
-                      <span className="tooltip-trigger">
-                        <span className="tooltip-icon" aria-hidden="true">
-                          <Info size={14} />
-                        </span>
+                <div className="tag-insights-block-header">
+                  <Smile className="tag-insights-block-icon tag-insights-block-icon--mood" size={18} aria-hidden />
+                  <h3 className="tag-insights-block-title" id="tag-insights-mood-heading">{t('insights.eventsPredictMood')}</h3>
+                  <Tooltip label={t('insights.compareMoodWithWithout')}>
+                    <span className="tooltip-trigger">
+                      <span className="tooltip-icon" aria-hidden="true">
+                        <Info size={14} />
                       </span>
-                    </Tooltip>
-                  </div>
-                  {(positiveDrivers.length > 0 || negativeDrivers.length > 0 || lockedPositiveMoodCount > 0 || lockedNegativeMoodCount > 0)
+                    </span>
+                  </Tooltip>
+                </div>
+                {(positiveDrivers.length > 0 || negativeDrivers.length > 0 || lockedPositiveMoodCount > 0 || lockedNegativeMoodCount > 0)
                     ? (
                         <>
                           {(positiveDrivers.length > 0 || lockedPositiveMoodCount > 0) && (
@@ -361,35 +361,34 @@ export const InsightsTagInsights = ({
                     : (
                         <p className="muted">{t('insights.addEventsToSeeMoodImpact')}</p>
                       )}
-                  {isPro && hasMoreMoodToShow && (
-                    <div className="tag-insights-show-more">
-                      <button
-                        type="button"
-                        className="link-button link-button--text"
-                        onClick={() => setShowAllTags(prev => !prev)}
-                      >
-                        {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
-                      </button>
-                    </div>
-                  )}
-                </div>
+                {isPro && hasMoreMoodToShow && (
+                  <div className="tag-insights-show-more">
+                    <button
+                      type="button"
+                      className="link-button link-button--text"
+                      onClick={() => setShowAllTags(prev => !prev)}
+                    >
+                      {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
+                    </button>
+                  </div>
+                )}
               </section>
               <section
                 className="card"
                 aria-labelledby="tag-insights-sleep-heading"
               >
-                <div className="tag-insights-block tag-insights-block--in-card">
-                  <div className="tag-insights-block-header">
-                    <h3 className="tag-insights-block-title" id="tag-insights-sleep-heading">{t('insights.eventsPredictSleep')}</h3>
-                    <Tooltip label={t('insights.compareSleepWithWithout')}>
-                      <span className="tooltip-trigger">
-                        <span className="tooltip-icon" aria-hidden="true">
-                          <Info size={14} />
-                        </span>
+                <div className="tag-insights-block-header">
+                  <Moon className="tag-insights-block-icon tag-insights-block-icon--sleep" size={18} aria-hidden />
+                  <h3 className="tag-insights-block-title" id="tag-insights-sleep-heading">{t('insights.eventsPredictSleep')}</h3>
+                  <Tooltip label={t('insights.compareSleepWithWithout')}>
+                    <span className="tooltip-trigger">
+                      <span className="tooltip-icon" aria-hidden="true">
+                        <Info size={14} />
                       </span>
-                    </Tooltip>
-                  </div>
-                  {(positiveSleepDrivers.length > 0 || negativeSleepDrivers.length > 0 || lockedPositiveSleepCount > 0 || lockedNegativeSleepCount > 0)
+                    </span>
+                  </Tooltip>
+                </div>
+                {(positiveSleepDrivers.length > 0 || negativeSleepDrivers.length > 0 || lockedPositiveSleepCount > 0 || lockedNegativeSleepCount > 0)
                     ? (
                         <>
                           {renderSleepDriverSection(
@@ -409,32 +408,26 @@ export const InsightsTagInsights = ({
                     : (
                         <p className="muted">{t('insights.addEventsToSeeSleepImpact')}</p>
                       )}
-                  {isPro && hasMoreSleepToShow && (
-                    <div className="tag-insights-show-more">
-                      <button
-                        type="button"
-                        className="link-button link-button--text"
-                        onClick={() => setShowAllTags(prev => !prev)}
-                      >
-                        {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
-                      </button>
-                    </div>
-                  )}
-                </div>
+                {isPro && hasMoreSleepToShow && (
+                  <div className="tag-insights-show-more">
+                    <button
+                      type="button"
+                      className="link-button link-button--text"
+                      onClick={() => setShowAllTags(prev => !prev)}
+                    >
+                      {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
+                    </button>
+                  </div>
+                )}
               </section>
             </>
           )
         : (
-            <section
-              className="card"
-              aria-labelledby="tag-insights-daily-events-heading"
-            >
-              <p className="muted">
-                <button type="button" className="link-button link-button--text" onClick={goToLog}>{t('insights.addDailyEvents')}</button>
-                {' '}{t('insights.addEventsToUnlock', { count: DEFAULT_TAG_DRIVER_MIN_COUNT })}
-              </p>
-            </section>
+            <p className="muted">
+              <button type="button" className="link-button link-button--text" onClick={goToLog}>{t('insights.addDailyEvents')}</button>
+              {' '}{t('insights.addEventsToUnlock', { count: DEFAULT_TAG_DRIVER_MIN_COUNT })}
+            </p>
           )}
-    </div>
+    </>
   )
 }

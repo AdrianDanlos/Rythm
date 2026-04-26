@@ -3967,6 +3967,32 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   box-shadow: none;
 }
 
+/* Edit row: narrow Save control with content width, full list-row height */
+.your-daily-events-item-actions:has(> .your-daily-events-tag-save) {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.your-daily-events-tag-save {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: fit-content;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  line-height: 1.2;
+  font-weight: 600;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
 .your-daily-events-list-item {
   display: flex;
   align-items: center;
@@ -3999,14 +4025,6 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 .your-daily-events-edit-input {
   flex: 1;
   min-width: 0;
-}
-
-.your-daily-events-toggle {
-  margin-top: 8px;
-  margin-left: auto;
-  display: block;
-  width: fit-content;
-  text-align: right;
 }
 
 .your-daily-events-color-input {
@@ -4121,7 +4139,7 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 }
 
 .tag-color-modal-actions {
-  margin-top: 18px;
+  margin-top: 12px;
 }
 
 .tag-color-modal .react-colorful {
@@ -5809,13 +5827,6 @@ button.toggle-group__btn--disabled:disabled {
   opacity: 0.8;
 }
 
-.tag-insights-unnested {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  width: 100%;
-}
-
 .tag-insights-page-intro h2 {
   margin: 0 0 6px;
   font-size: 1.25rem;
@@ -5840,18 +5851,23 @@ button.toggle-group__btn--disabled:disabled {
   border-top: none;
 }
 
-/* One block per card: override stacked-in-parent rules */
-.tag-insights-block.tag-insights-block--in-card {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
-}
-
 .tag-insights-block-header {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 12px;
+}
+
+.tag-insights-block-icon {
+  flex-shrink: 0;
+}
+
+.tag-insights-block-icon--mood {
+  color: var(--chart-mood);
+}
+
+.tag-insights-block-icon--sleep {
+  color: var(--chart-sleep-bar, var(--chart-sleep));
 }
 
 .tag-insights-block-title {

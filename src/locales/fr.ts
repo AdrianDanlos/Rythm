@@ -26,7 +26,7 @@ const fr = {
     insights: 'Insights',
     log: 'Enregistrer',
     summary: 'Résumé',
-    charts: 'Graphiques',
+    charts: 'Visuels',
     export: 'Exporter',
     events: 'Événements',
     timeline: 'Frise',

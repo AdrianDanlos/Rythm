@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import type { FocusEvent } from 'react'
 import { ChevronLeft, Info, Pencil } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { Entry } from '../../lib/entries'
-import { tagColorPalette } from '../../lib/colors'
+import { getFallbackTagColor } from '../../lib/colors'
 import { MAX_TAG_LENGTH } from '../../lib/utils/stringUtils'
 import { TagColorPicker } from '../TagColorPicker'
 import { Tooltip } from '../Tooltip'
@@ -28,8 +29,8 @@ export function DailyEventsEditPage({
   const { t } = useTranslation()
   const [editingTag, setEditingTag] = useState<string | null>(null)
   const [editingValue, setEditingValue] = useState('')
-  const [showAllTags, setShowAllTags] = useState(false)
   const [colorPickerTag, setColorPickerTag] = useState<string | null>(null)
+  const tagEditSaveButtonRef = useRef<HTMLButtonElement>(null)
 
   const topTags = useMemo(() => {
     const countByKey = new Map<string, { count: number, display: string }>()
@@ -52,7 +53,6 @@ export function DailyEventsEditPage({
       .sort((a, b) => b[1].count - a[1].count)
       .map(([, { display, count }]) => ({ display, count }))
   }, [entries])
-  const visibleTags = showAllTags ? topTags : topTags.slice(0, 4)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -89,6 +89,11 @@ export function DailyEventsEditPage({
     setEditingValue('')
   }
 
+  const handleTagEditInputBlur = (e: FocusEvent<HTMLInputElement>) => {
+    if (e.relatedTarget === tagEditSaveButtonRef.current) return
+    commitEditingTag()
+  }
+
   return (
     <div className="insights-panel">
       <div className="daily-events-edit-top">
@@ -102,121 +107,109 @@ export function DailyEventsEditPage({
         </button>
       </div>
 
-      <section className="card">
-        <div className="card-header">
-          <div className="your-daily-events-heading">
-            <h2 id="daily-events-edit-title">{t('insights.yourDailyEvents')}</h2>
-            <Tooltip label={t('insights.tagColorRandomTooltip')}>
-              <span
-                className="tooltip-trigger"
-                tabIndex={0}
-                aria-label={t('insights.tagColorRandomTooltip')}
-              >
-                <span className="tooltip-icon" aria-hidden="true">
-                  <Info size={14} />
-                </span>
+      <div className="card-header">
+        <div className="your-daily-events-heading">
+          <h2 id="daily-events-edit-title">{t('insights.yourDailyEvents')}</h2>
+          <Tooltip label={t('insights.tagColorRandomTooltip')}>
+            <span
+              className="tooltip-trigger"
+              tabIndex={0}
+              aria-label={t('insights.tagColorRandomTooltip')}
+            >
+              <span className="tooltip-icon" aria-hidden="true">
+                <Info size={14} />
               </span>
-            </Tooltip>
-          </div>
+            </span>
+          </Tooltip>
         </div>
-        {topTags.length > 0
-          ? (
-              <>
-                <ul className="your-daily-events-list" aria-labelledby="daily-events-edit-title">
-                  {visibleTags.map(({ display, count }) => {
-                    const isEditing = editingTag === display
-                    const colorKey = display.trim().toLowerCase()
-                    const hasExplicitColor = !!tagColors[colorKey]
-                    const tagColor = hasExplicitColor ? tagColors[colorKey] : '#ffffff'
-                    return (
-                      <li
-                        key={display}
-                        className="your-daily-events-list-item"
-                      >
-                        {isEditing
-                          ? (
-                              <div className="field your-daily-events-edit-input">
-                                <input
-                                  type="text"
-                                  value={editingValue}
-                                  onChange={e => setEditingValue(e.target.value.slice(0, MAX_TAG_LENGTH))}
-                                  onBlur={commitEditingTag}
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                      e.preventDefault()
-                                      commitEditingTag()
-                                    }
-                                    else if (e.key === 'Escape') {
-                                      e.preventDefault()
-                                      cancelEditingTag()
-                                    }
-                                  }}
-                                  autoFocus
-                                />
-                              </div>
-                            )
-                          : (
-                              <>
-                                <span className="your-daily-events-list-label">
-                                  {t('insights.dailyEventCount', { tag: display, count })}
-                                </span>
-                                <div className="your-daily-events-item-actions">
-                                  <button
-                                    type="button"
-                                    className="tag-color-trigger"
-                                    style={{ backgroundColor: tagColor }}
-                                    onClick={() => setColorPickerTag(display)}
-                                    aria-label={t('insights.changeTagColor', { tag: display })}
-                                  >
-                                    <span className="tag-color-trigger-inner" />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="ghost icon-button your-daily-events-edit-button"
-                                    onClick={() => startEditingTag(display)}
-                                    aria-label={t('common.edit')}
-                                  >
-                                    <Pencil className="icon" aria-hidden />
-                                  </button>
-                                </div>
-                              </>
-                            )}
-                      </li>
-                    )
-                  })}
-                </ul>
-                {topTags.length > 4 && (
-                  <div className="tag-insights-show-more">
-                    <button
-                      type="button"
-                      className="link-button link-button--text your-daily-events-toggle"
-                      onClick={() => {
-                        setShowAllTags((prev) => {
-                          if (prev && typeof window !== 'undefined') {
-                            window.scrollTo({ top: 0, behavior: 'smooth' })
-                          }
-                          return !prev
-                        })
-                      }}
-                    >
-                      {showAllTags
-                        ? t('insights.showTopTags')
-                        : t('insights.showAllTags')}
-                    </button>
-                  </div>
-                )}
-              </>
-            )
-          : (
-              <NoDailyEventsLoggedHint onGoToLog={goToLog} />
-            )}
-      </section>
+      </div>
+      {topTags.length > 0
+        ? (
+            <ul className="your-daily-events-list" aria-labelledby="daily-events-edit-title">
+              {topTags.map(({ display, count }) => {
+                const isEditing = editingTag === display
+                const colorKey = display.trim().toLowerCase()
+                const tagColor
+                  = tagColors[colorKey] ?? getFallbackTagColor(colorKey)
+                return (
+                  <li
+                    key={display}
+                    className="your-daily-events-list-item"
+                  >
+                    {isEditing
+                      ? (
+                          <>
+                            <div className="field your-daily-events-edit-input">
+                              <input
+                                type="text"
+                                value={editingValue}
+                                onChange={e => setEditingValue(e.target.value.slice(0, MAX_TAG_LENGTH))}
+                                onBlur={handleTagEditInputBlur}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault()
+                                    commitEditingTag()
+                                  }
+                                  else if (e.key === 'Escape') {
+                                    e.preventDefault()
+                                    cancelEditingTag()
+                                  }
+                                }}
+                                autoFocus
+                              />
+                            </div>
+                            <div className="your-daily-events-item-actions">
+                              <button
+                                ref={tagEditSaveButtonRef}
+                                type="button"
+                                className="primary-button your-daily-events-tag-save"
+                                onClick={commitEditingTag}
+                              >
+                                {t('common.save')}
+                              </button>
+                            </div>
+                          </>
+                        )
+                      : (
+                          <>
+                            <span className="your-daily-events-list-label">
+                              {t('insights.dailyEventCount', { tag: display, count })}
+                            </span>
+                            <div className="your-daily-events-item-actions">
+                              <button
+                                type="button"
+                                className="tag-color-trigger"
+                                style={{ backgroundColor: tagColor }}
+                                onClick={() => setColorPickerTag(display)}
+                                aria-label={t('insights.changeTagColor', { tag: display })}
+                              >
+                                <span className="tag-color-trigger-inner" />
+                              </button>
+                              <button
+                                type="button"
+                                className="ghost icon-button your-daily-events-edit-button"
+                                onClick={() => startEditingTag(display)}
+                                aria-label={t('common.edit')}
+                              >
+                                <Pencil className="icon" aria-hidden />
+                              </button>
+                            </div>
+                          </>
+                        )}
+                  </li>
+                )
+              })}
+            </ul>
+          )
+        : (
+            <NoDailyEventsLoggedHint onGoToLog={goToLog} />
+          )}
       <TagColorPicker
         key={colorPickerTag ?? 'closed'}
         color={(() => {
           if (!colorPickerTag) return '#ffffff'
           const key = colorPickerTag.trim().toLowerCase()
-          return tagColors[key] ?? tagColorPalette[0]
+          return tagColors[key] ?? getFallbackTagColor(key)
         })()}
         isOpen={!!colorPickerTag}
         title={t('insights.changeTagColorTitle')}

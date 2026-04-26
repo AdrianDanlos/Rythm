@@ -28,6 +28,11 @@ export const TagColorPicker = ({
 
   useEffect(() => {
     if (!isOpen) return
+    setDraftColor(color)
+  }, [isOpen, color])
+
+  useEffect(() => {
+    if (!isOpen) return
     const previousActive = document.activeElement as HTMLElement | null
     initialFocusRef.current?.focus()
     return () => {
