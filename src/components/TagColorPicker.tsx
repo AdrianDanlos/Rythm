@@ -25,26 +25,49 @@ export const TagColorPicker = ({
   onCancel,
   resetToDefault,
 }: TagColorPickerProps) => {
-  const [draftColor, setDraftColor] = useState(color)
+  if (!isOpen) return null
+
+  return (
+    <TagColorPickerDialog
+      initialColor={color}
+      title={title}
+      description={description}
+      confirmLabel={confirmLabel}
+      cancelLabel={cancelLabel}
+      onConfirm={onConfirm}
+      onCancel={onCancel}
+      resetToDefault={resetToDefault}
+    />
+  )
+}
+
+type TagColorPickerDialogProps = Omit<TagColorPickerProps, 'color' | 'isOpen'> & {
+  initialColor: string
+}
+
+const TagColorPickerDialog = ({
+  initialColor,
+  title,
+  description,
+  confirmLabel,
+  cancelLabel,
+  onConfirm,
+  onCancel,
+  resetToDefault,
+}: TagColorPickerDialogProps) => {
+  const [draftColor, setDraftColor] = useState(initialColor)
   const dialogRef = useRef<HTMLDivElement | null>(null)
   const initialFocusRef = useRef<HTMLButtonElement | null>(null)
 
   useEffect(() => {
-    if (!isOpen) return
-    setDraftColor(color)
-  }, [isOpen, color])
-
-  useEffect(() => {
-    if (!isOpen) return
     const previousActive = document.activeElement as HTMLElement | null
     initialFocusRef.current?.focus()
     return () => {
       previousActive?.focus()
     }
-  }, [isOpen])
+  }, [])
 
   useEffect(() => {
-    if (!isOpen) return
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault()
@@ -55,9 +78,7 @@ export const TagColorPicker = ({
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [isOpen, onCancel])
-
-  if (!isOpen) return null
+  }, [onCancel])
 
   const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target !== event.currentTarget) return
