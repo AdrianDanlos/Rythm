@@ -60,7 +60,7 @@ describe('getCurrentCompleteStreak / getLongestCompleteStreak', () => {
     expect(getCurrentCompleteStreak(entries, formatLocalDate, { today: afterGapDate })).toBe(1)
   })
 
-  it('incomplete-only day breaks current streak but not longest if past run existed', () => {
+  it('partial day (entry row, not complete) does not break the streak; only a blank day does', () => {
     const entries = [
       makeEntry({ id: '1', entry_date: '2026-01-01' }),
       makeEntry({
@@ -72,8 +72,8 @@ describe('getCurrentCompleteStreak / getLongestCompleteStreak', () => {
       }),
       makeEntry({ id: '3', entry_date: '2026-01-03' }),
     ]
-    expect(getCurrentCompleteStreak(entries, formatLocalDate, { today: new Date(2026, 0, 3) })).toBe(1)
-    expect(getLongestCompleteStreak(entries)).toBe(1)
+    expect(getCurrentCompleteStreak(entries, formatLocalDate, { today: new Date(2026, 0, 3) })).toBe(2)
+    expect(getLongestCompleteStreak(entries)).toBe(2)
   })
 
   it('returns 0 when the latest completed entry is in the distant past', () => {

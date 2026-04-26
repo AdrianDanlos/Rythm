@@ -55,7 +55,7 @@ describe('buildWeeklyTrendSeries', () => {
 })
 
 describe('buildStats', () => {
-  it('counts streak with complete entries only', () => {
+  it('streak adds only complete days but partial day between them does not break the chain', () => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     const yesterday = new Date(today)
@@ -70,7 +70,7 @@ describe('buildStats', () => {
     ]
 
     const stats = buildStats(entries, 7, formatLocalDate)
-    expect(stats.streak).toBe(1)
+    expect(stats.streak).toBe(2)
   })
 
   it('keeps streak when today is incomplete but yesterday is complete', () => {
