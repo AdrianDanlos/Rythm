@@ -13,7 +13,6 @@ type DailyEventsEditPageProps = {
   tagColors: Record<string, string>
   onRenameTag: (fromTag: string, toTag: string) => void
   onTagColorChange: (tag: string, color: string) => void
-  onTagColorReset: (tag: string) => void
   goToLog: () => void
   onBack: () => void
 }
@@ -23,7 +22,6 @@ export function DailyEventsEditPage({
   tagColors,
   onRenameTag,
   onTagColorChange,
-  onTagColorReset,
   goToLog,
   onBack,
 }: DailyEventsEditPageProps) {
@@ -211,18 +209,6 @@ export function DailyEventsEditPage({
           }
           setColorPickerTag(null)
         }}
-        resetToDefault={(() => {
-          if (!colorPickerTag) return undefined
-          const key = colorPickerTag.trim().toLowerCase()
-          if (!tagColors[key]) return undefined
-          return {
-            label: t('insights.resetTagColorToDefault'),
-            onClick: () => {
-              onTagColorReset(colorPickerTag)
-              setColorPickerTag(null)
-            },
-          }
-        })()}
       />
     </div>
   )

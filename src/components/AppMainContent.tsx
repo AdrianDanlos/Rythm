@@ -162,7 +162,6 @@ type AppMainContentProps = {
   onSettingsPersonalSleepTargetChange: (value: number) => void
   onRenameTag: (fromTag: string, toTag: string) => void
   onTagColorChange: (tag: string, color: string) => void
-  onTagColorReset: (tag: string) => void
   onEnsureTagColor: (tag: string) => void
   onIntroVisibilityChange?: (visible: boolean) => void
   /** While the log-tab quick start is shown (no entries yet), Insights tab is disabled. */
@@ -264,7 +263,6 @@ export function AppMainContent({
   onSettingsPersonalSleepTargetChange,
   onRenameTag,
   onTagColorChange,
-  onTagColorReset,
   onEnsureTagColor,
   onIntroVisibilityChange,
   lockNonLogTabs,
@@ -507,7 +505,6 @@ export function AppMainContent({
                     tagColors={tagColors}
                     onRenameTag={onRenameTag}
                     onTagColorChange={onTagColorChange}
-                    onTagColorReset={onTagColorReset}
                     goToLog={() => onNavigateToPage(AppPage.Log)}
                     onBack={() => onNavigateToPage(AppPage.Events)}
                   />

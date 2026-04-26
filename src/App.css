@@ -4042,6 +4042,28 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   min-width: 0;
 }
 
+/* Inline tag rename: softer edge than default `.field` (light focus was full slate-900). */
+.field.your-daily-events-edit-input input {
+  border-color: color-mix(in srgb, var(--border) 78%, var(--card) 22%);
+}
+
+.field.your-daily-events-edit-input input:focus,
+.field.your-daily-events-edit-input input:focus-visible {
+  outline: none;
+  border-color: color-mix(in srgb, var(--text) 20%, var(--border) 80%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 7%, transparent);
+}
+
+:root[data-theme="dark"] .field.your-daily-events-edit-input input {
+  border-color: color-mix(in srgb, var(--border) 70%, var(--card) 30%);
+}
+
+:root[data-theme="dark"] .field.your-daily-events-edit-input input:focus,
+:root[data-theme="dark"] .field.your-daily-events-edit-input input:focus-visible {
+  border-color: color-mix(in srgb, var(--text) 18%, var(--border) 82%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 10%, transparent);
+}
+
 .your-daily-events-color-input {
   width: 28px;
   height: 28px;

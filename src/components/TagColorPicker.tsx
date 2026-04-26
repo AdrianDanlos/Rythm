@@ -10,8 +10,6 @@ type TagColorPickerProps = {
   cancelLabel: string
   onConfirm: (color: string) => void
   onCancel: () => void
-  /** Shown when this tag has a stored custom color; clears it and uses the automatic (hash) color. */
-  resetToDefault?: { label: string, onClick: () => void }
 }
 
 export const TagColorPicker = ({
@@ -23,7 +21,6 @@ export const TagColorPicker = ({
   cancelLabel,
   onConfirm,
   onCancel,
-  resetToDefault,
 }: TagColorPickerProps) => {
   if (!isOpen) return null
 
@@ -36,7 +33,6 @@ export const TagColorPicker = ({
       cancelLabel={cancelLabel}
       onConfirm={onConfirm}
       onCancel={onCancel}
-      resetToDefault={resetToDefault}
     />
   )
 }
@@ -53,7 +49,6 @@ const TagColorPickerDialog = ({
   cancelLabel,
   onConfirm,
   onCancel,
-  resetToDefault,
 }: TagColorPickerDialogProps) => {
   const [draftColor, setDraftColor] = useState(initialColor)
   const dialogRef = useRef<HTMLDivElement | null>(null)
@@ -111,22 +106,7 @@ const TagColorPickerDialog = ({
         <div className="tag-color-modal-body">
           <HexColorPicker color={draftColor} onChange={setDraftColor} />
         </div>
-        <div
-          className={resetToDefault
-            ? 'tag-color-modal-footer tag-color-modal-footer--with-reset'
-            : 'tag-color-modal-footer'}
-        >
-          {resetToDefault
-            ? (
-                <button
-                  type="button"
-                  className="link-button link-button--text tag-color-modal-reset"
-                  onClick={resetToDefault.onClick}
-                >
-                  {resetToDefault.label}
-                </button>
-              )
-            : null}
+        <div className="tag-color-modal-footer">
           <div className="modal-actions modal-actions-right tag-color-modal-footer-actions">
             <button
               ref={initialFocusRef}
