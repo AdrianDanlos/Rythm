@@ -4,8 +4,7 @@ import { AnimatePresence, motion, type Transition } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Angry, ChevronDown, Filter, Frown, Laugh, Meh, Moon, Smile } from 'lucide-react'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
-import { getHighContrastTextColor } from '../../lib/utils/colorContrast'
-import { getFallbackTagColor } from '../../lib/colors'
+import { EventTagSelector } from '../EventTagSelector'
 
 export type FilterOperator = 'eq' | 'gte' | 'lte'
 
@@ -441,47 +440,16 @@ export const TimelineFilters = ({
                         exit={{ height: 0, opacity: 0 }}
                         transition={sectionTransition}
                       >
-                        <div className="timeline-filter-tag-search">
-                          <input
-                            type="search"
-                            className="tag-dropdown-trigger log-reflection-input"
-                            value={timelineTagSearch}
-                            onChange={event => onTimelineTagSearchChange(event.target.value)}
-                            placeholder={t('insights.timelineFilters.searchEvents')}
-                            aria-label={t('insights.timelineFilters.searchEvents')}
-                          />
-                        </div>
-                        <div className="timeline-filter-tags-fade-wrap">
-                          <div className="timeline-filter-tags-scroll">
-                            <div className="timeline-filter-tags-wrap">
-                              {visibleTimelineTagOptions.map((tag, index) => {
-                                const isSelected = draftTimelineFilters.tags.includes(tag.key)
-                                const effectiveTagColor = tagColors[tag.key] ?? getFallbackTagColor(tag.key)
-                                const textColor = getHighContrastTextColor(effectiveTagColor)
-                                return (
-                                  <button
-                                    key={tag.key}
-                                    type="button"
-                                    className={classNames('timeline-filter-tag-option', {
-                                      'active': isSelected,
-                                      'tag-pill': isSelected,
-                                    })}
-                                    data-color-index={index % 8}
-                                    style={
-                                      isSelected
-                                        ? { backgroundColor: effectiveTagColor, color: textColor, borderColor: 'transparent' }
-                                        : undefined
-                                    }
-                                    onClick={() => onToggleDraftTag(tag.key)}
-                                  >
-                                    #
-                                    {tag.label}
-                                  </button>
-                                )
-                              })}
-                            </div>
-                          </div>
-                        </div>
+                        <EventTagSelector
+                          searchValue={timelineTagSearch}
+                          onSearchChange={onTimelineTagSearchChange}
+                          searchPlaceholder={t('insights.timelineFilters.searchEvents')}
+                          searchAriaLabel={t('insights.timelineFilters.searchEvents')}
+                          options={visibleTimelineTagOptions}
+                          selectedKeys={new Set(draftTimelineFilters.tags)}
+                          onToggleOption={option => onToggleDraftTag(option.key)}
+                          tagColors={tagColors}
+                        />
                       </motion.div>
                     )}
                   </AnimatePresence>

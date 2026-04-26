@@ -479,6 +479,7 @@ export function AppMainContent({
             ? (
                 <motion.div
                   key="log"
+                  className={entriesSettled ? 'app-log-route' : undefined}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -511,35 +512,32 @@ export function AppMainContent({
                                 .querySelector('.sleep-duration-picker__picker-row')
                                 ?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
                           />
-                          {entries.length > 0 && (
-                            <p className="log-form-tip" role="status">
-                              {t('log.tip')}
-                            </p>
-                          )}
-                          <LogForm
-                            selectedDate={selectedDate}
-                            todayDate={todayDate}
-                            highlightedDates={highlightedDates}
-                            incompleteHighlightedDates={incompleteHighlightedDates}
-                            sleepHours={sleepHours}
-                            mood={mood}
-                            note={note}
-                            tags={tags}
-                            tagSuggestions={tagSuggestions}
-                            maxTagsPerEntry={maxTagsPerEntry}
-                            saving={saving}
-                            saved={saved}
-                            moodColors={moodColors}
-                            formatLocalDate={formatLocalDate}
-                            tagColors={tagColors}
-                            onEnsureTagColor={onEnsureTagColor}
-                            onEntryDateChange={onEntryDateChange}
-                            onSleepHoursChange={onSleepHoursChange}
-                            onMoodChange={onMoodChange}
-                            onNoteChange={onNoteChange}
-                            onTagsChange={onTagsChange}
-                            onSave={onSave}
-                          />
+                          <div className="app-log-form-vert">
+                            <LogForm
+                              selectedDate={selectedDate}
+                              todayDate={todayDate}
+                              highlightedDates={highlightedDates}
+                              incompleteHighlightedDates={incompleteHighlightedDates}
+                              sleepHours={sleepHours}
+                              mood={mood}
+                              note={note}
+                              tags={tags}
+                              tagSuggestions={tagSuggestions}
+                              maxTagsPerEntry={maxTagsPerEntry}
+                              saving={saving}
+                              saved={saved}
+                              moodColors={moodColors}
+                              formatLocalDate={formatLocalDate}
+                              tagColors={tagColors}
+                              onEnsureTagColor={onEnsureTagColor}
+                              onEntryDateChange={onEntryDateChange}
+                              onSleepHoursChange={onSleepHoursChange}
+                              onMoodChange={onMoodChange}
+                              onNoteChange={onNoteChange}
+                              onTagsChange={onTagsChange}
+                              onSave={onSave}
+                            />
+                          </div>
                         </>
                       )}
                 </motion.div>

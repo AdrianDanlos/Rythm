@@ -1880,18 +1880,6 @@
   gap: 12px;
 }
 
-.log-form-tip {
-  font-size: 0.9rem;
-  color: var(--muted);
-  margin: 0 0 10px 0;
-  line-height: 1.4;
-}
-
-.log-form-tip strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
 .log-form-stack {
   display: flex;
   flex-direction: column;
@@ -1903,7 +1891,290 @@
   box-shadow: none;
 }
 
-/* Mood / tags / diary — same card shell as sleep picker */
+/* Log tab: mood/events — route hugs content. Sleep — tall column for sleep-land. */
+.app.app-authenticated .app-log-route {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overscroll-behavior: none;
+  overflow: visible;
+}
+
+.app.app-authenticated .app-log-route:has(form[data-log-carousel-page="0"]) {
+  flex: 1 1 auto;
+  min-height: calc(
+    100dvh - 75px - 96px - env(safe-area-inset-top) -
+      env(safe-area-inset-bottom)
+  );
+}
+
+.app.app-authenticated .app-log-form-vert {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+  overscroll-behavior: none;
+  overflow: visible;
+}
+
+.app.app-authenticated
+  .app-log-route:has(form[data-log-carousel-page="1"])
+  .app-log-form-vert,
+.app.app-authenticated
+  .app-log-route:has(form[data-log-carousel-page="2"])
+  .app-log-form-vert,
+.app.app-authenticated
+  .app-log-route:has(form[data-log-carousel-page="3"])
+  .app-log-form-vert {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app.app-authenticated .app-log-route:has(form[data-log-carousel-page="1"]),
+.app.app-authenticated .app-log-route:has(form[data-log-carousel-page="2"]),
+.app.app-authenticated .app-log-route:has(form[data-log-carousel-page="3"]) {
+  flex: 1 1 auto;
+  min-height: calc(
+    100dvh - 75px - 96px - env(safe-area-inset-top) -
+      env(safe-area-inset-bottom)
+  );
+}
+
+.app.app-authenticated
+  .app-log-form-vert:has(.log-form-stack--carousel-sleep)
+  .log-form-stack {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-self: stretch;
+}
+
+/* Log carousel: no scroll/overscroll on the track; allow Y to spill on sleep (calendar) & events (tags/length). */
+.log-form-carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+form.log-form-stack--step-fullbleed[data-log-carousel-page="0"]
+  .log-form-carousel,
+form.log-form-stack--step-fullbleed[data-log-carousel-page="2"]
+  .log-form-carousel {
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+/* Tag dropdown in log: no second scroll area — the main page scrolls. */
+form.log-form-stack--step-fullbleed .tag-suggestions {
+  max-height: none;
+  overflow: visible;
+}
+
+.log-form-carousel__slide {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+.log-form-carousel__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  max-width: min(620px, calc(100% - 32px));
+  margin: 0 auto;
+  margin-top: 4px;
+  margin-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
+}
+
+/* Skip + next/finish: equal width, shared height, outline vs filled as peers (not a chip vs a bar). */
+.log-form-stack .log-form-carousel__actions {
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.log-form-stack .log-form-carousel__actions .log-form-carousel__skip,
+.log-form-stack .log-form-carousel__actions .log-form-carousel__primary {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  border-radius: 12px;
+  font-weight: 600;
+  padding: 0 14px;
+}
+
+.log-form-stack .log-form-carousel__actions .log-form-carousel__primary {
+  /* Wins over .log-form-stack .save-button { min-width: 140px } in this row */
+  min-width: 0;
+  width: auto;
+}
+
+.log-form-carousel--fullbleed .log-form-carousel__actions {
+  max-width: none;
+  width: 100%;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  box-sizing: border-box;
+}
+
+/* Reflection pages only: keep actions visually attached to the card. */
+.log-form-carousel__actions.log-form-carousel__actions--reflection-tight {
+  margin-top: -8px;
+}
+
+/* Log carousel: drop card chrome; use full app content width (break out of .app side padding) */
+.log-form-stack--step-fullbleed {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 100%;
+  justify-content: flex-start;
+  width: calc(100% + 32px);
+  max-width: none;
+  margin-left: -16px;
+  margin-right: -16px;
+  box-sizing: border-box;
+  align-self: stretch;
+  overscroll-behavior: none;
+}
+
+.log-form-carousel--fullbleed {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.log-form-carousel--fullbleed .log-date-picker-wrap {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  box-sizing: border-box;
+}
+
+.log-form-carousel--fullbleed .log-form-carousel__slide {
+  gap: 0;
+  min-height: 0;
+  overscroll-behavior: none;
+}
+
+.log-form-stack--step-fullbleed.log-form-stack--carousel-sleep
+  .log-form-carousel {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.log-form-stack--step-fullbleed[data-log-carousel-page="1"] .log-form-carousel,
+.log-form-stack--step-fullbleed[data-log-carousel-page="2"] .log-form-carousel,
+.log-form-stack--step-fullbleed[data-log-carousel-page="3"] .log-form-carousel {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.log-form-carousel--fullbleed
+  .log-form-carousel__slide--sleep
+  .log-date-picker-wrap {
+  flex: 0 0 auto;
+}
+
+.log-form-carousel__sleep-land {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  margin-top: 40px;
+  padding: 4px 0 8px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+}
+
+.log-form-carousel__sleep-cluster {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: min(28rem, 100%);
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* Mood + events: keep natural height so Skip/Next sit under the card (not pinned to the viewport) */
+.log-form-carousel--fullbleed .log-form-carousel__slide--reflection {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.log-form-carousel__reflection-land {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 0 8px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+}
+
+.log-form-carousel__reflection-cluster {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: min(28rem, 100%);
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* Full-bleed: mirror sleep cluster width (card stays full-bleed below) */
+.log-form-carousel--fullbleed .log-form-carousel__reflection-cluster {
+  max-width: none;
+}
+
+.log-form-carousel--fullbleed .log-reflection-subtitle {
+  max-width: min(40ch, 100%);
+}
+
+/* Sleep + reflection: no panels — flat on page background */
+.log-form-carousel--fullbleed .sleep-duration-picker,
+.log-form-carousel--fullbleed .log-reflection-card {
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+  margin-top: 0;
+  background: var(--bg);
+  padding: 1.5rem max(16px, env(safe-area-inset-left, 0px)) 1.75rem
+    max(16px, env(safe-area-inset-right, 0px));
+}
+
+.log-form-carousel--fullbleed
+  .log-form-carousel__slide--sleep
+  .log-form-carousel__sleep-cluster
+  .sleep-duration-picker {
+  margin-top: 0;
+}
+
+/* Mood / tags / diary — same card shell as sleep picker (base; fullbleed overrides above) */
 .log-reflection-card {
   margin-top: 8px;
   padding: 20px 16px 28px;
@@ -1914,40 +2185,67 @@
   text-align: center;
 }
 
-/* No mood wash until a mood is chosen — mood-selected rule below adds tint + gradients */
+/* Dark base card surface (mood step adds a local tint in `.log-reflection-section--mood`, not a full wash). */
 :root[data-theme="dark"] .log-reflection-card {
   background: #101b31;
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
 }
 
-/* Reflection card: soft wash from selected mood (palette-aligned, not pink) */
-.log-reflection-card.log-reflection-block.log-reflection-card--mood-selected {
-  border: none;
-  background: linear-gradient(
-    165deg,
-    color-mix(in srgb, var(--reflection-mood-tint) 10%, #ffffff) 0%,
-    #f4f6f9 52%,
-    #ffffff 100%
+/* Full-bleed mood: same page surface as other steps; --reflection-mood-tint only in mood section. */
+.log-form-carousel--fullbleed
+  .log-reflection-card.log-reflection-block.log-reflection-card--mood-selected {
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* Beat panel-specific dark card backgrounds */
+:root[data-theme="dark"] .log-form-carousel--fullbleed .sleep-duration-picker,
+:root[data-theme="dark"] .log-form-carousel--fullbleed .log-reflection-card {
+  background: var(--bg);
+  box-shadow: none;
+}
+
+/* Subtle mood tint: radial wash centered under the active mood (see --mood-aura-x on the card) */
+.log-reflection-card--mood-selected .log-reflection-section--mood {
+  position: relative;
+  z-index: 0;
+}
+
+.log-reflection-card--mood-selected .log-reflection-section--mood::before {
+  content: "";
+  position: absolute;
+  left: max(0.75rem, env(safe-area-inset-left, 0px));
+  right: max(0.75rem, env(safe-area-inset-right, 0px));
+  top: 0.35rem;
+  bottom: 0.2rem;
+  border-radius: 0.9rem;
+  pointer-events: none;
+  z-index: 0;
+  /* Compact ellipse; stops short of section edges; lower mix for a softer haze */
+  background: radial-gradient(
+    ellipse 40% 62% at var(--mood-aura-x, 50%) 24%,
+    color-mix(in srgb, var(--reflection-mood-tint) 6%, transparent) 0%,
+    color-mix(in srgb, var(--reflection-mood-tint) 2%, transparent) 34%,
+    transparent 52%
   );
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+  opacity: 0.5;
 }
 
 :root[data-theme="dark"]
-  .log-reflection-card.log-reflection-block.log-reflection-card--mood-selected {
-  border: none;
-  background:
-    radial-gradient(
-      circle at 22% 10%,
-      color-mix(in srgb, var(--reflection-mood-tint) 24%, transparent),
-      transparent 48%
-    ),
-    radial-gradient(
-      circle at 12% 18%,
-      rgba(110, 157, 255, 0.16),
-      transparent 46%
-    ),
-    linear-gradient(180deg, #101b31 0%, #0b1427 100%);
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+  .log-reflection-card--mood-selected
+  .log-reflection-section--mood::before {
+  background: radial-gradient(
+    ellipse 40% 62% at var(--mood-aura-x, 50%) 24%,
+    color-mix(in srgb, var(--reflection-mood-tint) 8%, transparent) 0%,
+    color-mix(in srgb, var(--reflection-mood-tint) 2.5%, transparent) 36%,
+    transparent 55%
+  );
+  opacity: 0.4;
+}
+
+.log-reflection-card--mood-selected .log-reflection-section--mood > * {
+  position: relative;
+  z-index: 1;
 }
 
 .log-reflection-block {
@@ -1978,10 +2276,6 @@
 .log-reflection-tags,
 .log-reflection-diary {
   text-align: left;
-}
-
-.log-reflection-tags > .log-reflection-section-label {
-  margin-bottom: 6px;
 }
 
 .log-reflection-header {
@@ -2029,6 +2323,13 @@
   color: #f8fbff;
 }
 
+.log-reflection-title-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .log-reflection-subtitle {
   margin: 0;
   font-size: 0.95rem;
@@ -2058,7 +2359,11 @@
   gap: 8px;
 }
 
-.log-reflection-label-tip {
+.log-reflection-title-tip {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
   margin: 0;
   opacity: 0.85;
 }
@@ -2068,47 +2373,37 @@
 }
 
 .log-reflection-input.tag-dropdown-trigger {
-  background: var(--log-surface) !important;
-  border: 1px solid var(--log-surface-border);
-  border-radius: 14px;
-  padding: 12px 14px;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px;
+  padding: 10px 12px;
   font-size: 1rem;
 }
 
-.log-reflection-input.tag-dropdown-trigger:focus {
+.log-reflection-input.tag-dropdown-trigger:focus,
+.log-reflection-input.tag-dropdown-trigger:focus-visible {
   outline: none;
   border-color: var(--input-focus-border);
-  box-shadow: var(--input-focus-shadow);
-}
-
-/* Done: same look in every state (overrides global `button` + `.tag-add-button:hover`) */
-.log-reflection-done.tag-add-button,
-.log-reflection-done.tag-add-button:hover:not(:disabled),
-.log-reflection-done.tag-add-button:active,
-.log-reflection-done.tag-add-button:focus,
-.log-reflection-done.tag-add-button:focus-visible {
-  border-radius: 14px;
-  padding: 12px 14px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text);
-  background: var(--log-surface);
-  border: 1px solid var(--log-surface-border);
-  transform: none;
   box-shadow: none;
-  outline: none;
-  transition: none;
 }
 
-:root[data-theme="dark"] .log-reflection-done.tag-add-button,
-:root[data-theme="dark"]
-  .log-reflection-done.tag-add-button:hover:not(:disabled),
-:root[data-theme="dark"] .log-reflection-done.tag-add-button:active {
-  border-color: transparent;
+.log-reflection-tags .tag-suggestions {
+  position: static;
+  margin-top: 8px;
+  box-shadow: none;
+  max-height: 120px;
+}
+
+.log-reflection-tags .timeline-filter-tags-fade-wrap::after {
+  content: none;
 }
 
 .log-reflection-block .tag-pills-row {
   margin-top: 4px;
+}
+
+.log-reflection-tags .tag-pills-row {
+  margin: 0 0 8px;
 }
 
 .log-diary-textarea {
@@ -2124,7 +2419,7 @@
   color: var(--text);
   font-family: inherit;
   resize: none;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .log-diary-textarea::placeholder {
@@ -2561,8 +2856,9 @@
   border-radius: 999px;
   display: grid;
   place-items: center;
-  color: #ffffff;
-  background: linear-gradient(135deg, #4b6dff 0%, #394c82 100%);
+  color: var(--white);
+  /* Same token as .sleep-duration-picker__picker-button (“Elegir hora” / Pick time) */
+  background: var(--brand-accent);
   box-shadow: none;
 }
 
@@ -2631,7 +2927,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
 }
 
 .sleep-duration-picker__picker-anchor {
@@ -2669,6 +2964,12 @@
 
 :root[data-theme="dark"] .sleep-duration-picker__picker-button {
   background: var(--brand-accent);
+}
+
+.sleep-duration-picker__next-wrap {
+  width: 100%;
+  margin-top: 8px;
+  box-sizing: border-box;
 }
 
 /* Sleep timepicker: match Log sleep card + app theme tokens (backdrop, surface, type, accent).
@@ -2783,6 +3084,13 @@
     border-radius: 20px;
     padding-left: 12px;
     padding-right: 12px;
+  }
+
+  .log-form-carousel--fullbleed .sleep-duration-picker,
+  .log-form-carousel--fullbleed .log-reflection-card {
+    border-radius: 0;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
 
   .sleep-duration-picker__title,
@@ -3643,6 +3951,16 @@
     filter 160ms ease;
 }
 
+/* Full-width Next on sleep step (below pick time) — override save-button min-width */
+.log-form-stack .sleep-duration-picker__next {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
 .log-form-stack .save-button:disabled:has(.spinner) {
   background: var(--cta-button-surface, var(--cta-button-bg));
   color: #fff;
@@ -3905,6 +4223,52 @@
   display: flex;
   flex-direction: column;
   gap: 22px;
+}
+
+.summary-log-today {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+button.summary-log-today,
+.summary-log-today.summary-log-today--actionable {
+  width: 100%;
+}
+
+/* No placeholder in “log today” — hide empty icon slot so copy stays left */
+.summary-log-today__icon:empty {
+  display: none;
+}
+
+.summary-log-today__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+}
+
+.summary-log-today__chevron {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.summary-log-today__chevron svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Inline SVGs default to a large size without explicit width/height */
+.summary-log-today__check {
+  display: block;
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
 }
 
 .insights-panel--timeline {
@@ -4761,11 +5125,17 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 }
 
 .timeline-filter-tag-search {
+  margin-top: 10px;
   margin-bottom: 8px;
+}
+
+.event-tag-selector-input-wrap {
+  position: relative;
 }
 
 .timeline-filter-tag-search input {
   width: 100%;
+  height: 42px;
   border: 1px solid var(--border) !important;
   color: var(--text);
 }
@@ -4801,7 +5171,8 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 }
 
 .timeline-filter-tags-scroll {
-  max-height: 120px;
+  height: 150px;
+  max-height: 150px;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding-bottom: 24px;
@@ -4818,6 +5189,39 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   z-index: 2;
   pointer-events: none;
   background: linear-gradient(to bottom, rgb(0 0 0 / 0%), var(--card));
+}
+
+.event-tag-selector-create-suggestions {
+  position: absolute;
+  left: 0;
+  top: calc(100% - 2px);
+  right: auto;
+  min-width: 170px;
+  width: max-content;
+  max-width: 100%;
+  z-index: 4;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--tag-suggestions-shadow);
+  padding: 0;
+  max-height: none;
+  overflow: visible;
+}
+
+.event-tag-selector-create-suggestions .tag-suggestion--creatable {
+  height: 42px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  border-radius: 12px;
+}
+
+.event-tag-selector-create-suggestions--top {
+  top: calc(100% + 6px);
+  bottom: auto;
+  right: 0;
+  width: auto;
+  min-width: 0;
 }
 
 .timeline-filter-tag-option {
@@ -4838,6 +5242,13 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   background: var(--selected-bg);
   color: var(--selected-text);
   border-color: var(--selected-border);
+}
+
+.timeline-filter-tag-option-remove-hint {
+  margin-left: 2px;
+  font-size: 0.85em;
+  line-height: 1;
+  opacity: 0.9;
 }
 
 .timeline-filter-actions {
