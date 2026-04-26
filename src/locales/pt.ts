@@ -78,6 +78,7 @@ const pt = {
     newPassword: 'Nova senha',
     confirmNewPassword: 'Confirmar senha',
     passwordMismatch: 'As senhas não coincidem.',
+    newPasswordTooShort: 'Use pelo menos 6 caracteres.',
     saveNewPassword: 'Salvar senha',
     passwordUpdated: 'Senha atualizada. Você está conectado.',
     setNewPasswordError: 'Não foi possível atualizar a senha.',

@@ -78,6 +78,7 @@ const fr = {
     newPassword: 'Nouveau mot de passe',
     confirmNewPassword: 'Confirmer le mot de passe',
     passwordMismatch: 'Les mots de passe ne correspondent pas.',
+    newPasswordTooShort: 'Utilisez au moins 6 caractères.',
     saveNewPassword: 'Enregistrer le mot de passe',
     passwordUpdated: 'Mot de passe mis à jour. Vous êtes connecté.',
     setNewPasswordError: 'Impossible de mettre à jour le mot de passe.',

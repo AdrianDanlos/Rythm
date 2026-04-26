@@ -78,6 +78,7 @@ const es = {
     newPassword: 'Nueva contraseña',
     confirmNewPassword: 'Confirmar contraseña',
     passwordMismatch: 'Las contraseñas no coinciden.',
+    newPasswordTooShort: 'Usa al menos 6 caracteres.',
     saveNewPassword: 'Guardar contraseña',
     passwordUpdated: 'Contraseña actualizada. Has iniciado sesión.',
     setNewPasswordError: 'No se pudo actualizar la contraseña.',

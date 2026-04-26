@@ -76,6 +76,7 @@ const en = {
     newPassword: 'New password',
     confirmNewPassword: 'Confirm password',
     passwordMismatch: 'Passwords do not match.',
+    newPasswordTooShort: 'Use at least 6 characters.',
     saveNewPassword: 'Save password',
     passwordUpdated: 'Password updated. You are signed in.',
     setNewPasswordError: 'Unable to update password.',

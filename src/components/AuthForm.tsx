@@ -124,6 +124,13 @@ export function PasswordRecoveryForm({
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
+  const newPasswordTooShort = newPassword.length > 0 && newPassword.length < 6
+  const passwordsMismatch
+    = newPassword.length > 0
+      && confirmPassword.length > 0
+      && newPassword !== confirmPassword
+      && !newPasswordTooShort
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
     if (newPassword.length < 6) {
@@ -163,9 +170,14 @@ export function PasswordRecoveryForm({
             autoComplete="new-password"
           />
         </label>
-        {newPassword.length > 0
-          && confirmPassword.length > 0
-          && newPassword !== confirmPassword
+        {newPasswordTooShort
+          ? (
+              <p className="field-hint field-hint--error" role="alert">
+                {t('auth.newPasswordTooShort')}
+              </p>
+            )
+          : null}
+        {passwordsMismatch
           ? (
               <p className="field-hint field-hint--error" role="alert">
                 {t('auth.passwordMismatch')}

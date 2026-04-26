@@ -78,6 +78,7 @@ const de = {
     newPassword: 'Neues Passwort',
     confirmNewPassword: 'Passwort bestätigen',
     passwordMismatch: 'Die Passwörter stimmen nicht überein.',
+    newPasswordTooShort: 'Mindestens 6 Zeichen verwenden.',
     saveNewPassword: 'Passwort speichern',
     passwordUpdated: 'Passwort aktualisiert. Du bist angemeldet.',
     setNewPasswordError: 'Passwort konnte nicht aktualisiert werden.',
