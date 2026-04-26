@@ -176,6 +176,8 @@ function App() {
   }, [navigate, location.state])
   const pageHistoryRef = useRef<AppPage[]>([activePage])
   const suppressNextHistoryEntryRef = useRef(false)
+  /** Previous path for "scroll to top on navigation" (skip /events <-> /events/edit). */
+  const prevPathnameForScrollToTopRef = useRef<string | null>(null)
   const [canGoBackInApp, setCanGoBackInApp] = useState(false)
 
   const goBackInApp = useCallback(() => {
@@ -549,7 +551,25 @@ function App() {
   }, [pathname, activePage])
 
   useEffect(() => {
-    // Keep tab/page navigation predictable: always start each page at top.
+    // Keep tab/page navigation predictable: start each page at top — except
+    // Events <-> daily events edit: same sub-flow; scrolling here runs after
+    // commit and yanks the document to top while the exiting view still animates.
+    if (!getPageFromPathname(pathname)) {
+      prevPathnameForScrollToTopRef.current = pathname
+      return
+    }
+    const prev = prevPathnameForScrollToTopRef.current
+    const eventsPath = getPathForPage(AppPage.Events)
+    const editPath = getPathForPage(AppPage.EditDailyEvents)
+    const isEventsToEdit
+      = prev === eventsPath && pathname === editPath
+    const isEditToEvents
+      = prev === editPath && pathname === eventsPath
+    const skipScrollToTop = isEventsToEdit || isEditToEvents
+    prevPathnameForScrollToTopRef.current = pathname
+    if (skipScrollToTop) {
+      return
+    }
     window.scrollTo({ top: 0, behavior: 'auto' })
   }, [pathname])
 

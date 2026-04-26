@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronLeft, Info, Pencil } from 'lucide-react'
-import { motion, type Transition } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import type { Entry } from '../../lib/entries'
 import { tagColorPalette } from '../../lib/colors'
@@ -8,10 +7,8 @@ import { MAX_TAG_LENGTH } from '../../lib/utils/stringUtils'
 import { TagColorPicker } from '../TagColorPicker'
 import { Tooltip } from '../Tooltip'
 import { NoDailyEventsLoggedHint } from './NoDailyEventsLoggedHint'
-import { motionTransition } from '../../lib/motion'
 
 type DailyEventsEditPageProps = {
-  reduceMotion: boolean | null
   entries: Entry[]
   tagColors: Record<string, string>
   onRenameTag: (fromTag: string, toTag: string) => void
@@ -21,7 +18,6 @@ type DailyEventsEditPageProps = {
 }
 
 export function DailyEventsEditPage({
-  reduceMotion,
   entries,
   tagColors,
   onRenameTag,
@@ -34,7 +30,6 @@ export function DailyEventsEditPage({
   const [editingValue, setEditingValue] = useState('')
   const [showAllTags, setShowAllTags] = useState(false)
   const [colorPickerTag, setColorPickerTag] = useState<string | null>(null)
-  const panelTransition: Transition = reduceMotion ? { duration: 0 } : motionTransition
 
   const topTags = useMemo(() => {
     const countByKey = new Map<string, { count: number, display: string }>()
@@ -95,12 +90,7 @@ export function DailyEventsEditPage({
   }
 
   return (
-    <motion.div
-      className="insights-panel"
-      initial={reduceMotion ? false : { opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={panelTransition}
-    >
+    <div className="insights-panel">
       <div className="daily-events-edit-top">
         <button
           type="button"
@@ -201,7 +191,7 @@ export function DailyEventsEditPage({
                       type="button"
                       className="link-button link-button--text your-daily-events-toggle"
                       onClick={() => {
-                        setShowAllTags(prev => {
+                        setShowAllTags((prev) => {
                           if (prev && typeof window !== 'undefined') {
                             window.scrollTo({ top: 0, behavior: 'smooth' })
                           }
@@ -241,6 +231,6 @@ export function DailyEventsEditPage({
           setColorPickerTag(null)
         }}
       />
-    </motion.div>
+    </div>
   )
 }

@@ -31,6 +31,7 @@ import {
 } from './AuthForm'
 import { needsEmailVerification } from '../lib/authEmailVerification'
 import { IntroCarousel } from './IntroCarousel'
+import { DailyEventsEditPage } from './insights/DailyEventsEditPage'
 import { LogForm } from './LogForm'
 import { AppPage, Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
 import type {
@@ -50,11 +51,6 @@ const Insights = lazy(async () => {
 const SettingsPage = lazy(async () => {
   const module = await import('./SettingsPage')
   return { default: module.SettingsPage }
-})
-
-const DailyEventsEditPage = lazy(async () => {
-  const module = await import('./insights/DailyEventsEditPage')
-  return { default: module.DailyEventsEditPage }
 })
 
 type AppMainContentProps = {
@@ -504,17 +500,14 @@ export function AppMainContent({
                   exit={{ opacity: 0 }}
                   transition={tabTransition}
                 >
-                  <Suspense fallback={null}>
-                    <DailyEventsEditPage
-                      reduceMotion={reduceMotion}
-                      entries={entries}
-                      tagColors={tagColors}
-                      onRenameTag={onRenameTag}
-                      onTagColorChange={onTagColorChange}
-                      goToLog={() => onNavigateToPage(AppPage.Log)}
-                      onBack={() => onNavigateToPage(AppPage.Events)}
-                    />
-                  </Suspense>
+                  <DailyEventsEditPage
+                    entries={entries}
+                    tagColors={tagColors}
+                    onRenameTag={onRenameTag}
+                    onTagColorChange={onTagColorChange}
+                    goToLog={() => onNavigateToPage(AppPage.Log)}
+                    onBack={() => onNavigateToPage(AppPage.Events)}
+                  />
                 </motion.div>
               )
             : activeTab === Tabs.Log
