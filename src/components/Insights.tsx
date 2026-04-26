@@ -707,14 +707,24 @@ export const Insights = ({
                 }))}
               onDraftSleepValueChange={value => setDraftTimelineFilters(prev => ({ ...prev, sleepValue: value }))}
               onTimelineTagSearchChange={value => setTimelineTagSearch(value)}
-              onToggleDraftTag={tagKey =>
+              onToggleDraftTag={(tagKey) => {
+                const isSelecting = !draftTimelineFilters.tags.includes(tagKey)
                 setDraftTimelineFilters(prev => ({
                   ...prev,
-                  tags: prev.tags.includes(tagKey)
-                    ? prev.tags.filter(activeTag => activeTag !== tagKey)
-                    : [...prev.tags, tagKey],
-                }))}
-              onClearAllDraft={() => setDraftTimelineFilters(DEFAULT_TIMELINE_FILTERS)}
+                  tags: isSelecting
+                    ? [...prev.tags, tagKey]
+                    : prev.tags.filter(activeTag => activeTag !== tagKey),
+                }))
+                if (isSelecting) {
+                  setTimelineTagSearch('')
+                }
+              }}
+              onClearAllDraft={() => {
+                setAppliedTimelineFilters(DEFAULT_TIMELINE_FILTERS)
+                setDraftTimelineFilters(DEFAULT_TIMELINE_FILTERS)
+                setTimelineTagSearch('')
+                setIsFilterSheetOpen(false)
+              }}
               onApplyDraftFilters={() => {
                 setAppliedTimelineFilters(draftTimelineFilters)
                 setIsFilterSheetOpen(false)

@@ -3,6 +3,8 @@ import classNames from 'classnames'
 import { AnimatePresence, motion, type Transition } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Angry, ChevronDown, Filter, Frown, Laugh, Meh, Moon, Smile } from 'lucide-react'
+import { getFallbackTagColor } from '../../lib/colors'
+import { getHighContrastTextColor } from '../../lib/utils/colorContrast'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { EventTagSelector } from '../EventTagSelector'
 
@@ -201,18 +203,28 @@ export const TimelineFilters = ({
             {' '}×
           </button>
         )}
-        {appliedTimelineFilters.tags.map(tag => (
-          <button
-            type="button"
-            key={tag}
-            className="timeline-active-filter-chip timeline-month-pill"
-            onClick={() => onRemoveAppliedTag(tag)}
-          >
-            #
-            {timelineTagLabelByKey.get(tag) ?? tag}
-            {' '}×
-          </button>
-        ))}
+        {appliedTimelineFilters.tags.map((tag) => {
+          const effectiveTagColor = tagColors[tag] ?? getFallbackTagColor(tag)
+          const textColor = getHighContrastTextColor(effectiveTagColor) ?? '#ffffff'
+          const tagChipStyle: CSSProperties = {
+            backgroundColor: effectiveTagColor,
+            color: textColor,
+            borderColor: 'transparent',
+          }
+          return (
+            <button
+              type="button"
+              key={tag}
+              className="timeline-active-filter-chip timeline-month-pill"
+              style={tagChipStyle}
+              onClick={() => onRemoveAppliedTag(tag)}
+            >
+              #
+              {timelineTagLabelByKey.get(tag) ?? tag}
+              {' '}×
+            </button>
+          )
+        })}
       </div>
       {isMonthPickerOpen && (
         <div className="timeline-month-picker card">

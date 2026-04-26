@@ -2422,7 +2422,7 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   transform: none;
   opacity: 0.85;
   flex-shrink: 0;
-  margin-left: 4px;
+  margin-left: 8px;
 }
 
 .tag-control-row--reflection {
@@ -2509,10 +2509,10 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   width: 100%;
   min-height: 240px;
   padding: var(--journal-padding-y) var(--journal-padding-x);
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   line-height: var(--journal-line-height) !important;
   color: var(--text);
-  font-family: "Caveat", "Dancing Script", "Pacifico", cursive;
+  font-family: "Caveat", "Segoe Print", "Bradley Hand", cursive;
   white-space: pre-wrap;
   word-break: break-word;
   overflow-wrap: anywhere;
@@ -4077,6 +4077,19 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   box-shadow: none;
   opacity: 1;
   cursor: not-allowed;
+}
+
+/* Dark: log carousel “Next” disabled — page bg and disabled fill were identical; add surface + edge so it still reads as a control */
+:root[data-theme="dark"]
+  .log-form-stack
+  .log-form-carousel__actions
+  .log-form-carousel__primary.save-button:disabled:not(:has(.spinner)) {
+  background: var(--card);
+  color: var(--muted);
+  border: 1px solid color-mix(in srgb, var(--border) 85%, var(--text) 15%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .log-form-stack .save-button:not(:disabled):focus-visible {

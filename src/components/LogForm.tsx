@@ -4,40 +4,30 @@ import {
   useMemo,
   useRef,
   useState,
-  type ComponentType,
-  type CSSProperties,
   type FormEvent,
 } from 'react'
 import classNames from 'classnames'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { DayPicker } from 'react-day-picker'
 import { useTranslation } from 'react-i18next'
-import { Angry, ChevronDown, Frown, Info, Laugh, Meh, Moon, NotebookPen, Smile, Sun, Tags } from 'lucide-react'
 import { PluginRegistry, TimepickerUI } from 'timepicker-ui'
 import { WheelPlugin } from 'timepicker-ui/plugins/wheel'
 import 'react-day-picker/dist/style.css'
 import 'timepicker-ui/main.css'
 import { getInitialLogCarouselPageFromSession, useScrollToLogDailyEventsOnMount } from '../hooks/useScrollToLogDailyEventsOnMount'
 import { motionTransition } from '../lib/motion'
-import { formatLongDate } from '../lib/utils/dateFormatters'
 import {
   DEFAULT_LOG_SLEEP_HOURS,
   MAX_LOG_SLEEP_MINUTES,
 } from '../lib/utils/sleepHours'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
-import { EventTagSelector, type EventTagOption } from './EventTagSelector'
-import { Tooltip } from './Tooltip'
+import type { EventTagOption } from './EventTagSelector'
+import { LogFormJournalPage } from './logForm/LogFormJournalPage'
+import { LogFormMoodPage } from './logForm/LogFormMoodPage'
+import { LogFormSleepPage } from './logForm/LogFormSleepPage'
+import { LogFormTagsPage } from './logForm/LogFormTagsPage'
+import type { LogCarouselPage, LogFormSlideTransition } from './logForm/types'
 
 PluginRegistry.register(WheelPlugin)
-
-const MOOD_ICONS: Record<1 | 2 | 3 | 4 | 5, ComponentType<{ 'className'?: string, 'size'?: number, 'aria-hidden'?: boolean }>> = {
-  1: Angry,
-  2: Frown,
-  3: Meh,
-  4: Smile,
-  5: Laugh,
-}
-const JOURNAL_RULE_COUNT = 32
 
 export type LogFormProps = {
   selectedDate: Date
@@ -105,11 +95,13 @@ export const LogForm = ({
   const calendarWrapRef = useRef<HTMLDivElement | null>(null)
   const formRef = useRef<HTMLFormElement | null>(null)
   const reduceMotion = useReducedMotion()
-  const slideTransition = reduceMotion ? { duration: 0 } : motionTransition
+  const slideTransition: LogFormSlideTransition = reduceMotion
+    ? { duration: 0 }
+    : motionTransition
   const entryDateKey = formatLocalDate(selectedDate)
   const [carouselState, setCarouselState] = useState<{
     entryDateKey: string
-    page: 0 | 1 | 2 | 3
+    page: LogCarouselPage
   }>(() => ({
     entryDateKey,
     page: getInitialLogCarouselPageFromSession(),
@@ -117,7 +109,7 @@ export const LogForm = ({
   const carouselPage = carouselState.entryDateKey === entryDateKey
     ? carouselState.page
     : 0
-  const setCarouselPage = useCallback((page: 0 | 1 | 2 | 3) => {
+  const setCarouselPage = useCallback((page: LogCarouselPage) => {
     setCarouselState({
       entryDateKey,
       page,
@@ -391,430 +383,108 @@ export const LogForm = ({
         aria-label={t('log.carouselAria')}
       >
         <AnimatePresence mode="wait" initial={false}>
-          {carouselPage === 0
-            && (
-              <motion.div
-                key={0}
-                className="log-form-carousel__slide log-form-carousel__slide--sleep"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={slideTransition}
-              >
-                <div id="log-calendar" ref={calendarWrapRef} className="log-date-picker-wrap">
-                  <button
-                    type="button"
-                    className="log-date-picker-collapsed"
-                    aria-expanded={calendarOpen}
-                    aria-controls="log-daypicker-panel"
-                    onClick={() => setCalendarOpen(o => !o)}
-                  >
-                    <span className="log-date-picker-date">
-                      {isEntryToday
-                        ? (
-                            <>
-                              <span className="log-date-picker-date-primary">{t('insights.today')}</span>
-                              <span className="log-date-picker-date-sub">{formatLongDate(selectedDate)}</span>
-                            </>
-                          )
-                        : (
-                            <span className="log-date-picker-date-sub">{formatLongDate(selectedDate)}</span>
-                          )}
-                    </span>
-                    <span className="log-date-picker-toggle" aria-hidden>
-                      <ChevronDown
-                        className={classNames('log-date-picker-chevron', { 'is-open': calendarOpen })}
-                        size={22}
-                        aria-hidden
-                      />
-                    </span>
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {calendarOpen
-                      ? (
-                          <motion.div
-                            key="log-daypicker-panel"
-                            id="log-daypicker-panel"
-                            role="region"
-                            aria-label={t('log.openDatePicker')}
-                            className="log-date-picker-panel-motion"
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{
-                              height: {
-                                duration: 0.32,
-                                ease: [0.4, 0, 0.2, 1],
-                              },
-                              opacity: {
-                                duration: 0.22,
-                                ease: 'easeOut',
-                              },
-                            }}
-                            style={{ overflow: 'hidden' }}
-                          >
-                            <div className="date-picker log-date-picker-panel">
-                              <DayPicker
-                                mode="single"
-                                weekStartsOn={1}
-                                selected={selectedDate}
-                                defaultMonth={selectedDate}
-                                onSelect={(date: Date | undefined) => {
-                                  if (!date) return
-                                  onEntryDateChange(formatLocalDate(date))
-                                  setCalendarOpen(false)
-                                }}
-                                disabled={{ after: todayDate }}
-                                modifiers={{
-                                  logged: highlightedDates,
-                                  incomplete: incompleteHighlightedDates,
-                                }}
-                                modifiersClassNames={{
-                                  logged: 'rdp-day-logged',
-                                  incomplete: 'rdp-day-incomplete',
-                                }}
-                              />
-                            </div>
-                          </motion.div>
-                        )
-                      : null}
-                  </AnimatePresence>
-                </div>
-                <div className="log-form-carousel__sleep-land">
-                  <div className="log-form-carousel__sleep-cluster">
-                    <div className="sleep-duration-picker">
-                      <div className="sleep-duration-picker__hero" aria-hidden="true">
-                        <Moon size={20} />
-                      </div>
-                      <div className="sleep-duration-picker__title-row">
-                        <p className="sleep-duration-picker__title">{t('log.sleepQuestion')}</p>
-                      </div>
-                      <p className="sleep-duration-picker__subtitle">
-                        <span>{t('log.sleepSubtitle', { defaultValue: 'Track your rest' })}</span>
-                        {' '}
-                        <Tooltip label={t('log.sleepTooltip')}>
-                          <span className="tooltip-trigger">
-                            <span className="tooltip-icon" aria-hidden="true">
-                              <Info size={14} />
-                            </span>
-                          </span>
-                        </Tooltip>
-                      </p>
-                      <div
-                        className="sleep-duration-picker__value"
-                        role="button"
-                        tabIndex={0}
-                        aria-label={t('log.pickTime', { defaultValue: 'Pick time' })}
-                        onClick={() => sleepTimepickerRef.current?.open()}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter' || event.key === ' ') {
-                            event.preventDefault()
-                            sleepTimepickerRef.current?.open()
-                          }
-                        }}
-                      >
-                        <span className="sleep-duration-picker__value-main">{sleepHourNumber}</span>
-                        <span className="sleep-duration-picker__value-unit">{t('log.hours').charAt(0).toLowerCase()}</span>
-                        <span className="sleep-duration-picker__value-main">{String(sleepMinuteNumber).padStart(2, '0')}</span>
-                        <span className="sleep-duration-picker__value-unit">{t('log.minutes').charAt(0).toLowerCase()}</span>
-                      </div>
-                      <div className="sleep-duration-picker__picker-row">
-                        <input
-                          ref={sleepTimeInputRef}
-                          type="text"
-                          className="sleep-duration-picker__picker-anchor"
-                          aria-hidden="true"
-                          tabIndex={-1}
-                        />
-                        <button
-                          type="button"
-                          className="sleep-duration-picker__picker-button"
-                          onClick={() => sleepTimepickerRef.current?.open()}
-                        >
-                          {t('log.pickTime', { defaultValue: 'Pick time' })}
-                        </button>
-                      </div>
-                      <div className="sleep-duration-picker__next-wrap">
-                        <button
-                          type="button"
-                          className="save-button sleep-duration-picker__next"
-                          onClick={() => setCarouselPage(1)}
-                        >
-                          {t('intro.next')}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          {carouselPage === 1
-            && (
-              <motion.div
-                key={1}
-                className="log-form-carousel__slide log-form-carousel__slide--reflection"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                layout
-                transition={slideTransition}
-              >
-                <div className="log-form-carousel__reflection-land">
-                  <div className="log-form-carousel__reflection-cluster">
-                    <div
-                      className={classNames('log-reflection-card', 'log-reflection-block', {
-                        'log-reflection-card--mood-selected': mood != null,
-                      })}
-                      style={
-                        mood != null
-                          ? ({
-                              '--reflection-mood-tint': moodColors[mood - 1] ?? moodColors[2],
-                              '--mood-aura-x': ['10%', '30%', '50%', '70%', '90%'][mood - 1]!,
-                            } as CSSProperties)
-                          : undefined
-                      }
-                    >
-                      <header className="log-reflection-header">
-                        <div className="log-reflection-icon" aria-hidden="true">
-                          <Sun size={28} strokeWidth={2} />
-                        </div>
-                        <h2 className="log-reflection-title">{t('log.reflectionTitle')}</h2>
-                        <p className="log-reflection-subtitle">{t('log.tip')}</p>
-                      </header>
-
-                      <div className="log-reflection-section log-reflection-section--mood">
-                        <div className="log-reflection-section-label">
-                          {t('log.sectionMood')}
-                        </div>
-                        <div className="mood-row" role="group" aria-label={t('log.moodQuestion')}>
-                          {([1, 2, 3, 4, 5] as const).map((value) => {
-                            const Icon = MOOD_ICONS[value]
-                            return (
-                              <button
-                                key={value}
-                                type="button"
-                                className={classNames('mood-button', { active: mood === value })}
-                                onClick={() => onMoodChange(value)}
-                                style={
-                                  {
-                                    '--mood-color': moodColors[value - 1],
-                                  } as CSSProperties
-                                }
-                                aria-pressed={mood === value}
-                                aria-label={
-                                  [
-                                    t('log.moodName1'),
-                                    t('log.moodName2'),
-                                    t('log.moodName3'),
-                                    t('log.moodName4'),
-                                    t('log.moodName5'),
-                                  ][value - 1]!
-                                }
-                              >
-                                <Icon className="mood-button-icon" size={26} aria-hidden />
-                                <span className="mood-button-num">{value}</span>
-                              </button>
-                            )
-                          })}
-                        </div>
-                        <p
-                          className={classNames('mood-selected-name', {
-                            'mood-selected-name--placeholder': mood == null,
-                          })}
-                          aria-live="polite"
-                        >
-                          {mood != null
-                            ? t(`log.moodName${mood}` as 'log.moodName1')
-                            : t('log.selectMoodHint')}
-                        </p>
-                      </div>
-                    </div>
-                    <motion.div className="log-form-carousel__actions" layout="position">
-                      <button
-                        type="button"
-                        className="ghost log-form-carousel__skip"
-                        onClick={submitWithSaveHandler}
-                        disabled={saving}
-                      >
-                        {t('intro.skip')}
-                      </button>
-                      <button
-                        type="button"
-                        className="save-button log-form-carousel__primary"
-                        onClick={() => setCarouselPage(2)}
-                        disabled={mood == null}
-                      >
-                        {t('intro.next')}
-                      </button>
-                    </motion.div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          {carouselPage === 2
-            && (
-              <motion.div
-                key={2}
-                className="log-form-carousel__slide log-form-carousel__slide--reflection"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                layout
-                transition={slideTransition}
-              >
-                <div className="log-form-carousel__reflection-land">
-                  <div className="log-form-carousel__reflection-cluster">
-                    <div className="log-reflection-card log-reflection-block">
-                      <header className="log-reflection-header">
-                        <div className={classNames('log-reflection-icon', 'log-reflection-icon--tags')} aria-hidden="true">
-                          <Tags size={28} strokeWidth={2} />
-                        </div>
-                        <div className="log-reflection-title-wrap">
-                          <h2 className="log-reflection-title log-reflection-title--with-tip">
-                            {t('log.journalPageTitle')}
-                            <Tooltip label={t('log.eventsTooltip')}>
-                              <span className="tooltip-trigger log-reflection-title-tip">
-                                <span className="tooltip-icon" aria-hidden="true">
-                                  <Info size={14} />
-                                </span>
-                              </span>
-                            </Tooltip>
-                          </h2>
-                        </div>
-                      </header>
-
-                      <div className="field log-reflection-tags">
-                        <div className="tag-control-row tag-control-row--reflection">
-                          <div className="tag-dropdown-wrap">
-                            <EventTagSelector
-                              searchValue={tagInputValue}
-                              onSearchChange={value => setTagInputValue(value.slice(0, MAX_TAG_LENGTH))}
-                              searchPlaceholder={atMaxTags ? t('log.maxReached', { count: maxTagsPerEntry }) : t('insights.timelineFilters.searchEvents')}
-                              searchAriaLabel={t('insights.timelineFilters.searchEvents')}
-                              options={visibleTagOptions}
-                              selectedKeys={usedTagSet}
-                              onToggleOption={toggleTagOption}
-                              tagColors={tagColors ?? {}}
-                              inputRef={tagInputRef}
-                              inputMaxLength={MAX_TAG_LENGTH}
-                              isOptionDisabled={(_, isSelected) => atMaxTags && !isSelected}
-                              listAboveInput
-                              onSubmitSearch={() => {
-                                if (atMaxTags) return
-                                if (!tagInputValue.trim()) return
-                                addTag(tagInputValue)
-                              }}
-                              createSuggestion={
-                                showCreateTagSuggestion
-                                  ? {
-                                      label: `#${tagInputValue.trim()}`,
-                                      actionLabel: t('log.addTagOption'),
-                                      ariaLabel: t('log.addTagOption'),
-                                      onClick: () => addTag(tagInputValue),
-                                    }
-                                  : undefined
-                              }
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                    <motion.div className="log-form-carousel__actions log-form-carousel__actions--reflection-tight" layout="position">
-                      <button
-                        type="button"
-                        className="ghost log-form-carousel__skip"
-                        onClick={submitWithSaveHandler}
-                        disabled={saving}
-                      >
-                        {t('intro.skip')}
-                      </button>
-                      <button
-                        type="button"
-                        className="save-button log-form-carousel__primary"
-                        onClick={() => setCarouselPage(3)}
-                        disabled={!hasAtLeastOneEvent}
-                      >
-                        {t('intro.next')}
-                      </button>
-                    </motion.div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          {carouselPage === 3
-            && (
-              <motion.div
-                key={3}
-                className="log-form-carousel__slide log-form-carousel__slide--reflection"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                layout
-                transition={slideTransition}
-              >
-                <div className="log-form-carousel__reflection-land">
-                  <div className="log-form-carousel__reflection-cluster">
-                    <div className="log-reflection-card log-reflection-block log-reflection-block--journal">
-                      <header className="log-reflection-header">
-                        <div className={classNames('log-reflection-icon', 'log-reflection-icon--journal')} aria-hidden="true">
-                          <NotebookPen size={28} strokeWidth={2} />
-                        </div>
-                        <h2 className="log-reflection-title">{t('log.journalNotesTitle')}</h2>
-                        <p className="log-reflection-subtitle">{t('log.journalPageSubtitle')}</p>
-                      </header>
-
-                      <div className="log-reflection-section log-reflection-diary">
-                        <div className="log-diary-surface">
-                          <div className="log-diary-rules" aria-hidden="true">
-                            {Array.from({ length: JOURNAL_RULE_COUNT }).map((_, index) => (
-                              <span key={`rule-${index}`} className="log-diary-rule" />
-                            ))}
-                          </div>
-                          <div
-                            ref={setNoteEditorRef}
-                            className="log-diary-editor"
-                            contentEditable
-                            suppressContentEditableWarning
-                            role="textbox"
-                            aria-multiline="true"
-                            data-empty={note.length === 0}
-                            data-placeholder={t('log.journalThoughtsPlaceholder')}
-                            aria-label={`${t('log.sectionThoughts')} (${t('log.optionalShort')})`}
-                            onInput={handleNoteInput}
-                          />
-                        </div>
-                        <div className="log-diary-footer">
-                          <span>{t('log.characterCount', { count: note.length })}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <motion.div className="log-form-carousel__actions log-form-carousel__actions--reflection-tight" layout="position">
-                      <button
-                        type="button"
-                        className="ghost log-form-carousel__skip"
-                        onClick={submitWithSaveHandler}
-                        disabled={saving}
-                      >
-                        {t('intro.skip')}
-                      </button>
-                      <button
-                        type="button"
-                        className="save-button log-form-carousel__primary"
-                        onClick={submitWithSaveHandler}
-                        disabled={saving}
-                      >
-                        {saving
-                          ? <span className="spinner" aria-label={t('log.saving')} />
-                          : saved
-                            ? t('log.saved')
-                            : t('log.finish')}
-                      </button>
-                    </motion.div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
+          {carouselPage === 0 && (
+            <motion.div
+              key={0}
+              className="log-form-carousel__slide log-form-carousel__slide--sleep"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={slideTransition}
+            >
+              <LogFormSleepPage
+                isEntryToday={isEntryToday}
+                selectedDate={selectedDate}
+                todayDate={todayDate}
+                highlightedDates={highlightedDates}
+                incompleteHighlightedDates={incompleteHighlightedDates}
+                onEntryDateChange={onEntryDateChange}
+                formatLocalDate={formatLocalDate}
+                calendarOpen={calendarOpen}
+                setCalendarOpen={setCalendarOpen}
+                calendarWrapRef={calendarWrapRef}
+                sleepHourNumber={sleepHourNumber}
+                sleepMinuteNumber={sleepMinuteNumber}
+                sleepTimeInputRef={sleepTimeInputRef}
+                sleepTimepickerRef={sleepTimepickerRef}
+                onNext={() => setCarouselPage(1)}
+                t={t}
+              />
+            </motion.div>
+          )}
+          {carouselPage === 1 && (
+            <motion.div
+              key={1}
+              className="log-form-carousel__slide log-form-carousel__slide--reflection"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              layout
+              transition={slideTransition}
+            >
+              <LogFormMoodPage
+                mood={mood}
+                moodColors={moodColors}
+                onMoodChange={onMoodChange}
+                saving={saving}
+                onNext={() => setCarouselPage(2)}
+                onSkip={submitWithSaveHandler}
+                t={t}
+              />
+            </motion.div>
+          )}
+          {carouselPage === 2 && (
+            <motion.div
+              key={2}
+              className="log-form-carousel__slide log-form-carousel__slide--reflection"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              layout
+              transition={slideTransition}
+            >
+              <LogFormTagsPage
+                tagInputValue={tagInputValue}
+                setTagInputValue={setTagInputValue}
+                atMaxTags={atMaxTags}
+                maxTagsPerEntry={maxTagsPerEntry}
+                visibleTagOptions={visibleTagOptions}
+                usedTagSet={usedTagSet}
+                toggleTagOption={toggleTagOption}
+                tagColors={tagColors}
+                tagInputRef={tagInputRef}
+                showCreateTagSuggestion={showCreateTagSuggestion}
+                addTag={addTag}
+                hasAtLeastOneEvent={hasAtLeastOneEvent}
+                saving={saving}
+                onNext={() => setCarouselPage(3)}
+                onSkip={submitWithSaveHandler}
+                t={t}
+              />
+            </motion.div>
+          )}
+          {carouselPage === 3 && (
+            <motion.div
+              key={3}
+              className="log-form-carousel__slide log-form-carousel__slide--reflection"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              layout
+              transition={slideTransition}
+            >
+              <LogFormJournalPage
+                note={note}
+                setNoteEditorRef={setNoteEditorRef}
+                onNoteInput={handleNoteInput}
+                saving={saving}
+                saved={saved}
+                onSave={submitWithSaveHandler}
+                onSkip={submitWithSaveHandler}
+                t={t}
+              />
+            </motion.div>
+          )}
         </AnimatePresence>
         <div className="intro-carousel__pagination log-form-carousel__pagination" aria-hidden="true">
           {[0, 1, 2, 3].map(page => (

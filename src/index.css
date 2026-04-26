@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@300;400;700&display=swap");
 
 :root {
   font-family:
@@ -116,7 +116,7 @@
   --status-error-soft: #f87171;
   --status-success-soft: #4ade80;
   --badge-icon-unlocked: var(--neutral-900);
-  --badge-progress-fill: #F6E0A6;
+  --badge-progress-fill: #f6e0a6;
   --review-cta-bg: linear-gradient(135deg, #f8fafc, #eef2ff);
   --review-cta-border: var(--border);
   --review-cta-button-bg: var(--cta-button-bg);
@@ -175,7 +175,7 @@
   --chart-mood: #4ade80;
   --chart-sleep-bar: #818cf8;
   --chart-ideal-sleep: #dadfd8;
-  --badge-progress-fill: #F6E0A6;
+  --badge-progress-fill: #f6e0a6;
   --streak-icon: #f59e0b;
   --tooltip-bg: #1b2741;
   --tooltip-border: color-mix(in srgb, var(--text) 10%, #0b1220);
