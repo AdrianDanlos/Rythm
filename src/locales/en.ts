@@ -425,6 +425,7 @@ const en = {
     lessSleepAfter: 'Less sleep after',
     firstSummary: 'Summary',
     loggedToday: 'Logged today',
+    todayNotLoggedYet: 'You haven\'t logged today',
     notLoggedToday: 'Today\'s mood not logged',
     oneMoreDayToUnlock: 'One more day to unlock',
     logOneMoreDay: 'Log 1 more day',

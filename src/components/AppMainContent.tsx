@@ -98,6 +98,8 @@ type AppMainContentProps = {
   moodColors: string[]
   formatLocalDate: (date: Date) => string
   onEntryDateChange: (value: string) => void
+  /** Open log with the selected day set to app today (e.g. summary CTA for incomplete today). */
+  onGoToLogForToday: (options?: { openAtMood?: boolean }) => void
   onSleepHoursChange: (value: string) => void
   onMoodChange: (value: number) => void
   onNoteChange: (value: string) => void
@@ -211,6 +213,7 @@ export function AppMainContent({
   moodColors,
   formatLocalDate,
   onEntryDateChange,
+  onGoToLogForToday,
   onSleepHoursChange,
   onMoodChange,
   onNoteChange,
@@ -423,7 +426,12 @@ export function AppMainContent({
   }
 
   return (
-    <>
+    <motion.div
+      className="app-enter-shell"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={tabTransition}
+    >
       <div className="tabs primary-tabs">
         <button
           type="button"
@@ -583,6 +591,7 @@ export function AppMainContent({
                       onOpenPaywall={onOpenPaywall}
                       onOpenFeedback={onOpenFeedback}
                       goToLog={() => onNavigateToPage(AppPage.Log)}
+                      goToLogForToday={onGoToLogForToday}
                       onGoToTimeline={onGoToTimeline}
                       activeTab={activeInsightsTab}
                       onRenameTag={onRenameTag}
@@ -593,6 +602,6 @@ export function AppMainContent({
                 </motion.div>
               )}
       </AnimatePresence>
-    </>
+    </motion.div>
   )
 }

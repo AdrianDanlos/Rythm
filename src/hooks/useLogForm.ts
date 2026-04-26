@@ -73,6 +73,7 @@ export const useLogForm = ({
   const defaultSleepHoursOption = formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS)
   const [entryDate, setEntryDate] = useState(today)
   const lastAppTodayRef = useRef(today)
+  const lastUserIdRef = useRef(userId)
   /** When the real calendar day advances, move off yesterday if user was on "today". */
   useEffect(() => {
     const prevToday = lastAppTodayRef.current
@@ -81,6 +82,15 @@ export const useLogForm = ({
       lastAppTodayRef.current = today
     }
   }, [today])
+  useEffect(() => {
+    if (userId === lastUserIdRef.current) {
+      return
+    }
+    // Keep log date account-scoped: switching users should never inherit prior user's selected day.
+    setEntryDate(today)
+    lastAppTodayRef.current = today
+    lastUserIdRef.current = userId
+  }, [userId, today])
   const [sleepHours, setSleepHoursState] = useState(defaultSleepHoursOption)
   const [mood, setMoodState] = useState<number | null>(null)
   const [note, setNoteState] = useState('')

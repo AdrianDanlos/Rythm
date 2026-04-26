@@ -196,4 +196,46 @@ describe('useLogForm', () => {
 
     expect(upsertEntryMock).toHaveBeenCalledTimes(1)
   })
+
+  it('resets selected date to today when user changes', async () => {
+    let currentUserId: string | undefined = 'user-1'
+    const currentToday = '2026-03-31'
+
+    function UserSwitchHarness() {
+      const form = useLogForm({
+        userId: currentUserId,
+        entries: [],
+        setEntries,
+        stats: baseStats,
+        today: currentToday,
+        formatLocalDate: date => date.toISOString().slice(0, 10),
+        sleepThreshold: 8,
+        isPro: false,
+        maxTagsPerEntry: 8,
+      })
+
+      useEffect(() => {
+        latest = form
+      }, [form])
+
+      return null
+    }
+
+    await act(async () => {
+      root.render(<UserSwitchHarness />)
+    })
+
+    await act(async () => {
+      latest?.setEntryDate('2026-03-30')
+    })
+
+    expect(latest?.selectedDate.getDate()).toBe(30)
+
+    currentUserId = 'user-2'
+    await act(async () => {
+      root.render(<UserSwitchHarness />)
+    })
+
+    expect(latest?.selectedDate.getDate()).toBe(31)
+  })
 })

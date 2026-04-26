@@ -21,6 +21,7 @@ export type SummaryProps = {
   entriesLoading: boolean
   entries: Entry[]
   goToLog: () => void
+  goToLogForToday: (options?: { openAtMood?: boolean }) => void
   isLoading: boolean
   averages: SleepMoodAverages
   windowAverages: {
@@ -55,6 +56,7 @@ export const Summary = ({
   entriesLoading,
   entries,
   goToLog,
+  goToLogForToday,
   isLoading,
   averages,
   windowAverages,
@@ -82,6 +84,15 @@ export const Summary = ({
     = entryForToday != null
       && entryForToday.sleep_hours != null
       && entryForToday.mood != null
+  const sleepButNoMood
+    = entryForToday != null
+      && entryForToday.sleep_hours != null
+      && entryForToday.mood == null
+  const logTodayMessage = fullyLoggedToday
+    ? t('insights.loggedToday')
+    : sleepButNoMood
+      ? t('insights.notLoggedToday')
+      : t('insights.todayNotLoggedYet')
 
   const logTodayStatus = (
     <>
@@ -104,7 +115,7 @@ export const Summary = ({
           : null}
       </div>
       <p className="summary-log-today__text">
-        {fullyLoggedToday ? t('insights.loggedToday') : t('insights.notLoggedToday')}
+        {logTodayMessage}
       </p>
     </>
   )
@@ -131,7 +142,8 @@ export const Summary = ({
               <button
                 type="button"
                 className="card summary-log-today summary-log-today--actionable"
-                onClick={goToLog}
+                onClick={() =>
+                  goToLogForToday(sleepButNoMood ? { openAtMood: true } : undefined)}
               >
                 {logTodayStatus}
                 <span className="summary-log-today__chevron" aria-hidden>

@@ -2,14 +2,17 @@ import { useEffect, type RefObject } from 'react'
 import { SESSION_STORAGE_KEYS } from '../lib/storageKeys'
 
 /**
- * If we should open the log form on the events/journal step (e.g. after "Log today"),
- * the scroll hook reads sessionStorage. Use the same read for initial carousel page
- * *before* first render so the tag field exists when the scroll effect runs.
+ * One-shot initial carousel page from sessionStorage: daily-events step, mood step, or 0.
+ * (Read in LogForm’s initial state so, e.g., the events tag field exists for the scroll effect.)
  */
 export function getInitialLogCarouselPageFromSession(): 0 | 1 | 2 | 3 {
   if (typeof sessionStorage === 'undefined') return 0
   if (sessionStorage.getItem(SESSION_STORAGE_KEYS.SCROLL_TO_LOG_DAILY_EVENTS) === '1') {
     return 2
+  }
+  if (sessionStorage.getItem(SESSION_STORAGE_KEYS.OPEN_LOG_CAROUSEL_AT_MOOD) === '1') {
+    sessionStorage.removeItem(SESSION_STORAGE_KEYS.OPEN_LOG_CAROUSEL_AT_MOOD)
+    return 1
   }
   return 0
 }
@@ -18,6 +21,13 @@ export function getInitialLogCarouselPageFromSession(): 0 | 1 | 2 | 3 {
 export function requestScrollToLogDailyEventsInput() {
   if (typeof sessionStorage !== 'undefined') {
     sessionStorage.setItem(SESSION_STORAGE_KEYS.SCROLL_TO_LOG_DAILY_EVENTS, '1')
+  }
+}
+
+/** Open the log on the mood carousel step (page 1) on next Log mount, e.g. sleep logged but mood missing. */
+export function requestOpenLogCarouselAtMood() {
+  if (typeof sessionStorage !== 'undefined') {
+    sessionStorage.setItem(SESSION_STORAGE_KEYS.OPEN_LOG_CAROUSEL_AT_MOOD, '1')
   }
 }
 

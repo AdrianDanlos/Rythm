@@ -125,6 +125,7 @@ type InsightsProps = {
   onOpenFeedback: () => void
   activeTab: InsightsTab
   goToLog: () => void
+  goToLogForToday: (options?: { openAtMood?: boolean }) => void
   onGoToTimeline: () => void
   onRenameTag: (fromTag: string, toTag: string) => void
   onTagColorChange: (tag: string, color: string) => void
@@ -160,6 +161,7 @@ export const Insights = ({
   onOpenPaywall,
   activeTab,
   goToLog,
+  goToLogForToday,
   onGoToTimeline,
   onRenameTag,
   onTagColorChange,
@@ -541,6 +543,7 @@ export const Insights = ({
               entriesLoading={entriesLoading}
               entries={entries}
               goToLog={goToLog}
+              goToLogForToday={goToLogForToday}
               isLoading={isLoading}
               averages={averages}
               windowAverages={windowAverages}

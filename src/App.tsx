@@ -48,6 +48,7 @@ import { getDefaultPageForUser, getReturningUserStorageKey, isReturningUser } fr
 import { CLOSE_TRANSIENT_PANELS_EVENT } from './lib/appEvents'
 import { useDailyReminderPostSave } from './hooks/useDailyReminderPostSave'
 import { useAndroidBackButton } from './hooks/useAndroidBackButton'
+import { requestOpenLogCarouselAtMood } from './hooks/useScrollToLogDailyEventsOnMount'
 import { useTagColors } from './hooks/useTagColors'
 import { useAppMenuPanelGestures } from './hooks/useAppMenuPanelGestures'
 import type { Badge } from './lib/types/stats'
@@ -325,6 +326,26 @@ function App() {
       setEntryDate(newDateStr)
     }
   }
+
+  const goToLogForToday = useCallback(
+    (options?: { openAtMood?: boolean }) => {
+      if (options?.openAtMood) {
+        requestOpenLogCarouselAtMood()
+      }
+      if (formatLocalDate(selectedDate) === today) {
+        navigateToPage(AppPage.Log)
+        return
+      }
+      void handleSave(
+        { preventDefault: () => {} } as FormEvent<HTMLFormElement>,
+        { silent: true },
+      ).then(() => {
+        setEntryDate(today)
+        navigateToPage(AppPage.Log)
+      })
+    },
+    [formatLocalDate, handleSave, navigateToPage, selectedDate, setEntryDate, today],
+  )
 
   useAndroidBackButton({
     isNativeApp,
@@ -804,6 +825,7 @@ function App() {
               moodColors={moodColors}
               formatLocalDate={formatLocalDate}
               onEntryDateChange={handleEntryDateChange}
+              onGoToLogForToday={goToLogForToday}
               onSleepHoursChange={setSleepHours}
               onMoodChange={setMood}
               onNoteChange={setNote}
