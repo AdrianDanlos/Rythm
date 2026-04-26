@@ -4,6 +4,7 @@ import {
   useMemo,
   useRef,
   useState,
+  startTransition,
   type FormEvent,
 } from 'react'
 import classNames from 'classnames'
@@ -21,6 +22,7 @@ import {
 } from '../lib/utils/sleepHours'
 import { MAX_TAG_LENGTH, parseTags } from '../lib/utils/stringUtils'
 import type { EventTagOption } from './EventTagSelector'
+import { LogFormFirstEntryDonePage } from './logForm/LogFormFirstEntryDonePage'
 import { LogFormJournalPage } from './logForm/LogFormJournalPage'
 import { LogFormMoodPage } from './logForm/LogFormMoodPage'
 import { LogFormSleepPage } from './logForm/LogFormSleepPage'
@@ -52,6 +54,11 @@ export type LogFormProps = {
   onNoteChange: (value: string) => void
   onTagsChange: (value: string) => void
   onSave: (event: FormEvent<HTMLFormElement>) => void
+  firstEntrySaveSignal: number
+  isFirstEntryFlow: boolean
+  isFirstEntryTipActive: boolean
+  onFirstEntryTipSignalConsumed: () => void
+  onFirstEntryTipContinueToSummary: () => void
 }
 
 export const LogForm = ({
@@ -77,6 +84,11 @@ export const LogForm = ({
   onNoteChange,
   onTagsChange,
   onSave,
+  firstEntrySaveSignal,
+  isFirstEntryFlow,
+  isFirstEntryTipActive,
+  onFirstEntryTipSignalConsumed,
+  onFirstEntryTipContinueToSummary,
 }: LogFormProps) => {
   const { t } = useTranslation()
   const noteEditorRef = useRef<HTMLDivElement | null>(null)
@@ -106,15 +118,27 @@ export const LogForm = ({
     entryDateKey,
     page: getInitialLogCarouselPageFromSession(),
   }))
+  const firstEntrySaveHandledRef = useRef(0)
   const carouselPage = carouselState.entryDateKey === entryDateKey
     ? carouselState.page
     : 0
+  const totalCarouselPages = isFirstEntryFlow || isFirstEntryTipActive || carouselPage === 4
+    ? 5
+    : 4
   const setCarouselPage = useCallback((page: LogCarouselPage) => {
     setCarouselState({
       entryDateKey,
       page,
     })
   }, [entryDateKey])
+  useEffect(() => {
+    if (firstEntrySaveSignal <= firstEntrySaveHandledRef.current) return
+    firstEntrySaveHandledRef.current = firstEntrySaveSignal
+    startTransition(() => {
+      setCarouselPage(4)
+    })
+    onFirstEntryTipSignalConsumed()
+  }, [carouselPage, carouselState.entryDateKey, entryDateKey, firstEntrySaveSignal, onFirstEntryTipSignalConsumed, setCarouselPage])
 
   const usedTags = parseTags(tags)
   const usedTagSet = new Set(usedTags)
@@ -419,7 +443,6 @@ export const LogForm = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              layout
               transition={slideTransition}
             >
               <LogFormMoodPage
@@ -440,7 +463,6 @@ export const LogForm = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              layout
               transition={slideTransition}
             >
               <LogFormTagsPage
@@ -470,7 +492,6 @@ export const LogForm = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              layout
               transition={slideTransition}
             >
               <LogFormJournalPage
@@ -485,9 +506,27 @@ export const LogForm = ({
               />
             </motion.div>
           )}
+          {carouselPage === 4 && (
+            <motion.div
+              key={4}
+              className="log-form-carousel__slide log-form-carousel__slide--reflection"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={slideTransition}
+            >
+              <LogFormFirstEntryDonePage
+                t={t}
+                onContinue={onFirstEntryTipContinueToSummary}
+              />
+            </motion.div>
+          )}
         </AnimatePresence>
         <div className="intro-carousel__pagination log-form-carousel__pagination" aria-hidden="true">
-          {[0, 1, 2, 3].map(page => (
+          {Array.from(
+            { length: totalCarouselPages },
+            (_, page) => page,
+          ).map(page => (
             <span
               key={page}
               className={classNames('intro-carousel__dot', { 'is-active': page === carouselPage })}

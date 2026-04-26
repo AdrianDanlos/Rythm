@@ -105,7 +105,7 @@ export function LogFormMoodPage({
               </p>
             </div>
           </div>
-          <motion.div className="log-form-carousel__actions" layout="position">
+          <motion.div className="log-form-carousel__actions">
             <button
               type="button"
               className="ghost log-form-carousel__skip"

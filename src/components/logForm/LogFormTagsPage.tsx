@@ -103,7 +103,7 @@ export function LogFormTagsPage({
             </div>
 
           </div>
-          <motion.div className="log-form-carousel__actions log-form-carousel__actions--reflection-tight" layout="position">
+          <motion.div className="log-form-carousel__actions log-form-carousel__actions--reflection-tight">
             <button
               type="button"
               className="ghost log-form-carousel__skip"

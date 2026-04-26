@@ -27,6 +27,9 @@ export function useDailyReminderPostSave(
   }, [navigateToPage])
 
   const handleEntrySavedForToday = useCallback((entryCount: number) => {
+    if (entryCount === 1) {
+      return
+    }
     goToInsightsSummary()
     if (entryCount !== 3) {
       return

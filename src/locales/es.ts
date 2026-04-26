@@ -181,6 +181,8 @@ const es = {
   },
   log: {
     carouselAria: 'Pasos del registro diario',
+    firstEntryComplete: '¡Eso es todo! Vuelve mañana y registra otra entrada. Cuantos más días registres, más empezarás a descubrir sobre ti mismo.',
+    firstEntryCompleteButton: 'Entendido',
     loading: 'Cargando...',
     openDatePicker: 'Abrir calendario para cambiar la fecha',
     closeDatePicker: 'Cerrar calendario',

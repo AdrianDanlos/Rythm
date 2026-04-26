@@ -248,6 +248,22 @@ function App() {
     handleRenameTag,
   } = useTagColors(session?.user?.id, entries, setEntries)
 
+  const [firstEntrySaveSignal, setFirstEntrySaveSignal] = useState(0)
+  const [isFirstEntryTipActive, setIsFirstEntryTipActive] = useState(false)
+  const handleFirstEntryCreated = useCallback(() => {
+    setIsFirstEntryTipActive(true)
+    setFirstEntrySaveSignal((n) => {
+      return n + 1
+    })
+  }, [])
+  const handleFirstEntryTipSignalConsumed = useCallback(() => {
+    setFirstEntrySaveSignal(0)
+  }, [])
+  const handleFirstEntryTipContinueToSummary = useCallback(() => {
+    setIsFirstEntryTipActive(false)
+    goToInsightsSummary()
+  }, [goToInsightsSummary])
+
   const {
     setEntryDate,
     selectedDate,
@@ -284,6 +300,7 @@ function App() {
     },
     shouldSuppressPostSaveToast,
     onEntrySavedForToday: handleEntrySavedForToday,
+    onFirstEntryCreated: handleFirstEntryCreated,
   })
 
   const runSaveBeforeLeavingTab = useCallback(
@@ -792,6 +809,10 @@ function App() {
               onNoteChange={setNote}
               onTagsChange={setTags}
               onSave={handleSave}
+              firstEntrySaveSignal={firstEntrySaveSignal}
+              isFirstEntryTipActive={isFirstEntryTipActive}
+              onFirstEntryTipSignalConsumed={handleFirstEntryTipSignalConsumed}
+              onFirstEntryTipContinueToSummary={handleFirstEntryTipContinueToSummary}
               entriesLoading={entriesLoading}
               chartData={chartData}
               averages={averages}

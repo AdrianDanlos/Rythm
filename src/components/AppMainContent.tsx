@@ -106,6 +106,10 @@ type AppMainContentProps = {
     event: React.FormEvent<HTMLFormElement>,
     options?: { silent?: boolean },
   ) => void
+  firstEntrySaveSignal: number
+  isFirstEntryTipActive: boolean
+  onFirstEntryTipSignalConsumed: () => void
+  onFirstEntryTipContinueToSummary: () => void
   // Insights
   entriesLoading: boolean
   chartData: Entry[]
@@ -212,6 +216,10 @@ export function AppMainContent({
   onNoteChange,
   onTagsChange,
   onSave,
+  firstEntrySaveSignal,
+  isFirstEntryTipActive,
+  onFirstEntryTipSignalConsumed,
+  onFirstEntryTipContinueToSummary,
   entriesLoading,
   chartData,
   averages,
@@ -504,30 +512,35 @@ export function AppMainContent({
                       )
                     : (
                         <div className="app-log-form-vert">
-                            <LogForm
-                              selectedDate={selectedDate}
-                              todayDate={todayDate}
-                              highlightedDates={highlightedDates}
-                              incompleteHighlightedDates={incompleteHighlightedDates}
-                              sleepHours={sleepHours}
-                              mood={mood}
-                              note={note}
-                              tags={tags}
-                              tagSuggestions={tagSuggestions}
-                              maxTagsPerEntry={maxTagsPerEntry}
-                              saving={saving}
-                              saved={saved}
-                              moodColors={moodColors}
-                              formatLocalDate={formatLocalDate}
-                              tagColors={tagColors}
-                              onEnsureTagColor={onEnsureTagColor}
-                              onEntryDateChange={onEntryDateChange}
-                              onSleepHoursChange={onSleepHoursChange}
-                              onMoodChange={onMoodChange}
-                              onNoteChange={onNoteChange}
-                              onTagsChange={onTagsChange}
-                              onSave={onSave}
-                            />
+                          <LogForm
+                            selectedDate={selectedDate}
+                            todayDate={todayDate}
+                            highlightedDates={highlightedDates}
+                            incompleteHighlightedDates={incompleteHighlightedDates}
+                            sleepHours={sleepHours}
+                            mood={mood}
+                            note={note}
+                            tags={tags}
+                            tagSuggestions={tagSuggestions}
+                            maxTagsPerEntry={maxTagsPerEntry}
+                            saving={saving}
+                            saved={saved}
+                            moodColors={moodColors}
+                            formatLocalDate={formatLocalDate}
+                            tagColors={tagColors}
+                            onEnsureTagColor={onEnsureTagColor}
+                            onEntryDateChange={onEntryDateChange}
+                            onSleepHoursChange={onSleepHoursChange}
+                            onMoodChange={onMoodChange}
+                            onNoteChange={onNoteChange}
+                            onTagsChange={onTagsChange}
+                            onSave={onSave}
+                            firstEntrySaveSignal={firstEntrySaveSignal}
+                            isFirstEntryFlow={entries.length === 0}
+                            isFirstEntryTipActive={isFirstEntryTipActive}
+                            onFirstEntryTipSignalConsumed={onFirstEntryTipSignalConsumed}
+                            onFirstEntryTipContinueToSummary={onFirstEntryTipContinueToSummary}
+                          />
                         </div>
                       )}
                 </motion.div>

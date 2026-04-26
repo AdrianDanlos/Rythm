@@ -52,6 +52,7 @@ type UseLogFormParams = {
   onBadgeMilestoneReached?: (badge: Badge) => void
   shouldSuppressPostSaveToast?: (entryCount: number) => boolean
   onEntrySavedForToday?: (entryCount: number) => void
+  onFirstEntryCreated?: () => void
 }
 
 export const useLogForm = ({
@@ -67,6 +68,7 @@ export const useLogForm = ({
   onBadgeMilestoneReached,
   shouldSuppressPostSaveToast,
   onEntrySavedForToday,
+  onFirstEntryCreated,
 }: UseLogFormParams) => {
   const defaultSleepHoursOption = formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS)
   const [entryDate, setEntryDate] = useState(today)
@@ -284,6 +286,9 @@ export const useLogForm = ({
           a.entry_date.localeCompare(b.entry_date),
         )
       })()
+      if (entries.length === 0) {
+        onFirstEntryCreated?.()
+      }
       setEntries(nextEntries)
       const nextStats = buildStats(nextEntries, sleepThreshold, formatLocalDate)
       // Celebrate on key milestones: 3, 7, 14, 21, 30, then every 10 days from 40 onward.
@@ -310,8 +315,9 @@ export const useLogForm = ({
         onBadgeMilestoneReached?.(tierUps[0]!.badge)
       }
       setSaved(true)
+      const isFirstEntrySave = entries.length === 0 && nextEntries.length === 1
       const suppressPostSaveToast = shouldSuppressPostSaveToast?.(nextEntries.length) ?? false
-      if (!options?.silent && !suppressPostSaveToast) {
+      if (!options?.silent && !suppressPostSaveToast && !isFirstEntrySave) {
         if (tagList.length === 0) {
           const isCompleteAfterSave = mood !== null
           const isShortSleep = sleepHoursToSave < (sleepThreshold - 1)

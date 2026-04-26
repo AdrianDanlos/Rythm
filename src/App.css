@@ -1931,6 +1931,9 @@
   .app-log-form-vert,
 .app.app-authenticated
   .app-log-route:has(form[data-log-carousel-page="3"])
+  .app-log-form-vert,
+.app.app-authenticated
+  .app-log-route:has(form[data-log-carousel-page="4"])
   .app-log-form-vert {
   flex: 1 1 auto;
   min-height: 0;
@@ -1938,7 +1941,8 @@
 
 .app.app-authenticated .app-log-route:has(form[data-log-carousel-page="1"]),
 .app.app-authenticated .app-log-route:has(form[data-log-carousel-page="2"]),
-.app.app-authenticated .app-log-route:has(form[data-log-carousel-page="3"]) {
+.app.app-authenticated .app-log-route:has(form[data-log-carousel-page="3"]),
+.app.app-authenticated .app-log-route:has(form[data-log-carousel-page="4"]) {
   flex: 1 1 auto;
   min-height: calc(
     100dvh - 75px - 96px - env(safe-area-inset-top) -
@@ -2090,7 +2094,8 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 
 .log-form-stack--step-fullbleed[data-log-carousel-page="1"] .log-form-carousel,
 .log-form-stack--step-fullbleed[data-log-carousel-page="2"] .log-form-carousel,
-.log-form-stack--step-fullbleed[data-log-carousel-page="3"] .log-form-carousel {
+.log-form-stack--step-fullbleed[data-log-carousel-page="3"] .log-form-carousel,
+.log-form-stack--step-fullbleed[data-log-carousel-page="4"] .log-form-carousel {
   flex: 1 1 auto;
   min-height: 0;
 }
@@ -2270,6 +2275,49 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 
 .log-reflection-block--journal {
   gap: 10px;
+}
+
+.log-reflection-block--first-entry-done {
+  gap: 0;
+  padding: 8px 0 0;
+}
+
+.log-first-entry-done__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.log-first-entry-done__body {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: #0f172a;
+}
+
+:root[data-theme="dark"] .log-first-entry-done__body {
+  color: #f8fbff;
+}
+
+.log-reflection-icon.log-reflection-icon--first-entry-done {
+  color: #7c3aed;
+  background: linear-gradient(
+    155deg,
+    #ede9fe 0%,
+    #ddd6fe 40%,
+    #c4b5fd 100%
+  );
+}
+
+:root[data-theme="dark"] .log-reflection-icon.log-reflection-icon--first-entry-done {
+  color: #e9d5ff;
+  background: linear-gradient(155deg, #4c1d95 0%, #5b21b6 50%, #7c3aed 100%);
+}
+
+.log-form-stack .log-form-carousel__actions .log-form-carousel__primary--block {
+  width: 100%;
 }
 
 :root[data-theme="dark"] .log-reflection-block {

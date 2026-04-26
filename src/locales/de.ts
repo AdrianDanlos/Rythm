@@ -181,6 +181,8 @@ const de = {
   },
   log: {
     carouselAria: 'Schritte im Tagebuch',
+    firstEntryComplete: 'Das ist alles! Komm morgen wieder und trag einen neuen Eintrag ein. Je mehr Tage du trackst, desto mehr wirst du über dich selbst herausfinden.',
+    firstEntryCompleteButton: 'Alles klar',
     loading: 'Laden...',
     openDatePicker: 'Kalender öffnen, um das Datum zu ändern',
     closeDatePicker: 'Kalender schließen',

@@ -181,6 +181,8 @@ const fr = {
   },
   log: {
     carouselAria: 'Étapes du journal quotidien',
+    firstEntryComplete: 'C\'est tout ! Reviens demain et ajoute une nouvelle entrée. Plus tu enregistres de jours, plus tu commenceras à en apprendre sur toi-même.',
+    firstEntryCompleteButton: 'D\'accord',
     loading: 'Chargement...',
     openDatePicker: 'Ouvrir le calendrier pour changer la date',
     closeDatePicker: 'Fermer le calendrier',
