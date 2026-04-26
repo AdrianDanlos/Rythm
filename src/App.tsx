@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
 import { LocalNotifications } from '@capacitor/local-notifications'
+import { InAppReview } from '@capacitor-community/in-app-review'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { exportEntriesCsv } from './lib/utils/csvExport'
@@ -12,6 +13,7 @@ import { AppMainContent } from './components/AppMainContent'
 import { AppBottomNav } from './components/AppBottomNav'
 import { PaywallPage } from './billing/shared/PaywallPage'
 import { FeedbackModal } from './components/FeedbackModal'
+import { ReviewPromptModal } from './components/ReviewPromptModal'
 import { StreakModal } from './components/StreakModal'
 import { StreakCelebration } from './components/StreakCelebration'
 import { BadgeCelebration } from './components/BadgeCelebration'
@@ -126,6 +128,7 @@ function App() {
   const [streakCelebrationDays, setStreakCelebrationDays] = useState<number>(3)
   const [isBadgeCelebrationOpen, setIsBadgeCelebrationOpen] = useState(false)
   const [badgeCelebration, setBadgeCelebration] = useState<Badge | null>(null)
+  const [isReviewPromptOpen, setIsReviewPromptOpen] = useState(false)
 
   // Must not memoize with [] — SPA stays mounted across midnight; stale "today" breaks Log.
   const todayDate = new Date()
@@ -267,6 +270,26 @@ function App() {
     setIsFirstEntryTipActive(false)
     goToInsightsSummary()
   }, [goToInsightsSummary])
+  const closeReviewPrompt = useCallback(() => {
+    setIsReviewPromptOpen(false)
+  }, [])
+  const handleReviewPromptYes = useCallback(async () => {
+    closeReviewPrompt()
+    if (isNativeApp && Capacitor.getPlatform() === 'android') {
+      try {
+        await InAppReview.requestReview()
+      }
+      catch {
+        // Ignore request errors; user can always rate from the side panel button.
+      }
+      return
+    }
+    window.open(PLAY_STORE_APP_URL, '_blank', 'noreferrer')
+  }, [closeReviewPrompt, isNativeApp])
+  const handleReviewPromptNotReally = useCallback(() => {
+    closeReviewPrompt()
+    openFeedback()
+  }, [closeReviewPrompt, openFeedback])
 
   const {
     setEntryDate,
@@ -304,6 +327,11 @@ function App() {
     },
     shouldSuppressPostSaveToast,
     onEntrySavedForToday: handleEntrySavedForToday,
+    onEntrySaveSuccess: ({ previousEntryCount, nextEntryCount }) => {
+      if (previousEntryCount === 10 && nextEntryCount === 11) {
+        setIsReviewPromptOpen(true)
+      }
+    },
     onFirstEntryCreated: handleFirstEntryCreated,
   })
 
@@ -354,6 +382,8 @@ function App() {
     isNativeApp,
     isFeedbackOpen,
     closeFeedback,
+    isReviewPromptOpen,
+    closeReviewPrompt,
     activePage,
     closePaywall,
     isStreakOpen,
@@ -786,6 +816,12 @@ function App() {
         isOpen={isFeedbackOpen}
         onClose={closeFeedback}
         userId={session?.user?.id ?? null}
+      />
+      <ReviewPromptModal
+        isOpen={isReviewPromptOpen}
+        onConfirmYes={() => { void handleReviewPromptYes() }}
+        onLater={closeReviewPrompt}
+        onNotReally={handleReviewPromptNotReally}
       />
 
       {authInitialized && session && !passwordRecoveryPending && !sessionBlocksForUnverifiedEmail && activePage === AppPage.Pro

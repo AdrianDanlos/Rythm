@@ -7,6 +7,8 @@ type Params = {
   isNativeApp: boolean
   isFeedbackOpen: boolean
   closeFeedback: () => void
+  isReviewPromptOpen: boolean
+  closeReviewPrompt: () => void
   activePage: AppPage
   closePaywall: () => void
   isStreakOpen: boolean
@@ -23,6 +25,8 @@ export function useAndroidBackButton({
   isNativeApp,
   isFeedbackOpen,
   closeFeedback,
+  isReviewPromptOpen,
+  closeReviewPrompt,
   activePage,
   closePaywall,
   isStreakOpen,
@@ -37,6 +41,10 @@ export function useAndroidBackButton({
     const listenerPromise = CapacitorApp.addListener('backButton', () => {
       if (isFeedbackOpen) {
         closeFeedback()
+        return
+      }
+      if (isReviewPromptOpen) {
+        closeReviewPrompt()
         return
       }
       if (activePage === AppPage.Pro) {
@@ -64,9 +72,11 @@ export function useAndroidBackButton({
   }, [
     isNativeApp,
     isFeedbackOpen,
+    isReviewPromptOpen,
     isStreakOpen,
     activePage,
     closeFeedback,
+    closeReviewPrompt,
     closePaywall,
     closeStreak,
     canGoBackInApp,

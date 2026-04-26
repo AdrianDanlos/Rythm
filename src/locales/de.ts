@@ -170,6 +170,13 @@ const de = {
     enterFeedback: 'Schreib dein Feedback.',
     sendError: 'Feedback konnte nicht gesendet werden. Bitte versuche es erneut.',
   },
+  reviewPrompt: {
+    title: 'Gefällt dir Rythm?',
+    body: 'Eine kurze Bewertung hilft uns sehr.',
+    yes: 'Ja',
+    later: 'Später',
+    notReally: 'Nicht wirklich',
+  },
   streak: {
     eyebrow: 'Meilenstein',
     title: 'Glückwunsch! — 1 Woche am Stück',

@@ -170,6 +170,13 @@ const fr = {
     enterFeedback: 'Écrivez votre commentaire.',
     sendError: 'Impossible d\'envoyer le commentaire. Veuillez réessayer.',
   },
+  reviewPrompt: {
+    title: 'Vous aimez Rythm ?',
+    body: 'Un avis rapide nous aide beaucoup.',
+    yes: 'Oui',
+    later: 'Plus tard',
+    notReally: 'Pas vraiment',
+  },
   streak: {
     eyebrow: 'Succès',
     title: 'Félicitations ! — 1 semaine d\'affilée',

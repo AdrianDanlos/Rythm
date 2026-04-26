@@ -167,6 +167,13 @@ const en = {
     enterFeedback: 'Please enter your feedback.',
     sendError: 'Unable to send feedback. Please try again.',
   },
+  reviewPrompt: {
+    title: 'Enjoying Rythm?',
+    body: 'A quick review helps a lot.',
+    yes: 'Yes',
+    later: 'Later',
+    notReally: 'Not really',
+  },
   streak: {
     eyebrow: 'Milestone',
     title: 'Congratulations — 1 week in a row!',

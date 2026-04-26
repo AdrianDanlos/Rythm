@@ -52,6 +52,7 @@ type UseLogFormParams = {
   onBadgeMilestoneReached?: (badge: Badge) => void
   shouldSuppressPostSaveToast?: (entryCount: number) => boolean
   onEntrySavedForToday?: (entryCount: number) => void
+  onEntrySaveSuccess?: (payload: { previousEntryCount: number, nextEntryCount: number }) => void
   onFirstEntryCreated?: () => void
 }
 
@@ -68,6 +69,7 @@ export const useLogForm = ({
   onBadgeMilestoneReached,
   shouldSuppressPostSaveToast,
   onEntrySavedForToday,
+  onEntrySaveSuccess,
   onFirstEntryCreated,
 }: UseLogFormParams) => {
   const defaultSleepHoursOption = formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS)
@@ -348,6 +350,10 @@ export const useLogForm = ({
       }
       window.setTimeout(() => setSaved(false), 2000)
       if (!options?.silent) {
+        onEntrySaveSuccess?.({
+          previousEntryCount: entries.length,
+          nextEntryCount: nextEntries.length,
+        })
         onEntrySavedForToday?.(nextEntries.length)
       }
     }
