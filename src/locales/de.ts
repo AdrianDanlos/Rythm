@@ -280,7 +280,7 @@ const de = {
     donate: 'Spenden',
     feedbackCta: 'Anregungen, Fehler oder Ideen – wir freuen uns auf deine Nachricht.',
     summaryTitle: 'Deine Übersicht auf einen Blick',
-    summaryIntro: 'Hier siehst du deine Rhythm-Punkte, deine Serie und den Zusammenhang zwischen Schlaf und Stimmung.',
+    summaryIntro: 'Hier siehst du auf einen Blick deine Aktivität: Gewohnheiten, Stimmung und Schlaf.',
     logFirstDay: 'Trag deinen ersten Tag ein',
     toGetStarted: 'um loszulegen.',
     exportData: 'Daten exportieren',

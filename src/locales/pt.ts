@@ -280,7 +280,7 @@ const pt = {
     donate: 'Doar',
     feedbackCta: 'Sugestões, bugs ou ideias — a gente quer saber.',
     summaryTitle: 'Seu resumo de um jeito fácil',
-    summaryIntro: 'Aqui você vê seus pontos Rhythm, sua sequência e como sono e humor se conectam.',
+    summaryIntro: 'Aqui vais vendo de relance a tua atividade: hábitos, humor e descanso.',
     logFirstDay: 'Registre seu primeiro dia',
     toGetStarted: 'para começar.',
     exportData: 'Exportar dados',

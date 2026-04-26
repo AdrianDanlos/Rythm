@@ -281,7 +281,7 @@ const es = {
     donate: 'Donar',
     feedbackCta: 'Sugerencias, errores o ideas: queremos escucharte.',
     summaryTitle: 'Tu resumen de un vistazo',
-    summaryIntro: 'Aquí verás tus puntos Rhythm, racha y cómo se conectan sueño y ánimo.',
+    summaryIntro: 'Aquí irás viendo de un vistazo tu actividad: hábitos, ánimo y descanso.',
     logFirstDay: 'Registra tu primer día',
     toGetStarted: 'para empezar.',
     exportData: 'Exportar datos',

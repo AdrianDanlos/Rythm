@@ -5492,7 +5492,6 @@ button.toggle-group__btn--disabled:disabled {
 .insights-intro {
   display: grid;
   gap: 16px;
-  margin-bottom: 24px;
 }
 
 .insights-intro__header {

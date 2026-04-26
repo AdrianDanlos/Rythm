@@ -278,7 +278,7 @@ const en = {
     donate: 'Donate',
     feedbackCta: 'Suggestions, bugs, or ideas—we would love to hear from you.',
     summaryTitle: 'Your overview at a glance',
-    summaryIntro: 'This is where you will see your Rhythm score, streak, and how your sleep and mood connect.',
+    summaryIntro: "Here you'll get a quick look at your activity: habits, mood and sleep.",
     logFirstDay: 'Log your first day',
     toGetStarted: 'to get started.',
     exportData: 'Export data',

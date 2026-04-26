@@ -280,7 +280,7 @@ const fr = {
     donate: 'Faire un don',
     feedbackCta: 'Suggestions, bugs ou idées : on veut tout entendre.',
     summaryTitle: 'Votre résumé en un coup d\'œil',
-    summaryIntro: 'Retrouvez vos points Rhythm, votre série et le lien entre sommeil et humeur.',
+    summaryIntro: "Ici tu verras d'un coup d'œil ton activité : habitudes, humeur et sommeil.",
     logFirstDay: 'Enregistrez votre premier jour',
     toGetStarted: 'pour commencer.',
     exportData: 'Exporter les données',
