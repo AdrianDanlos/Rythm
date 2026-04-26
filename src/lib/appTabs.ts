@@ -14,6 +14,8 @@ export enum AppPage {
   Summary = 'summary',
   Charts = 'charts',
   Events = 'events',
+  /** Full-screen daily events (rename, colors) — /events/edit */
+  EditDailyEvents = 'edit-daily-events',
   Timeline = 'timeline',
   Log = 'log',
   Settings = 'settings',
@@ -25,6 +27,7 @@ export const APP_PAGE_PATHS: Record<AppPage, string> = {
   [AppPage.Summary]: '/summary',
   [AppPage.Charts]: '/charts',
   [AppPage.Events]: '/events',
+  [AppPage.EditDailyEvents]: '/events/edit',
   [AppPage.Timeline]: '/timeline',
   [AppPage.Settings]: '/settings',
   [AppPage.Pro]: '/pro',
@@ -67,7 +70,7 @@ export function getInsightsSectionForPage(page: AppPage): InsightsSection {
     return Tabs.Charts
   }
 
-  if (page === AppPage.Events) {
+  if (page === AppPage.Events || page === AppPage.EditDailyEvents) {
     return Tabs.Events
   }
 

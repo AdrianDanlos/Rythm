@@ -398,6 +398,7 @@ const en = {
     estimateThreshold: 'to estimate your personal threshold.',
     dailyEventsInsights: 'Daily Events Insights',
     yourDailyEvents: 'Your Daily Events',
+    editEvents: 'Edit events',
     dailyEventCount: '{{tag}} ({{count}})',
     openTagTimelineAria: 'Open Timeline filtered by {{tag}}',
     changeTagColor: 'Change color for {{tag}}',

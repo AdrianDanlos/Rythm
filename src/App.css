@@ -3884,6 +3884,68 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   height: 18px;
 }
 
+.daily-events-edit-top {
+  width: 100%;
+}
+
+.daily-events-edit-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0 0 4px;
+  padding: 8px 4px 8px 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.daily-events-edit-back:hover {
+  color: var(--accent);
+}
+
+.daily-events-edit-back__icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--muted);
+}
+
+.events-page-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+.events-page-edit-cta {
+  width: 100%;
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: var(--card-shadow);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.events-page-edit-cta:hover {
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+  box-shadow: var(--tag-suggestions-shadow);
+}
+
 .your-daily-events-heading {
   display: inline-flex;
   align-items: center;
@@ -5747,6 +5809,25 @@ button.toggle-group__btn--disabled:disabled {
   opacity: 0.8;
 }
 
+.tag-insights-unnested {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+}
+
+.tag-insights-page-intro h2 {
+  margin: 0 0 6px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tag-insights-page-intro .muted {
+  margin: 0;
+  line-height: 1.45;
+}
+
 .tag-insights-block {
   margin-top: 24px;
   padding-top: 20px;
@@ -5754,6 +5835,13 @@ button.toggle-group__btn--disabled:disabled {
 }
 
 .tag-insights-block:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* One block per card: override stacked-in-parent rules */
+.tag-insights-block.tag-insights-block--in-card {
   margin-top: 0;
   padding-top: 0;
   border-top: none;

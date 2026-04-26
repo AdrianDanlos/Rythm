@@ -52,6 +52,11 @@ const SettingsPage = lazy(async () => {
   return { default: module.SettingsPage }
 })
 
+const DailyEventsEditPage = lazy(async () => {
+  const module = await import('./insights/DailyEventsEditPage')
+  return { default: module.DailyEventsEditPage }
+})
+
 type AppMainContentProps = {
   authInitialized: boolean
   session: Session | null
@@ -490,117 +495,138 @@ export function AppMainContent({
                 </Suspense>
               </motion.div>
             )
-          : activeTab === Tabs.Log
+          : activePage === AppPage.EditDailyEvents
             ? (
                 <motion.div
-                  key="log"
-                  className={entriesSettled ? 'app-log-route' : undefined}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={tabTransition}
-                >
-                  {!entriesSettled
-                    ? (
-                        <div
-                          className="log-entries-loading-overlay"
-                          aria-live="polite"
-                          aria-busy="true"
-                        >
-                          <div className="log-entries-loading-overlay__content">
-                            <span
-                              className="log-entries-loading-overlay__spinner"
-                              aria-hidden="true"
-                            />
-                            <span className="log-entries-loading-overlay__label">
-                              {t('log.loading')}
-                            </span>
-                          </div>
-                        </div>
-                      )
-                    : (
-                        <div className="app-log-form-vert">
-                          <LogForm
-                            selectedDate={selectedDate}
-                            todayDate={todayDate}
-                            highlightedDates={highlightedDates}
-                            incompleteHighlightedDates={incompleteHighlightedDates}
-                            sleepHours={sleepHours}
-                            mood={mood}
-                            note={note}
-                            tags={tags}
-                            tagSuggestions={tagSuggestions}
-                            maxTagsPerEntry={maxTagsPerEntry}
-                            saving={saving}
-                            saved={saved}
-                            moodColors={moodColors}
-                            formatLocalDate={formatLocalDate}
-                            tagColors={tagColors}
-                            onEnsureTagColor={onEnsureTagColor}
-                            onEntryDateChange={onEntryDateChange}
-                            onSleepHoursChange={onSleepHoursChange}
-                            onMoodChange={onMoodChange}
-                            onNoteChange={onNoteChange}
-                            onTagsChange={onTagsChange}
-                            onSave={onSave}
-                            firstEntrySaveSignal={firstEntrySaveSignal}
-                            isFirstEntryFlow={entries.length === 0}
-                            isFirstEntryTipActive={isFirstEntryTipActive}
-                            onFirstEntryTipSignalConsumed={onFirstEntryTipSignalConsumed}
-                            onFirstEntryTipContinueToSummary={onFirstEntryTipContinueToSummary}
-                          />
-                        </div>
-                      )}
-                </motion.div>
-              )
-            : (
-                <motion.div
-                  key="insights"
+                  key="daily-events-edit"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={tabTransition}
                 >
                   <Suspense fallback={null}>
-                    <Insights
+                    <DailyEventsEditPage
+                      reduceMotion={reduceMotion}
                       entries={entries}
-                      entriesLoading={entriesLoading}
-                      chartData={chartData}
-                      averages={averages}
-                      windowAverages={windowAverages}
-                      statCounts={statCounts}
-                      rhythmScore={rhythmScore}
-                      streak={streak}
-                      sleepConsistencyLabel={sleepConsistencyLabel}
-                      sleepConsistencyBadges={sleepConsistencyBadges}
-                      correlationLabel={correlationLabel}
-                      correlationDirection={correlationDirection}
-                      moodBySleepThreshold={moodBySleepThreshold}
-                      sleepThreshold={sleepThreshold}
-                      moodColors={moodColors}
-                      trendSeries={trendSeries}
-                      rollingSeries={rollingSeries}
-                      rollingSummaries={rollingSummaries}
-                      weekdayAverages={weekdayAverages}
-                      personalSleepThreshold={personalSleepThreshold}
-                      moodByPersonalThreshold={moodByPersonalThreshold}
-                      tagDrivers={tagDrivers}
-                      tagSleepDrivers={tagSleepDrivers}
                       tagColors={tagColors}
-                      isPro={isPro}
-                      onOpenPaywall={onOpenPaywall}
-                      onOpenFeedback={onOpenFeedback}
-                      goToLog={() => onNavigateToPage(AppPage.Log)}
-                      goToLogForToday={onGoToLogForToday}
-                      onGoToTimeline={onGoToTimeline}
-                      activeTab={activeInsightsTab}
                       onRenameTag={onRenameTag}
                       onTagColorChange={onTagColorChange}
-                      today={today}
+                      goToLog={() => onNavigateToPage(AppPage.Log)}
+                      onBack={() => onNavigateToPage(AppPage.Events)}
                     />
                   </Suspense>
                 </motion.div>
-              )}
+              )
+            : activeTab === Tabs.Log
+              ? (
+                  <motion.div
+                    key="log"
+                    className={entriesSettled ? 'app-log-route' : undefined}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={tabTransition}
+                  >
+                    {!entriesSettled
+                      ? (
+                          <div
+                            className="log-entries-loading-overlay"
+                            aria-live="polite"
+                            aria-busy="true"
+                          >
+                            <div className="log-entries-loading-overlay__content">
+                              <span
+                                className="log-entries-loading-overlay__spinner"
+                                aria-hidden="true"
+                              />
+                              <span className="log-entries-loading-overlay__label">
+                                {t('log.loading')}
+                              </span>
+                            </div>
+                          </div>
+                        )
+                      : (
+                          <div className="app-log-form-vert">
+                            <LogForm
+                              selectedDate={selectedDate}
+                              todayDate={todayDate}
+                              highlightedDates={highlightedDates}
+                              incompleteHighlightedDates={incompleteHighlightedDates}
+                              sleepHours={sleepHours}
+                              mood={mood}
+                              note={note}
+                              tags={tags}
+                              tagSuggestions={tagSuggestions}
+                              maxTagsPerEntry={maxTagsPerEntry}
+                              saving={saving}
+                              saved={saved}
+                              moodColors={moodColors}
+                              formatLocalDate={formatLocalDate}
+                              tagColors={tagColors}
+                              onEnsureTagColor={onEnsureTagColor}
+                              onEntryDateChange={onEntryDateChange}
+                              onSleepHoursChange={onSleepHoursChange}
+                              onMoodChange={onMoodChange}
+                              onNoteChange={onNoteChange}
+                              onTagsChange={onTagsChange}
+                              onSave={onSave}
+                              firstEntrySaveSignal={firstEntrySaveSignal}
+                              isFirstEntryFlow={entries.length === 0}
+                              isFirstEntryTipActive={isFirstEntryTipActive}
+                              onFirstEntryTipSignalConsumed={onFirstEntryTipSignalConsumed}
+                              onFirstEntryTipContinueToSummary={onFirstEntryTipContinueToSummary}
+                            />
+                          </div>
+                        )}
+                  </motion.div>
+                )
+              : (
+                  <motion.div
+                    key="insights"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={tabTransition}
+                  >
+                    <Suspense fallback={null}>
+                      <Insights
+                        entries={entries}
+                        entriesLoading={entriesLoading}
+                        chartData={chartData}
+                        averages={averages}
+                        windowAverages={windowAverages}
+                        statCounts={statCounts}
+                        rhythmScore={rhythmScore}
+                        streak={streak}
+                        sleepConsistencyLabel={sleepConsistencyLabel}
+                        sleepConsistencyBadges={sleepConsistencyBadges}
+                        correlationLabel={correlationLabel}
+                        correlationDirection={correlationDirection}
+                        moodBySleepThreshold={moodBySleepThreshold}
+                        sleepThreshold={sleepThreshold}
+                        moodColors={moodColors}
+                        trendSeries={trendSeries}
+                        rollingSeries={rollingSeries}
+                        rollingSummaries={rollingSummaries}
+                        weekdayAverages={weekdayAverages}
+                        personalSleepThreshold={personalSleepThreshold}
+                        moodByPersonalThreshold={moodByPersonalThreshold}
+                        tagDrivers={tagDrivers}
+                        tagSleepDrivers={tagSleepDrivers}
+                        tagColors={tagColors}
+                        isPro={isPro}
+                        onOpenPaywall={onOpenPaywall}
+                        onOpenFeedback={onOpenFeedback}
+                        goToLog={() => onNavigateToPage(AppPage.Log)}
+                        goToLogForToday={onGoToLogForToday}
+                        onGoToTimeline={onGoToTimeline}
+                        activeTab={activeInsightsTab}
+                        onOpenEditEvents={() => onNavigateToPage(AppPage.EditDailyEvents)}
+                        today={today}
+                      />
+                    </Suspense>
+                  </motion.div>
+                )}
       </AnimatePresence>
     </motion.div>
   )

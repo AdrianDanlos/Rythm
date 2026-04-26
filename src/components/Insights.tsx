@@ -27,7 +27,6 @@ import { buildMockScatterPlottedData } from '../lib/insightsMock'
 import { getMotivationMessage } from '../lib/utils/motivationMessage'
 import { visibleBadgesForInsightsEntryCount } from '../lib/utils/tieredBadges'
 import { motionTransition } from '../lib/motion'
-import { MAX_TAG_LENGTH } from '../lib/utils/stringUtils'
 
 type InsightsTab = 'summary' | 'charts' | 'events' | 'timeline'
 const SCATTER_RANGE_DAYS: Record<Exclude<ScatterRange, 'all'>, number> = {
@@ -124,11 +123,10 @@ type InsightsProps = {
   onOpenPaywall: () => void
   onOpenFeedback: () => void
   activeTab: InsightsTab
+  onOpenEditEvents: () => void
   goToLog: () => void
   goToLogForToday: (options?: { openAtMood?: boolean }) => void
   onGoToTimeline: () => void
-  onRenameTag: (fromTag: string, toTag: string) => void
-  onTagColorChange: (tag: string, color: string) => void
   today: string
 }
 
@@ -160,11 +158,10 @@ export const Insights = ({
   isPro,
   onOpenPaywall,
   activeTab,
+  onOpenEditEvents,
   goToLog,
   goToLogForToday,
   onGoToTimeline,
-  onRenameTag,
-  onTagColorChange,
   today,
 }: InsightsProps) => {
   const { t, i18n } = useTranslation()
@@ -444,18 +441,11 @@ export const Insights = ({
       weekdayLabel: parsed.toLocaleDateString(locale, { weekday: 'long' }),
     }
   }
-  const [editingTag, setEditingTag] = useState<string | null>(null)
-  const [editingValue, setEditingValue] = useState('')
-  const [showAllTags, setShowAllTags] = useState(false)
-  const visibleTags = showAllTags ? topTags : topTags.slice(0, 4)
-  const [colorPickerTag, setColorPickerTag] = useState<string | null>(null)
-
   useEffect(() => {
     if (typeof window === 'undefined') return
     const closeTransientPanels = () => {
       setIsFilterSheetOpen(false)
       setIsMonthPickerOpen(false)
-      setColorPickerTag(null)
     }
     window.addEventListener('app:close-transient-panels', closeTransientPanels)
     return () => {
@@ -504,30 +494,6 @@ export const Insights = ({
       document.removeEventListener('touchstart', handlePointerOutside)
     }
   }, [isMonthPickerOpen])
-
-  const startEditingTag = (tag: string) => {
-    setEditingTag(tag)
-    setEditingValue(tag.slice(0, MAX_TAG_LENGTH))
-  }
-
-  const commitEditingTag = () => {
-    if (!editingTag) return
-    const trimmed = editingValue.trim()
-    const limited = trimmed.slice(0, MAX_TAG_LENGTH).toLowerCase()
-    if (!limited || limited === editingTag.toLowerCase()) {
-      setEditingTag(null)
-      setEditingValue('')
-      return
-    }
-    onRenameTag(editingTag, limited)
-    setEditingTag(null)
-    setEditingValue('')
-  }
-
-  const cancelEditingTag = () => {
-    setEditingTag(null)
-    setEditingValue('')
-  }
 
   const isMobile = useIsMobile()
   const reduceMotion = useReducedMotion()
@@ -602,28 +568,6 @@ export const Insights = ({
             <Events
               reduceMotion={reduceMotion}
               panelTransition={panelTransition}
-              topTags={topTags}
-              visibleTags={visibleTags}
-              editingTag={editingTag}
-              editingValue={editingValue}
-              onEditingValueChange={setEditingValue}
-              onCommitEditingTag={commitEditingTag}
-              onCancelEditingTag={cancelEditingTag}
-              onStartEditingTag={startEditingTag}
-              tagColors={tagColors}
-              onSetColorPickerTag={setColorPickerTag}
-              colorPickerTag={colorPickerTag}
-              onTagColorChange={onTagColorChange}
-              showAllTags={showAllTags}
-              onToggleShowAllTags={() => {
-                setShowAllTags((prev) => {
-                  const next = !prev
-                  if (prev && typeof window !== 'undefined') {
-                    window.scrollTo({ top: 0, behavior: 'smooth' })
-                  }
-                  return next
-                })
-              }}
               goToLog={goToLog}
               onOpenTagInTimeline={(tag) => {
                 const normalizedTag = tag.trim().toLowerCase()
@@ -640,6 +584,7 @@ export const Insights = ({
                 setIsMonthPickerOpen(false)
                 onGoToTimeline()
               }}
+              onOpenEditEvents={onOpenEditEvents}
               hasEnoughEntries={hasEnoughEntries}
               isPro={isPro}
               tagDrivers={tagDrivers}

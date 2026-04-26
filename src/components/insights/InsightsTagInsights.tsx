@@ -214,214 +214,227 @@ export const InsightsTagInsights = ({
   }
 
   return (
-    <section className="card">
-      <div className="card-header">
-        <div>
-          <h2>{t('insights.dailyEventsInsights')}</h2>
-          <p className="muted">{t('insights.eventsInfluence')}</p>
-        </div>
+    <div className="tag-insights-unnested">
+      <div className="tag-insights-page-intro">
+        <h2 id="tag-insights-daily-events-heading">{t('insights.dailyEventsInsights')}</h2>
+        <p className="muted">{t('insights.eventsInfluence')}</p>
       </div>
       {(hasDrivers || hasSleepDrivers)
         ? (
             <>
-              <div className="tag-insights-block">
-                <div className="tag-insights-block-header">
-                  <h3 className="tag-insights-block-title">{t('insights.eventsPredictMood')}</h3>
-                  <Tooltip label={t('insights.compareMoodWithWithout')}>
-                    <span className="tooltip-trigger">
-                      <span className="tooltip-icon" aria-hidden="true">
-                        <Info size={14} />
+              <section
+                className="card"
+                aria-labelledby="tag-insights-mood-heading"
+              >
+                <div className="tag-insights-block tag-insights-block--in-card">
+                  <div className="tag-insights-block-header">
+                    <h3 className="tag-insights-block-title" id="tag-insights-mood-heading">{t('insights.eventsPredictMood')}</h3>
+                    <Tooltip label={t('insights.compareMoodWithWithout')}>
+                      <span className="tooltip-trigger">
+                        <span className="tooltip-icon" aria-hidden="true">
+                          <Info size={14} />
+                        </span>
                       </span>
-                    </span>
-                  </Tooltip>
-                </div>
-                {(positiveDrivers.length > 0 || negativeDrivers.length > 0 || lockedPositiveMoodCount > 0 || lockedNegativeMoodCount > 0)
-                  ? (
-                      <>
-                        {(positiveDrivers.length > 0 || lockedPositiveMoodCount > 0) && (
-                          <div className="tag-driver-section">
-                            <p className="label">{t('insights.positive')}</p>
-                            <div className="tag-bar-list">
-                              {positiveDrivers.map(tag => (
-                                <button
-                                  type="button"
-                                  className="tag-bar-item tag-bar-item--interactive positive"
-                                  key={tag.tag}
-                                  onClick={() => onOpenTagInTimeline(tag.tag)}
-                                  aria-label={t('insights.openTagTimelineAria', { tag: tag.tag })}
-                                >
-                                  <ChevronRight className="tag-bar-open-icon" size={22} aria-hidden />
-                                  <div className="tag-bar-header">
-                                    <p className="tag-title">
-                                      {tag.tag}
-                                    </p>
-                                    <span className="tag-bar-header-meta">
-                                      <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
-                                    </span>
-                                  </div>
-                                  <div className="tag-bar-delta-and-track">
-                                    <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
-                                    <div className="tag-bar-track" aria-hidden="true">
-                                      <span
-                                        className="tag-bar-fill"
-                                        style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
-                                      />
-                                    </div>
-                                  </div>
-                                  <p className="helper">
-                                    {tag.moodWith != null && (
-                                      <>
-                                        {tag.moodWith.toFixed(1)}/5
-                                        {' — '}
-                                      </>
-                                    )}
-                                    {t('insights.entriesSuffix', { count: tag.count })}
-                                  </p>
-                                </button>
-                              ))}
-                              {lockedPositiveMoodCount > 0 && (
-                                <button
-                                  type="button"
-                                  className="tag-bar-item tag-bar-item--locked positive"
-                                  onClick={onOpenPaywall}
-                                  aria-label={`${t('insights.upgradeToPro')} (+${lockedPositiveMoodCount})`}
-                                >
-                                  <div className="tag-bar-header">
-                                    <p className="tag-title">{t('insights.upgradeToPro')}</p>
-                                    <p className="tag-delta">+{lockedPositiveMoodCount}</p>
-                                  </div>
-                                  <p className="helper">{t('insights.showAllTags')}</p>
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                        {(negativeDrivers.length > 0 || lockedNegativeMoodCount > 0) && (
-                          <div className="tag-driver-section">
-                            <p className="label">{t('insights.negative')}</p>
-                            <div className="tag-bar-list">
-                              {negativeDrivers.map(tag => (
-                                <button
-                                  type="button"
-                                  className="tag-bar-item tag-bar-item--interactive negative"
-                                  key={tag.tag}
-                                  onClick={() => onOpenTagInTimeline(tag.tag)}
-                                  aria-label={t('insights.openTagTimelineAria', { tag: tag.tag })}
-                                >
-                                  <ChevronRight className="tag-bar-open-icon" size={22} aria-hidden />
-                                  <div className="tag-bar-header">
-                                    <p className="tag-title">
-                                      {tag.tag}
-                                    </p>
-                                    <span className="tag-bar-header-meta">
-                                      <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
-                                    </span>
-                                  </div>
-                                  <div className="tag-bar-delta-and-track">
-                                    <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
-                                    <div className="tag-bar-track" aria-hidden="true">
-                                      <span
-                                        className="tag-bar-fill"
-                                        style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
-                                      />
-                                    </div>
-                                  </div>
-                                  <p className="helper">
-                                    {tag.moodWith != null && (
-                                      <>
-                                        {tag.moodWith.toFixed(1)}/5
-                                        {' — '}
-                                      </>
-                                    )}
-                                    {t('insights.entriesSuffix', { count: tag.count })}
-                                  </p>
-                                </button>
-                              ))}
-                              {lockedNegativeMoodCount > 0 && (
-                                <button
-                                  type="button"
-                                  className="tag-bar-item tag-bar-item--locked negative"
-                                  onClick={onOpenPaywall}
-                                  aria-label={`${t('insights.upgradeToPro')} (+${lockedNegativeMoodCount})`}
-                                >
-                                  <div className="tag-bar-header">
-                                    <p className="tag-title">{t('insights.upgradeToPro')}</p>
-                                    <p className="tag-delta">+{lockedNegativeMoodCount}</p>
-                                  </div>
-                                  <p className="helper">{t('insights.showAllTags')}</p>
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    )
-                  : (
-                      <p className="muted">{t('insights.addEventsToSeeMoodImpact')}</p>
-                    )}
-                {isPro && hasMoreMoodToShow && (
-                  <div className="tag-insights-show-more">
-                    <button
-                      type="button"
-                      className="link-button link-button--text"
-                      onClick={() => setShowAllTags(prev => !prev)}
-                    >
-                      {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
-                    </button>
+                    </Tooltip>
                   </div>
-                )}
-              </div>
-              <div className="tag-insights-block">
-                <div className="tag-insights-block-header">
-                  <h3 className="tag-insights-block-title">{t('insights.eventsPredictSleep')}</h3>
-                  <Tooltip label={t('insights.compareSleepWithWithout')}>
-                    <span className="tooltip-trigger">
-                      <span className="tooltip-icon" aria-hidden="true">
-                        <Info size={14} />
+                  {(positiveDrivers.length > 0 || negativeDrivers.length > 0 || lockedPositiveMoodCount > 0 || lockedNegativeMoodCount > 0)
+                    ? (
+                        <>
+                          {(positiveDrivers.length > 0 || lockedPositiveMoodCount > 0) && (
+                            <div className="tag-driver-section">
+                              <p className="label">{t('insights.positive')}</p>
+                              <div className="tag-bar-list">
+                                {positiveDrivers.map(tag => (
+                                  <button
+                                    type="button"
+                                    className="tag-bar-item tag-bar-item--interactive positive"
+                                    key={tag.tag}
+                                    onClick={() => onOpenTagInTimeline(tag.tag)}
+                                    aria-label={t('insights.openTagTimelineAria', { tag: tag.tag })}
+                                  >
+                                    <ChevronRight className="tag-bar-open-icon" size={22} aria-hidden />
+                                    <div className="tag-bar-header">
+                                      <p className="tag-title">
+                                        {tag.tag}
+                                      </p>
+                                      <span className="tag-bar-header-meta">
+                                        <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
+                                      </span>
+                                    </div>
+                                    <div className="tag-bar-delta-and-track">
+                                      <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
+                                      <div className="tag-bar-track" aria-hidden="true">
+                                        <span
+                                          className="tag-bar-fill"
+                                          style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
+                                        />
+                                      </div>
+                                    </div>
+                                    <p className="helper">
+                                      {tag.moodWith != null && (
+                                        <>
+                                          {tag.moodWith.toFixed(1)}/5
+                                          {' — '}
+                                        </>
+                                      )}
+                                      {t('insights.entriesSuffix', { count: tag.count })}
+                                    </p>
+                                  </button>
+                                ))}
+                                {lockedPositiveMoodCount > 0 && (
+                                  <button
+                                    type="button"
+                                    className="tag-bar-item tag-bar-item--locked positive"
+                                    onClick={onOpenPaywall}
+                                    aria-label={`${t('insights.upgradeToPro')} (+${lockedPositiveMoodCount})`}
+                                  >
+                                    <div className="tag-bar-header">
+                                      <p className="tag-title">{t('insights.upgradeToPro')}</p>
+                                      <p className="tag-delta">+{lockedPositiveMoodCount}</p>
+                                    </div>
+                                    <p className="helper">{t('insights.showAllTags')}</p>
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          {(negativeDrivers.length > 0 || lockedNegativeMoodCount > 0) && (
+                            <div className="tag-driver-section">
+                              <p className="label">{t('insights.negative')}</p>
+                              <div className="tag-bar-list">
+                                {negativeDrivers.map(tag => (
+                                  <button
+                                    type="button"
+                                    className="tag-bar-item tag-bar-item--interactive negative"
+                                    key={tag.tag}
+                                    onClick={() => onOpenTagInTimeline(tag.tag)}
+                                    aria-label={t('insights.openTagTimelineAria', { tag: tag.tag })}
+                                  >
+                                    <ChevronRight className="tag-bar-open-icon" size={22} aria-hidden />
+                                    <div className="tag-bar-header">
+                                      <p className="tag-title">
+                                        {tag.tag}
+                                      </p>
+                                      <span className="tag-bar-header-meta">
+                                        <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
+                                      </span>
+                                    </div>
+                                    <div className="tag-bar-delta-and-track">
+                                      <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
+                                      <div className="tag-bar-track" aria-hidden="true">
+                                        <span
+                                          className="tag-bar-fill"
+                                          style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
+                                        />
+                                      </div>
+                                    </div>
+                                    <p className="helper">
+                                      {tag.moodWith != null && (
+                                        <>
+                                          {tag.moodWith.toFixed(1)}/5
+                                          {' — '}
+                                        </>
+                                      )}
+                                      {t('insights.entriesSuffix', { count: tag.count })}
+                                    </p>
+                                  </button>
+                                ))}
+                                {lockedNegativeMoodCount > 0 && (
+                                  <button
+                                    type="button"
+                                    className="tag-bar-item tag-bar-item--locked negative"
+                                    onClick={onOpenPaywall}
+                                    aria-label={`${t('insights.upgradeToPro')} (+${lockedNegativeMoodCount})`}
+                                  >
+                                    <div className="tag-bar-header">
+                                      <p className="tag-title">{t('insights.upgradeToPro')}</p>
+                                      <p className="tag-delta">+{lockedNegativeMoodCount}</p>
+                                    </div>
+                                    <p className="helper">{t('insights.showAllTags')}</p>
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      )
+                    : (
+                        <p className="muted">{t('insights.addEventsToSeeMoodImpact')}</p>
+                      )}
+                  {isPro && hasMoreMoodToShow && (
+                    <div className="tag-insights-show-more">
+                      <button
+                        type="button"
+                        className="link-button link-button--text"
+                        onClick={() => setShowAllTags(prev => !prev)}
+                      >
+                        {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </section>
+              <section
+                className="card"
+                aria-labelledby="tag-insights-sleep-heading"
+              >
+                <div className="tag-insights-block tag-insights-block--in-card">
+                  <div className="tag-insights-block-header">
+                    <h3 className="tag-insights-block-title" id="tag-insights-sleep-heading">{t('insights.eventsPredictSleep')}</h3>
+                    <Tooltip label={t('insights.compareSleepWithWithout')}>
+                      <span className="tooltip-trigger">
+                        <span className="tooltip-icon" aria-hidden="true">
+                          <Info size={14} />
+                        </span>
                       </span>
-                    </span>
-                  </Tooltip>
-                </div>
-                {(positiveSleepDrivers.length > 0 || negativeSleepDrivers.length > 0 || lockedPositiveSleepCount > 0 || lockedNegativeSleepCount > 0)
-                  ? (
-                      <>
-                        {renderSleepDriverSection(
-                          t('insights.moreSleepAfter'),
-                          'positive',
-                          positiveSleepDrivers,
-                          lockedPositiveSleepCount,
-                        )}
-                        {renderSleepDriverSection(
-                          t('insights.lessSleepAfter'),
-                          'negative',
-                          negativeSleepDrivers,
-                          lockedNegativeSleepCount,
-                        )}
-                      </>
-                    )
-                  : (
-                      <p className="muted">{t('insights.addEventsToSeeSleepImpact')}</p>
-                    )}
-                {isPro && hasMoreSleepToShow && (
-                  <div className="tag-insights-show-more">
-                    <button
-                      type="button"
-                      className="link-button link-button--text"
-                      onClick={() => setShowAllTags(prev => !prev)}
-                    >
-                      {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
-                    </button>
+                    </Tooltip>
                   </div>
-                )}
-              </div>
+                  {(positiveSleepDrivers.length > 0 || negativeSleepDrivers.length > 0 || lockedPositiveSleepCount > 0 || lockedNegativeSleepCount > 0)
+                    ? (
+                        <>
+                          {renderSleepDriverSection(
+                            t('insights.moreSleepAfter'),
+                            'positive',
+                            positiveSleepDrivers,
+                            lockedPositiveSleepCount,
+                          )}
+                          {renderSleepDriverSection(
+                            t('insights.lessSleepAfter'),
+                            'negative',
+                            negativeSleepDrivers,
+                            lockedNegativeSleepCount,
+                          )}
+                        </>
+                      )
+                    : (
+                        <p className="muted">{t('insights.addEventsToSeeSleepImpact')}</p>
+                      )}
+                  {isPro && hasMoreSleepToShow && (
+                    <div className="tag-insights-show-more">
+                      <button
+                        type="button"
+                        className="link-button link-button--text"
+                        onClick={() => setShowAllTags(prev => !prev)}
+                      >
+                        {showAllTags ? t('insights.showTopTags') : t('insights.showAllTags')}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </section>
             </>
           )
         : (
-            <p className="muted">
-              <button type="button" className="link-button link-button--text" onClick={goToLog}>{t('insights.addDailyEvents')}</button>
-              {' '}{t('insights.addEventsToUnlock', { count: DEFAULT_TAG_DRIVER_MIN_COUNT })}
-            </p>
+            <section
+              className="card"
+              aria-labelledby="tag-insights-daily-events-heading"
+            >
+              <p className="muted">
+                <button type="button" className="link-button link-button--text" onClick={goToLog}>{t('insights.addDailyEvents')}</button>
+                {' '}{t('insights.addEventsToUnlock', { count: DEFAULT_TAG_DRIVER_MIN_COUNT })}
+              </p>
+            </section>
           )}
-    </section>
+    </div>
   )
 }

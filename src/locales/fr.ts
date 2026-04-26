@@ -400,6 +400,7 @@ const fr = {
     estimateThreshold: 'pour estimer votre seuil personnel.',
     dailyEventsInsights: 'Analyse des événements du jour',
     yourDailyEvents: 'Vos événements du jour',
+    editEvents: 'Modifier les événements',
     dailyEventCount: '{{tag}} ({{count}})',
     openTagTimelineAria: 'Ouvrir la chronologie filtrée par {{tag}}',
     changeTagColor: 'Changer la couleur de {{tag}}',

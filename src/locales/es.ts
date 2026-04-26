@@ -401,6 +401,7 @@ const es = {
     estimateThreshold: 'para estimar tu umbral personal.',
     dailyEventsInsights: 'Análisis de eventos diarios',
     yourDailyEvents: 'Tus eventos diarios',
+    editEvents: 'Editar eventos',
     dailyEventCount: '{{tag}} ({{count}})',
     openTagTimelineAria: 'Abrir la cronología filtrada por {{tag}}',
     changeTagColor: 'Cambiar color para {{tag}}',

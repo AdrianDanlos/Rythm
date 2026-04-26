@@ -400,6 +400,7 @@ const de = {
     estimateThreshold: 'um deinen persönlichen Schwellenwert zu berechnen.',
     dailyEventsInsights: 'Auswertung der Tagesereignisse',
     yourDailyEvents: 'Deine Tagesereignisse',
+    editEvents: 'Ereignisse bearbeiten',
     dailyEventCount: '{{tag}} ({{count}})',
     openTagTimelineAria: 'Timeline gefiltert nach {{tag}} öffnen',
     changeTagColor: 'Farbe für {{tag}} ändern',

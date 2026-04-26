@@ -400,6 +400,7 @@ const pt = {
     estimateThreshold: 'para estimar seu limite pessoal.',
     dailyEventsInsights: 'Análise dos eventos do dia',
     yourDailyEvents: 'Seus eventos do dia',
+    editEvents: 'Editar eventos',
     dailyEventCount: '{{tag}} ({{count}})',
     openTagTimelineAria: 'Abrir linha do tempo filtrada por {{tag}}',
     changeTagColor: 'Mudar cor de {{tag}}',
