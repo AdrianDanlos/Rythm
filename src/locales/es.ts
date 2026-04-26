@@ -491,7 +491,7 @@ const es = {
       noClearDirection: 'Sin tendencia clara aún',
     },
     correlationStrength: 'Fuerza de correlación',
-    moodBySleepTitle: 'Ánimo\nTras {{threshold}} de sueño',
+    moodBySleepTitle: 'Ánimo\nTras {{threshold}}+ de sueño',
     moodByPersonalSleepThresholdAria: 'Ánimo por umbral personal de sueño',
     moodBySleepTooltip: '{{threshold}} es una referencia general. Pasa a Pro para obtener tu objetivo ideal personal.',
     moodWhenSleepMore: '{{threshold}}+ de sueño → ánimo {{sign}}{{percent}}%',

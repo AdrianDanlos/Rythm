@@ -488,7 +488,7 @@ const en = {
       noClearDirection: 'No clear trend yet',
     },
     correlationStrength: 'Correlation strength',
-    moodBySleepTitle: 'Mood · {{threshold}} sleep',
+    moodBySleepTitle: 'Mood · {{threshold}}+ sleep',
     moodByPersonalSleepThresholdAria: 'Mood by personal sleep threshold',
     moodBySleepTooltip: '{{threshold}} is a general benchmark. Upgrade to Pro to get your personal ideal sleep target.',
     moodWhenSleepMore: '{{threshold}}+ sleep → mood {{sign}}{{percent}}%',

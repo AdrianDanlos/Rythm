@@ -490,7 +490,7 @@ const pt = {
       noClearDirection: 'Nenhuma tendência clara ainda',
     },
     correlationStrength: 'Força da correlação',
-    moodBySleepTitle: 'Humor\nApós {{threshold}} de sono',
+    moodBySleepTitle: 'Humor\nApós {{threshold}}+ de sono',
     moodByPersonalSleepThresholdAria: 'Humor por limite pessoal de sono',
     moodBySleepTooltip: '{{threshold}} é uma referência geral. Vá para Pro para ter sua meta pessoal ideal.',
     moodWhenSleepMore: '{{threshold}}+ de sono → humor {{sign}}{{percent}}%',

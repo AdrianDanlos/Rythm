@@ -490,7 +490,7 @@ const fr = {
       noClearDirection: 'Aucune tendance claire pour l\'instant',
     },
     correlationStrength: 'Force de la corrélation',
-    moodBySleepTitle: 'Humeur\nAprès {{threshold}} de sommeil',
+    moodBySleepTitle: 'Humeur\nAprès {{threshold}}+ de sommeil',
     moodByPersonalSleepThresholdAria: 'Humeur selon le seuil personnel de sommeil',
     moodBySleepTooltip: '{{threshold}} est une référence générale. Passez à Pro pour obtenir votre objectif personnel idéal.',
     moodWhenSleepMore: '{{threshold}}+ de sommeil → humeur {{sign}}{{percent}}%',

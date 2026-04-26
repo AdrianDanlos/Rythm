@@ -20,7 +20,7 @@ export const ReviewPromptModal = ({
   return (
     <div className="modal-backdrop" role="presentation" onClick={onLater}>
       <div
-        className="modal-card"
+        className="modal-card review-prompt-modal"
         role="dialog"
         aria-modal="true"
         aria-labelledby="review-prompt-title"
@@ -40,14 +40,14 @@ export const ReviewPromptModal = ({
           </button>
         </div>
         <p className="muted">{t('reviewPrompt.body')}</p>
-        <div className="modal-actions">
-          <button type="button" className="primary-button" onClick={onConfirmYes}>
+        <div className="modal-actions review-prompt-modal__actions">
+          <button type="button" className="primary-button review-prompt-modal__yes" onClick={onConfirmYes}>
             {t('reviewPrompt.yes')}
           </button>
-          <button type="button" className="ghost" onClick={onLater}>
+          <button type="button" className="ghost review-prompt-modal__later" onClick={onLater}>
             {t('reviewPrompt.later')}
           </button>
-          <button type="button" className="ghost" onClick={onNotReally}>
+          <button type="button" className="ghost review-prompt-modal__not-really" onClick={onNotReally}>
             {t('reviewPrompt.notReally')}
           </button>
         </div>

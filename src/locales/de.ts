@@ -490,7 +490,7 @@ const de = {
       noClearDirection: 'Noch keine klare Tendenz erkennbar',
     },
     correlationStrength: 'Korrelationsstärke',
-    moodBySleepTitle: 'Stimmung\nnach {{threshold}} Schlaf',
+    moodBySleepTitle: 'Stimmung\nnach {{threshold}}+ Schlaf',
     moodByPersonalSleepThresholdAria: 'Stimmung nach persönlichem Schlafschwellenwert',
     moodBySleepTooltip: '{{threshold}} ist ein allgemeiner Richtwert. Wechsle zu Pro für dein persönliches ideales Ziel.',
     moodWhenSleepMore: '{{threshold}}+ Schlaf → Stimmung {{sign}}{{percent}}%',
