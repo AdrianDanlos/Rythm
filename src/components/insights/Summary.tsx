@@ -46,6 +46,7 @@ export type SummaryProps = {
   moodByPersonalThreshold: { high: number | null, low: number | null }
   onOpenPaywall: () => void
   t: (key: string, options?: Record<string, unknown>) => string
+  today: string
 }
 
 export const Summary = ({
@@ -74,7 +75,40 @@ export const Summary = ({
   moodByPersonalThreshold,
   onOpenPaywall,
   t,
+  today,
 }: SummaryProps) => {
+  const entryForToday = entries.find(e => e.entry_date === today)
+  const fullyLoggedToday
+    = entryForToday != null
+      && entryForToday.sleep_hours != null
+      && entryForToday.mood != null
+
+  const logTodayStatus = (
+    <>
+      <div
+        className={classNames('summary-log-today__icon', { 'summary-log-today__icon--done': fullyLoggedToday })}
+        aria-hidden
+      >
+        {fullyLoggedToday
+          ? (
+              <svg className="summary-log-today__check" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path
+                  d="M6 12.5L10.2 16.5L18 7.5"
+                  stroke="currentColor"
+                  strokeWidth="2.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )
+          : null}
+      </div>
+      <p className="summary-log-today__text">
+        {fullyLoggedToday ? t('insights.loggedToday') : t('insights.notLoggedToday')}
+      </p>
+    </>
+  )
+
   return (
     <motion.div
       className="insights-panel"
@@ -82,6 +116,37 @@ export const Summary = ({
       animate={{ opacity: 1 }}
       transition={panelTransition}
     >
+      {!entriesLoading
+        && (fullyLoggedToday
+          ? (
+              <div
+                className="card summary-log-today"
+                role="status"
+                aria-label={t('insights.loggedToday')}
+              >
+                {logTodayStatus}
+              </div>
+            )
+          : (
+              <button
+                type="button"
+                className="card summary-log-today summary-log-today--actionable"
+                onClick={goToLog}
+              >
+                {logTodayStatus}
+                <span className="summary-log-today__chevron" aria-hidden>
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M9 5l7 7-7 7"
+                      stroke="currentColor"
+                      strokeWidth="2.25"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </button>
+            ))}
       {!entriesLoading && entries.length === 1 && (
         <InsightsFirstTwoCard entries={entries} goToLog={goToLog} />
       )}

@@ -111,7 +111,7 @@ describe('useLogForm', () => {
     expect(latest?.sleepHours).toBe(formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS))
   })
 
-  it('uses default 0h when existing entry has null sleep_hours', async () => {
+  it('uses default sleep when existing entry has null sleep_hours', async () => {
     await renderHook([
       makeEntry({
         sleep_hours: null,

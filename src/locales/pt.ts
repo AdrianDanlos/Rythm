@@ -431,6 +431,8 @@ const pt = {
     moreSleepAfter: 'Mais sono após',
     lessSleepAfter: 'Menos sono após',
     firstSummary: 'Resumo',
+    loggedToday: 'Tudo anotado hoje',
+    notLoggedToday: 'Você ainda não registrou seu humor de hoje',
     oneMoreDayToUnlock: 'Seu primeiro dia',
     logOneMoreDay: 'Registre mais 1 dia',
     logMoreDaysToUnlockButton: 'Registre mais {{count}} dias',

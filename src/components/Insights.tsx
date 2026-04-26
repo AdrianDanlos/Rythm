@@ -128,6 +128,7 @@ type InsightsProps = {
   onGoToTimeline: () => void
   onRenameTag: (fromTag: string, toTag: string) => void
   onTagColorChange: (tag: string, color: string) => void
+  today: string
 }
 
 export const Insights = ({
@@ -162,6 +163,7 @@ export const Insights = ({
   onGoToTimeline,
   onRenameTag,
   onTagColorChange,
+  today,
 }: InsightsProps) => {
   const { t, i18n } = useTranslation()
   const isLoading = entriesLoading
@@ -559,6 +561,7 @@ export const Insights = ({
               moodByPersonalThreshold={moodByPersonalThreshold}
               onOpenPaywall={onOpenPaywall}
               t={t}
+              today={today}
             />
           )
         : null}

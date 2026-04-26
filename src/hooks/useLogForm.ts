@@ -89,7 +89,7 @@ export const useLogForm = ({
   /**
    * True after the user changes sleep, mood, note, or tags for the current day.
    * Resets when we load a day from `entries` / `entryDate`. Silent auto-save no-ops if false;
-   * explicit Save ignores this (default 0h in the UI still persists on submit).
+   * explicit Save ignores this (the default sleep value in the UI still persists on submit).
    */
   const userEditedLogRef = useRef(false)
 

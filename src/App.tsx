@@ -833,6 +833,7 @@ function App() {
               onEnsureTagColor={ensureTagColorForTag}
               onIntroVisibilityChange={setIsIntroVisible}
               lockNonLogTabs={lockNonLogTabs}
+              today={today}
             />
           )}
 

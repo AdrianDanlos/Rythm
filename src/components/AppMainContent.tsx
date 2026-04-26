@@ -160,6 +160,7 @@ type AppMainContentProps = {
   onIntroVisibilityChange?: (visible: boolean) => void
   /** While the log-tab quick start is shown (no entries yet), Insights tab is disabled. */
   lockNonLogTabs: boolean
+  today: string
 }
 
 export function AppMainContent({
@@ -254,6 +255,7 @@ export function AppMainContent({
   onEnsureTagColor,
   onIntroVisibilityChange,
   lockNonLogTabs,
+  today,
 }: AppMainContentProps) {
   const { t } = useTranslation()
   const reduceMotion = useReducedMotion()
@@ -584,6 +586,7 @@ export function AppMainContent({
                       activeTab={activeInsightsTab}
                       onRenameTag={onRenameTag}
                       onTagColorChange={onTagColorChange}
+                      today={today}
                     />
                   </Suspense>
                 </motion.div>

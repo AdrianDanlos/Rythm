@@ -429,6 +429,8 @@ const en = {
     moreSleepAfter: 'More sleep after',
     lessSleepAfter: 'Less sleep after',
     firstSummary: 'Summary',
+    loggedToday: 'Logged today',
+    notLoggedToday: "You haven't logged your mood for today yet",
     oneMoreDayToUnlock: 'One more day to unlock',
     logOneMoreDay: 'Log 1 more day',
     logMoreDaysToUnlockButton: 'Log {{count}} more days',

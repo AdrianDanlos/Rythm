@@ -431,6 +431,8 @@ const de = {
     moreSleepAfter: 'Mehr Schlaf nach',
     lessSleepAfter: 'Weniger Schlaf nach',
     firstSummary: 'Zusammenfassung',
+    loggedToday: 'Heute erfasst',
+    notLoggedToday: 'Du hast deine heutige Stimmung noch nicht eingetragen',
     oneMoreDayToUnlock: 'Dein erster Tag',
     logOneMoreDay: 'Trag 1 weiteren Tag ein',
     logMoreDaysToUnlockButton: '{{count}} weitere Tage eintragen',
