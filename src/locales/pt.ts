@@ -264,12 +264,6 @@ const pt = {
     },
   },
   insights: {
-    quickStart: 'Primeiros passos',
-    quickStartTitle: 'Sono, hábitos e humor: tudo está conectado',
-    step1: 'Registre quanto você dormiu na noite passada.',
-    step2: 'Adicione eventos do dia (ex.: café, exercício, estresse, etc.).',
-    step3: 'Avalie seu humor. Quanto mais dias você registrar, mais você vai descobrir.',
-    logToday: 'Registrar hoje',
     badges: 'Conquistas',
     levelUp: 'Suba de nível completando desafios',
     enjoyRythm: 'Está curtindo o Rythm?',

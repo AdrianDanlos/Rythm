@@ -6026,65 +6026,25 @@ button.toggle-group__btn--disabled:disabled {
   color: var(--muted);
 }
 
-.insights-intro {
+.insights-summary-intro {
   display: grid;
   gap: 16px;
 }
 
-.insights-intro__header {
+.insights-summary-intro__header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
 }
 
-.insights-intro__header .ghost {
+.insights-summary-intro__header .ghost {
   min-width: 110px;
   white-space: nowrap;
 }
 
-.insights-intro__header h2 {
+.insights-summary-intro__header h2 {
   margin: 6px 0 6px;
-}
-
-.insights-intro__steps {
-  display: grid;
-  gap: 12px;
-}
-
-.intro-step {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 12px;
-  align-items: start;
-}
-
-.intro-step__number {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--button-hover-surface);
-  color: var(--text);
-  display: grid;
-  place-items: center;
-  font-weight: 600;
-}
-
-.insights-intro__actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-}
-
-.insights-intro__actions .cta-button,
-.insights-intro__actions .ghost {
-  flex: 1 1 160px;
-  min-width: 140px;
-}
-
-.insights-intro__actions .helper {
-  flex-basis: 100%;
 }
 
 .insights-summary-intro__copy {
@@ -7034,12 +6994,12 @@ button.toggle-group__btn--disabled:disabled {
     align-items: stretch;
   }
 
-  .insights-intro__header {
+  .insights-summary-intro__header {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .insights-intro__header .ghost {
+  .insights-summary-intro__header .ghost {
     min-width: auto;
     width: 100%;
   }

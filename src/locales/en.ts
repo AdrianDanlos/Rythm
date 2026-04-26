@@ -262,12 +262,6 @@ const en = {
     },
   },
   insights: {
-    quickStart: 'Quick start',
-    quickStartTitle: 'Sleep, habits, and mood: it\'s all connected',
-    step1: 'Log how much you slept last night.',
-    step2: 'Log daily events (e.g. coffee, workout, late night, stress).',
-    step3: 'Rate how you are feeling. The more days you log, the more insights you will see.',
-    logToday: 'Log today',
     badges: 'Badges',
     levelUp: 'Level up as you log',
     enjoyRythm: 'Enjoying Rythm?',

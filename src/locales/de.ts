@@ -264,12 +264,6 @@ const de = {
     },
   },
   insights: {
-    quickStart: 'Erste Schritte',
-    quickStartTitle: 'Schlaf, Gewohnheiten und Stimmung: alles hängt zusammen',
-    step1: 'Trag ein, wie viel du letzte Nacht geschlafen hast.',
-    step2: 'Füge Tagesereignisse hinzu (z. B. Kaffee, Sport, Stress usw.).',
-    step3: 'Bewerte deine Stimmung. Je mehr Tage du einträgst, desto mehr erfährst du.',
-    logToday: 'Heute eintragen',
     badges: 'Abzeichen',
     levelUp: 'Steig durch Herausforderungen auf',
     enjoyRythm: 'Gefällt dir Rythm?',

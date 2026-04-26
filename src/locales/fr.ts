@@ -264,12 +264,6 @@ const fr = {
     },
   },
   insights: {
-    quickStart: 'Pour commencer',
-    quickStartTitle: 'Sommeil, habitudes et humeur : tout est lié',
-    step1: 'Enregistrez combien vous avez dormi la nuit dernière.',
-    step2: 'Ajoutez des événements du jour (ex. café, sport, stress, etc.).',
-    step3: 'Évaluez votre humeur. Plus vous enregistrez de jours, plus vous obtiendrez d\'informations.',
-    logToday: 'Enregistrer aujourd\'hui',
     badges: 'Badges',
     levelUp: 'Montez de niveau en relevant des défis',
     enjoyRythm: 'Vous aimez Rythm ?',

@@ -265,12 +265,6 @@ const es = {
     },
   },
   insights: {
-    quickStart: 'Primeros pasos',
-    quickStartTitle: 'Sueño, hábitos y estado de ánimo: todo está conectado',
-    step1: 'Registra cuánto dormiste anoche.',
-    step2: 'Añade eventos diarios (ej. café, ejercicio, estrés, etc.).',
-    step3: 'Califica cómo te has sentido. Cuantos más días registres, más información obtendrás.',
-    logToday: 'Registrar hoy',
     badges: 'Insignias',
     levelUp: 'Sube de nivel completando retos',
     enjoyRythm: '¿Disfrutando Rythm?',

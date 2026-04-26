@@ -31,7 +31,6 @@ import {
 } from './AuthForm'
 import { needsEmailVerification } from '../lib/authEmailVerification'
 import { IntroCarousel } from './IntroCarousel'
-import { InsightsQuickStart } from './InsightsQuickStart'
 import { LogForm } from './LogForm'
 import { AppPage, Tabs, type TabKey, type InsightsSection } from '../lib/appTabs'
 import type {
@@ -504,15 +503,7 @@ export function AppMainContent({
                         </div>
                       )
                     : (
-                        <>
-                          <InsightsQuickStart
-                            hasNoEntries={entries.length === 0}
-                            goToLog={() =>
-                              document
-                                .querySelector('.sleep-duration-picker__picker-row')
-                                ?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                          />
-                          <div className="app-log-form-vert">
+                        <div className="app-log-form-vert">
                             <LogForm
                               selectedDate={selectedDate}
                               todayDate={todayDate}
@@ -537,8 +528,7 @@ export function AppMainContent({
                               onTagsChange={onTagsChange}
                               onSave={onSave}
                             />
-                          </div>
-                        </>
+                        </div>
                       )}
                 </motion.div>
               )

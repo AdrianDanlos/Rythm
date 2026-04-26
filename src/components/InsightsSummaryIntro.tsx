@@ -15,11 +15,11 @@ export const InsightsSummaryIntro = ({ entryCount, entriesLoading, goToLog }: In
 
   return (
     <motion.section
-      className="card insights-intro insights-summary-intro"
+      className="card insights-summary-intro"
       {...(reduceMotion ? {} : cardEnter)}
       transition={reduceMotion ? { duration: 0 } : undefined}
     >
-      <div className="insights-intro__header">
+      <div className="insights-summary-intro__header">
         <div>
           <p className="eyebrow">{t('nav.summary')}</p>
           <h2>{t('insights.summaryTitle')}</h2>
