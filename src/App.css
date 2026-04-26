@@ -2070,6 +2070,16 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   overscroll-behavior: none;
 }
 
+.log-form-carousel__pagination {
+  position: fixed;
+  left: 50%;
+  bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 8;
+  pointer-events: none;
+  margin: 0;
+}
+
 .log-form-stack--step-fullbleed.log-form-stack--carousel-sleep
   .log-form-carousel {
   flex: 1 1 auto;
@@ -2258,6 +2268,10 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   --log-mood-border: rgba(15, 23, 42, 0.09);
 }
 
+.log-reflection-block--journal {
+  gap: 10px;
+}
+
 :root[data-theme="dark"] .log-reflection-block {
   --log-surface: rgba(10, 20, 40, 0.72);
   --log-surface-border: rgba(148, 163, 184, 0.22);
@@ -2276,6 +2290,10 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 .log-reflection-tags,
 .log-reflection-diary {
   text-align: left;
+}
+
+.log-reflection-diary {
+  min-height: 240px;
 }
 
 .log-reflection-header {
@@ -2304,10 +2322,42 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   box-shadow: none;
 }
 
+.log-reflection-icon.log-reflection-icon--tags {
+  color: #4c1d95;
+  background: linear-gradient(
+    155deg,
+    #ede9fe 0%,
+    #ddd6fe 38%,
+    #c4b5fd 72%,
+    #a78bfa 100%
+  );
+}
+
+.log-reflection-icon.log-reflection-icon--journal {
+  color: #0f4c81;
+  background: linear-gradient(
+    155deg,
+    #dbeafe 0%,
+    #bfdbfe 38%,
+    #93c5fd 72%,
+    #60a5fa 100%
+  );
+}
+
 :root[data-theme="dark"] .log-reflection-icon {
   color: #fef3c7;
   background: linear-gradient(155deg, #ca8a04 0%, #eab308 42%, #fbbf24 100%);
   box-shadow: none;
+}
+
+:root[data-theme="dark"] .log-reflection-icon.log-reflection-icon--tags {
+  color: #f3e8ff;
+  background: linear-gradient(155deg, #5b21b6 0%, #6d28d9 42%, #7c3aed 100%);
+}
+
+:root[data-theme="dark"] .log-reflection-icon.log-reflection-icon--journal {
+  color: #dbeafe;
+  background: linear-gradient(155deg, #1e3a8a 0%, #1d4ed8 42%, #2563eb 100%);
 }
 
 .log-reflection-title {
@@ -2325,9 +2375,16 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 
 .log-reflection-title-wrap {
   position: relative;
+  display: inline-block;
+}
+
+.log-reflection-title--with-tip {
+  display: block;
+}
+
+.log-reflection-title--with-tip .app-tooltip {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  vertical-align: baseline;
 }
 
 .log-reflection-subtitle {
@@ -2360,12 +2417,12 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 }
 
 .log-reflection-title-tip {
-  position: absolute;
-  left: calc(100% + 10px);
-  top: 50%;
-  transform: translateY(-50%);
+  position: static;
   margin: 0;
+  transform: none;
   opacity: 0.85;
+  flex-shrink: 0;
+  margin-left: 4px;
 }
 
 .tag-control-row--reflection {
@@ -2406,30 +2463,75 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   margin: 0 0 8px;
 }
 
-.log-diary-textarea {
+/* Safety: never show legacy textarea UI in the log carousel steps. */
+.log-form-carousel textarea,
+.log-reflection-diary textarea {
+  display: none !important;
+}
+
+.log-diary-surface {
+  --journal-line-height: 2rem;
+  --journal-rule-count: 28;
+  --journal-padding-y: 14px;
+  --journal-padding-x: 16px;
+  --journal-line-color: color-mix(in srgb, var(--text) 16%, transparent);
+  position: relative;
   width: 100%;
   box-sizing: border-box;
-  min-height: 88px;
-  background: var(--log-surface) !important;
-  border: 1px solid var(--log-surface-border) !important;
-  border-radius: 14px;
-  padding: 14px 16px;
-  font-size: 1rem;
-  line-height: 1.45;
-  color: var(--text);
-  font-family: inherit;
-  resize: none;
+  min-height: 240px;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0;
   overflow: hidden;
 }
 
-.log-diary-textarea::placeholder {
-  color: color-mix(in srgb, var(--muted) 82%, transparent);
+.log-diary-rules {
+  position: absolute;
+  inset: 0;
+  padding: var(--journal-padding-y) var(--journal-padding-x);
+  display: grid;
+  grid-template-rows: repeat(
+    var(--journal-rule-count),
+    var(--journal-line-height)
+  );
+  pointer-events: none;
 }
 
-.log-diary-textarea:focus {
+.log-diary-rule {
+  display: block;
+  height: var(--journal-line-height);
+  border-bottom: 1px solid var(--journal-line-color);
+}
+
+.log-diary-editor {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 240px;
+  padding: var(--journal-padding-y) var(--journal-padding-x);
+  font-size: 1.25rem;
+  line-height: var(--journal-line-height) !important;
+  color: var(--text);
+  font-family: "Caveat", "Dancing Script", "Pacifico", cursive;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: inherit;
   outline: none;
-  border-color: var(--input-focus-border);
-  box-shadow: var(--input-focus-shadow);
+  caret-color: var(--text);
+}
+
+.log-diary-editor[data-empty="true"]::before {
+  content: attr(data-placeholder);
+  color: color-mix(in srgb, var(--muted) 82%, transparent);
+  pointer-events: none;
+}
+
+.log-diary-surface:focus-within {
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .log-diary-footer {
@@ -3479,7 +3581,8 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   text-align: left;
 }
 
-.log-date-picker-date:has(.log-date-picker-date-primary:only-child) {
+.log-date-picker-date:has(.log-date-picker-date-primary:only-child),
+.log-date-picker-date:has(.log-date-picker-date-sub:only-child) {
   justify-content: center;
 }
 
@@ -4776,12 +4879,14 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 
 .timeline-card {
   border-radius: 12px;
+  min-width: 0;
 }
 
 .timeline-card-date-row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 8px;
 }
@@ -4811,6 +4916,7 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 .timeline-card-metrics {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 18px;
 }
 
@@ -4819,6 +4925,7 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   align-items: center;
   gap: 6px;
   font-weight: 600;
+  min-width: 0;
 }
 
 .timeline-card-metric svg {
@@ -4847,17 +4954,23 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 .timeline-card-tag {
   display: inline-flex;
   align-items: center;
+  max-width: 100%;
   padding: 3px 8px;
   border-radius: 999px;
   background: var(--surface-3);
   border: 1px solid var(--border-soft);
   font-size: 0.8rem;
-  line-height: 1;
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .timeline-card .timeline-card-note {
   margin-top: 10px;
   color: var(--muted);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .timeline-filter-fab {

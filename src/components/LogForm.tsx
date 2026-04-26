@@ -4,7 +4,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type ChangeEvent,
   type ComponentType,
   type CSSProperties,
   type FormEvent,
@@ -13,7 +12,7 @@ import classNames from 'classnames'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { DayPicker } from 'react-day-picker'
 import { useTranslation } from 'react-i18next'
-import { Angry, ChevronDown, Frown, Info, Laugh, Meh, Moon, Smile, Sun } from 'lucide-react'
+import { Angry, ChevronDown, Frown, Info, Laugh, Meh, Moon, NotebookPen, Smile, Sun, Tags } from 'lucide-react'
 import { PluginRegistry, TimepickerUI } from 'timepicker-ui'
 import { WheelPlugin } from 'timepicker-ui/plugins/wheel'
 import 'react-day-picker/dist/style.css'
@@ -38,6 +37,7 @@ const MOOD_ICONS: Record<1 | 2 | 3 | 4 | 5, ComponentType<{ 'className'?: string
   4: Smile,
   5: Laugh,
 }
+const JOURNAL_RULE_COUNT = 32
 
 export type LogFormProps = {
   selectedDate: Date
@@ -89,7 +89,7 @@ export const LogForm = ({
   onSave,
 }: LogFormProps) => {
   const { t } = useTranslation()
-  const noteTextareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const noteEditorRef = useRef<HTMLDivElement | null>(null)
   const tagInputRef = useRef<HTMLInputElement | null>(null)
   const sleepTimeInputRef = useRef<HTMLInputElement | null>(null)
   const sleepTimepickerRef = useRef<TimepickerUI | null>(null)
@@ -326,20 +326,52 @@ export const LogForm = ({
     addTag(option.label)
   }
 
-  const autoResizeNote = () => {
-    const textarea = noteTextareaRef.current
-    if (!textarea) return
-    const minH = textarea.classList.contains('log-diary-textarea') ? 88 : 44
-    textarea.style.height = '0px'
-    textarea.style.height = `${Math.max(minH, textarea.scrollHeight)}px`
-  }
+  const normalizeNoteText = useCallback((value: string) => {
+    return value.replace(/\r\n?/g, '\n').replace(/\u00A0/g, ' ')
+  }, [])
+
+  const hydrateJournalEditor = useCallback((editor: HTMLDivElement) => {
+    const currentValue = normalizeNoteText(editor.innerText)
+    if (currentValue !== note) {
+      editor.innerText = note
+    }
+    editor.dataset.empty = String(note.length === 0)
+  }, [normalizeNoteText, note])
+
+  const setNoteEditorRef = useCallback((node: HTMLDivElement | null) => {
+    noteEditorRef.current = node
+    if (!node) return
+    hydrateJournalEditor(node)
+  }, [hydrateJournalEditor])
 
   useEffect(() => {
-    autoResizeNote()
-  }, [note])
+    const editor = noteEditorRef.current
+    if (!editor) return
+    hydrateJournalEditor(editor)
+  }, [carouselPage, entryDateKey, hydrateJournalEditor, normalizeNoteText, note])
 
-  const handleNoteChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    onNoteChange(event.target.value.slice(0, 300))
+  const placeCaretAtEnd = (element: HTMLElement) => {
+    const selection = window.getSelection()
+    if (!selection) return
+    const range = document.createRange()
+    range.selectNodeContents(element)
+    range.collapse(false)
+    selection.removeAllRanges()
+    selection.addRange(range)
+  }
+
+  const handleNoteInput = (event: FormEvent<HTMLDivElement>) => {
+    const editor = event.currentTarget
+    const normalized = normalizeNoteText(editor.innerText)
+    const clampedValue = normalized.slice(0, 300)
+    if (clampedValue !== normalized) {
+      editor.innerText = clampedValue
+      placeCaretAtEnd(editor)
+    }
+    editor.dataset.empty = String(clampedValue.length === 0)
+    if (clampedValue !== note) {
+      onNoteChange(clampedValue)
+    }
   }
 
   return (
@@ -386,7 +418,7 @@ export const LogForm = ({
                             </>
                           )
                         : (
-                            <span className="log-date-picker-date-primary">{formatLongDate(selectedDate)}</span>
+                            <span className="log-date-picker-date-sub">{formatLongDate(selectedDate)}</span>
                           )}
                     </span>
                     <span className="log-date-picker-toggle" aria-hidden>
@@ -634,18 +666,20 @@ export const LogForm = ({
                   <div className="log-form-carousel__reflection-cluster">
                     <div className="log-reflection-card log-reflection-block">
                       <header className="log-reflection-header">
-                        <div className="log-reflection-icon" aria-hidden="true">
-                          <Sun size={28} strokeWidth={2} />
+                        <div className={classNames('log-reflection-icon', 'log-reflection-icon--tags')} aria-hidden="true">
+                          <Tags size={28} strokeWidth={2} />
                         </div>
                         <div className="log-reflection-title-wrap">
-                          <h2 className="log-reflection-title">{t('log.journalPageTitle')}</h2>
-                          <Tooltip label={t('log.eventsTooltip')}>
-                            <span className="tooltip-trigger log-reflection-title-tip">
-                              <span className="tooltip-icon" aria-hidden="true">
-                                <Info size={14} />
+                          <h2 className="log-reflection-title log-reflection-title--with-tip">
+                            {t('log.journalPageTitle')}
+                            <Tooltip label={t('log.eventsTooltip')}>
+                              <span className="tooltip-trigger log-reflection-title-tip">
+                                <span className="tooltip-icon" aria-hidden="true">
+                                  <Info size={14} />
+                                </span>
                               </span>
-                            </span>
-                          </Tooltip>
+                            </Tooltip>
+                          </h2>
                         </div>
                       </header>
 
@@ -721,26 +755,35 @@ export const LogForm = ({
               >
                 <div className="log-form-carousel__reflection-land">
                   <div className="log-form-carousel__reflection-cluster">
-                    <div className="log-reflection-card log-reflection-block">
+                    <div className="log-reflection-card log-reflection-block log-reflection-block--journal">
                       <header className="log-reflection-header">
-                        <div className="log-reflection-icon" aria-hidden="true">
-                          <Sun size={28} strokeWidth={2} />
+                        <div className={classNames('log-reflection-icon', 'log-reflection-icon--journal')} aria-hidden="true">
+                          <NotebookPen size={28} strokeWidth={2} />
                         </div>
                         <h2 className="log-reflection-title">{t('log.journalNotesTitle')}</h2>
+                        <p className="log-reflection-subtitle">{t('log.journalPageSubtitle')}</p>
                       </header>
 
                       <div className="log-reflection-section log-reflection-diary">
-                        <textarea
-                          ref={noteTextareaRef}
-                          className="log-diary-textarea"
-                          value={note}
-                          onChange={handleNoteChange}
-                          onInput={autoResizeNote}
-                          placeholder={t('log.journalThoughtsPlaceholder')}
-                          maxLength={300}
-                          rows={3}
-                          aria-label={`${t('log.sectionThoughts')} (${t('log.optionalShort')})`}
-                        />
+                        <div className="log-diary-surface">
+                          <div className="log-diary-rules" aria-hidden="true">
+                            {Array.from({ length: JOURNAL_RULE_COUNT }).map((_, index) => (
+                              <span key={`rule-${index}`} className="log-diary-rule" />
+                            ))}
+                          </div>
+                          <div
+                            ref={setNoteEditorRef}
+                            className="log-diary-editor"
+                            contentEditable
+                            suppressContentEditableWarning
+                            role="textbox"
+                            aria-multiline="true"
+                            data-empty={note.length === 0}
+                            data-placeholder={t('log.journalThoughtsPlaceholder')}
+                            aria-label={`${t('log.sectionThoughts')} (${t('log.optionalShort')})`}
+                            onInput={handleNoteInput}
+                          />
+                        </div>
                         <div className="log-diary-footer">
                           <span>{t('log.characterCount', { count: note.length })}</span>
                         </div>
@@ -765,7 +808,7 @@ export const LogForm = ({
                           ? <span className="spinner" aria-label={t('log.saving')} />
                           : saved
                             ? t('log.saved')
-                            : t('intro.next')}
+                            : t('log.finish')}
                       </button>
                     </motion.div>
                   </div>
@@ -773,6 +816,14 @@ export const LogForm = ({
               </motion.div>
             )}
         </AnimatePresence>
+        <div className="intro-carousel__pagination log-form-carousel__pagination" aria-hidden="true">
+          {[0, 1, 2, 3].map(page => (
+            <span
+              key={page}
+              className={classNames('intro-carousel__dot', { 'is-active': page === carouselPage })}
+            />
+          ))}
+        </div>
       </div>
     </form>
   )
