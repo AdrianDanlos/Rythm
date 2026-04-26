@@ -405,9 +405,8 @@ const de = {
     openTagTimelineAria: 'Timeline gefiltert nach {{tag}} öffnen',
     changeTagColor: 'Farbe für {{tag}} ändern',
     changeTagColorTitle: 'Wähle eine Farbe für dieses Ereignis',
-    changeTagColorDescription: 'Wähle eine Farbe, damit dieses Tagesereignis in deinen Kalendern und Diagrammen hervorsticht.',
-    tagColorRandomTooltip:
-      'Diese Farben werden überall dort angezeigt, wo Ereignisse dargestellt werden. Wird keine Farbe angegeben, wird automatisch eine zufällige Farbe zugewiesen.',
+    changeTagColorDescription: 'Haz que destaque en tus calendarios y gráficos.',
+    resetTagColorToDefault: 'Automatische Farbe verwenden',
     eventsInfluence: 'Sieh, wie dein Alltag deine Stimmung und deinen Schlaf beeinflusst.',
     eventsPredictMood: 'Tagesereignisse, die deine Stimmung vorhersagen',
     eventsPredictSleep: 'Tagesereignisse, die deinen Schlaf vorhersagen',

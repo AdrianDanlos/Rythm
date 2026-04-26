@@ -10,6 +10,8 @@ type TagColorPickerProps = {
   cancelLabel: string
   onConfirm: (color: string) => void
   onCancel: () => void
+  /** Shown when this tag has a stored custom color; clears it and uses the automatic (hash) color. */
+  resetToDefault?: { label: string, onClick: () => void }
 }
 
 export const TagColorPicker = ({
@@ -21,6 +23,7 @@ export const TagColorPicker = ({
   cancelLabel,
   onConfirm,
   onCancel,
+  resetToDefault,
 }: TagColorPickerProps) => {
   const [draftColor, setDraftColor] = useState(color)
   const dialogRef = useRef<HTMLDivElement | null>(null)
@@ -87,22 +90,39 @@ export const TagColorPicker = ({
         <div className="tag-color-modal-body">
           <HexColorPicker color={draftColor} onChange={setDraftColor} />
         </div>
-        <div className="modal-actions modal-actions-right tag-color-modal-actions">
-          <button
-            ref={initialFocusRef}
-            type="button"
-            className="ghost"
-            onClick={onCancel}
-          >
-            {cancelLabel}
-          </button>
-          <button
-            type="button"
-            className="primary-button"
-            onClick={() => onConfirm(draftColor)}
-          >
-            {confirmLabel}
-          </button>
+        <div
+          className={resetToDefault
+            ? 'tag-color-modal-footer tag-color-modal-footer--with-reset'
+            : 'tag-color-modal-footer'}
+        >
+          {resetToDefault
+            ? (
+                <button
+                  type="button"
+                  className="link-button link-button--text tag-color-modal-reset"
+                  onClick={resetToDefault.onClick}
+                >
+                  {resetToDefault.label}
+                </button>
+              )
+            : null}
+          <div className="modal-actions modal-actions-right tag-color-modal-footer-actions">
+            <button
+              ref={initialFocusRef}
+              type="button"
+              className="ghost"
+              onClick={onCancel}
+            >
+              {cancelLabel}
+            </button>
+            <button
+              type="button"
+              className="primary-button"
+              onClick={() => onConfirm(draftColor)}
+            >
+              {confirmLabel}
+            </button>
+          </div>
         </div>
       </div>
     </div>

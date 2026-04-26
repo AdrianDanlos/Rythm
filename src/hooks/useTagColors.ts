@@ -92,6 +92,20 @@ export function useTagColors(
     })
   }, [persistTagColors, userId])
 
+  const handleTagColorReset = useCallback((tag: string) => {
+    const key = tag.trim().toLowerCase()
+    if (!key) return
+    setTagColors((prev) => {
+      if (!prev[key]) return prev
+      const next: Record<string, string> = { ...prev }
+      delete next[key]
+      if (userId) {
+        persistTagColors(userId, next)
+      }
+      return next
+    })
+  }, [persistTagColors, userId])
+
   const handleRenameTag = useCallback((fromTag: string, toTag: string) => {
     const fromKey = fromTag.trim().toLowerCase()
     const toKey = toTag.trim().slice(0, MAX_TAG_LENGTH).toLowerCase()
@@ -181,6 +195,7 @@ export function useTagColors(
     tagColors,
     ensureTagColorForTag,
     handleTagColorChange,
+    handleTagColorReset,
     handleRenameTag,
   }
 }

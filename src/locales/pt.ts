@@ -405,9 +405,8 @@ const pt = {
     openTagTimelineAria: 'Abrir linha do tempo filtrada por {{tag}}',
     changeTagColor: 'Mudar cor de {{tag}}',
     changeTagColorTitle: 'Escolha uma cor para este evento',
-    changeTagColorDescription: 'Escolha uma cor para que este evento do dia se destaque nos seus calendários e gráficos.',
-    tagColorRandomTooltip:
-      'Estas cores serão exibidas em todos os lugares onde os eventos são mostrados. Se nenhuma cor for fornecida, uma é atribuída aleatória e automaticamente.',
+    changeTagColorDescription: 'Haz que destaque en tus calendarios y gráficos.',
+    resetTagColorToDefault: 'Usar cor automática',
     eventsInfluence: 'Veja como o que acontece no seu dia influencia seu humor e seu sono.',
     eventsPredictMood: 'Eventos do dia que preveem seu humor',
     eventsPredictSleep: 'Eventos do dia que preveem seu sono',

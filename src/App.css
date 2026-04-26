@@ -3946,21 +3946,6 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   box-shadow: var(--tag-suggestions-shadow);
 }
 
-.your-daily-events-heading {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.your-daily-events-heading h2 {
-  margin: 0;
-}
-
-.your-daily-events-heading .tooltip-trigger {
-  flex-shrink: 0;
-}
-
 .your-daily-events-edit-button {
   background: none;
   border: none;
@@ -4138,8 +4123,23 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   padding-top: 4px;
 }
 
-.tag-color-modal-actions {
+.tag-color-modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
   margin-top: 12px;
+  gap: 10px;
+}
+
+.tag-color-modal-footer--with-reset {
+  justify-content: space-between;
+}
+
+.tag-color-modal-footer-actions {
+  margin-top: 0;
+  flex: 0 0 auto;
 }
 
 .tag-color-modal .react-colorful {

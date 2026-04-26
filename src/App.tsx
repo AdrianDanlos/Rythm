@@ -248,6 +248,7 @@ function App() {
     tagColors,
     ensureTagColorForTag,
     handleTagColorChange,
+    handleTagColorReset,
     handleRenameTag,
   } = useTagColors(session?.user?.id, entries, setEntries)
 
@@ -893,6 +894,7 @@ function App() {
               onSettingsPersonalSleepTargetChange={handleSleepTargetChange}
               onRenameTag={handleRenameTag}
               onTagColorChange={handleTagColorChange}
+              onTagColorReset={handleTagColorReset}
               onEnsureTagColor={ensureTagColorForTag}
               onIntroVisibilityChange={setIsIntroVisible}
               lockNonLogTabs={lockNonLogTabs}

@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { FocusEvent } from 'react'
-import { ChevronLeft, Info, Pencil } from 'lucide-react'
+import { ChevronLeft, Pencil } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { Entry } from '../../lib/entries'
 import { getFallbackTagColor } from '../../lib/colors'
 import { MAX_TAG_LENGTH } from '../../lib/utils/stringUtils'
 import { TagColorPicker } from '../TagColorPicker'
-import { Tooltip } from '../Tooltip'
 import { NoDailyEventsLoggedHint } from './NoDailyEventsLoggedHint'
 
 type DailyEventsEditPageProps = {
@@ -14,6 +13,7 @@ type DailyEventsEditPageProps = {
   tagColors: Record<string, string>
   onRenameTag: (fromTag: string, toTag: string) => void
   onTagColorChange: (tag: string, color: string) => void
+  onTagColorReset: (tag: string) => void
   goToLog: () => void
   onBack: () => void
 }
@@ -23,6 +23,7 @@ export function DailyEventsEditPage({
   tagColors,
   onRenameTag,
   onTagColorChange,
+  onTagColorReset,
   goToLog,
   onBack,
 }: DailyEventsEditPageProps) {
@@ -108,20 +109,7 @@ export function DailyEventsEditPage({
       </div>
 
       <div className="card-header">
-        <div className="your-daily-events-heading">
-          <h2 id="daily-events-edit-title">{t('insights.yourDailyEvents')}</h2>
-          <Tooltip label={t('insights.tagColorRandomTooltip')}>
-            <span
-              className="tooltip-trigger"
-              tabIndex={0}
-              aria-label={t('insights.tagColorRandomTooltip')}
-            >
-              <span className="tooltip-icon" aria-hidden="true">
-                <Info size={14} />
-              </span>
-            </span>
-          </Tooltip>
-        </div>
+        <h2 id="daily-events-edit-title">{t('insights.yourDailyEvents')}</h2>
       </div>
       {topTags.length > 0
         ? (
@@ -223,6 +211,18 @@ export function DailyEventsEditPage({
           }
           setColorPickerTag(null)
         }}
+        resetToDefault={(() => {
+          if (!colorPickerTag) return undefined
+          const key = colorPickerTag.trim().toLowerCase()
+          if (!tagColors[key]) return undefined
+          return {
+            label: t('insights.resetTagColorToDefault'),
+            onClick: () => {
+              onTagColorReset(colorPickerTag)
+              setColorPickerTag(null)
+            },
+          }
+        })()}
       />
     </div>
   )

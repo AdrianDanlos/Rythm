@@ -403,9 +403,8 @@ const en = {
     openTagTimelineAria: 'Open Timeline filtered by {{tag}}',
     changeTagColor: 'Change color for {{tag}}',
     changeTagColorTitle: 'Pick a color for this event',
-    changeTagColorDescription: 'Choose a color to make this daily event stand out in your calendars and charts.',
-    tagColorRandomTooltip:
-      'These colors will be shown wherever events are displayed. If no color is provided, one is assigned randomly and automatically.',
+    changeTagColorDescription: 'Haz que destaque en tus calendarios y gráficos.',
+    resetTagColorToDefault: 'Use automatic color',
     eventsInfluence: 'See how what happens during the day influences your mood and sleep over time.',
     eventsPredictMood: 'Daily events that predict mood',
     eventsPredictSleep: 'Daily events that predict sleep',
