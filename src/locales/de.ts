@@ -213,7 +213,7 @@ const de = {
     eventsQuestion: 'Was ist heute passiert?',
     journalPageTitle: 'Was hast du heute gemacht?',
     journalPageSubtitle: 'Manche Tage schreibst du. Manche Tage nicht. Beides ist in Ordnung.',
-    journalNotesTitle: 'Mi diario',
+    journalNotesTitle: 'Mein Tagebuch',
     eventsTooltip: 'Füge hinzu, was in deinem Tag passiert. Nutze die vordefinierten Events oder erstelle deine eigenen. Rythm wird Muster erkennen und dir zeigen, wie sie zusammenhängen.',
     recommended: 'Empfohlen',
     maxReached: 'Maximum von {{count}} erreicht',

@@ -213,7 +213,7 @@ const fr = {
     eventsQuestion: 'Qu\'est-ce qui s\'est passé aujourd\'hui ?',
     journalPageTitle: 'Qu\'est-ce que tu as fait aujourd\'hui ?',
     journalPageSubtitle: 'Certains jours tu écris. D\'autres non. Les deux sont bien.',
-    journalNotesTitle: 'Mi diario',
+    journalNotesTitle: 'Mon journal',
     eventsTooltip: 'Ajoute ce qui se passe dans ta journée. Utilise les événements prédéfinis ou crée les tiens. Rythm trouvera des modèles et te montrera comment ils sont liés entre eux.',
     recommended: 'Recommandé',
     maxReached: 'Maximum de {{count}} atteint',

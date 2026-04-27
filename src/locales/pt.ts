@@ -213,7 +213,7 @@ const pt = {
     eventsQuestion: 'O que aconteceu hoje?',
     journalPageTitle: 'O que fizeste hoje?',
     journalPageSubtitle: 'Há dias em que escreves. Há dias em que não. Ambos são válidos.',
-    journalNotesTitle: 'Mi diario',
+    journalNotesTitle: 'Meu diário',
     eventsTooltip: 'Adiciona o que acontece no teu dia. Usa os eventos predefinidos ou cria os teus. O Rythm vai encontrar padrões e mostrar-te como se relacionam entre si.',
     recommended: 'Recomendado',
     maxReached: 'Máximo de {{count}} atingido',

@@ -210,7 +210,7 @@ const en = {
     eventsQuestion: 'What happened today?',
     journalPageTitle: 'What did you do today?',
     journalPageSubtitle: 'Some days you write. Some days you don\'t. Both are fine.',
-    journalNotesTitle: 'Mi diario',
+    journalNotesTitle: 'My journal',
     eventsTooltip: 'Add what happens in your day. Use the predefined events or create your own. Rythm will find patterns and show you how they relate to each other.',
     recommended: 'Recommended',
     maxReached: 'Maximum of {{count}} reached',
