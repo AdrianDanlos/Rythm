@@ -11,7 +11,7 @@ import { requestScrollToSettingsReminder } from './useScrollToSettingsReminderOn
 type NavigateToPage = (page: AppPage, options?: { replace?: boolean }) => void
 
 /**
- * Post-save flow: optional daily-reminder nudge toast after the user completes their first week of logging (3 entries),
+ * Post-save flow: optional daily-reminder nudge toast after the user reaches 2 logged entries,
  * plus suppression of the default “saved” toast when that nudge is active.
  */
 export function useDailyReminderPostSave(
@@ -31,7 +31,7 @@ export function useDailyReminderPostSave(
       return
     }
     goToInsightsSummary()
-    if (entryCount !== 3) {
+    if (entryCount !== 2) {
       return
     }
     if (!shouldShowDailyReminderNudge()) {
@@ -54,7 +54,7 @@ export function useDailyReminderPostSave(
   }, [goToInsightsSummary, handleEnableReminderNudge, t])
 
   const shouldSuppressPostSaveToast = useCallback(
-    (entryCount: number) => entryCount === 3 && shouldShowDailyReminderNudge(),
+    (entryCount: number) => entryCount === 2 && shouldShowDailyReminderNudge(),
     [],
   )
 

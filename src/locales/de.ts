@@ -37,6 +37,9 @@ const de = {
     signOut: 'Abmelden',
     signingOut: 'Abmelden...',
     menu: 'Menü',
+    menuDataSection: 'Daten',
+    menuAccountSection: 'Konto',
+    menuSupportSection: 'Hilfe',
   },
   auth: {
     continueWithGoogle: 'Mit Google fortfahren',

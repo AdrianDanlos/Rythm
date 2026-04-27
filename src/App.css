@@ -1003,10 +1003,31 @@
 .side-panel__nav {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 12px;
   padding: 10px 0;
   border-top: 1px solid var(--border);
   margin-top: 13px;
+}
+
+.side-panel__section {
+  display: flex;
+  flex-direction: column;
+}
+
+.side-panel__section-title {
+  margin: 0;
+  padding: 6px 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.side-panel__section-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .side-panel__item {

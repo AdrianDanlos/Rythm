@@ -37,6 +37,9 @@ const en = {
     signOut: 'Sign out',
     signingOut: 'Signing out',
     menu: 'Menu',
+    menuDataSection: 'Data',
+    menuAccountSection: 'Account',
+    menuSupportSection: 'Support',
   },
   auth: {
     continueWithGoogle: 'Continue with Google',

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import confetti from 'canvas-confetti'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Sparkles, Trophy } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
@@ -19,11 +19,17 @@ export const StreakCelebration = ({
 }: StreakCelebrationProps) => {
   const { t } = useTranslation()
   const hasTriggeredConfetti = useRef(false)
+  const prefersReducedMotion = useReducedMotion()
 
   function triggerConfetti() {
-    const duration = 3000
+    const duration = prefersReducedMotion ? 1400 : 2200
     const animationEnd = Date.now() + duration
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 }
+    const defaults = {
+      startVelocity: prefersReducedMotion ? 20 : 26,
+      spread: 320,
+      ticks: prefersReducedMotion ? 40 : 50,
+      zIndex: 9999,
+    }
 
     const randomInRange = (min: number, max: number) =>
       Math.random() * (max - min) + min
@@ -35,7 +41,7 @@ export const StreakCelebration = ({
         return
       }
 
-      const particleCount = 50 * (timeLeft / duration)
+      const particleCount = (prefersReducedMotion ? 14 : 24) * (timeLeft / duration)
 
       confetti({
         ...defaults,
@@ -47,7 +53,7 @@ export const StreakCelebration = ({
         particleCount,
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
       })
-    }, 250)
+    }, prefersReducedMotion ? 420 : 320)
   }
 
   useEffect(() => {
@@ -75,7 +81,7 @@ export const StreakCelebration = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="modal-backdrop"
-              style={{ zIndex: 60, backdropFilter: 'blur(6px)' }}
+              style={{ zIndex: 60 }}
               role="presentation"
               onClick={onDismiss}
             >
@@ -83,7 +89,11 @@ export const StreakCelebration = ({
                 initial={{ scale: 0.5, opacity: 0, y: 40 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.92, opacity: 0, y: 10 }}
-                transition={{ type: 'spring', damping: 16, stiffness: 320 }}
+                transition={
+                  prefersReducedMotion
+                    ? { duration: 0.18, ease: 'easeOut' }
+                    : { type: 'spring', damping: 16, stiffness: 320 }
+                }
                 className="modal-card"
                 style={{
                   width: 'min(520px, 100%)',
@@ -108,10 +118,10 @@ export const StreakCelebration = ({
                 </button>
 
                 <motion.div
-                  animate={{ rotate: 360, scale: [1, 1.2, 1] }}
+                  animate={prefersReducedMotion ? { opacity: 0.9 } : { rotate: 360, scale: [1, 1.2, 1] }}
                   transition={{
-                    rotate: { duration: 20, repeat: Infinity, ease: 'linear' },
-                    scale: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
+                    rotate: { duration: 30, repeat: Infinity, ease: 'linear' },
+                    scale: { duration: 2.8, repeat: Infinity, ease: 'easeInOut' },
                   }}
                   style={{
                     position: 'absolute',
@@ -125,10 +135,10 @@ export const StreakCelebration = ({
                 </motion.div>
 
                 <motion.div
-                  animate={{ rotate: -360, scale: [1, 1.3, 1] }}
+                  animate={prefersReducedMotion ? { opacity: 0.85 } : { rotate: -360, scale: [1, 1.3, 1] }}
                   transition={{
-                    rotate: { duration: 15, repeat: Infinity, ease: 'linear' },
-                    scale: { duration: 2.5, repeat: Infinity, ease: 'easeInOut' },
+                    rotate: { duration: 24, repeat: Infinity, ease: 'linear' },
+                    scale: { duration: 3.2, repeat: Infinity, ease: 'easeInOut' },
                   }}
                   style={{
                     position: 'absolute',
@@ -144,19 +154,23 @@ export const StreakCelebration = ({
                 <motion.div
                   initial={{ scale: 0, rotate: -180 }}
                   animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.15, type: 'spring', damping: 10, stiffness: 220 }}
+                  transition={
+                    prefersReducedMotion
+                      ? { delay: 0.05, duration: 0.2, ease: 'easeOut' }
+                      : { delay: 0.15, type: 'spring', damping: 10, stiffness: 220 }
+                  }
                   style={{ marginBottom: 14, position: 'relative' }}
                 >
                   <motion.div
-                    animate={{ scale: [1, 1.08, 1] }}
-                    transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+                    animate={prefersReducedMotion ? { opacity: 0.22 } : { scale: [1, 1.08, 1] }}
+                    transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
                     style={{
                       position: 'absolute',
                       inset: -18,
                       borderRadius: 999,
                       background:
                         'radial-gradient(circle at 35% 30%, rgba(253,186,116,0.95), rgba(249,115,22,0.7), rgba(194,65,12,0.28))',
-                      filter: 'blur(22px)',
+                      filter: 'blur(14px)',
                       opacity: 0.28,
                       pointerEvents: 'none',
                     }}
@@ -195,8 +209,8 @@ export const StreakCelebration = ({
                       }}
                     >
                       <motion.div
-                        animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
-                        transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 1.1 }}
+                        animate={prefersReducedMotion ? { opacity: 0.95 } : { scale: [1, 1.16, 1], rotate: [0, 8, -8, 0] }}
+                        transition={{ duration: 0.8, repeat: Infinity, repeatDelay: 1.4 }}
                       >
                         <svg
                           width="56"
@@ -222,8 +236,8 @@ export const StreakCelebration = ({
                     </div>
 
                     <motion.span
-                      animate={{ scale: [1, 1.05, 1] }}
-                      transition={{ duration: 1, repeat: Infinity, ease: 'easeInOut' }}
+                      animate={prefersReducedMotion ? { opacity: 1 } : { scale: [1, 1.04, 1] }}
+                      transition={{ duration: 1.3, repeat: Infinity, ease: 'easeInOut' }}
                       style={{
                         fontSize: 72,
                         fontWeight: 900,

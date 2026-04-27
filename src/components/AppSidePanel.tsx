@@ -63,6 +63,21 @@ function PanelButton({
   )
 }
 
+function PanelSection({
+  title,
+  children,
+}: {
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <section className="side-panel__section" aria-label={title}>
+      <h3 className="side-panel__section-title">{title}</h3>
+      <div className="side-panel__section-items">{children}</div>
+    </section>
+  )
+}
+
 export function AppSidePanel(props: AppSidePanelProps) {
   const {
     isOpen,
@@ -101,46 +116,36 @@ export function AppSidePanel(props: AppSidePanelProps) {
       <aside
         className={classNames('side-panel', { 'side-panel--open': isOpen })}
         aria-modal="true"
-        aria-label="Menu"
+        aria-label={t('nav.menu')}
         aria-hidden={!isOpen}
       >
         <nav className="side-panel__nav">
-          <PanelButton
-            icon={FileDown}
-            label={t('insights.exportCsv')}
-            onClick={() => runAndClose(onExportCsv)}
-          />
-          <PanelButton
-            icon={FileText}
-            label={t('insights.exportReport')}
-            className={!isPro ? 'pro-locked-button' : undefined}
-            afterLabel={
-              !isPro
-                ? <span className="pro-pill">{t('insights.pro')}</span>
-                : undefined
-            }
-            onClick={() =>
-              runAndClose(!isPro ? onOpenPaywall : onExportReport)}
-          />
-          <PanelButton
-            icon={Settings}
-            label={t('nav.settings')}
-            onClick={() => runAndClose(onOpenSettings)}
-          />
-          {!isPro && (
+          <PanelSection title={t('nav.menuDataSection')}>
             <PanelButton
-              icon={Sparkles}
-              label={t('insights.upgradeToPro')}
-              onClick={() => runAndClose(onOpenPaywall)}
+              icon={FileDown}
+              label={t('insights.exportCsv')}
+              onClick={() => runAndClose(onExportCsv)}
             />
-          )}
-          {canManageSubscription && (
             <PanelButton
-              icon={CreditCard}
-              label={t('nav.manageSubscription')}
-              onClick={() => runAndClose(onManageSubscription)}
+              icon={FileText}
+              label={t('insights.exportReport')}
+              className={!isPro ? 'pro-locked-button' : undefined}
+              afterLabel={
+                !isPro
+                  ? <span className="pro-pill">{t('insights.pro')}</span>
+                  : undefined
+              }
+              onClick={() =>
+                runAndClose(!isPro ? onOpenPaywall : onExportReport)}
             />
-          )}
+            <PanelButton
+              icon={Settings}
+              label={t('nav.settings')}
+              onClick={() => runAndClose(onOpenSettings)}
+            />
+          </PanelSection>
+
+          <PanelSection title={t('nav.menuSupportSection')}>
           <PanelButton
             icon={Star}
             label={t('insights.rateOnGooglePlay')}
@@ -156,21 +161,39 @@ export function AppSidePanel(props: AppSidePanelProps) {
             label={t('insights.donate')}
             onClick={() => runAndClose(onOpenKoFi)}
           />
-          {session?.user?.is_anonymous && (
-            <PanelButton
-              icon={Link2}
-              label={t('auth.saveAccountWithGoogle')}
-              onClick={() => runAndClose(onSaveAccountWithGoogle)}
-            />
-          )}
-          {session && (
-            <PanelButton
-              icon={LogOut}
-              label={t('nav.signOut')}
-              onClick={() => runAndClose(onSignOut)}
-              disabled={isSignOutLoading}
-            />
-          )}
+          </PanelSection>
+
+          <PanelSection title={t('nav.menuAccountSection')}>
+            {!isPro && (
+              <PanelButton
+                icon={Sparkles}
+                label={t('insights.upgradeToPro')}
+                onClick={() => runAndClose(onOpenPaywall)}
+              />
+            )}
+            {canManageSubscription && (
+              <PanelButton
+                icon={CreditCard}
+                label={t('nav.manageSubscription')}
+                onClick={() => runAndClose(onManageSubscription)}
+              />
+            )}
+            {session?.user?.is_anonymous && (
+              <PanelButton
+                icon={Link2}
+                label={t('auth.saveAccountWithGoogle')}
+                onClick={() => runAndClose(onSaveAccountWithGoogle)}
+              />
+            )}
+            {session && (
+              <PanelButton
+                icon={LogOut}
+                label={t('nav.signOut')}
+                onClick={() => runAndClose(onSignOut)}
+                disabled={isSignOutLoading}
+              />
+            )}
+          </PanelSection>
         </nav>
       </aside>
     </>

@@ -37,6 +37,9 @@ const es = {
     signOut: 'Cerrar sesión',
     signingOut: 'Cerrando sesión',
     menu: 'Menú',
+    menuDataSection: 'Datos',
+    menuAccountSection: 'Cuenta',
+    menuSupportSection: 'Soporte',
   },
   auth: {
     continueWithGoogle: 'Continuar con Google',
