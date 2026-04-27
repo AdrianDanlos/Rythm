@@ -3075,6 +3075,27 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   color: #95a8c8;
 }
 
+.log-form-carousel__first-entry-privacy {
+  position: fixed;
+  left: 50%;
+  bottom: calc(118px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 8;
+  pointer-events: none;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--text) 68%, #4b5f8d);
+}
+
+:root[data-theme="dark"] .log-form-carousel__first-entry-privacy {
+  color: color-mix(in srgb, #d9e4ff 74%, #9ab1db);
+}
+
 .sleep-duration-picker__value {
   margin-top: 20px;
   display: inline-flex;

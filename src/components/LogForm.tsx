@@ -9,6 +9,7 @@ import {
 } from 'react'
 import classNames from 'classnames'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { Lock } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { PluginRegistry, TimepickerUI } from 'timepicker-ui'
 import { WheelPlugin } from 'timepicker-ui/plugins/wheel'
@@ -522,6 +523,14 @@ export const LogForm = ({
             </motion.div>
           )}
         </AnimatePresence>
+        {isFirstEntryFlow && carouselPage < 4
+          ? (
+              <p className="log-form-carousel__first-entry-privacy">
+                <Lock size={14} aria-hidden="true" />
+                <span>{t('log.firstEntryPrivacyNote')}</span>
+              </p>
+            )
+          : null}
         <div className="intro-carousel__pagination log-form-carousel__pagination" aria-hidden="true">
           {Array.from(
             { length: totalCarouselPages },

@@ -38,7 +38,7 @@ function AndroidAuthChrome({
           role="presentation"
         >
           <span className="native-auth-screen__divider-line" />
-          <span className="native-auth-screen__divider-text">{t('auth.secureSignIn')}</span>
+          <span className="native-auth-screen__divider-text">{t('auth.secureData')}</span>
           <span className="native-auth-screen__divider-line" />
         </div>
         {children}

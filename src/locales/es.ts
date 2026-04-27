@@ -52,7 +52,7 @@ const es = {
     loadingAccount: 'Cargando tu cuenta',
     checkingSession: 'Comprobando tu sesión...',
     welcome: 'Bienvenido a Rythm',
-    secureSignIn: 'Inicio de sesión seguro',
+    secureData: 'Tus datos están cifrados y son privados. Solo tú puedes verlos.',
     tryWithoutSigningIn: 'Continuar como invitado',
     saveAccountWithGoogle: 'Guardar cuenta con Google',
     saveAccountWithGoogleHint:
@@ -198,6 +198,7 @@ const es = {
     sleepQuestion: '¿Cuánto dormiste?',
     sleepTooltip: 'Puedes guardar tu sueño ahora y volver luego para registrar tu ánimo y tus actividades.',
     sleepSubtitle: 'Anota tu descanso',
+    firstEntryPrivacyNote: 'Lo que registras es privado y cifrado.',
     pickTime: 'Elegir hora',
     sleepTimePickerOk: 'OK',
     sleepTimePickerCancel: 'Cancelar',
