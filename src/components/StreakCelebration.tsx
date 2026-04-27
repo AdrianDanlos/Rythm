@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import confetti from 'canvas-confetti'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Sparkles, Trophy } from 'lucide-react'
@@ -21,7 +21,7 @@ export const StreakCelebration = ({
   const hasTriggeredConfetti = useRef(false)
   const prefersReducedMotion = useReducedMotion()
 
-  function triggerConfetti() {
+  const triggerConfetti = useCallback(() => {
     const duration = prefersReducedMotion ? 1400 : 2200
     const animationEnd = Date.now() + duration
     const defaults = {
@@ -54,7 +54,7 @@ export const StreakCelebration = ({
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
       })
     }, prefersReducedMotion ? 420 : 320)
-  }
+  }, [prefersReducedMotion])
 
   useEffect(() => {
     if (isVisible && !hasTriggeredConfetti.current) {
@@ -70,7 +70,7 @@ export const StreakCelebration = ({
     if (!isVisible) {
       hasTriggeredConfetti.current = false
     }
-  }, [isVisible, onComplete])
+  }, [isVisible, onComplete, triggerConfetti])
 
   return (
     <AnimatePresence>

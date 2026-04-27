@@ -374,7 +374,7 @@ function App() {
         navigateToPage(AppPage.Log)
       })
     },
-    [formatLocalDate, handleSave, navigateToPage, selectedDate, setEntryDate, today],
+    [handleSave, navigateToPage, selectedDate, setEntryDate, today],
   )
 
   useAndroidBackButton({

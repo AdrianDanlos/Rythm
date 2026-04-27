@@ -1043,11 +1043,15 @@
   font-family: inherit;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .side-panel__item:hover:not(:disabled) {
-  background: var(--selected-bg);
+  background: transparent;
+}
+
+.side-panel__item:active:not(:disabled) {
+  background: transparent;
 }
 
 .side-panel__item:disabled {

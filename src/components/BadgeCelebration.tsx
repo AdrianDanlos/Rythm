@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import confetti from 'canvas-confetti'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { Sparkles, Trophy } from 'lucide-react'
@@ -22,7 +22,7 @@ export const BadgeCelebration = ({
   const hasTriggeredConfetti = useRef(false)
   const prefersReducedMotion = useReducedMotion()
 
-  function triggerConfetti() {
+  const triggerConfetti = useCallback(() => {
     const duration = prefersReducedMotion ? 1400 : 2200
     const animationEnd = Date.now() + duration
     const defaults = {
@@ -55,7 +55,7 @@ export const BadgeCelebration = ({
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
       })
     }, prefersReducedMotion ? 420 : 320)
-  }
+  }, [prefersReducedMotion])
 
   useEffect(() => {
     if (isVisible && badge && !hasTriggeredConfetti.current) {
@@ -71,7 +71,7 @@ export const BadgeCelebration = ({
     if (!isVisible) {
       hasTriggeredConfetti.current = false
     }
-  }, [isVisible, badge, onComplete])
+  }, [isVisible, badge, onComplete, triggerConfetti])
 
   const badgeLevelText = badge
     ? `${Math.max(1, badge.currentTierIndex + 1)}/${Math.max(1, badge.tierCount)}`

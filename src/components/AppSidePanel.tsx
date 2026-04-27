@@ -146,21 +146,21 @@ export function AppSidePanel(props: AppSidePanelProps) {
           </PanelSection>
 
           <PanelSection title={t('nav.menuSupportSection')}>
-          <PanelButton
-            icon={Star}
-            label={t('insights.rateOnGooglePlay')}
-            onClick={() => runAndClose(onReviewApp)}
-          />
-          <PanelButton
-            icon={MessageSquare}
-            label={t('insights.sendFeedback')}
-            onClick={() => runAndClose(onOpenFeedback)}
-          />
-          <PanelButton
-            icon={HandCoins}
-            label={t('insights.donate')}
-            onClick={() => runAndClose(onOpenKoFi)}
-          />
+            <PanelButton
+              icon={Star}
+              label={t('insights.rateOnGooglePlay')}
+              onClick={() => runAndClose(onReviewApp)}
+            />
+            <PanelButton
+              icon={MessageSquare}
+              label={t('insights.sendFeedback')}
+              onClick={() => runAndClose(onOpenFeedback)}
+            />
+            <PanelButton
+              icon={HandCoins}
+              label={t('insights.donate')}
+              onClick={() => runAndClose(onOpenKoFi)}
+            />
           </PanelSection>
 
           <PanelSection title={t('nav.menuAccountSection')}>
