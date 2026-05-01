@@ -184,11 +184,13 @@ export const PaywallPage = ({
                             )
                           })}
                         </fieldset>
-                        <p className="paywall-page__price-note paywall-page__price-note--below-plans">
-                          {showTrialOffer
-                            ? t('paywall.trialFootnote', { price: fullPriceLabel })
-                            : t('paywall.cancelAnytime')}
-                        </p>
+                        {!showTrialOffer
+                          ? (
+                              <p className="paywall-page__price-note paywall-page__price-note--below-plans">
+                                {t('paywall.cancelAnytime')}
+                              </p>
+                            )
+                          : null}
                       </div>
                     )
                   : (
@@ -206,11 +208,9 @@ export const PaywallPage = ({
                             ? <span className="paywall-page__price-period"> {periodPart}</span>
                             : null}
                         </p>
-                        <p className="paywall-page__price-note">
-                          {showTrialOffer
-                            ? t('paywall.trialFootnote', { price: fullPriceLabel })
-                            : t('paywall.cancelAnytime')}
-                        </p>
+                        {!showTrialOffer
+                          ? <p className="paywall-page__price-note">{t('paywall.cancelAnytime')}</p>
+                          : null}
                       </div>
                     )
               )
@@ -234,12 +234,30 @@ export const PaywallPage = ({
             ))}
           </ul>
 
+          {showTrialOffer
+            ? (
+                <div
+                  id="paywall-trial-disclosure"
+                  className="paywall-page__trial-disclosure"
+                  role="note"
+                >
+                  <p className="paywall-page__price-note paywall-page__trial-disclosure-line">
+                    {t('paywall.trialSummary', { days: trialDays, price: fullPriceLabel })}
+                  </p>
+                  <p className="paywall-page__price-note paywall-page__trial-disclosure-line">
+                    {t('paywall.trialCancelPlay')}
+                  </p>
+                </div>
+              )
+            : null}
+
           <div className="paywall-page__actions">
             <button
               type="button"
               className="paywall-page__cta"
               disabled={!canUpgrade || isLoading}
               onClick={handleUpgrade}
+              aria-describedby={showTrialOffer ? 'paywall-trial-disclosure' : undefined}
             >
               {isLoading
                 ? t('paywall.openingCheckout')

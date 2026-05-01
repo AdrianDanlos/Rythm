@@ -1673,6 +1673,24 @@
   margin-top: 14px;
 }
 
+.paywall-page__trial-disclosure {
+  margin: 20px 0 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  text-align: left;
+  background: var(--paywall-feature-icon-bg);
+  border: 1px solid var(--paywall-divider);
+}
+
+.paywall-page__trial-disclosure-line {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.paywall-page__trial-disclosure-line + .paywall-page__trial-disclosure-line {
+  margin-top: 8px;
+}
+
 .paywall-page__plans {
   border: none;
   margin: 0;

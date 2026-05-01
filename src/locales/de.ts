@@ -145,7 +145,10 @@ const de = {
     premiumFeaturesSection: 'Pro-Funktionen',
     cancelAnytime: 'Jederzeit kündbar',
     trialPill: '{{days}} Tage kostenlos testen',
-    trialFootnote: 'Keine Gebühr bis zum Ende der Testphase, danach {{price}}. Jederzeit kündbar.',
+    trialSummary:
+      '{{days}} Tage kostenlos testen, danach {{price}}. Es fallen keine Kosten an, wenn du vor Ende der Testphase kündigst.',
+    trialCancelPlay:
+      'Kündigen: Google Play Store → Profilicon → Zahlungen & Abos → Abos → Rythm Pro, und das Abo vor Ende der Testphase beenden.',
     startFreeTrial: 'Kostenlos testen',
     choosePlan: 'Plan wählen',
     planMonthly: 'Monatlich',

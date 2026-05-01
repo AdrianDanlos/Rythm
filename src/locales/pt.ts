@@ -145,7 +145,10 @@ const pt = {
     premiumFeaturesSection: 'Funcionalidades Pro',
     cancelAnytime: 'Cancele quando quiser',
     trialPill: '{{days}} dias grátis',
-    trialFootnote: 'Sem cobrança até o fim do período de teste; depois {{price}}. Cancele quando quiser.',
+    trialSummary:
+      'Teste grátis de {{days}} dias; em seguida {{price}}. Você não será cobrado se cancelar antes do fim do teste.',
+    trialCancelPlay:
+      'Para cancelar: Google Play Store → ícone do perfil → Pagamentos e assinaturas → Assinaturas → Rythm Pro, e cancele antes do fim do teste.',
     startFreeTrial: 'Começar teste grátis',
     choosePlan: 'Escolha o plano',
     planMonthly: 'Mensal',
