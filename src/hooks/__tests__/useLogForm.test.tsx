@@ -90,7 +90,7 @@ describe('useLogForm', () => {
         formatLocalDate: date => date.toISOString().slice(0, 10),
         sleepThreshold: 8,
         isPro: false,
-        maxTagsPerEntry: 8,
+        maxTagsPerEntry: 10,
       })
 
       useEffect(() => {
@@ -211,7 +211,7 @@ describe('useLogForm', () => {
         formatLocalDate: date => date.toISOString().slice(0, 10),
         sleepThreshold: 8,
         isPro: false,
-        maxTagsPerEntry: 8,
+        maxTagsPerEntry: 10,
       })
 
       useEffect(() => {
