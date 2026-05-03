@@ -192,6 +192,8 @@ const en = {
   },
   log: {
     carouselAria: 'Daily log steps',
+    carouselNext: 'Next',
+    carouselDone: 'Done',
     firstEntryComplete: 'That\'s all there is to it. Come back tomorrow and log another entry. The more days you track, the more you\'ll start to see about yourself.',
     firstEntryCompleteButton: 'Got it',
     loading: 'Loading...',
@@ -249,6 +251,7 @@ const en = {
     save: 'Save',
     finish: 'Finish',
     saveNoEvents: 'Saved. No daily events added. Add them next time for better insights.',
+    postSaveNeedMood: 'Saved. Remember to add your mood for better statistics.',
     defaultTags: {
       caffeine: 'caffeine',
       stress: 'stress',

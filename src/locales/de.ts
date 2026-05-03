@@ -195,6 +195,8 @@ const de = {
   },
   log: {
     carouselAria: 'Schritte im Tagebuch',
+    carouselNext: 'Weiter',
+    carouselDone: 'Fertig',
     firstEntryComplete: 'Das ist alles! Komm morgen wieder und trag einen neuen Eintrag ein. Je mehr Tage du trackst, desto mehr wirst du über dich selbst herausfinden.',
     firstEntryCompleteButton: 'Alles klar',
     loading: 'Laden...',
@@ -251,6 +253,7 @@ const de = {
     save: 'Speichern',
     finish: 'Fertigstellen',
     saveNoEvents: 'Gespeichert. Du hast keine Tagesereignisse hinzugefügt. Füge sie beim nächsten Mal hinzu, um bessere Auswertungen zu erhalten.',
+    postSaveNeedMood: 'Gespeichert. Denke daran, deine Stimmung hinzuzufügen, um bessere Statistiken zu erhalten.',
     defaultTags: {
       caffeine: 'Koffein',
       stress: 'Stress',

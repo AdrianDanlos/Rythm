@@ -3215,9 +3215,28 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 }
 
 .sleep-duration-picker__next-wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
   width: 100%;
   margin-top: 8px;
   box-sizing: border-box;
+}
+
+/* Sleep step: Done + Next — match carousel action row (ghost + primary). */
+.log-form-stack .sleep-duration-picker__next-wrap .log-form-carousel__skip,
+.log-form-stack .sleep-duration-picker__next-wrap .log-form-carousel__primary {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  border-radius: 12px;
+  font-weight: 600;
+  padding: 0 14px;
 }
 
 /* Sleep timepicker: match Log sleep card + app theme tokens (backdrop, surface, type, accent).
@@ -3684,6 +3703,22 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 
 .log-date-picker-wrap {
   position: relative;
+  z-index: 1;
+}
+
+/* Overlay below the trigger so opening the calendar does not push sleep/mood blocks down */
+.log-date-picker-panel-motion {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 20;
+  padding-top: 10px;
+  box-sizing: border-box;
+}
+
+.log-date-picker-panel-motion .log-date-picker-panel.date-picker {
+  margin-top: 0;
 }
 
 .log-date-picker-collapsed {
@@ -4127,7 +4162,9 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 }
 
 :root[data-theme="dark"] .field.your-daily-events-edit-input input:focus,
-:root[data-theme="dark"] .field.your-daily-events-edit-input input:focus-visible {
+:root[data-theme="dark"]
+  .field.your-daily-events-edit-input
+  input:focus-visible {
   border-color: color-mix(in srgb, var(--text) 18%, var(--border) 82%);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 10%, transparent);
 }
@@ -4302,13 +4339,14 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
     filter 160ms ease;
 }
 
-/* Full-width Next on sleep step (below pick time) — override save-button min-width */
+/* Next on sleep step shares row with Done — flex child, not full width */
 .log-form-stack .sleep-duration-picker__next {
   display: flex;
-  width: 100%;
+  flex: 1 1 0;
+  width: auto;
   min-width: 0;
   min-height: 44px;
-  margin-top: 10px;
+  margin-top: 0;
   box-sizing: border-box;
 }
 

@@ -20,6 +20,7 @@ type LogFormTagsPageProps = {
   showCreateTagSuggestion: boolean
   addTag: (tag: string) => void
   hasAtLeastOneEvent: boolean
+  isFirstEntry: boolean
   saving: boolean
   onNext: () => void
   onSkip: () => void
@@ -39,6 +40,7 @@ export function LogFormTagsPage({
   showCreateTagSuggestion,
   addTag,
   hasAtLeastOneEvent,
+  isFirstEntry,
   saving,
   onNext,
   onSkip,
@@ -110,15 +112,15 @@ export function LogFormTagsPage({
             onClick={onSkip}
             disabled={saving}
           >
-            {t('intro.skip')}
+            {t('log.carouselDone')}
           </button>
           <button
             type="button"
             className="save-button log-form-carousel__primary"
             onClick={onNext}
-            disabled={!hasAtLeastOneEvent}
+            disabled={saving || (isFirstEntry && !hasAtLeastOneEvent)}
           >
-            {t('intro.next')}
+            {t('log.carouselNext')}
           </button>
         </motion.div>
       </div>

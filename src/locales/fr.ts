@@ -195,6 +195,8 @@ const fr = {
   },
   log: {
     carouselAria: 'Étapes du journal quotidien',
+    carouselNext: 'Suivant',
+    carouselDone: 'Terminé',
     firstEntryComplete: 'C\'est tout ! Reviens demain et ajoute une nouvelle entrée. Plus tu enregistres de jours, plus tu commenceras à en apprendre sur toi-même.',
     firstEntryCompleteButton: 'D\'accord',
     loading: 'Chargement...',
@@ -251,6 +253,7 @@ const fr = {
     save: 'Enregistrer',
     finish: 'Terminer',
     saveNoEvents: 'Enregistré. Vous n\'avez pas ajouté d\'événements du jour. Pensez à en ajouter la prochaine fois pour de meilleures statistiques.',
+    postSaveNeedMood: 'Enregistré. Pense à ajouter ton humeur pour de meilleures statistiques.',
     defaultTags: {
       caffeine: 'caféine',
       stress: 'stress',

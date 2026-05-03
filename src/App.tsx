@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
@@ -134,6 +134,9 @@ function App() {
   const todayDate = new Date()
   todayDate.setHours(0, 0, 0, 0)
   const today = formatLocalDate(todayDate)
+  const yesterdayDate = new Date(todayDate)
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1)
+  const yesterday = formatLocalDate(yesterdayDate)
 
   const userId = session?.user?.id
   const activePage = getPageFromPathname(pathname) ?? getDefaultPageForUser(userId)
@@ -149,11 +152,10 @@ function App() {
     },
     [pathname, navigate],
   )
-  const shell = useAppShell({ activeTab, onNavigateToPage: navigateToPage })
+  const shell = useAppShell({ onNavigateToPage: navigateToPage })
   const {
     isStreakOpen,
     isFeedbackOpen,
-    saveLogWhenLeaving,
     closeStreak,
     openFeedback,
     closeFeedback,
@@ -303,7 +305,6 @@ function App() {
     setTags,
     tagSuggestions,
     saving,
-    saved,
     handleSave,
   } = useLogForm({
     userId: session?.user?.id,
@@ -311,6 +312,7 @@ function App() {
     setEntries,
     stats,
     today,
+    yesterday,
     formatLocalDate,
     sleepThreshold,
     isPro,
@@ -334,27 +336,8 @@ function App() {
     onFirstEntryCreated: handleFirstEntryCreated,
   })
 
-  const runSaveBeforeLeavingTab = useCallback(
-    () =>
-      saveLogWhenLeaving(() =>
-        void handleSave(
-          { preventDefault: () => {} } as FormEvent<HTMLFormElement>,
-          { silent: true },
-        ),
-      ),
-    [saveLogWhenLeaving, handleSave],
-  )
-
   const handleEntryDateChange = (newDateStr: string) => {
-    if (newDateStr !== formatLocalDate(selectedDate)) {
-      void handleSave(
-        { preventDefault: () => {} } as FormEvent<HTMLFormElement>,
-        { silent: true },
-      ).then(() => setEntryDate(newDateStr))
-    }
-    else {
-      setEntryDate(newDateStr)
-    }
+    setEntryDate(newDateStr)
   }
 
   const goToLogForToday = useCallback(
@@ -362,19 +345,12 @@ function App() {
       if (options?.openAtMood) {
         requestOpenLogCarouselAtMood()
       }
-      if (formatLocalDate(selectedDate) === today) {
-        navigateToPage(AppPage.Log)
-        return
-      }
-      void handleSave(
-        { preventDefault: () => {} } as FormEvent<HTMLFormElement>,
-        { silent: true },
-      ).then(() => {
+      if (formatLocalDate(selectedDate) !== today) {
         setEntryDate(today)
-        navigateToPage(AppPage.Log)
-      })
+      }
+      navigateToPage(AppPage.Log)
     },
-    [handleSave, navigateToPage, selectedDate, setEntryDate, today],
+    [navigateToPage, selectedDate, setEntryDate, today],
   )
 
   useAndroidBackButton({
@@ -388,7 +364,6 @@ function App() {
     isStreakOpen,
     closeStreak,
     canGoBackInApp,
-    runSaveBeforeLeavingTab,
     goBackInApp,
   })
 
@@ -863,7 +838,6 @@ function App() {
               onNavigateToPage={navigateToPage}
               activeInsightsTab={activeInsightsTab}
               onGoToTimeline={() => navigateToPage(AppPage.Timeline)}
-              saveLogWhenLeaving={saveLogWhenLeaving}
               entriesSettled={entriesSettled}
               entries={entries}
               selectedDate={selectedDate}
@@ -877,7 +851,6 @@ function App() {
               tagSuggestions={tagSuggestions}
               maxTagsPerEntry={maxTagsPerEntry}
               saving={saving}
-              saved={saved}
               moodColors={moodColors}
               formatLocalDate={formatLocalDate}
               onEntryDateChange={handleEntryDateChange}
@@ -945,7 +918,6 @@ function App() {
               activeInsightsTab={activeInsightsTab}
               lockNonLogTabs={lockNonLogTabs}
               onNavigateToPage={navigateToPage}
-              onBeforeLeaveTab={runSaveBeforeLeavingTab}
               canManageSubscription={canManageSubscription}
               isPortalLoading={isPortalLoading}
               isSignOutLoading={isSignOutLoading}

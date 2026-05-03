@@ -14,7 +14,6 @@ type Params = {
   isStreakOpen: boolean
   closeStreak: () => void
   canGoBackInApp: boolean
-  runSaveBeforeLeavingTab: () => void
   goBackInApp: () => boolean
 }
 
@@ -32,7 +31,6 @@ export function useAndroidBackButton({
   isStreakOpen,
   closeStreak,
   canGoBackInApp,
-  runSaveBeforeLeavingTab,
   goBackInApp,
 }: Params): void {
   useEffect(() => {
@@ -56,11 +54,8 @@ export function useAndroidBackButton({
         return
       }
 
-      if (canGoBackInApp) {
-        runSaveBeforeLeavingTab()
-        if (goBackInApp()) {
-          return
-        }
+      if (canGoBackInApp && goBackInApp()) {
+        return
       }
 
       CapacitorApp.exitApp()
@@ -80,7 +75,6 @@ export function useAndroidBackButton({
     closePaywall,
     closeStreak,
     canGoBackInApp,
-    runSaveBeforeLeavingTab,
     goBackInApp,
   ])
 }

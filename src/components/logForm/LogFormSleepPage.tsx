@@ -22,7 +22,10 @@ type LogFormSleepPageProps = {
   sleepMinuteNumber: number
   sleepTimeInputRef: RefObject<HTMLInputElement | null>
   sleepTimepickerRef: RefObject<TimepickerUI | null>
+  isFirstEntry: boolean
+  mood: number | null
   onNext: () => void
+  onDone: () => void
   t: TFunction
 }
 
@@ -41,7 +44,10 @@ export function LogFormSleepPage({
   sleepMinuteNumber,
   sleepTimeInputRef,
   sleepTimepickerRef,
+  isFirstEntry,
+  mood,
   onNext,
+  onDone,
   t,
 }: LogFormSleepPageProps) {
   return (
@@ -183,10 +189,18 @@ export function LogFormSleepPage({
             <div className="sleep-duration-picker__next-wrap">
               <button
                 type="button"
-                className="save-button sleep-duration-picker__next"
+                className="ghost log-form-carousel__skip"
+                onClick={onDone}
+                disabled={isFirstEntry && mood == null}
+              >
+                {t('log.carouselDone')}
+              </button>
+              <button
+                type="button"
+                className="save-button log-form-carousel__primary sleep-duration-picker__next"
                 onClick={onNext}
               >
-                {t('intro.next')}
+                {t('log.carouselNext')}
               </button>
             </div>
           </div>

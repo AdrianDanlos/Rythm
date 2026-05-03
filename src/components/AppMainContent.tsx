@@ -80,7 +80,6 @@ type AppMainContentProps = {
   onNavigateToPage: (page: AppPage) => void
   activeInsightsTab: InsightsSection
   activePage: AppPage
-  saveLogWhenLeaving: (cb: () => void) => void
   entriesSettled: boolean
   entries: Entry[]
   // Log form
@@ -95,7 +94,6 @@ type AppMainContentProps = {
   tagSuggestions: string[]
   maxTagsPerEntry: number
   saving: boolean
-  saved: boolean
   moodColors: string[]
   formatLocalDate: (date: Date) => string
   onEntryDateChange: (value: string) => void
@@ -105,10 +103,7 @@ type AppMainContentProps = {
   onMoodChange: (value: number) => void
   onNoteChange: (value: string) => void
   onTagsChange: (value: string) => void
-  onSave: (
-    event: React.FormEvent<HTMLFormElement>,
-    options?: { silent?: boolean },
-  ) => void
+  onSave: (event: React.FormEvent<HTMLFormElement>) => void
   firstEntrySaveSignal: number
   isFirstEntryTipActive: boolean
   onFirstEntryTipSignalConsumed: () => void
@@ -196,7 +191,6 @@ export function AppMainContent({
   onNavigateToPage,
   activeInsightsTab,
   activePage,
-  saveLogWhenLeaving,
   entriesSettled,
   entries,
   selectedDate,
@@ -210,7 +204,6 @@ export function AppMainContent({
   tagSuggestions,
   maxTagsPerEntry,
   saving,
-  saved,
   moodColors,
   formatLocalDate,
   onEntryDateChange,
@@ -440,12 +433,6 @@ export function AppMainContent({
           disabled={lockNonLogTabs}
           onClick={() => {
             if (lockNonLogTabs) return
-            saveLogWhenLeaving(() =>
-              void onSave(
-                { preventDefault: () => {} } as React.FormEvent<HTMLFormElement>,
-                { silent: true },
-              ),
-            )
             onNavigateToPage(AppPage.Summary)
           }}
         >
@@ -552,7 +539,6 @@ export function AppMainContent({
                               tagSuggestions={tagSuggestions}
                               maxTagsPerEntry={maxTagsPerEntry}
                               saving={saving}
-                              saved={saved}
                               moodColors={moodColors}
                               formatLocalDate={formatLocalDate}
                               tagColors={tagColors}

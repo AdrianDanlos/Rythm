@@ -22,7 +22,7 @@ vi.mock('sonner', () => ({
 }))
 
 vi.mock('../../lib/stats', () => ({
-  buildStats: vi.fn(() => ({ streak: 0 })),
+  buildStats: vi.fn(() => ({ streak: 0, sleepConsistencyBadges: [] as const })),
 }))
 
 vi.mock('../../lib/supportMessage', () => ({
@@ -35,11 +35,19 @@ vi.mock('../../lib/entries', () => ({
 
 const upsertEntryMock = vi.mocked(upsertEntry)
 const toastErrorMock = vi.mocked(toast.error)
+const toastInfoMock = vi.mocked(toast.info)
 ;(globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true
 
 type HookValue = ReturnType<typeof useLogForm>
 
-const baseStats = { streak: 0 } as StatsResult
+const baseStats = { streak: 0, sleepConsistencyBadges: [] } as unknown as StatsResult
+
+const TEST_TODAY = '2026-03-31'
+const TEST_YESTERDAY = '2026-03-30'
+
+function stubFormEvent(): FormEvent {
+  return { preventDefault: vi.fn() } as unknown as FormEvent
+}
 
 const makeEntry = (overrides: Partial<Entry>): Entry => ({
   id: 'entry-id',
@@ -70,6 +78,7 @@ describe('useLogForm', () => {
     setEntries.mockReset()
     upsertEntryMock.mockReset()
     toastErrorMock.mockReset()
+    toastInfoMock.mockReset()
   })
 
   afterEach(() => {
@@ -86,7 +95,8 @@ describe('useLogForm', () => {
         entries,
         setEntries,
         stats: baseStats,
-        today: '2026-03-31',
+        today: TEST_TODAY,
+        yesterday: TEST_YESTERDAY,
         formatLocalDate: date => date.toISOString().slice(0, 10),
         sleepThreshold: 8,
         isPro: false,
@@ -121,13 +131,35 @@ describe('useLogForm', () => {
     expect(latest?.sleepHours).toBe(formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS))
   })
 
+  it('shows post-save mood nudge when saving sleep-only after the first entry', async () => {
+    upsertEntryMock.mockResolvedValue(
+      makeEntry({
+        entry_date: TEST_TODAY,
+        mood: null,
+        is_complete: false,
+      }),
+    )
+    await renderHook([
+      makeEntry({
+        entry_date: TEST_YESTERDAY,
+        mood: 4,
+        is_complete: true,
+      }),
+    ])
+
+    await act(async () => {
+      await latest?.handleSave(stubFormEvent())
+    })
+
+    expect(upsertEntryMock).toHaveBeenCalled()
+    expect(toastInfoMock).toHaveBeenCalledWith('log.postSaveNeedMood')
+  })
+
   it('blocks first day save without mood', async () => {
     await renderHook([])
 
     await act(async () => {
-      await latest?.handleSave({
-        preventDefault: vi.fn(),
-      } as FormEvent)
+      await latest?.handleSave(stubFormEvent())
     })
 
     expect(upsertEntryMock).not.toHaveBeenCalled()
@@ -144,62 +176,22 @@ describe('useLogForm', () => {
     })
 
     await act(async () => {
-      await latest?.handleSave({
-        preventDefault: vi.fn(),
-      } as FormEvent)
+      await latest?.handleSave(stubFormEvent())
     })
 
     expect(upsertEntryMock).toHaveBeenCalledTimes(1)
     expect(upsertEntryMock).toHaveBeenCalledWith(
       expect.objectContaining({
         user_id: 'user-1',
-        entry_date: '2026-03-31',
+        entry_date: TEST_TODAY,
         sleep_hours: DEFAULT_LOG_SLEEP_HOURS,
         mood: 4,
       }),
     )
   })
 
-  it('does not persist silently when the user has not edited the form', async () => {
-    await renderHook([])
-
-    await act(async () => {
-      await latest?.handleSave(
-        {
-          preventDefault: vi.fn(),
-        } as FormEvent,
-        { silent: true },
-      )
-    })
-
-    expect(upsertEntryMock).not.toHaveBeenCalled()
-  })
-
-  it('still persists silently after an edit when first-day requirements are met', async () => {
-    const savedEntry = makeEntry({ mood: 4 })
-    upsertEntryMock.mockResolvedValue(savedEntry)
-    await renderHook([])
-
-    await act(async () => {
-      latest?.setSleepHours(formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS))
-      latest?.setMood(4)
-    })
-
-    await act(async () => {
-      await latest?.handleSave(
-        {
-          preventDefault: vi.fn(),
-        } as FormEvent,
-        { silent: true },
-      )
-    })
-
-    expect(upsertEntryMock).toHaveBeenCalledTimes(1)
-  })
-
   it('resets selected date to today when user changes', async () => {
     let currentUserId: string | undefined = 'user-1'
-    const currentToday = '2026-03-31'
 
     function UserSwitchHarness() {
       const form = useLogForm({
@@ -207,7 +199,8 @@ describe('useLogForm', () => {
         entries: [],
         setEntries,
         stats: baseStats,
-        today: currentToday,
+        today: TEST_TODAY,
+        yesterday: TEST_YESTERDAY,
         formatLocalDate: date => date.toISOString().slice(0, 10),
         sleepThreshold: 8,
         isPro: false,
@@ -226,7 +219,7 @@ describe('useLogForm', () => {
     })
 
     await act(async () => {
-      latest?.setEntryDate('2026-03-30')
+      latest?.setEntryDate(TEST_YESTERDAY)
     })
 
     expect(latest?.selectedDate.getDate()).toBe(30)
@@ -237,5 +230,59 @@ describe('useLogForm', () => {
     })
 
     expect(latest?.selectedDate.getDate()).toBe(31)
+  })
+
+  it('defaults to yesterday when yesterday has an incomplete entry', async () => {
+    await renderHook([
+      makeEntry({
+        entry_date: TEST_YESTERDAY,
+        is_complete: false,
+      }),
+    ])
+
+    expect(latest?.selectedDate.getDate()).toBe(30)
+  })
+
+  it('after user switch, follows incomplete yesterday for the new account', async () => {
+    let currentUserId: string | undefined = 'user-1'
+    let switchEntries: Entry[] = []
+
+    function UserSwitchHarness() {
+      const form = useLogForm({
+        userId: currentUserId,
+        entries: switchEntries,
+        setEntries,
+        stats: baseStats,
+        today: TEST_TODAY,
+        yesterday: TEST_YESTERDAY,
+        formatLocalDate: date => date.toISOString().slice(0, 10),
+        sleepThreshold: 8,
+        isPro: false,
+        maxTagsPerEntry: 10,
+      })
+
+      useEffect(() => {
+        latest = form
+      }, [form])
+
+      return null
+    }
+
+    await act(async () => {
+      root.render(<UserSwitchHarness />)
+    })
+
+    currentUserId = 'user-2'
+    switchEntries = [
+      makeEntry({
+        entry_date: TEST_YESTERDAY,
+        is_complete: false,
+      }),
+    ]
+    await act(async () => {
+      root.render(<UserSwitchHarness />)
+    })
+
+    expect(latest?.selectedDate.getDate()).toBe(30)
   })
 })

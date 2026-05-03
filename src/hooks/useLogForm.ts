@@ -20,6 +20,7 @@ import {
   MAX_LOG_SLEEP_HOURS,
   parseSleepHours,
 } from '../lib/utils/sleepHours'
+import { getDefaultLogDate } from '../lib/utils/defaultLogDate'
 
 const DEFAULT_TAG_SUGGESTION_KEYS = [
   'log.defaultTags.caffeine',
@@ -44,6 +45,7 @@ type UseLogFormParams = {
   setEntries: (entries: Entry[]) => void
   stats: StatsResult
   today: string
+  yesterday: string
   formatLocalDate: (value: Date) => string
   sleepThreshold: number
   isPro: boolean
@@ -62,6 +64,7 @@ export const useLogForm = ({
   setEntries,
   stats,
   today,
+  yesterday,
   formatLocalDate,
   sleepThreshold,
   maxTagsPerEntry,
@@ -74,53 +77,48 @@ export const useLogForm = ({
 }: UseLogFormParams) => {
   const defaultSleepHoursOption = formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS)
   const [entryDate, setEntryDate] = useState(today)
-  const lastAppTodayRef = useRef(today)
+  const defaultLogDate = useMemo(
+    () => getDefaultLogDate(today, yesterday, entries),
+    [today, yesterday, entries],
+  )
+  const prevDefaultLogDateRef = useRef(today)
   const lastUserIdRef = useRef(userId)
-  /** When the real calendar day advances, move off yesterday if user was on "today". */
-  useEffect(() => {
-    const prevToday = lastAppTodayRef.current
-    if (today !== prevToday) {
-      setEntryDate(ed => (ed === prevToday ? today : ed))
-      lastAppTodayRef.current = today
-    }
-  }, [today])
+
   useEffect(() => {
     if (userId === lastUserIdRef.current) {
       return
     }
-    // Keep log date account-scoped: switching users should never inherit prior user's selected day.
-    setEntryDate(today)
-    lastAppTodayRef.current = today
+    // Keep log date account-scoped; empty entries → today until fetch resolves (then sync effect may move to yesterday).
+    const nextDefault = getDefaultLogDate(today, yesterday, [])
+    prevDefaultLogDateRef.current = nextDefault
+    setEntryDate(nextDefault)
     lastUserIdRef.current = userId
-  }, [userId, today])
+  }, [userId, today, yesterday])
+
+  /** When the computed default changes, follow it only if the user was still on the previous default. */
+  useEffect(() => {
+    const prev = prevDefaultLogDateRef.current
+    if (prev !== defaultLogDate) {
+      setEntryDate(ed => (ed === prev ? defaultLogDate : ed))
+      prevDefaultLogDateRef.current = defaultLogDate
+    }
+  }, [defaultLogDate])
   const [sleepHours, setSleepHoursState] = useState(defaultSleepHoursOption)
   const [mood, setMoodState] = useState<number | null>(null)
   const [note, setNoteState] = useState('')
   const [tags, setTagsState] = useState('')
   const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-
-  /**
-   * True after the user changes sleep, mood, note, or tags for the current day.
-   * Resets when we load a day from `entries` / `entryDate`. Silent auto-save no-ops if false;
-   * explicit Save ignores this (the default sleep value in the UI still persists on submit).
-   */
-  const userEditedLogRef = useRef(false)
 
   const setSleepHours = useCallback((value: SetStateAction<string>) => {
-    userEditedLogRef.current = true
     setSleepHoursState(value)
   }, [])
   const setMood = useCallback((value: SetStateAction<number | null>) => {
-    userEditedLogRef.current = true
     setMoodState(value)
   }, [])
   const setNote = useCallback((value: SetStateAction<string>) => {
-    userEditedLogRef.current = true
     setNoteState(value)
   }, [])
   const setTags = useCallback((value: SetStateAction<string>) => {
-    userEditedLogRef.current = true
     setTagsState(value)
   }, [])
 
@@ -184,11 +182,9 @@ export const useLogForm = ({
 
   const showEntriesError = (message: string) => {
     toast.error(message)
-    setSaved(false)
   }
 
   useEffect(() => {
-    userEditedLogRef.current = false
     const existing = entries.find(item => item.entry_date === entryDate)
     if (existing) {
       setSleepHoursState(
@@ -208,46 +204,39 @@ export const useLogForm = ({
     }
   }, [entryDate, entries, defaultSleepHoursOption])
 
-  const handleSave = async (event: FormEvent, options?: { silent?: boolean }) => {
+  const handleSave = async (event: FormEvent) => {
     event.preventDefault()
-    if (options?.silent && !userEditedLogRef.current) {
-      return
-    }
     if (!userId) return
 
     if (entryDate > today) {
-      if (!options?.silent) showEntriesError(t('log.futureError'))
+      showEntriesError(t('log.futureError'))
       return
     }
 
     const hasSleepInput = sleepHours.trim().length > 0
     const parsedSleep = parseSleepHours(sleepHours)
     if (hasSleepInput && parsedSleep === null) {
-      if (!options?.silent) showEntriesError(t('log.invalidSleep'))
+      showEntriesError(t('log.invalidSleep'))
       return
     }
 
     const sleepHoursToSave = hasSleepInput ? parsedSleep! : DEFAULT_LOG_SLEEP_HOURS
     if (sleepHoursToSave < 0 || sleepHoursToSave > MAX_LOG_SLEEP_HOURS) {
-      if (!options?.silent) showEntriesError(t('log.sleepRange'))
+      showEntriesError(t('log.sleepRange'))
       return
     }
     if (mood !== null && (mood < 1 || mood > 5)) {
-      if (!options?.silent) showEntriesError(t('log.moodRange'))
+      showEntriesError(t('log.moodRange'))
       return
     }
 
     const tagList = parseTags(tags)
     if (tagList.some(tag => tag.length > MAX_TAG_LENGTH)) {
-      if (!options?.silent) {
-        showEntriesError(t('log.maxTagLength', { count: MAX_TAG_LENGTH }))
-      }
+      showEntriesError(t('log.maxTagLength', { count: MAX_TAG_LENGTH }))
       return
     }
     if (tagList.length > maxTagsPerEntry) {
-      if (!options?.silent) {
-        showEntriesError(t('log.maxTagsPerEntry', { count: maxTagsPerEntry }))
-      }
+      showEntriesError(t('log.maxTagsPerEntry', { count: maxTagsPerEntry }))
       return
     }
 
@@ -257,17 +246,12 @@ export const useLogForm = ({
       || tagList.length > 0
       || hasSleepInput
     if (!hasAnyValue) {
-      if (!options?.silent) showEntriesError(t('log.addAtLeastOneValue'))
+      showEntriesError(t('log.addAtLeastOneValue'))
       return
     }
 
     if (entries.length === 0 && mood === null) {
-      if (!options?.silent) {
-        showEntriesError(t('log.firstDayNeedMood'))
-      }
-      else {
-        setSaved(false)
-      }
+      showEntriesError(t('log.firstDayNeedMood'))
       return
     }
 
@@ -326,18 +310,21 @@ export const useLogForm = ({
         tierUps.sort((a, b) => b.tierDelta - a.tierDelta || a.badge.id.localeCompare(b.badge.id))
         onBadgeMilestoneReached?.(tierUps[0]!.badge)
       }
-      setSaved(true)
       const isFirstEntrySave = entries.length === 0 && nextEntries.length === 1
       const suppressPostSaveToast = shouldSuppressPostSaveToast?.(nextEntries.length) ?? false
-      if (!options?.silent && !suppressPostSaveToast && !isFirstEntrySave) {
+      if (!suppressPostSaveToast && !isFirstEntrySave) {
         if (tagList.length === 0) {
-          const isCompleteAfterSave = mood !== null
-          const isShortSleep = sleepHoursToSave < (sleepThreshold - 1)
-          const moodKey = mood == null ? null : mood >= 4 ? 'GoodMood' : mood <= 2 ? 'LowMood' : null
-          const messageKey = isCompleteAfterSave && moodKey
-            ? `log.postSaveSuggestions.${isShortSleep ? 'lowSleep' : 'normalSleep'}NoEvents${moodKey}`
-            : 'log.saveNoEvents'
-          toast.info(t(messageKey))
+          if (mood === null) {
+            toast.info(t('log.postSaveNeedMood'))
+          }
+          else {
+            const isShortSleep = sleepHoursToSave < (sleepThreshold - 1)
+            const moodKey = mood >= 4 ? 'GoodMood' : mood <= 2 ? 'LowMood' : null
+            const messageKey = moodKey
+              ? `log.postSaveSuggestions.${isShortSleep ? 'lowSleep' : 'normalSleep'}NoEvents${moodKey}`
+              : 'log.saveNoEvents'
+            toast.info(t(messageKey))
+          }
         }
         else {
           toast.success(getSupportMessage({
@@ -348,17 +335,14 @@ export const useLogForm = ({
           }))
         }
       }
-      window.setTimeout(() => setSaved(false), 2000)
-      if (!options?.silent) {
-        onEntrySaveSuccess?.({
-          previousEntryCount: entries.length,
-          nextEntryCount: nextEntries.length,
-        })
-        onEntrySavedForToday?.(nextEntries.length)
-      }
+      onEntrySaveSuccess?.({
+        previousEntryCount: entries.length,
+        nextEntryCount: nextEntries.length,
+      })
+      onEntrySavedForToday?.(nextEntries.length)
     }
     catch {
-      if (!options?.silent) showEntriesError(t('log.saveEntryError'))
+      showEntriesError(t('log.saveEntryError'))
     }
     finally {
       setSaving(false)
@@ -378,7 +362,6 @@ export const useLogForm = ({
     setTags,
     tagSuggestions,
     saving,
-    saved,
     handleSave,
   }
 }

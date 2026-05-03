@@ -13,7 +13,6 @@ type AppBottomNavProps = {
   activeInsightsTab: InsightsSection
   lockNonLogTabs: boolean
   onNavigateToPage: (page: AppPage) => void
-  onBeforeLeaveTab: () => void
   canManageSubscription: boolean
   isPortalLoading: boolean
   isSignOutLoading: boolean
@@ -29,7 +28,6 @@ export function AppBottomNav({
   activeInsightsTab,
   lockNonLogTabs,
   onNavigateToPage,
-  onBeforeLeaveTab,
   canManageSubscription,
   isPortalLoading,
   isSignOutLoading,
@@ -57,25 +55,21 @@ export function AppBottomNav({
 
   const goToSummary = () => {
     if (lockNonLogTabs) return
-    onBeforeLeaveTab()
     onNavigateToPage(AppPage.Summary)
   }
 
   const goToCharts = () => {
     if (lockNonLogTabs) return
-    onBeforeLeaveTab()
     onNavigateToPage(AppPage.Charts)
   }
 
   const goToEvents = () => {
     if (lockNonLogTabs) return
-    onBeforeLeaveTab()
     onNavigateToPage(AppPage.Events)
   }
 
   const goToTimeline = () => {
     if (lockNonLogTabs) return
-    onBeforeLeaveTab()
     onNavigateToPage(AppPage.Timeline)
   }
 

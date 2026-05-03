@@ -44,7 +44,6 @@ export type LogFormProps = {
   tagSuggestions: string[]
   maxTagsPerEntry: number
   saving: boolean
-  saved: boolean
   moodColors: string[]
   formatLocalDate: (date: Date) => string
   tagColors?: Record<string, string>
@@ -74,7 +73,6 @@ export const LogForm = ({
   tagSuggestions,
   maxTagsPerEntry,
   saving,
-  saved,
   moodColors,
   formatLocalDate,
   tagColors,
@@ -311,6 +309,14 @@ export const LogForm = ({
     formRef.current?.requestSubmit()
   }, [])
 
+  const isFirstEntry = isFirstEntryFlow
+  const advanceCarousel = useCallback(
+    (next: LogCarouselPage) => {
+      setCarouselPage(next)
+    },
+    [setCarouselPage],
+  )
+
   const addTag = (tag: string) => {
     const normalized = tag.trim().toLowerCase()
     if (
@@ -432,7 +438,10 @@ export const LogForm = ({
                 sleepMinuteNumber={sleepMinuteNumber}
                 sleepTimeInputRef={sleepTimeInputRef}
                 sleepTimepickerRef={sleepTimepickerRef}
-                onNext={() => setCarouselPage(1)}
+                isFirstEntry={isFirstEntry}
+                mood={mood}
+                onNext={() => advanceCarousel(1)}
+                onDone={submitWithSaveHandler}
                 t={t}
               />
             </motion.div>
@@ -451,7 +460,8 @@ export const LogForm = ({
                 moodColors={moodColors}
                 onMoodChange={onMoodChange}
                 saving={saving}
-                onNext={() => setCarouselPage(2)}
+                isFirstEntry={isFirstEntry}
+                onNext={() => advanceCarousel(2)}
                 onSkip={submitWithSaveHandler}
                 t={t}
               />
@@ -479,8 +489,9 @@ export const LogForm = ({
                 showCreateTagSuggestion={showCreateTagSuggestion}
                 addTag={addTag}
                 hasAtLeastOneEvent={hasAtLeastOneEvent}
+                isFirstEntry={isFirstEntry}
                 saving={saving}
-                onNext={() => setCarouselPage(3)}
+                onNext={() => advanceCarousel(3)}
                 onSkip={submitWithSaveHandler}
                 t={t}
               />
@@ -500,7 +511,6 @@ export const LogForm = ({
                 setNoteEditorRef={setNoteEditorRef}
                 onNoteInput={handleNoteInput}
                 saving={saving}
-                saved={saved}
                 onSave={submitWithSaveHandler}
                 onSkip={submitWithSaveHandler}
                 t={t}
@@ -523,7 +533,7 @@ export const LogForm = ({
             </motion.div>
           )}
         </AnimatePresence>
-        {isFirstEntryFlow && carouselPage < 4
+        {isFirstEntryFlow && carouselPage < 4 && carouselPage !== 3
           ? (
               <p className="log-form-carousel__first-entry-privacy">
                 <Lock size={14} aria-hidden="true" />

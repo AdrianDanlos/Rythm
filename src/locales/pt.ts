@@ -195,6 +195,8 @@ const pt = {
   },
   log: {
     carouselAria: 'Etapas do registro diário',
+    carouselNext: 'Próximo',
+    carouselDone: 'Concluído',
     firstEntryComplete: 'É só isso! Volte amanhã e registre mais uma entrada. Quanto mais dias você acompanhar, mais vai começar a entender sobre si mesmo.',
     firstEntryCompleteButton: 'Entendi',
     loading: 'Carregando...',
@@ -251,6 +253,7 @@ const pt = {
     save: 'Salvar',
     finish: 'Concluir',
     saveNoEvents: 'Salvo. Você não adicionou eventos de hoje. Adicione da próxima vez para ter estatísticas mais ricas.',
+    postSaveNeedMood: 'Guardado. Lembra-te de adicionar o teu humor para melhores estatísticas.',
     defaultTags: {
       caffeine: 'cafeína',
       stress: 'estresse',

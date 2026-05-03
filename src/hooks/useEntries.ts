@@ -32,6 +32,7 @@ export const useEntries = ({
     }
 
     setEntriesSettled(false)
+    setEntries([])
 
     const loadEntries = async () => {
       setEntriesLoading(true)

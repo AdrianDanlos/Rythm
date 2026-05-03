@@ -11,7 +11,6 @@ type LogFormJournalPageProps = {
   setNoteEditorRef: (node: HTMLDivElement | null) => void
   onNoteInput: (event: FormEvent<HTMLDivElement>) => void
   saving: boolean
-  saved: boolean
   onSave: () => void
   onSkip: () => void
   t: TFunction
@@ -22,7 +21,6 @@ export function LogFormJournalPage({
   setNoteEditorRef,
   onNoteInput,
   saving,
-  saved,
   onSave,
   onSkip,
   t,
@@ -71,7 +69,7 @@ export function LogFormJournalPage({
             onClick={onSkip}
             disabled={saving}
           >
-            {t('intro.skip')}
+            {t('log.carouselDone')}
           </button>
           <button
             type="button"
@@ -79,11 +77,7 @@ export function LogFormJournalPage({
             onClick={onSave}
             disabled={saving}
           >
-            {saving
-              ? <span className="spinner" aria-label={t('log.saving')} />
-              : saved
-                ? t('log.saved')
-                : t('log.finish')}
+            {t('log.finish')}
           </button>
         </motion.div>
       </div>
