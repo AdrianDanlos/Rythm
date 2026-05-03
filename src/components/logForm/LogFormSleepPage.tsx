@@ -52,7 +52,11 @@ export function LogFormSleepPage({
 }: LogFormSleepPageProps) {
   return (
     <>
-      <div id="log-calendar" ref={calendarWrapRef} className="log-date-picker-wrap">
+      <div
+        id="log-calendar"
+        ref={calendarWrapRef}
+        className={classNames('log-date-picker-wrap', calendarOpen && 'log-date-picker-wrap--calendar-open')}
+      >
         <button
           type="button"
           className="log-date-picker-collapsed"

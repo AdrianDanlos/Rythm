@@ -108,6 +108,7 @@ export const useLogForm = ({
   const [note, setNoteState] = useState('')
   const [tags, setTagsState] = useState('')
   const [saving, setSaving] = useState(false)
+  const saveInFlightRef = useRef(false)
 
   const setSleepHours = useCallback((value: SetStateAction<string>) => {
     setSleepHoursState(value)
@@ -206,6 +207,7 @@ export const useLogForm = ({
 
   const handleSave = async (event: FormEvent) => {
     event.preventDefault()
+    if (saveInFlightRef.current) return
     if (!userId) return
 
     if (entryDate > today) {
@@ -263,6 +265,7 @@ export const useLogForm = ({
           : new Date().toISOString())
       : null
 
+    saveInFlightRef.current = true
     setSaving(true)
     try {
       const savedEntry = await upsertEntry({
@@ -346,6 +349,7 @@ export const useLogForm = ({
     }
     finally {
       setSaving(false)
+      saveInFlightRef.current = false
     }
   }
 

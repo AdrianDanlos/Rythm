@@ -21,7 +21,6 @@ type LogFormTagsPageProps = {
   addTag: (tag: string) => void
   hasAtLeastOneEvent: boolean
   isFirstEntry: boolean
-  saving: boolean
   onNext: () => void
   onSkip: () => void
   t: TFunction
@@ -41,7 +40,6 @@ export function LogFormTagsPage({
   addTag,
   hasAtLeastOneEvent,
   isFirstEntry,
-  saving,
   onNext,
   onSkip,
   t,
@@ -110,7 +108,6 @@ export function LogFormTagsPage({
             type="button"
             className="ghost log-form-carousel__skip"
             onClick={onSkip}
-            disabled={saving}
           >
             {t('log.carouselDone')}
           </button>
@@ -118,7 +115,7 @@ export function LogFormTagsPage({
             type="button"
             className="save-button log-form-carousel__primary"
             onClick={onNext}
-            disabled={saving || (isFirstEntry && !hasAtLeastOneEvent)}
+            disabled={isFirstEntry && !hasAtLeastOneEvent}
           >
             {t('log.carouselNext')}
           </button>

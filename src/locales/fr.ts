@@ -611,7 +611,7 @@ const fr = {
     restButLowMood: 'Vous avez bien dormi et pourtant la journée a été dure. Ne soyez pas trop dur avec vous-même, certains jours sont plus difficiles que d\'autres.',
     exerciseGoodMood: 'Sport et bonne humeur ! Vous voyez le lien. Continuez comme ça.',
     loggedPatterns:
-      'Enregistré ! À chaque entrée, tu te construis une image plus claire de toi-même.',
+      'Sauvegardé ! Chaque entrée te révèle un peu plus.',
   },
   badges: {
     maxLevel: 'Niveau max',

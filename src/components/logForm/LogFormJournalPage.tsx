@@ -10,7 +10,6 @@ type LogFormJournalPageProps = {
   note: string
   setNoteEditorRef: (node: HTMLDivElement | null) => void
   onNoteInput: (event: FormEvent<HTMLDivElement>) => void
-  saving: boolean
   onSave: () => void
   onSkip: () => void
   t: TFunction
@@ -20,7 +19,6 @@ export function LogFormJournalPage({
   note,
   setNoteEditorRef,
   onNoteInput,
-  saving,
   onSave,
   onSkip,
   t,
@@ -67,7 +65,6 @@ export function LogFormJournalPage({
             type="button"
             className="ghost log-form-carousel__skip"
             onClick={onSkip}
-            disabled={saving}
           >
             {t('log.carouselDone')}
           </button>
@@ -75,7 +72,6 @@ export function LogFormJournalPage({
             type="button"
             className="save-button log-form-carousel__primary"
             onClick={onSave}
-            disabled={saving}
           >
             {t('log.finish')}
           </button>

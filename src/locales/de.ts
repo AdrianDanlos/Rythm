@@ -611,7 +611,7 @@ const de = {
     restButLowMood: 'Du hast gut geschlafen und trotzdem war es ein schwieriger Tag. Sei nicht zu hart zu dir – manche Tage sind eben schwerer als andere.',
     exerciseGoodMood: 'Sport und gute Stimmung! Du siehst den Zusammenhang. Weiter so.',
     loggedPatterns:
-      'Gespeichert! Mit jedem Eintrag bekommst du ein klareres Bild von dir selbst.',
+      'Gespeichert! Jeder Eintrag verrät dir ein bisschen mehr über dich.',
   },
   badges: {
     maxLevel: 'Max. Level',

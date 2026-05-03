@@ -611,7 +611,7 @@ const pt = {
     restButLowMood: 'Você descansou bem e ainda assim foi um dia difícil. Não seja duro consigo — alguns dias são assim mesmo.',
     exerciseGoodMood: 'Exercício e bom humor! Você está vendo a conexão. Continue assim.',
     loggedPatterns:
-      'Salvo! A cada registro, você constrói uma imagem mais clara de si mesmo.',
+      'Salvo! Cada entrada revela um pouco mais sobre você.',
   },
   badges: {
     maxLevel: 'Nível máximo',

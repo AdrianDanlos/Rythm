@@ -612,7 +612,7 @@ const es = {
     restButLowMood: 'Ayer descansaste bien y aún así ha sido un día difícil. No seas duro contigo mismo, algunos días son más difíciles que otros.',
     exerciseGoodMood: 'Ejercicio y buen ánimo! Estás viendo la conexión. Sigue así.',
     loggedPatterns:
-      '¡Guardado! Con cada entrada, construyes una imagen más clara de ti mismo.',
+      '¡Guardado! Cada entrada te revela un poco más.',
   },
   badges: {
     maxLevel: 'Nivel máximo',

@@ -609,7 +609,7 @@ const en = {
     restButLowMood: 'Despite giving your body good rest last night, today was still tough. Be kind to yourself, some days are just harder.',
     exerciseGoodMood: 'Exercise and a good mood! You are seeing the connection. Keep it up.',
     loggedPatterns:
-      'Saved! You\'re building a clearer picture of yourself with every entry.',
+      'Saved! Every entry reveals a little more about you.',
   },
   badges: {
     maxLevel: 'Max level',

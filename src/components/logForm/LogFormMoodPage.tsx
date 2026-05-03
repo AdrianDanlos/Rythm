@@ -19,7 +19,6 @@ type LogFormMoodPageProps = {
   mood: number | null
   moodColors: string[]
   onMoodChange: (value: number) => void
-  saving: boolean
   isFirstEntry: boolean
   onNext: () => void
   onSkip: () => void
@@ -30,7 +29,6 @@ export function LogFormMoodPage({
   mood,
   moodColors,
   onMoodChange,
-  saving,
   isFirstEntry,
   onNext,
   onSkip,
@@ -112,7 +110,7 @@ export function LogFormMoodPage({
             type="button"
             className="ghost log-form-carousel__skip"
             onClick={onSkip}
-            disabled={saving || (isFirstEntry && mood == null)}
+            disabled={isFirstEntry && mood == null}
           >
             {t('log.carouselDone')}
           </button>
@@ -120,7 +118,7 @@ export function LogFormMoodPage({
             type="button"
             className="save-button log-form-carousel__primary"
             onClick={onNext}
-            disabled={saving || (isFirstEntry && mood == null)}
+            disabled={isFirstEntry && mood == null}
           >
             {t('log.carouselNext')}
           </button>

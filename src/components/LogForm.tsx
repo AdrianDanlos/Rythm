@@ -72,7 +72,6 @@ export const LogForm = ({
   tags,
   tagSuggestions,
   maxTagsPerEntry,
-  saving,
   moodColors,
   formatLocalDate,
   tagColors,
@@ -459,7 +458,6 @@ export const LogForm = ({
                 mood={mood}
                 moodColors={moodColors}
                 onMoodChange={onMoodChange}
-                saving={saving}
                 isFirstEntry={isFirstEntry}
                 onNext={() => advanceCarousel(2)}
                 onSkip={submitWithSaveHandler}
@@ -490,7 +488,6 @@ export const LogForm = ({
                 addTag={addTag}
                 hasAtLeastOneEvent={hasAtLeastOneEvent}
                 isFirstEntry={isFirstEntry}
-                saving={saving}
                 onNext={() => advanceCarousel(3)}
                 onSkip={submitWithSaveHandler}
                 t={t}
@@ -510,7 +507,6 @@ export const LogForm = ({
                 note={note}
                 setNoteEditorRef={setNoteEditorRef}
                 onNoteInput={handleNoteInput}
-                saving={saving}
                 onSave={submitWithSaveHandler}
                 onSkip={submitWithSaveHandler}
                 t={t}

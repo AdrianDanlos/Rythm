@@ -3706,11 +3706,18 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   z-index: 1;
 }
 
-/* Overlay below the trigger so opening the calendar does not push sleep/mood blocks down */
+/* While open, stack above fixed-position tooltip bubbles (see .app-tooltip-bubble) */
+.log-date-picker-wrap--calendar-open {
+  z-index: 50;
+}
+
+/* Overlay below the trigger so opening the calendar does not push sleep/mood blocks down.
+   Inset left/right to match .log-form-carousel--fullbleed .log-date-picker-wrap padding:
+   absolute positioning uses the padding box, so 0/0 would span wider than the in-flow button. */
 .log-date-picker-panel-motion {
   position: absolute;
-  left: 0;
-  right: 0;
+  left: max(16px, env(safe-area-inset-left, 0px));
+  right: max(16px, env(safe-area-inset-right, 0px));
   top: 100%;
   z-index: 20;
   padding-top: 10px;
@@ -3810,7 +3817,7 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   margin-top: 10px;
   padding: 12px 10px 16px;
   border-radius: 16px;
-  border: none;
+  border: 1px solid var(--border);
   background: var(--card);
   box-shadow: var(--card-shadow);
 }

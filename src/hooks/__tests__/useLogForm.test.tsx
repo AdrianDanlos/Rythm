@@ -190,6 +190,34 @@ describe('useLogForm', () => {
     )
   })
 
+  it('ignores duplicate save requests while a save is in flight', async () => {
+    let resolveSave: ((entry: Entry) => void) | null = null
+    const pendingSave = new Promise<Entry>((resolve) => {
+      resolveSave = resolve
+    })
+    upsertEntryMock.mockReturnValue(pendingSave)
+    await renderHook([
+      makeEntry({
+        entry_date: TEST_YESTERDAY,
+        mood: 4,
+        is_complete: true,
+      }),
+    ])
+
+    let firstSavePromise: Promise<void> | undefined
+    await act(async () => {
+      firstSavePromise = latest?.handleSave(stubFormEvent())
+      await latest?.handleSave(stubFormEvent())
+    })
+
+    expect(upsertEntryMock).toHaveBeenCalledTimes(1)
+
+    await act(async () => {
+      resolveSave?.(makeEntry({ entry_date: TEST_TODAY, mood: 4, is_complete: true }))
+      await firstSavePromise
+    })
+  })
+
   it('resets selected date to today when user changes', async () => {
     let currentUserId: string | undefined = 'user-1'
 
