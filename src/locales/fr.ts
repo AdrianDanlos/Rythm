@@ -148,7 +148,7 @@ const fr = {
     trialSummary:
       'Essai gratuit de {{days}} jours, puis {{price}}. Aucun prélèvement si vous annulez avant la fin de l’essai.',
     trialCancelPlay:
-      'Pour annuler : Google Play Store → icône de profil → Paiements et abonnements → Abonnements → Rythm Pro, et résiliez avant la fin de l’essai.',
+      'Pour annuler avant la fin de l’essai : Menu → Compte → Gérer l’abonnement.',
     startFreeTrial: 'Commencer l’essai gratuit',
     choosePlan: 'Choisir le plan',
     planMonthly: 'Mensuel',

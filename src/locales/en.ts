@@ -145,7 +145,7 @@ const en = {
     trialSummary:
       '{{days}}-day free trial, then {{price}}. You will not be charged if you cancel before the trial ends.',
     trialCancelPlay:
-      'To cancel: open the Google Play Store app, tap your profile icon, then Payments & subscriptions → Subscriptions → Rythm Pro, and cancel there before the trial ends.',
+      'To cancel before the trial ends: Menu → Account → Manage subscription.',
     startFreeTrial: 'Start free trial',
     choosePlan: 'Choose plan',
     planMonthly: 'Monthly',
