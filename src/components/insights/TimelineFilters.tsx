@@ -461,6 +461,7 @@ export const TimelineFilters = ({
                           selectedKeys={new Set(draftTimelineFilters.tags)}
                           onToggleOption={option => onToggleDraftTag(option.key)}
                           tagColors={tagColors}
+                          listAboveInput
                         />
                       </motion.div>
                     )}

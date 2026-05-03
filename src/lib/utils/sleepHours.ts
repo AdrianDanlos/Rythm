@@ -45,9 +45,15 @@ export const parseSleepHours = (value: string) => {
   return asNumber
 }
 
+/** Canonical hours string for the log form state (minute precision; matches 5‑min sleep picker). */
 export const formatSleepHoursOption = (value: number) => {
-  const rounded = Math.round(value * 4) / 4
-  return rounded.toFixed(2).replace(/\.?0+$/, '')
+  if (!Number.isFinite(value)) {
+    return String(DEFAULT_LOG_SLEEP_HOURS)
+  }
+  const roundedMinutes = Math.round(value * 60)
+  const clampedMinutes = Math.max(0, Math.min(MAX_LOG_SLEEP_MINUTES, roundedMinutes))
+  const asHours = clampedMinutes / 60
+  return asHours.toFixed(2).replace(/\.?0+$/, '')
 }
 
 export const formatSleepHours = (value: number) => {

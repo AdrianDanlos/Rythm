@@ -1,7 +1,31 @@
 import classNames from 'classnames'
-import type { RefObject } from 'react'
+import { useCallback, useLayoutEffect, useRef, type RefObject } from 'react'
 import { getFallbackTagColor } from '../lib/colors'
 import { getHighContrastTextColor } from '../lib/utils/colorContrast'
+
+/** Keeps tag-list scroll after toggle when options reorder / parent layout animates. */
+function usePreserveScrollOnToggle(inputRef: RefObject<HTMLInputElement | null>) {
+  const scrollElRef = useRef<HTMLDivElement | null>(null)
+  const pendingTop = useRef<number | null>(null)
+  const runThenRestoreScroll = useCallback((fn: () => void) => {
+    const el = scrollElRef.current
+    pendingTop.current = el ? el.scrollTop : null
+    fn()
+  }, [])
+  useLayoutEffect(() => {
+    const y = pendingTop.current
+    if (y == null) return
+    pendingTop.current = null
+    const apply = () => {
+      const n = scrollElRef.current
+      if (n) n.scrollTop = y
+    }
+    apply()
+    requestAnimationFrame(apply)
+    inputRef.current?.focus({ preventScroll: true })
+  })
+  return [scrollElRef, runThenRestoreScroll] as const
+}
 
 export type EventTagOption = {
   key: string
@@ -52,6 +76,9 @@ export const EventTagSelector = ({
   listAboveInput = false,
   onSubmitSearch,
 }: EventTagSelectorProps) => {
+  const fallbackInputRef = useRef<HTMLInputElement | null>(null)
+  const searchInputRef = inputRef ?? fallbackInputRef
+  const [tagsScrollRef, runThenRestoreScroll] = usePreserveScrollOnToggle(searchInputRef)
   const visibleOptions = maxVisibleOptions != null
     ? options.slice(0, maxVisibleOptions)
     : options
@@ -60,7 +87,7 @@ export const EventTagSelector = ({
     <div className="event-tag-selector-input-wrap">
       <div className="timeline-filter-tag-search">
         <input
-          ref={inputRef}
+          ref={searchInputRef}
           type="search"
           className="tag-dropdown-trigger log-reflection-input"
           value={searchValue}
@@ -100,7 +127,7 @@ export const EventTagSelector = ({
 
   const listBlock = (
     <div className="timeline-filter-tags-fade-wrap">
-      <div className="timeline-filter-tags-scroll">
+      <div ref={tagsScrollRef} className="timeline-filter-tags-scroll">
         <div className="timeline-filter-tags-wrap">
           {visibleOptions.length > 0
             ? visibleOptions.map((option, index) => {
@@ -122,7 +149,8 @@ export const EventTagSelector = ({
                         ? { backgroundColor: effectiveTagColor, color: textColor, borderColor: 'transparent' }
                         : undefined
                     }
-                    onClick={() => onToggleOption(option)}
+                    onMouseDown={event => event.preventDefault()}
+                    onClick={() => runThenRestoreScroll(() => onToggleOption(option))}
                     disabled={isDisabled}
                   >
                     #

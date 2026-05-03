@@ -104,9 +104,10 @@ export function LogFormSleepPage({
                       weekStartsOn={1}
                       selected={selectedDate}
                       defaultMonth={selectedDate}
-                      onSelect={(date: Date | undefined) => {
-                        if (!date) return
-                        onEntryDateChange(formatLocalDate(date))
+                      onSelect={(selected) => {
+                        if (selected) {
+                          onEntryDateChange(formatLocalDate(selected))
+                        }
                         setCalendarOpen(false)
                       }}
                       disabled={{ after: todayDate }}
