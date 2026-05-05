@@ -9,6 +9,7 @@ export const STORAGE_KEYS = {
   PROFILE_NAME: 'profileName',
   PERSONAL_SLEEP_TARGET: 'personalSleepTarget',
   INTRO_COMPLETED: 'rythm_intro_completed',
+  FIRST_ENTRY_TIP_DISMISSED: 'rythm_first_entry_tip_dismissed',
   RETURNING_USER: 'rythm_returning_user',
   RATED_GOOGLE_PLAY: 'rythm_rated_google_play',
   DAILY_REMINDER_ENABLED: 'dailyReminderEnabled',

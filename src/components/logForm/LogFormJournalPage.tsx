@@ -12,6 +12,9 @@ type LogFormJournalPageProps = {
   onNoteInput: (event: FormEvent<HTMLDivElement>) => void
   onSave: () => void
   onSkip: () => void
+  isSaving: boolean
+  isDoneSaving: boolean
+  isFinishSaving: boolean
   t: TFunction
 }
 
@@ -21,8 +24,21 @@ export function LogFormJournalPage({
   onNoteInput,
   onSave,
   onSkip,
+  isSaving,
+  isDoneSaving,
+  isFinishSaving,
   t,
 }: LogFormJournalPageProps) {
+  const handleSkip = () => {
+    if (isSaving) return
+    onSkip()
+  }
+
+  const handleSave = () => {
+    if (isSaving) return
+    onSave()
+  }
+
   return (
     <div className="log-form-carousel__reflection-land">
       <div className="log-form-carousel__reflection-cluster">
@@ -64,16 +80,19 @@ export function LogFormJournalPage({
           <button
             type="button"
             className="ghost log-form-carousel__skip"
-            onClick={onSkip}
+            onClick={handleSkip}
           >
-            {t('log.carouselDone')}
+            {isDoneSaving ? t('log.saving') : t('log.carouselDone')}
+            {isDoneSaving && <span className="spinner log-form-carousel__saving-spinner" aria-hidden="true" />}
           </button>
           <button
             type="button"
             className="save-button log-form-carousel__primary"
-            onClick={onSave}
+            onClick={handleSave}
+            disabled={isFinishSaving}
           >
-            {t('log.finish')}
+            {isFinishSaving ? t('log.saving') : t('log.finish')}
+            {isFinishSaving && <span className="spinner log-form-carousel__saving-spinner" aria-hidden="true" />}
           </button>
         </motion.div>
       </div>

@@ -54,6 +54,7 @@ import { requestOpenLogCarouselAtMood } from './hooks/useScrollToLogDailyEventsO
 import { useTagColors } from './hooks/useTagColors'
 import { useAppMenuPanelGestures } from './hooks/useAppMenuPanelGestures'
 import type { Badge } from './lib/types/stats'
+import { STORAGE_KEYS } from './lib/storageKeys'
 
 function App() {
   const { t } = useTranslation()
@@ -258,6 +259,15 @@ function App() {
 
   const [firstEntrySaveSignal, setFirstEntrySaveSignal] = useState(0)
   const [isFirstEntryTipActive, setIsFirstEntryTipActive] = useState(false)
+  const [isFirstEntryTipDismissed, setIsFirstEntryTipDismissed] = useState(() => {
+    if (typeof window === 'undefined') return false
+    try {
+      return window.localStorage.getItem(STORAGE_KEYS.FIRST_ENTRY_TIP_DISMISSED) === 'true'
+    }
+    catch {
+      return false
+    }
+  })
   const handleFirstEntryCreated = useCallback(() => {
     setIsFirstEntryTipActive(true)
     setFirstEntrySaveSignal((n) => {
@@ -269,6 +279,15 @@ function App() {
   }, [])
   const handleFirstEntryTipContinueToSummary = useCallback(() => {
     setIsFirstEntryTipActive(false)
+    setIsFirstEntryTipDismissed(true)
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem(STORAGE_KEYS.FIRST_ENTRY_TIP_DISMISSED, 'true')
+      }
+      catch {
+        // Ignore storage write failures.
+      }
+    }
     goToInsightsSummary()
   }, [goToInsightsSummary])
   const closeReviewPrompt = useCallback(() => {
@@ -332,8 +351,15 @@ function App() {
       if (previousEntryCount === 10 && nextEntryCount === 11) {
         setIsReviewPromptOpen(true)
       }
+      if (nextEntryCount === 1) {
+        if (!isFirstEntryTipDismissed) {
+          handleFirstEntryCreated()
+        }
+        else {
+          goToInsightsSummary()
+        }
+      }
     },
-    onFirstEntryCreated: handleFirstEntryCreated,
   })
 
   const handleEntryDateChange = (newDateStr: string) => {

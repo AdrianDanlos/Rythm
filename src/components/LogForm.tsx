@@ -61,6 +61,8 @@ export type LogFormProps = {
   onFirstEntryTipContinueToSummary: () => void
 }
 
+type SaveAction = 'sleepDone' | 'moodDone' | 'tagsDone' | 'journalDone' | 'journalFinish' | null
+
 export const LogForm = ({
   selectedDate,
   todayDate,
@@ -72,6 +74,7 @@ export const LogForm = ({
   tags,
   tagSuggestions,
   maxTagsPerEntry,
+  saving,
   moodColors,
   formatLocalDate,
   tagColors,
@@ -104,6 +107,7 @@ export const LogForm = ({
   const [calendarOpen, setCalendarOpen] = useState(false)
   const calendarWrapRef = useRef<HTMLDivElement | null>(null)
   const formRef = useRef<HTMLFormElement | null>(null)
+  const [activeSaveAction, setActiveSaveAction] = useState<SaveAction>(null)
   const reduceMotion = useReducedMotion()
   const slideTransition: LogFormSlideTransition = reduceMotion
     ? { duration: 0 }
@@ -304,9 +308,16 @@ export const LogForm = ({
 
   const isEntryToday = formatLocalDate(selectedDate) === formatLocalDate(todayDate)
   const hasAtLeastOneEvent = usedTags.length > 0
-  const submitWithSaveHandler = useCallback(() => {
+  const submitWithAction = useCallback((action: SaveAction) => {
+    if (saving) return
+    setActiveSaveAction(action)
     formRef.current?.requestSubmit()
-  }, [])
+  }, [saving])
+  useEffect(() => {
+    if (!saving) {
+      setActiveSaveAction(null)
+    }
+  }, [saving])
 
   const isFirstEntry = isFirstEntryFlow
   const advanceCarousel = useCallback(
@@ -440,7 +451,9 @@ export const LogForm = ({
                 isFirstEntry={isFirstEntry}
                 mood={mood}
                 onNext={() => advanceCarousel(1)}
-                onDone={submitWithSaveHandler}
+                onDone={() => submitWithAction('sleepDone')}
+                isSaving={saving}
+                isDoneSaving={saving && activeSaveAction === 'sleepDone'}
                 t={t}
               />
             </motion.div>
@@ -460,7 +473,9 @@ export const LogForm = ({
                 onMoodChange={onMoodChange}
                 isFirstEntry={isFirstEntry}
                 onNext={() => advanceCarousel(2)}
-                onSkip={submitWithSaveHandler}
+                onSkip={() => submitWithAction('moodDone')}
+                isSaving={saving}
+                isDoneSaving={saving && activeSaveAction === 'moodDone'}
                 t={t}
               />
             </motion.div>
@@ -489,7 +504,9 @@ export const LogForm = ({
                 hasAtLeastOneEvent={hasAtLeastOneEvent}
                 isFirstEntry={isFirstEntry}
                 onNext={() => advanceCarousel(3)}
-                onSkip={submitWithSaveHandler}
+                onSkip={() => submitWithAction('tagsDone')}
+                isSaving={saving}
+                isDoneSaving={saving && activeSaveAction === 'tagsDone'}
                 t={t}
               />
             </motion.div>
@@ -507,8 +524,11 @@ export const LogForm = ({
                 note={note}
                 setNoteEditorRef={setNoteEditorRef}
                 onNoteInput={handleNoteInput}
-                onSave={submitWithSaveHandler}
-                onSkip={submitWithSaveHandler}
+                onSave={() => submitWithAction('journalFinish')}
+                onSkip={() => submitWithAction('journalDone')}
+                isSaving={saving}
+                isDoneSaving={saving && activeSaveAction === 'journalDone'}
+                isFinishSaving={saving && activeSaveAction === 'journalFinish'}
                 t={t}
               />
             </motion.div>

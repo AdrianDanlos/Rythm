@@ -22,6 +22,8 @@ type LogFormMoodPageProps = {
   isFirstEntry: boolean
   onNext: () => void
   onSkip: () => void
+  isSaving: boolean
+  isDoneSaving: boolean
   t: TFunction
 }
 
@@ -32,8 +34,20 @@ export function LogFormMoodPage({
   isFirstEntry,
   onNext,
   onSkip,
+  isSaving,
+  isDoneSaving,
   t,
 }: LogFormMoodPageProps) {
+  const handleNext = () => {
+    if (isSaving) return
+    onNext()
+  }
+
+  const handleSkip = () => {
+    if (isSaving) return
+    onSkip()
+  }
+
   return (
     <div className="log-form-carousel__reflection-land">
       <div className="log-form-carousel__reflection-cluster">
@@ -109,15 +123,16 @@ export function LogFormMoodPage({
           <button
             type="button"
             className="ghost log-form-carousel__skip"
-            onClick={onSkip}
+            onClick={handleSkip}
             disabled={isFirstEntry && mood == null}
           >
-            {t('log.carouselDone')}
+            {isDoneSaving ? t('log.saving') : t('log.carouselDone')}
+            {isDoneSaving && <span className="spinner log-form-carousel__saving-spinner" aria-hidden="true" />}
           </button>
           <button
             type="button"
             className="save-button log-form-carousel__primary"
-            onClick={onNext}
+            onClick={handleNext}
             disabled={isFirstEntry && mood == null}
           >
             {t('log.carouselNext')}

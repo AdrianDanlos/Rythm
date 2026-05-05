@@ -26,6 +26,8 @@ type LogFormSleepPageProps = {
   mood: number | null
   onNext: () => void
   onDone: () => void
+  isSaving: boolean
+  isDoneSaving: boolean
   t: TFunction
 }
 
@@ -48,8 +50,20 @@ export function LogFormSleepPage({
   mood,
   onNext,
   onDone,
+  isSaving,
+  isDoneSaving,
   t,
 }: LogFormSleepPageProps) {
+  const handleNext = () => {
+    if (isSaving) return
+    onNext()
+  }
+
+  const handleDone = () => {
+    if (isSaving) return
+    onDone()
+  }
+
   return (
     <>
       <div
@@ -194,15 +208,16 @@ export function LogFormSleepPage({
               <button
                 type="button"
                 className="ghost log-form-carousel__skip"
-                onClick={onDone}
+                onClick={handleDone}
                 disabled={isFirstEntry && mood == null}
               >
-                {t('log.carouselDone')}
+                {isDoneSaving ? t('log.saving') : t('log.carouselDone')}
+                {isDoneSaving && <span className="spinner log-form-carousel__saving-spinner" aria-hidden="true" />}
               </button>
               <button
                 type="button"
                 className="save-button log-form-carousel__primary sleep-duration-picker__next"
-                onClick={onNext}
+                onClick={handleNext}
               >
                 {t('log.carouselNext')}
               </button>

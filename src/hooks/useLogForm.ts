@@ -55,7 +55,6 @@ type UseLogFormParams = {
   shouldSuppressPostSaveToast?: (entryCount: number) => boolean
   onEntrySavedForToday?: (entryCount: number) => void
   onEntrySaveSuccess?: (payload: { previousEntryCount: number, nextEntryCount: number }) => void
-  onFirstEntryCreated?: () => void
 }
 
 export const useLogForm = ({
@@ -73,7 +72,6 @@ export const useLogForm = ({
   shouldSuppressPostSaveToast,
   onEntrySavedForToday,
   onEntrySaveSuccess,
-  onFirstEntryCreated,
 }: UseLogFormParams) => {
   const defaultSleepHoursOption = formatSleepHoursOption(DEFAULT_LOG_SLEEP_HOURS)
   const [entryDate, setEntryDate] = useState(today)
@@ -285,9 +283,6 @@ export const useLogForm = ({
           a.entry_date.localeCompare(b.entry_date),
         )
       })()
-      if (entries.length === 0) {
-        onFirstEntryCreated?.()
-      }
       setEntries(nextEntries)
       const nextStats = buildStats(nextEntries, sleepThreshold, formatLocalDate)
       // Celebrate on key milestones: 3, 7, 14, 21, 30, then every 10 days from 40 onward.

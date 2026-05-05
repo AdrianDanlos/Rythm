@@ -9,8 +9,8 @@ import {
   YAxis,
 } from 'recharts'
 import { useTranslation } from 'react-i18next'
-import { Info } from 'lucide-react'
-import type { WeekdayAveragePoint } from '../../lib/types/stats'
+import { Info, Moon, Smile, Frown } from 'lucide-react'
+import type { WeekdayAveragePoint, WeekdayKey } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 
@@ -25,6 +25,16 @@ type WeekdayLegendProps = {
   avgSleepLabel: string
   avgMoodLabel: string
   wrapperStyle?: React.CSSProperties
+}
+
+const WEEKDAY_LABEL_KEYS: Record<WeekdayKey, string> = {
+  mon: 'insights.weekdayMonFull',
+  tue: 'insights.weekdayTueFull',
+  wed: 'insights.weekdayWedFull',
+  thu: 'insights.weekdayThuFull',
+  fri: 'insights.weekdayFriFull',
+  sat: 'insights.weekdaySatFull',
+  sun: 'insights.weekdaySunFull',
 }
 
 const WeekdayLegend = ({ avgSleepLabel, avgMoodLabel, wrapperStyle }: WeekdayLegendProps) => (
@@ -78,6 +88,39 @@ export const InsightsWeekdayAverages = ({
     : { top: 0, right: 0, bottom: 0, left: 0 }
   const baseTickProps = { fontSize: isMobile ? 12 : 13 }
   const legendWrapperStyle = isMobile ? { paddingTop: 10 } : undefined
+  const moodPoints = weekdayAverages.filter(
+    point => point.observationCount > 0 && point.avgMood != null && Number.isFinite(point.avgMood),
+  )
+  const sleepPointsWithData = weekdayAverages.filter(
+    point => point.observationCount > 0 && point.avgSleep != null && Number.isFinite(point.avgSleep),
+  )
+
+  const bestMoodDay = moodPoints.reduce<WeekdayAveragePoint | null>((best, point) => {
+    if (!best) return point
+    if ((point.avgMood ?? -Infinity) > (best.avgMood ?? -Infinity)) return point
+    if (point.avgMood === best.avgMood && point.observationCount > best.observationCount) return point
+    return best
+  }, null)
+  const worstMoodDay = moodPoints.reduce<WeekdayAveragePoint | null>((worst, point) => {
+    if (!worst) return point
+    if ((point.avgMood ?? Infinity) < (worst.avgMood ?? Infinity)) return point
+    if (point.avgMood === worst.avgMood && point.observationCount > worst.observationCount) return point
+    return worst
+  }, null)
+  const mostSleepDay = sleepPointsWithData.reduce<WeekdayAveragePoint | null>((best, point) => {
+    if (!best) return point
+    if ((point.avgSleep ?? -Infinity) > (best.avgSleep ?? -Infinity)) return point
+    if (point.avgSleep === best.avgSleep && point.observationCount > best.observationCount) return point
+    return best
+  }, null)
+  const leastSleepDay = sleepPointsWithData.reduce<WeekdayAveragePoint | null>((least, point) => {
+    if (!least) return point
+    if ((point.avgSleep ?? Infinity) < (least.avgSleep ?? Infinity)) return point
+    if (point.avgSleep === least.avgSleep && point.observationCount > least.observationCount) return point
+    return least
+  }, null)
+
+  const getWeekdayLabel = (dayKey: WeekdayKey) => t(WEEKDAY_LABEL_KEYS[dayKey])
   return (
     <section className="card chart-card--compact">
       <div className="card-header">
@@ -177,6 +220,56 @@ export const InsightsWeekdayAverages = ({
                     />
                   </ComposedChart>
                 </ResponsiveContainer>
+              </div>
+              <div className="weekday-pattern-highlights" style={{ marginTop: 10 }}>
+                {bestMoodDay && (
+                  <article className="weekday-pattern-highlight weekday-pattern-highlight--mood-best">
+                    <div className="weekday-pattern-highlight__title">
+                      <Smile size={16} aria-hidden />
+                      <span>{t('insights.bestMoodDay')}</span>
+                    </div>
+                    <p className="weekday-pattern-highlight__summary">
+                      <span className="weekday-pattern-highlight__day">{getWeekdayLabel(bestMoodDay.dayKey)}</span>
+                      <span className="weekday-pattern-highlight__metric">{bestMoodDay.avgMood?.toFixed(1)} / 5</span>
+                    </p>
+                  </article>
+                )}
+                {worstMoodDay && (
+                  <article className="weekday-pattern-highlight weekday-pattern-highlight--mood-worst">
+                    <div className="weekday-pattern-highlight__title">
+                      <Frown size={16} aria-hidden />
+                      <span>{t('insights.worstMoodDay')}</span>
+                    </div>
+                    <p className="weekday-pattern-highlight__summary">
+                      <span className="weekday-pattern-highlight__day">{getWeekdayLabel(worstMoodDay.dayKey)}</span>
+                      <span className="weekday-pattern-highlight__metric">{worstMoodDay.avgMood?.toFixed(1)} / 5</span>
+                    </p>
+                  </article>
+                )}
+                {mostSleepDay && (
+                  <article className="weekday-pattern-highlight weekday-pattern-highlight--sleep-most">
+                    <div className="weekday-pattern-highlight__title">
+                      <Moon size={16} aria-hidden />
+                      <span>{t('insights.mostSleepDay')}</span>
+                    </div>
+                    <p className="weekday-pattern-highlight__summary">
+                      <span className="weekday-pattern-highlight__day">{getWeekdayLabel(mostSleepDay.dayKey)}</span>
+                      <span className="weekday-pattern-highlight__metric">{formatSleepHours(mostSleepDay.avgSleep)}</span>
+                    </p>
+                  </article>
+                )}
+                {leastSleepDay && (
+                  <article className="weekday-pattern-highlight weekday-pattern-highlight--sleep-least">
+                    <div className="weekday-pattern-highlight__title">
+                      <Moon size={16} aria-hidden />
+                      <span>{t('insights.leastSleepDay')}</span>
+                    </div>
+                    <p className="weekday-pattern-highlight__summary">
+                      <span className="weekday-pattern-highlight__day">{getWeekdayLabel(leastSleepDay.dayKey)}</span>
+                      <span className="weekday-pattern-highlight__metric">{formatSleepHours(leastSleepDay.avgSleep)}</span>
+                    </p>
+                  </article>
+                )}
               </div>
             </>
           )}

@@ -2094,6 +2094,7 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   min-height: 44px;
   box-sizing: border-box;
   display: inline-flex;
+  gap: 6px;
   align-items: center;
   justify-content: center;
   line-height: 1.2;
@@ -3231,6 +3232,7 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   min-height: 44px;
   box-sizing: border-box;
   display: inline-flex;
+  gap: 6px;
   align-items: center;
   justify-content: center;
   line-height: 1.2;
@@ -4032,7 +4034,7 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  margin: 0 0 4px;
+  margin: 0 0 4px -5px;
   padding: 8px 4px 8px 0;
   border: none;
   background: none;
@@ -4043,8 +4045,11 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   -webkit-tap-highlight-color: transparent;
 }
 
-.daily-events-edit-back:hover {
-  color: var(--accent);
+.daily-events-edit-back:hover,
+.daily-events-edit-back:active,
+.daily-events-edit-back:focus,
+.daily-events-edit-back:focus-visible {
+  color: var(--text);
 }
 
 .daily-events-edit-back__icon {
@@ -4385,13 +4390,39 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
+/* Dark: keep disabled "Done" (ghost skip) visibly button-like. */
+:root[data-theme="dark"] .log-form-stack .log-form-carousel__skip:disabled:not(:has(.spinner)) {
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  color: color-mix(in srgb, var(--muted) 90%, var(--text) 10%);
+  border: 1px solid color-mix(in srgb, var(--border) 78%, var(--text) 22%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
 .log-form-stack .save-button:not(:disabled):focus-visible {
   outline: 2px solid color-mix(in srgb, var(--cta-button-bg) 72%, #fff);
   outline-offset: 2px;
 }
 
 .log-form-stack .save-button:not(:disabled) .spinner,
-.log-form-stack .save-button:disabled:has(.spinner) .spinner {
+.log-form-stack .save-button:disabled:has(.spinner) .spinner,
+.log-form-stack .log-form-carousel__skip .spinner {
+  border-color: rgba(15, 23, 42, 0.3);
+  border-top-color: rgba(15, 23, 42, 0.88);
+}
+
+.log-form-stack .log-form-carousel__actions .log-form-carousel__primary .spinner,
+.log-form-stack .sleep-duration-picker__next-wrap .log-form-carousel__primary .spinner,
+.log-form-stack .log-form-carousel__actions .log-form-carousel__primary.save-button:disabled:has(.spinner) .spinner,
+.log-form-stack .sleep-duration-picker__next-wrap .log-form-carousel__primary.save-button:disabled:has(.spinner) .spinner {
+  border-color: rgba(255, 255, 255, 0.25);
+  border-top-color: rgba(255, 255, 255, 0.95);
+}
+
+:root[data-theme="dark"] .log-form-stack .save-button:not(:disabled) .spinner,
+:root[data-theme="dark"] .log-form-stack .save-button:disabled:has(.spinner) .spinner,
+:root[data-theme="dark"] .log-form-stack .log-form-carousel__skip .spinner {
   border-color: rgba(255, 255, 255, 0.25);
   border-top-color: rgba(255, 255, 255, 0.95);
 }
@@ -6856,6 +6887,109 @@ button.toggle-group__btn--disabled:disabled {
   padding-top: 6px;
 }
 
+.weekday-pattern-highlights {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.weekday-pattern-highlight {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 9px;
+  background: var(--card-muted, color-mix(in srgb, var(--card) 82%, var(--bg)));
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.weekday-pattern-highlight__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.weekday-pattern-highlight__title span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.weekday-pattern-highlight__day {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.weekday-pattern-highlight__metric {
+  font-size: 0.77rem;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.weekday-pattern-highlight__summary {
+  margin: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.weekday-pattern-highlight--mood-best {
+  border-color: color-mix(in srgb, var(--status-success) 34%, var(--border));
+  background: color-mix(in srgb, var(--status-success) 11%, var(--card));
+}
+
+.weekday-pattern-highlight--mood-worst {
+  border-color: color-mix(in srgb, var(--status-error) 34%, var(--border));
+  background: color-mix(in srgb, var(--status-error) 9%, var(--card));
+}
+
+.weekday-pattern-highlight--sleep-most {
+  border-color: color-mix(in srgb, var(--status-success) 34%, var(--border));
+  background: color-mix(in srgb, var(--status-success) 11%, var(--card));
+}
+
+.weekday-pattern-highlight--sleep-least {
+  border-color: color-mix(in srgb, var(--status-error) 34%, var(--border));
+  background: color-mix(in srgb, var(--status-error) 9%, var(--card));
+}
+
+@media (max-width: 980px) {
+  .weekday-pattern-highlights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .weekday-pattern-highlights {
+    gap: 6px;
+  }
+
+  .weekday-pattern-highlight {
+    padding: 7px 8px;
+  }
+
+  .weekday-pattern-highlight__title {
+    font-size: 0.7rem;
+  }
+
+  .weekday-pattern-highlight__day {
+    font-size: 0.8rem;
+  }
+
+  .weekday-pattern-highlight__metric {
+    font-size: 0.74rem;
+  }
+}
+
 .skeleton-line {
   height: 16px;
   border-radius: 999px;
@@ -6962,12 +7096,12 @@ button.toggle-group__btn--disabled:disabled {
   align-items: center;
   gap: 6px;
   cursor: help;
-  z-index: 1;
+  z-index: 0;
 }
 
 .app-tooltip:hover,
 .app-tooltip:focus-within {
-  z-index: 10;
+  z-index: 2;
 }
 
 .tooltip-trigger {
@@ -7092,6 +7226,10 @@ button.toggle-group__btn--disabled:disabled {
   border-radius: 10px;
   color: var(--text);
   box-shadow: var(--tooltip-shadow);
+}
+
+.chart-wrapper .recharts-tooltip-wrapper {
+  z-index: 30 !important;
 }
 
 .recharts-tooltip-label,
