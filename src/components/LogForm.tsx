@@ -313,11 +313,6 @@ export const LogForm = ({
     setActiveSaveAction(action)
     formRef.current?.requestSubmit()
   }, [saving])
-  useEffect(() => {
-    if (!saving) {
-      setActiveSaveAction(null)
-    }
-  }, [saving])
 
   const isFirstEntry = isFirstEntryFlow
   const advanceCarousel = useCallback(
