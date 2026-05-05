@@ -27,6 +27,8 @@ type WeekdayLegendProps = {
   wrapperStyle?: React.CSSProperties
 }
 
+type WeekdayAverageWithSleep = WeekdayAveragePoint & { avgSleep: number }
+
 const WEEKDAY_LABEL_KEYS: Record<WeekdayKey, string> = {
   mon: 'insights.weekdayMonFull',
   tue: 'insights.weekdayTueFull',
@@ -49,6 +51,9 @@ const WeekdayLegend = ({ avgSleepLabel, avgMoodLabel, wrapperStyle }: WeekdayLeg
     </span>
   </div>
 )
+
+const hasSleepData = (point: WeekdayAveragePoint): point is WeekdayAverageWithSleep =>
+  point.observationCount > 0 && point.avgSleep != null && Number.isFinite(point.avgSleep)
 
 export const InsightsWeekdayAverages = ({
   weekdayAverages,
@@ -91,9 +96,7 @@ export const InsightsWeekdayAverages = ({
   const moodPoints = weekdayAverages.filter(
     point => point.observationCount > 0 && point.avgMood != null && Number.isFinite(point.avgMood),
   )
-  const sleepPointsWithData = weekdayAverages.filter(
-    point => point.observationCount > 0 && point.avgSleep != null && Number.isFinite(point.avgSleep),
-  )
+  const sleepPointsWithData = weekdayAverages.filter(hasSleepData)
 
   const bestMoodDay = moodPoints.reduce<WeekdayAveragePoint | null>((best, point) => {
     if (!best) return point
@@ -107,13 +110,13 @@ export const InsightsWeekdayAverages = ({
     if (point.avgMood === worst.avgMood && point.observationCount > worst.observationCount) return point
     return worst
   }, null)
-  const mostSleepDay = sleepPointsWithData.reduce<WeekdayAveragePoint | null>((best, point) => {
+  const mostSleepDay = sleepPointsWithData.reduce<WeekdayAverageWithSleep | null>((best, point) => {
     if (!best) return point
     if ((point.avgSleep ?? -Infinity) > (best.avgSleep ?? -Infinity)) return point
     if (point.avgSleep === best.avgSleep && point.observationCount > best.observationCount) return point
     return best
   }, null)
-  const leastSleepDay = sleepPointsWithData.reduce<WeekdayAveragePoint | null>((least, point) => {
+  const leastSleepDay = sleepPointsWithData.reduce<WeekdayAverageWithSleep | null>((least, point) => {
     if (!least) return point
     if ((point.avgSleep ?? Infinity) < (least.avgSleep ?? Infinity)) return point
     if (point.avgSleep === least.avgSleep && point.observationCount > least.observationCount) return point
