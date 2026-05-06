@@ -41,6 +41,9 @@ export const IdeaSleepTarget = ({
   const progressToTarget = hasThreshold && averageSleep !== null
     ? Math.min(100, (averageSleep / personalSleepThreshold) * 100)
     : null
+  const recentSleepToneClass = hasThreshold && averageSleep !== null && averageSleep >= personalSleepThreshold
+    ? 'mood-by-sleep-percent--over-target'
+    : 'mood-by-sleep-percent--down'
   const isInOptimalRange = progressToTarget !== null && progressToTarget >= 100
   const optimalRangeTitle = isInOptimalRange
     ? t('insights.optimalRangeTitle')
@@ -108,7 +111,7 @@ export const IdeaSleepTarget = ({
                               target: formatSleepHours(personalSleepThreshold),
                             }}
                             components={{
-                              avg: <span className="mood-by-sleep-percent--down" />,
+                              avg: <span className={recentSleepToneClass} />,
                               goal: <span className="mood-by-sleep-percent--up" />,
                             }}
                           />

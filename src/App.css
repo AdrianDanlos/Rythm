@@ -4601,6 +4601,10 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   color: var(--chart-mood);
 }
 
+.mood-by-sleep-percent--over-target {
+  color: var(--brand-accent);
+}
+
 .mood-by-sleep-percent--down {
   color: color-mix(in srgb, var(--status-error) 75%, var(--text));
 }
