@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "release:bump-version": "node scripts/bump-release-version.mjs",
+    "release-to-prod": "node scripts/release-to-prod.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

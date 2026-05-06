@@ -1,6 +1,6 @@
 /**
  * Bumps Android release metadata in one pass: versionCode, versionName,
- * app-version manifests, package.json, and root entries in package-lock.json.
+ * Android app-version manifest, package.json, and root entries in package-lock.json.
  *
  * Usage:
  *   node scripts/bump-release-version.mjs           # patch (1.0.7 -> 1.0.8)
@@ -17,7 +17,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = join(__dirname, '..')
 
 const GRADLE = join(root, 'android', 'app', 'build.gradle')
-const APP_VERSION_PUBLIC = join(root, 'public', 'app-version.json')
 const APP_VERSION_ANDROID = join(
   root,
   'android',
@@ -123,7 +122,6 @@ const lockRaw = readFileSync(PACKAGE_LOCK, 'utf8')
 const nextLock = applyLockfileRootVersion(lockRaw, nextName)
 
 writeFileSync(GRADLE, nextGradle)
-writeFileSync(APP_VERSION_PUBLIC, manifest)
 writeFileSync(APP_VERSION_ANDROID, manifest)
 writeFileSync(PACKAGE_JSON, nextPkg)
 writeFileSync(PACKAGE_LOCK, nextLock)
@@ -131,7 +129,6 @@ writeFileSync(PACKAGE_LOCK, nextLock)
 console.log(`Release bump: ${currentName} (code ${versionCode}) -> ${nextName} (code ${nextCode})`)
 console.log('Updated:')
 console.log(`  ${GRADLE}`)
-console.log(`  ${APP_VERSION_PUBLIC}`)
 console.log(`  ${APP_VERSION_ANDROID}`)
 console.log(`  ${PACKAGE_JSON}`)
 console.log(`  ${PACKAGE_LOCK}`)

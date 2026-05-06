@@ -17,7 +17,7 @@ For Android builds, use `.env.production` so the app targets hosted Supabase.
   - Use: `https://rythm-one.vercel.app/app-version.json`.
   - Used by the app at runtime to check the latest available Android version.
 - Optional `VITE_UPGRADE_URL`: If set, the web app uses this link for upgrade and subscription management flows when Google Play billing is not available (e.g. desktop browser).
-- Before each Play Store build, bump versions with `npm run release:bump-version` (patch bump by default). This updates `android/app/build.gradle` (`versionCode` +1 and `versionName`), `public/app-version.json`, the synced Android asset copy, `package.json`, and root entries in `package-lock.json`. Use `npm run release:bump-version -- minor`, `major`, or `npm run release:bump-version -- 1.2.3` for an exact `versionName`. Optional: `node scripts/bump-release-version.mjs --dry-run` to preview.
+- Before each Play Store build, bump versions with `npm run release:bump-version` (patch bump by default). This updates `android/app/build.gradle` (`versionCode` +1 and `versionName`), `android/app/src/main/assets/public/app-version.json`, `package.json`, and root entries in `package-lock.json`. Use `npm run release:bump-version -- minor`, `major`, or `npm run release:bump-version -- 1.2.3` for an exact `versionName`. Optional: `node scripts/bump-release-version.mjs --dry-run` to preview.
 
 ##### Edge Functions (Supabase secrets)
 
@@ -102,6 +102,7 @@ Same-day tags correlate with mood; previous-day tags correlate with sleep.
 ## Android (Capacitor)
 
 - **Before a release build** (new Play upload): run `npm run release:bump-version` so store version, `versionCode`, and update manifests stay aligned.
+- **One-command release flow**: run `npm run release-to-prod` to execute the full sequence: `npm run release:bump-version`, commit bump-version file changes, `npm run build`, `npx cap sync android`, then `npx cap open android`.
 - **Build web assets for native**:
   - `npm run build`
 - **Sync web assets and plugins to Android**:
