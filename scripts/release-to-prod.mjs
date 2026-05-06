@@ -24,6 +24,9 @@ function runCapture(command) {
 
 function main() {
   run('npm run release:bump-version')
+  run('npm run build')
+  run('npx cap sync android')
+  run('npx cap open android')
 
   const changedInWorkingTree = runCapture('git diff --name-only')
     .split(/\r?\n/)
@@ -43,13 +46,10 @@ function main() {
     run(`git add ${changedFiles.map((file) => `"${file}"`).join(' ')}`)
     const version = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')).version
     run(`git commit -m "chore: bump release version to ${version}" -- ${changedFiles.map((file) => `"${file}"`).join(' ')}`)
+    run('git push')
   } else {
     console.log('\nNo release-version changes detected to commit.')
   }
-
-  run('npm run build')
-  run('npx cap sync android')
-  run('npx cap open android')
 }
 
 main()
