@@ -48,6 +48,7 @@ type UseLogFormParams = {
   yesterday: string
   formatLocalDate: (value: Date) => string
   sleepThreshold: number
+  eventInsightsMinCount: number
   isPro: boolean
   maxTagsPerEntry: number
   onStreakReached?: (streakDays: number) => void
@@ -66,6 +67,7 @@ export const useLogForm = ({
   yesterday,
   formatLocalDate,
   sleepThreshold,
+  eventInsightsMinCount,
   maxTagsPerEntry,
   onStreakReached,
   onBadgeMilestoneReached,
@@ -284,7 +286,12 @@ export const useLogForm = ({
         )
       })()
       setEntries(nextEntries)
-      const nextStats = buildStats(nextEntries, sleepThreshold, formatLocalDate)
+      const nextStats = buildStats(
+        nextEntries,
+        sleepThreshold,
+        formatLocalDate,
+        eventInsightsMinCount,
+      )
       // Celebrate on key milestones: 3, 7, 14, 21, 30, then every 10 days from 40 onward.
       const isStreakMilestone = nextStats.streak === 3
         || nextStats.streak === 7

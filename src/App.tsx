@@ -224,11 +224,13 @@ function App() {
     theme,
     profileName,
     sleepTarget,
+    eventInsightsMinCount,
     handleDateFormatChange,
     handleLanguageChange,
     handleThemeChange,
     handleProfileNameChange,
     handleSleepTargetChange,
+    handleEventInsightsMinCountChange,
   } = settings
 
   const sleepThreshold = sleepTarget
@@ -247,6 +249,7 @@ function App() {
   } = useEntries({
     userId: session?.user?.id,
     sleepThreshold,
+    eventInsightsMinCount,
     formatLocalDate,
   })
 
@@ -334,6 +337,7 @@ function App() {
     yesterday,
     formatLocalDate,
     sleepThreshold,
+    eventInsightsMinCount,
     isPro,
     maxTagsPerEntry,
     onStreakReached: (streakDays) => {
@@ -921,11 +925,13 @@ function App() {
               settingsLanguage={language}
               settingsTheme={theme}
               settingsPersonalSleepTarget={sleepTarget}
+              settingsEventInsightsMinCount={eventInsightsMinCount}
               onSettingsNameChange={handleProfileNameChange}
               onSettingsDateFormatChange={handleDateFormatChange}
               onSettingsLanguageChange={handleLanguageChange}
               onSettingsThemeChange={handleThemeChange}
               onSettingsPersonalSleepTargetChange={handleSleepTargetChange}
+              onSettingsEventInsightsMinCountChange={handleEventInsightsMinCountChange}
               onRenameTag={handleRenameTag}
               onTagColorChange={handleTagColorChange}
               onEnsureTagColor={ensureTagColorForTag}

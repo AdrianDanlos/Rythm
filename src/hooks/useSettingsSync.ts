@@ -11,12 +11,15 @@ import i18n from '../i18n'
 import {
   detectSystemTheme,
   getStoredDateFormat,
+  getStoredEventInsightsMinCount,
   getStoredLanguage,
   getStoredProfileName,
   getStoredPersonalSleepTarget,
   getStoredThemePreference,
   normalizeSleepTarget,
+  normalizeEventInsightsMinCount,
   setStoredDateFormat,
+  setStoredEventInsightsMinCount,
   setStoredLanguage,
   setStoredProfileName,
   setStoredPersonalSleepTarget,
@@ -55,6 +58,9 @@ export function useSettingsSync(
   const [profileName, setProfileName] = useState(() => getStoredProfileName())
   const [sleepTarget, setSleepTarget] = useState(() =>
     getStoredPersonalSleepTarget(),
+  )
+  const [eventInsightsMinCount, setEventInsightsMinCount] = useState(() =>
+    getStoredEventInsightsMinCount(),
   )
 
   const { nativeLoginChromeActive } = options
@@ -133,6 +139,12 @@ export function useSettingsSync(
     setStoredPersonalSleepTarget(normalized)
   }
 
+  const handleEventInsightsMinCountChange = (value: number) => {
+    const normalized = normalizeEventInsightsMinCount(value)
+    setEventInsightsMinCount(normalized)
+    setStoredEventInsightsMinCount(normalized)
+  }
+
   return {
     dateFormat,
     setDateFormat,
@@ -143,10 +155,13 @@ export function useSettingsSync(
     setProfileName,
     sleepTarget,
     setSleepTarget,
+    eventInsightsMinCount,
+    setEventInsightsMinCount,
     handleDateFormatChange,
     handleLanguageChange,
     handleThemeChange,
     handleProfileNameChange,
     handleSleepTargetChange,
+    handleEventInsightsMinCountChange,
   }
 }

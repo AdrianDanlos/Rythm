@@ -8,6 +8,7 @@ export type EventsProps = {
   goToLog: () => void
   onOpenTagInTimeline: (tag: string) => void
   hasEnoughEntries: boolean
+  eventInsightsMinCount: number
   isPro: boolean
   tagDrivers: TagDriver[]
   tagSleepDrivers: TagSleepDriver[]
@@ -22,6 +23,7 @@ export const Events = ({
   goToLog,
   onOpenTagInTimeline,
   hasEnoughEntries,
+  eventInsightsMinCount,
   isPro,
   tagDrivers,
   tagSleepDrivers,
@@ -44,6 +46,7 @@ export const Events = ({
           onOpenPaywall={onOpenPaywall}
           goToLog={goToLog}
           onOpenTagInTimeline={onOpenTagInTimeline}
+          eventInsightsMinCount={eventInsightsMinCount}
         />
       )}
       <div className="events-page-footer">

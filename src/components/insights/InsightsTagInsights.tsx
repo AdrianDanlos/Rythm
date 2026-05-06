@@ -1,7 +1,6 @@
 import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { DEFAULT_TAG_DRIVER_MIN_COUNT } from '../../lib/utils/tagInsights'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
 import { ChevronRight, Info, Moon, Smile, TrendingDown, TrendingUp } from 'lucide-react'
@@ -13,6 +12,7 @@ type InsightsTagInsightsProps = {
   onOpenPaywall: () => void
   goToLog: () => void
   onOpenTagInTimeline: (tag: string) => void
+  eventInsightsMinCount: number
 }
 const FREE_VISIBLE_PER_SECTION = 2
 
@@ -23,6 +23,7 @@ export const InsightsTagInsights = ({
   onOpenPaywall,
   goToLog,
   onOpenTagInTimeline,
+  eventInsightsMinCount,
 }: InsightsTagInsightsProps) => {
   const { t } = useTranslation()
   const [showAllTags, setShowAllTags] = useState(false)
@@ -359,7 +360,7 @@ export const InsightsTagInsights = ({
                       </>
                     )
                   : (
-                      <p className="muted">{t('insights.addEventsToSeeMoodImpact')}</p>
+                      <p className="muted">{t('insights.addEventsToSeeMoodImpact', { count: eventInsightsMinCount })}</p>
                     )}
                 {isPro && hasMoreMoodToShow && (
                   <div className="tag-insights-show-more">
@@ -406,7 +407,7 @@ export const InsightsTagInsights = ({
                       </>
                     )
                   : (
-                      <p className="muted">{t('insights.addEventsToSeeSleepImpact')}</p>
+                      <p className="muted">{t('insights.addEventsToSeeSleepImpact', { count: eventInsightsMinCount })}</p>
                     )}
                 {isPro && hasMoreSleepToShow && (
                   <div className="tag-insights-show-more">
@@ -425,7 +426,7 @@ export const InsightsTagInsights = ({
         : (
             <p className="muted">
               <button type="button" className="link-button link-button--text" onClick={goToLog}>{t('insights.addDailyEvents')}</button>
-              {' '}{t('insights.addEventsToUnlock', { count: DEFAULT_TAG_DRIVER_MIN_COUNT })}
+              {' '}{t('insights.addEventsToUnlock', { count: eventInsightsMinCount })}
             </p>
           )}
     </>

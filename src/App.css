@@ -5547,10 +5547,14 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
 
 .timeline-sleep-slider-wrap {
   margin-top: 8px;
+  padding-inline: 2px;
 }
 
 .timeline-sleep-slider-wrap input[type="range"] {
+  display: block;
   width: 100%;
+  margin: 0;
+  box-sizing: border-box;
   accent-color: var(--accent);
   cursor: pointer;
   outline: none;

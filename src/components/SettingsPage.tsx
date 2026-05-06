@@ -30,11 +30,13 @@ type SettingsPageProps = {
   language: LanguagePreference
   theme: ThemePreference
   personalSleepTarget: number
+  eventInsightsMinCount: number
   onNameChange: (value: string) => void
   onDateFormatChange: (value: DateFormatPreference) => void
   onLanguageChange: (value: LanguagePreference) => void
   onThemeChange: (value: ThemePreference) => void
   onPersonalSleepTargetChange: (value: number) => void
+  onEventInsightsMinCountChange: (value: number) => void
   showSaveAccountWithGoogle?: boolean
   onSaveAccountWithGoogle?: () => void
 }
@@ -48,11 +50,13 @@ export function SettingsPage({
   language,
   theme,
   personalSleepTarget,
+  eventInsightsMinCount,
   onNameChange,
   onDateFormatChange,
   onLanguageChange,
   onThemeChange,
   onPersonalSleepTargetChange,
+  onEventInsightsMinCountChange,
   showSaveAccountWithGoogle = false,
   onSaveAccountWithGoogle = () => {},
 }: SettingsPageProps) {
@@ -69,6 +73,9 @@ export function SettingsPage({
   const reminderFieldRef = useRef<HTMLDivElement | null>(null)
   const [sleepTargetInput, setSleepTargetInput] = useState(
     () => String(personalSleepTarget),
+  )
+  const [eventInsightsMinCountInput, setEventInsightsMinCountInput] = useState(
+    () => String(eventInsightsMinCount),
   )
   useScrollToSettingsReminderOnMount(reminderFieldRef)
 
@@ -97,6 +104,10 @@ export function SettingsPage({
   useEffect(() => {
     setSleepTargetInput(String(personalSleepTarget))
   }, [personalSleepTarget])
+
+  useEffect(() => {
+    setEventInsightsMinCountInput(String(eventInsightsMinCount))
+  }, [eventInsightsMinCount])
 
   const handleDateFormatSelect = (value: DateFormatPreference) => {
     onDateFormatChange(value)
@@ -229,78 +240,6 @@ export function SettingsPage({
           <p className="eyebrow">{t('settings.preferences')}</p>
           <div className="settings-grid">
             <div className="field">
-              <span>{t('settings.preferredDateFormat')}</span>
-              <div className="tag-input" onBlur={handleDateFormatBlur}>
-                <input
-                  id="settings-date-format"
-                  type="text"
-                  readOnly
-                  value={activeDateFormat.label}
-                  onClick={() => setIsDateFormatOpen(true)}
-                  aria-haspopup="listbox"
-                  aria-expanded={isDateFormatOpen}
-                />
-                <span className="tag-input-icon" aria-hidden="true">▾</span>
-                {isDateFormatOpen
-                  ? (
-                      <div className="tag-suggestions" role="listbox">
-                        {dateFormatOptions.map(option => (
-                          <button
-                            key={option.value}
-                            type="button"
-                            className="tag-suggestion"
-                            onPointerDown={(event) => {
-                              event.preventDefault()
-                              handleDateFormatSelect(option.value)
-                            }}
-                            onClick={(event) => {
-                              if (event.detail === 0) {
-                                handleDateFormatSelect(option.value)
-                              }
-                            }}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                    )
-                  : null}
-              </div>
-            </div>
-
-            <label className="field" htmlFor="settings-sleep-target">
-              <span>{t('settings.personalSleepTargetHours')}</span>
-              <input
-                id="settings-sleep-target"
-                type="number"
-                inputMode="decimal"
-                min={4}
-                max={12}
-                step={0.25}
-                value={sleepTargetInput}
-                onChange={(event) => {
-                  setSleepTargetInput(event.target.value)
-                }}
-                onBlur={() => {
-                  const trimmed = sleepTargetInput.trim()
-                  if (trimmed === '') {
-                    setSleepTargetInput(String(personalSleepTarget))
-                    return
-                  }
-                  const parsed = Number(trimmed)
-                  if (Number.isFinite(parsed)) {
-                    onPersonalSleepTargetChange(parsed)
-                    return
-                  }
-                  setSleepTargetInput(String(personalSleepTarget))
-                }}
-              />
-              <p className="settings-note">
-                {t('settings.sleepTargetHelper')}
-              </p>
-            </label>
-
-            <div className="field">
               <span>{t('settings.language')}</span>
               <div className="tag-input" onBlur={handleLanguageBlur}>
                 <input
@@ -323,12 +262,48 @@ export function SettingsPage({
                             className="tag-suggestion"
                             onPointerDown={(event) => {
                               event.preventDefault()
+                              event.stopPropagation()
+                            }}
+                            onClick={() => {
                               handleLanguageSelect(option.value)
                             }}
-                            onClick={(event) => {
-                              if (event.detail === 0) {
-                                handleLanguageSelect(option.value)
-                              }
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    )
+                  : null}
+              </div>
+            </div>
+
+            <div className="field">
+              <span>{t('settings.preferredDateFormat')}</span>
+              <div className="tag-input" onBlur={handleDateFormatBlur}>
+                <input
+                  id="settings-date-format"
+                  type="text"
+                  readOnly
+                  value={activeDateFormat.label}
+                  onClick={() => setIsDateFormatOpen(true)}
+                  aria-haspopup="listbox"
+                  aria-expanded={isDateFormatOpen}
+                />
+                <span className="tag-input-icon" aria-hidden="true">▾</span>
+                {isDateFormatOpen
+                  ? (
+                      <div className="tag-suggestions" role="listbox">
+                        {dateFormatOptions.map(option => (
+                          <button
+                            key={option.value}
+                            type="button"
+                            className="tag-suggestion"
+                            onPointerDown={(event) => {
+                              event.preventDefault()
+                              event.stopPropagation()
+                            }}
+                            onClick={() => {
+                              handleDateFormatSelect(option.value)
                             }}
                           >
                             {option.label}
@@ -366,6 +341,80 @@ export function SettingsPage({
                 </button>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="settings-section">
+          <p className="eyebrow">{t('settings.goalsAndInsights')}</p>
+          <div className="settings-grid">
+            <label className="field" htmlFor="settings-sleep-target">
+              <span>{t('settings.personalSleepTargetHours')}</span>
+              <input
+                id="settings-sleep-target"
+                type="number"
+                inputMode="decimal"
+                min={4}
+                max={12}
+                step={0.25}
+                value={sleepTargetInput}
+                onChange={(event) => {
+                  setSleepTargetInput(event.target.value)
+                }}
+                onBlur={() => {
+                  const trimmed = sleepTargetInput.trim()
+                  if (trimmed === '') {
+                    setSleepTargetInput(String(personalSleepTarget))
+                    return
+                  }
+                  const parsed = Number(trimmed)
+                  if (Number.isFinite(parsed)) {
+                    onPersonalSleepTargetChange(parsed)
+                    return
+                  }
+                  setSleepTargetInput(String(personalSleepTarget))
+                }}
+              />
+              <p className="settings-note">
+                {t('settings.sleepTargetHelper')}
+              </p>
+            </label>
+
+            <label className="field" htmlFor="settings-event-insights-min-count">
+              <span>{t('settings.eventInsightsMinCount')}</span>
+              <input
+                id="settings-event-insights-min-count"
+                type="number"
+                inputMode="numeric"
+                min={1}
+                step={1}
+                value={eventInsightsMinCountInput}
+                onChange={(event) => {
+                  setEventInsightsMinCountInput(event.target.value)
+                }}
+                onBlur={() => {
+                  const trimmed = eventInsightsMinCountInput.trim()
+                  if (trimmed === '') {
+                    setEventInsightsMinCountInput(String(eventInsightsMinCount))
+                    return
+                  }
+                  const parsed = Number(trimmed)
+                  if (Number.isFinite(parsed)) {
+                    onEventInsightsMinCountChange(parsed)
+                    return
+                  }
+                  setEventInsightsMinCountInput(String(eventInsightsMinCount))
+                }}
+              />
+              <p className="settings-note">
+                {t('settings.eventInsightsMinCountHelper')}
+              </p>
+            </label>
+          </div>
+        </section>
+
+        <section className="settings-section">
+          <p className="eyebrow">{t('settings.reminders')}</p>
+          <div className="settings-grid">
             <div className="field" ref={reminderFieldRef}>
               <span>{t('settings.dailyLogReminder')}</span>
               <div className="settings-inline">
@@ -394,12 +443,16 @@ export function SettingsPage({
               </div>
               {!remindersSupported
                 ? (
-                    <p className="settings-note">
-                      {t('settings.remindersMobileOnly')}
-                    </p>
+                    null
                   )
                 : null}
             </div>
+          </div>
+        </section>
+
+        <section className="settings-section">
+          <p className="eyebrow">{t('settings.integrations')}</p>
+          <div className="settings-grid">
             <div className="field">
               <span>{t('settings.wearableSync')}</span>
               <p className="settings-note">{t('settings.wearableSyncComingSoon')}</p>

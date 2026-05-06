@@ -8,6 +8,7 @@ import { calculateAverages } from '../lib/utils/averages'
 type UseEntriesParams = {
   userId?: string
   sleepThreshold: number
+  eventInsightsMinCount: number
   formatLocalDate: (value: Date) => string
   onEntriesLoaded?: (entries: Entry[]) => void
 }
@@ -15,6 +16,7 @@ type UseEntriesParams = {
 export const useEntries = ({
   userId,
   sleepThreshold,
+  eventInsightsMinCount,
   formatLocalDate,
   onEntriesLoaded,
 }: UseEntriesParams) => {
@@ -88,8 +90,8 @@ export const useEntries = ({
   }, [entries])
 
   const stats = useMemo(
-    () => buildStats(entries, sleepThreshold, formatLocalDate),
-    [entries, sleepThreshold, formatLocalDate],
+    () => buildStats(entries, sleepThreshold, formatLocalDate, eventInsightsMinCount),
+    [entries, sleepThreshold, formatLocalDate, eventInsightsMinCount],
   )
 
   return {

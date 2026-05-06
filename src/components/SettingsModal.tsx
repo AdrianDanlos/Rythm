@@ -362,9 +362,7 @@ export const SettingsModal = ({
                 </div>
                 {!remindersSupported
                   ? (
-                      <p className="settings-note">
-                        {t('settings.remindersMobileOnly')}
-                      </p>
+                      null
                     )
                   : null}
               </div>

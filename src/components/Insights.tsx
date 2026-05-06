@@ -128,6 +128,7 @@ type InsightsProps = {
   goToLogForToday: (options?: { openAtMood?: boolean }) => void
   onGoToTimeline: () => void
   today: string
+  eventInsightsMinCount: number
 }
 
 export const Insights = ({
@@ -163,11 +164,12 @@ export const Insights = ({
   goToLogForToday,
   onGoToTimeline,
   today,
+  eventInsightsMinCount,
 }: InsightsProps) => {
   const { t, i18n } = useTranslation()
   const isLoading = entriesLoading
   const isEmpty = !entriesLoading && entries.length === 0
-  const hasEnoughEntries = entries.length >= 3
+  const hasEnoughEntries = entries.length >= eventInsightsMinCount
   const [scatterRange, setScatterRange] = useState<ScatterRange>('last30')
   const showScatter90 = entries.length >= 30
   const showScatterAll = entries.length >= 90
@@ -586,6 +588,7 @@ export const Insights = ({
               }}
               onOpenEditEvents={onOpenEditEvents}
               hasEnoughEntries={hasEnoughEntries}
+              eventInsightsMinCount={eventInsightsMinCount}
               isPro={isPro}
               tagDrivers={tagDrivers}
               tagSleepDrivers={tagSleepDrivers}

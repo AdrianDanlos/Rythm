@@ -191,7 +191,7 @@ export const Summary = ({
         <IdeaSleepTarget
           isPro={isPro}
           personalSleepThreshold={personalSleepThreshold}
-          averageSleep={averages.sleep}
+          averageSleep={windowAverages.last7.sleep}
           moodByPersonalThreshold={moodByPersonalThreshold}
           onOpenPaywall={onOpenPaywall}
           goToLog={goToLog}

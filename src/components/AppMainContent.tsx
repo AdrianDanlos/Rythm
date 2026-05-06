@@ -150,11 +150,13 @@ type AppMainContentProps = {
   settingsLanguage: LanguagePreference
   settingsTheme: ThemePreference
   settingsPersonalSleepTarget: number
+  settingsEventInsightsMinCount: number
   onSettingsNameChange: (value: string) => void
   onSettingsDateFormatChange: (value: DateFormatPreference) => void
   onSettingsLanguageChange: (value: LanguagePreference) => void
   onSettingsThemeChange: (value: ThemePreference) => void
   onSettingsPersonalSleepTargetChange: (value: number) => void
+  onSettingsEventInsightsMinCountChange: (value: number) => void
   onRenameTag: (fromTag: string, toTag: string) => void
   onTagColorChange: (tag: string, color: string) => void
   onEnsureTagColor: (tag: string) => void
@@ -249,11 +251,13 @@ export function AppMainContent({
   settingsLanguage,
   settingsTheme,
   settingsPersonalSleepTarget,
+  settingsEventInsightsMinCount,
   onSettingsNameChange,
   onSettingsDateFormatChange,
   onSettingsLanguageChange,
   onSettingsThemeChange,
   onSettingsPersonalSleepTargetChange,
+  onSettingsEventInsightsMinCountChange,
   onRenameTag,
   onTagColorChange,
   onEnsureTagColor,
@@ -467,11 +471,13 @@ export function AppMainContent({
                     language={settingsLanguage}
                     theme={settingsTheme}
                     personalSleepTarget={settingsPersonalSleepTarget}
+                    eventInsightsMinCount={settingsEventInsightsMinCount}
                     onNameChange={onSettingsNameChange}
                     onDateFormatChange={onSettingsDateFormatChange}
                     onLanguageChange={onSettingsLanguageChange}
                     onThemeChange={onSettingsThemeChange}
                     onPersonalSleepTargetChange={onSettingsPersonalSleepTargetChange}
+                    onEventInsightsMinCountChange={onSettingsEventInsightsMinCountChange}
                     showSaveAccountWithGoogle={Boolean(session?.user?.is_anonymous)}
                     onSaveAccountWithGoogle={onGoogleSignIn}
                   />
@@ -599,6 +605,7 @@ export function AppMainContent({
                         goToLog={() => onNavigateToPage(AppPage.Log)}
                         goToLogForToday={onGoToLogForToday}
                         onGoToTimeline={onGoToTimeline}
+                        eventInsightsMinCount={settingsEventInsightsMinCount}
                         activeTab={activeInsightsTab}
                         onOpenEditEvents={() => onNavigateToPage(AppPage.EditDailyEvents)}
                         today={today}

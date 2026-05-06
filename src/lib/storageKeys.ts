@@ -8,6 +8,7 @@ export const STORAGE_KEYS = {
   THEME: 'themePreference',
   PROFILE_NAME: 'profileName',
   PERSONAL_SLEEP_TARGET: 'personalSleepTarget',
+  EVENT_INSIGHTS_MIN_COUNT: 'eventInsightsMinCount',
   INTRO_COMPLETED: 'rythm_intro_completed',
   FIRST_ENTRY_TIP_DISMISSED: 'rythm_first_entry_tip_dismissed',
   RETURNING_USER: 'rythm_returning_user',

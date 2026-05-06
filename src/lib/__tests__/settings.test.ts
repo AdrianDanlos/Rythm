@@ -2,10 +2,12 @@ import { describe, expect, it, beforeEach, vi } from 'vitest'
 import { STORAGE_KEYS } from '../storageKeys'
 import {
   getStoredDateFormat,
+  getStoredEventInsightsMinCount,
   getStoredProfileName,
   getStoredTheme,
   getStoredThemePreference,
   setStoredDateFormat,
+  setStoredEventInsightsMinCount,
   setStoredProfileName,
   setStoredTheme,
 } from '../settings'
@@ -51,10 +53,12 @@ describe('settings storage helpers', () => {
     setStoredDateFormat('dmy')
     setStoredTheme('dark')
     setStoredProfileName('Adrian')
+    setStoredEventInsightsMinCount(7)
 
     expect(getStoredDateFormat()).toBe('dmy')
     expect(getStoredTheme()).toBe('dark')
     expect(getStoredProfileName()).toBe('Adrian')
+    expect(getStoredEventInsightsMinCount()).toBe(7)
   })
 
   it('ignores invalid stored values', () => {
@@ -70,9 +74,11 @@ describe('settings storage helpers', () => {
 
     window.localStorage.setItem(STORAGE_KEYS.DATE_FORMAT, 'invalid')
     window.localStorage.setItem(STORAGE_KEYS.THEME, 'invalid')
+    window.localStorage.setItem(STORAGE_KEYS.EVENT_INSIGHTS_MIN_COUNT, '0')
 
     expect(getStoredDateFormat()).toBe('dmy')
     expect(getStoredThemePreference()).toBe('system')
+    expect(getStoredEventInsightsMinCount()).toBe(1)
   })
 
   it('detects year-month-day locale ordering', () => {

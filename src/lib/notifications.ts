@@ -65,6 +65,9 @@ const ensureAndroidChannel = async () => {
   })
 }
 
+const hasGrantedNotificationPermission = (permission: Record<string, unknown>) =>
+  Object.values(permission).some(value => value === 'granted')
+
 export const scheduleDailyReminder = async ({
   time,
   hour,
@@ -78,8 +81,15 @@ export const scheduleDailyReminder = async ({
 } = {}) => {
   if (!Capacitor.isNativePlatform()) return false
 
-  const permission = await LocalNotifications.requestPermissions()
-  if (permission.display !== 'granted') return false
+  const currentPermission = await LocalNotifications.checkPermissions()
+  if (!hasGrantedNotificationPermission(currentPermission as Record<string, unknown>)) {
+    await LocalNotifications.requestPermissions()
+  }
+
+  const resolvedPermission = await LocalNotifications.checkPermissions()
+  if (!hasGrantedNotificationPermission(resolvedPermission as Record<string, unknown>)) {
+    return false
+  }
 
   await ensureAndroidChannel()
 

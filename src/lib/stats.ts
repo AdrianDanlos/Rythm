@@ -15,7 +15,11 @@ import { getTieredBadges } from './utils/tieredBadges'
 import { getCurrentCompleteStreak, getLongestCompleteStreak } from './utils/streak'
 import { getSleepConsistencyLabel } from './utils/sleepConsistency'
 import type { SleepConsistencyLevel } from './utils/sleepConsistency'
-import { buildTagDrivers, buildTagSleepDrivers } from './utils/tagInsights'
+import {
+  buildTagDrivers,
+  buildTagSleepDrivers,
+  DEFAULT_TAG_DRIVER_MIN_COUNT,
+} from './utils/tagInsights'
 
 export type StatCounts = {
   /** Entries in last 30 days with sleep (for rhythm score) */
@@ -93,6 +97,7 @@ export const buildStats = (
   entries: Entry[],
   sleepThreshold: number,
   formatLocalDate: (date: Date) => string,
+  eventInsightsMinCount: number = DEFAULT_TAG_DRIVER_MIN_COUNT,
 ): StatsResult => {
   const toFiniteSleep = (entry: Entry) => {
     const value = entry.sleep_hours === null ? Number.NaN : Number(entry.sleep_hours)
@@ -359,8 +364,8 @@ export const buildStats = (
     }
   })()
 
-  const tagDrivers = buildTagDrivers(entries)
-  const tagSleepDrivers = buildTagSleepDrivers(entries)
+  const tagDrivers = buildTagDrivers(entries, eventInsightsMinCount)
+  const tagSleepDrivers = buildTagSleepDrivers(entries, eventInsightsMinCount)
 
   const last30WithSleep = getWindowEntries(30).filter(entry =>
     Number.isFinite(Number(entry.sleep_hours)),

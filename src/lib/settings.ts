@@ -8,6 +8,8 @@ export type LanguagePreference = 'en' | 'es' | 'fr' | 'pt' | 'de'
 const DEFAULT_SLEEP_TARGET = 8
 const MIN_SLEEP_TARGET = 4
 const MAX_SLEEP_TARGET = 12
+const DEFAULT_EVENT_INSIGHTS_MIN_COUNT = 3
+const MIN_EVENT_INSIGHTS_MIN_COUNT = 1
 
 const canUseStorage = () => typeof window !== 'undefined'
 
@@ -152,4 +154,25 @@ export const getStoredPersonalSleepTarget = () => {
 
 export const setStoredPersonalSleepTarget = (value: number) => {
   writeStorage(STORAGE_KEYS.PERSONAL_SLEEP_TARGET, String(normalizeSleepTarget(value)))
+}
+
+export const normalizeEventInsightsMinCount = (value: number) => {
+  if (!Number.isFinite(value)) return DEFAULT_EVENT_INSIGHTS_MIN_COUNT
+  const rounded = Math.round(value)
+  return Math.max(MIN_EVENT_INSIGHTS_MIN_COUNT, rounded)
+}
+
+export const getStoredEventInsightsMinCount = () => {
+  const value = readStorage(STORAGE_KEYS.EVENT_INSIGHTS_MIN_COUNT)
+  if (value === null || value.trim() === '') {
+    return DEFAULT_EVENT_INSIGHTS_MIN_COUNT
+  }
+  return normalizeEventInsightsMinCount(Number(value))
+}
+
+export const setStoredEventInsightsMinCount = (value: number) => {
+  writeStorage(
+    STORAGE_KEYS.EVENT_INSIGHTS_MIN_COUNT,
+    String(normalizeEventInsightsMinCount(value)),
+  )
 }
