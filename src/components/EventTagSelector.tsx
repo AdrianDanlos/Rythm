@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { useCallback, useLayoutEffect, useRef } from 'react'
+import { useCallback, useLayoutEffect, useRef, type RefObject } from 'react'
 import { getFallbackTagColor } from '../lib/colors'
 import { getHighContrastTextColor } from '../lib/utils/colorContrast'
 
