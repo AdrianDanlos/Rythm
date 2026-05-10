@@ -8,7 +8,7 @@ export type SleepConsistencyLevel =
 
 const getSleepConsistencyStdDev = (entries: Entry[]) => {
   const sleepEntries = entries.filter((entry) => {
-    const value = Number(entry.sleep_hours)
+    const value = entry.sleep_hours === null ? Number.NaN : Number(entry.sleep_hours)
     return Number.isFinite(value)
   })
   if (sleepEntries.length < 2) return null

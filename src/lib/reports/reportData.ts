@@ -108,8 +108,8 @@ const buildWeeklySummaries = (recentEntries: Entry[]): WeeklySummary[] => {
     if (!weekBuckets[key]) {
       weekBuckets[key] = { sleepCount: 0, sleep: 0, moodCount: 0, mood: 0, sleeps: [] }
     }
-    const sleepValue = Number(entry.sleep_hours)
-    const moodValue = Number(entry.mood)
+    const sleepValue = entry.sleep_hours === null ? Number.NaN : Number(entry.sleep_hours)
+    const moodValue = entry.mood === null ? Number.NaN : Number(entry.mood)
     if (Number.isFinite(sleepValue)) {
       weekBuckets[key].sleeps.push(sleepValue)
       weekBuckets[key].sleep += sleepValue
@@ -141,10 +141,10 @@ const buildWeeklySummaries = (recentEntries: Entry[]): WeeklySummary[] => {
 
 const findBestDay = (recentEntries: Entry[]) =>
   recentEntries.reduce<Entry | null>((best, entry) => {
-    const moodValue = Number(entry.mood)
+    const moodValue = entry.mood === null ? Number.NaN : Number(entry.mood)
     if (!Number.isFinite(moodValue)) return best
     if (!best) return entry
-    const bestMoodValue = Number(best.mood)
+    const bestMoodValue = best.mood === null ? Number.NaN : Number(best.mood)
     if (!Number.isFinite(bestMoodValue)) return entry
     if (moodValue > bestMoodValue) return entry
     return best
@@ -152,10 +152,10 @@ const findBestDay = (recentEntries: Entry[]) =>
 
 const findBestNight = (recentEntries: Entry[]) =>
   recentEntries.reduce<Entry | null>((best, entry) => {
-    const sleepValue = Number(entry.sleep_hours)
+    const sleepValue = entry.sleep_hours === null ? Number.NaN : Number(entry.sleep_hours)
     if (!Number.isFinite(sleepValue)) return best
     if (!best) return entry
-    const bestSleepValue = Number(best.sleep_hours)
+    const bestSleepValue = best.sleep_hours === null ? Number.NaN : Number(best.sleep_hours)
     if (!Number.isFinite(bestSleepValue)) return entry
     return sleepValue > bestSleepValue ? entry : best
   }, null)

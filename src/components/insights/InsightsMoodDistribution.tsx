@@ -23,7 +23,7 @@ export const InsightsMoodDistribution = ({
   ]
   const moodCounts = entries.reduce(
     (acc, entry) => {
-      const mood = Number(entry.mood)
+      const mood = entry.mood === null ? Number.NaN : Number(entry.mood)
       if (!Number.isFinite(mood)) return acc
       const clamped = Math.min(5, Math.max(1, Math.round(mood)))
       acc[clamped - 1] += 1

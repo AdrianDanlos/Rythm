@@ -1,10 +1,10 @@
 import classNames from 'classnames'
-import { useCallback, useLayoutEffect, useRef, type RefObject } from 'react'
+import { useCallback, useLayoutEffect, useRef } from 'react'
 import { getFallbackTagColor } from '../lib/colors'
 import { getHighContrastTextColor } from '../lib/utils/colorContrast'
 
 /** Keeps tag-list scroll after toggle when options reorder / parent layout animates. */
-function usePreserveScrollOnToggle(inputRef: RefObject<HTMLInputElement | null>) {
+function usePreserveScrollOnToggle() {
   const scrollElRef = useRef<HTMLDivElement | null>(null)
   const pendingTop = useRef<number | null>(null)
   const runThenRestoreScroll = useCallback((fn: () => void) => {
@@ -22,7 +22,6 @@ function usePreserveScrollOnToggle(inputRef: RefObject<HTMLInputElement | null>)
     }
     apply()
     requestAnimationFrame(apply)
-    inputRef.current?.focus({ preventScroll: true })
   })
   return [scrollElRef, runThenRestoreScroll] as const
 }
@@ -78,7 +77,7 @@ export const EventTagSelector = ({
 }: EventTagSelectorProps) => {
   const fallbackInputRef = useRef<HTMLInputElement | null>(null)
   const searchInputRef = inputRef ?? fallbackInputRef
-  const [tagsScrollRef, runThenRestoreScroll] = usePreserveScrollOnToggle(searchInputRef)
+  const [tagsScrollRef, runThenRestoreScroll] = usePreserveScrollOnToggle()
   const visibleOptions = maxVisibleOptions != null
     ? options.slice(0, maxVisibleOptions)
     : options

@@ -257,8 +257,8 @@ export const Insights = ({
 
   const plottedData = useMemo(() => {
     return scatterEntries.flatMap((entry) => {
-      const sleep = Number(entry.sleep_hours)
-      const mood = Number(entry.mood)
+      const sleep = entry.sleep_hours === null ? Number.NaN : Number(entry.sleep_hours)
+      const mood = entry.mood === null ? Number.NaN : Number(entry.mood)
       if (!Number.isFinite(sleep) || !Number.isFinite(mood)) {
         return []
       }
