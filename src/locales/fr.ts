@@ -600,6 +600,8 @@ const fr = {
     sleepImproving: 'Vous avez mieux dormi ces 7 derniers jours. Les petits changements finissent par payer.',
     moodTrendUp: 'Votre humeur s\'est améliorée ces 7 derniers jours. Vous faites quelque chose de bien.',
     moodBetterWhenSleepBetter: 'Quand vous dormez plus, votre humeur s\'améliore. Vos données le montrent clairement ({{percent}}%+).',
+    moodHigherWithTag:
+      'Les jours où vous avez enregistré « {{tag}} », votre humeur moyenne était plus élevée que les autres jours.',
     newFirstWeek: 'Vous avez commencé, et c\'est souvent le plus difficile. Vous êtes sur la bonne voie.',
     comingBackAfterGap: 'Content de vous revoir. L\'important, c\'est de reprendre.',
     sleepConsistencyImproving: 'Votre score Rhythm dépasse 70. Vos horaires sont plus stables, et ça fait du bien au corps comme à l\'esprit.',

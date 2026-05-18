@@ -32,6 +32,63 @@ type MessageDef = {
   getText: (ctx: MotivationContext) => string
 }
 
+const MIN_TAG_MOOD_LIFT_ENTRIES = 5
+const MIN_TAG_MOOD_LIFT_PERCENT = 5
+
+function normalizeMotivationTag(raw: string): string {
+  return raw.trim().toLowerCase()
+}
+
+function entryHasNormalizedTag(entry: Entry, normalizedTag: string): boolean {
+  return (entry.tags ?? []).some(t => normalizeMotivationTag(t) === normalizedTag)
+}
+
+/** ≥5 days with tag; avg mood ≥5% higher than days without; strongest lift wins (tie → lexicographic). */
+function bestQualifyingTagForMoodLift(ctx: MotivationContext): string | null {
+  const withMood = ctx.entries.filter(
+    e => e.mood != null && Number.isFinite(Number(e.mood)),
+  )
+  const tagSet = new Set<string>()
+  for (const e of withMood) {
+    for (const raw of e.tags ?? []) {
+      const n = normalizeMotivationTag(raw)
+      if (n) tagSet.add(n)
+    }
+  }
+
+  let bestTag: string | null = null
+  let bestPct = -Infinity
+
+  for (const tag of tagSet) {
+    const withTagMoods: number[] = []
+    const withoutTagMoods: number[] = []
+    for (const e of withMood) {
+      const m = Number(e.mood)
+      if (entryHasNormalizedTag(e, tag)) withTagMoods.push(m)
+      else withoutTagMoods.push(m)
+    }
+    if (withTagMoods.length < MIN_TAG_MOOD_LIFT_ENTRIES) continue
+    if (withoutTagMoods.length === 0) continue
+
+    const avgWith = withTagMoods.reduce((a, b) => a + b, 0) / withTagMoods.length
+    const avgWithout = withoutTagMoods.reduce((a, b) => a + b, 0) / withoutTagMoods.length
+    if (avgWithout <= 0) continue
+
+    const pct = ((avgWith - avgWithout) / avgWithout) * 100
+    if (pct < MIN_TAG_MOOD_LIFT_PERCENT) continue
+
+    if (
+      pct > bestPct
+      || (pct === bestPct && bestTag !== null && tag.localeCompare(bestTag) < 0)
+    ) {
+      bestTag = tag
+      bestPct = pct
+    }
+  }
+
+  return bestTag
+}
+
 const MOTIVATION_MESSAGES: MessageDef[] = [
   {
     id: 'streak-building',
@@ -61,6 +118,14 @@ const MOTIVATION_MESSAGES: MessageDef[] = [
     getText: ctx => t('motivation.moodBetterWhenSleepBetter', {
       percent: Math.round(ctx.moodBySleepDeltaPercent!),
     }),
+  },
+  {
+    id: 'mood-higher-with-tag',
+    condition: ctx => bestQualifyingTagForMoodLift(ctx) != null,
+    getText: (ctx) => {
+      const tag = bestQualifyingTagForMoodLift(ctx)!
+      return t('motivation.moodHigherWithTag', { tag })
+    },
   },
   {
     id: 'new-first-week',

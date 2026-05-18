@@ -598,6 +598,8 @@ const en = {
     sleepImproving: 'Your sleep is up over the last 7 days. Small changes add up.',
     moodTrendUp: 'Your mood is up over the last 7 days. You are doing something right.',
     moodBetterWhenSleepBetter: 'When you sleep more, your mood tends to rise. Your data shows a clear link ({{percent}}%+).',
+    moodHigherWithTag:
+      'On days you logged "{{tag}}", your average mood was higher than on other days.',
     newFirstWeek: 'You have started. That is often the hardest part. You are already ahead.',
     comingBackAfterGap: 'It is nice to see you back. Picking up where you left off is what counts — keep going and your data will keep rewarding you.',
     sleepConsistencyImproving: 'Your rhythm score is 70+. Your sleep and wake times are becoming more predictable. That consistency helps your body and mind.',
