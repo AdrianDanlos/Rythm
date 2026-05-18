@@ -4391,7 +4391,9 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 }
 
 /* Dark: keep disabled "Done" (ghost skip) visibly button-like. */
-:root[data-theme="dark"] .log-form-stack .log-form-carousel__skip:disabled:not(:has(.spinner)) {
+:root[data-theme="dark"]
+  .log-form-stack
+  .log-form-carousel__skip:disabled:not(:has(.spinner)) {
   background: color-mix(in srgb, var(--card) 92%, transparent);
   color: color-mix(in srgb, var(--muted) 90%, var(--text) 10%);
   border: 1px solid color-mix(in srgb, var(--border) 78%, var(--text) 22%);
@@ -4412,16 +4414,31 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   border-top-color: rgba(15, 23, 42, 0.88);
 }
 
-.log-form-stack .log-form-carousel__actions .log-form-carousel__primary .spinner,
-.log-form-stack .sleep-duration-picker__next-wrap .log-form-carousel__primary .spinner,
-.log-form-stack .log-form-carousel__actions .log-form-carousel__primary.save-button:disabled:has(.spinner) .spinner,
-.log-form-stack .sleep-duration-picker__next-wrap .log-form-carousel__primary.save-button:disabled:has(.spinner) .spinner {
+.log-form-stack
+  .log-form-carousel__actions
+  .log-form-carousel__primary
+  .spinner,
+.log-form-stack
+  .sleep-duration-picker__next-wrap
+  .log-form-carousel__primary
+  .spinner,
+.log-form-stack
+  .log-form-carousel__actions
+  .log-form-carousel__primary.save-button:disabled:has(.spinner)
+  .spinner,
+.log-form-stack
+  .sleep-duration-picker__next-wrap
+  .log-form-carousel__primary.save-button:disabled:has(.spinner)
+  .spinner {
   border-color: rgba(255, 255, 255, 0.25);
   border-top-color: rgba(255, 255, 255, 0.95);
 }
 
 :root[data-theme="dark"] .log-form-stack .save-button:not(:disabled) .spinner,
-:root[data-theme="dark"] .log-form-stack .save-button:disabled:has(.spinner) .spinner,
+:root[data-theme="dark"]
+  .log-form-stack
+  .save-button:disabled:has(.spinner)
+  .spinner,
 :root[data-theme="dark"] .log-form-stack .log-form-carousel__skip .spinner {
   border-color: rgba(255, 255, 255, 0.25);
   border-top-color: rgba(255, 255, 255, 0.95);

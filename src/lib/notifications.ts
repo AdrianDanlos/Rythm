@@ -142,3 +142,24 @@ export const cancelDailyReminder = async () => {
     notifications: [{ id: DAILY_REMINDER_ID }],
   })
 }
+
+/** Persist time + enabled flag and schedule; rolls enabled off if permission/scheduling fails. */
+export const enableDailyReminderAtTime = async (time: string): Promise<boolean> => {
+  if (!Capacitor.isNativePlatform()) return false
+  if (!/^\d{2}:\d{2}$/.test(time)) return false
+
+  setStoredDailyReminderTime(time)
+  setStoredDailyReminderEnabled(true)
+  try {
+    const scheduled = await scheduleDailyReminder({ time, force: true })
+    if (!scheduled) {
+      setStoredDailyReminderEnabled(false)
+      return false
+    }
+    return true
+  }
+  catch {
+    setStoredDailyReminderEnabled(false)
+    return false
+  }
+}

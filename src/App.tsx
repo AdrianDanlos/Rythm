@@ -14,6 +14,7 @@ import { AppBottomNav } from './components/AppBottomNav'
 import { PaywallPage } from './billing/shared/PaywallPage'
 import { FeedbackModal } from './components/FeedbackModal'
 import { ReviewPromptModal } from './components/ReviewPromptModal'
+import { DailyReminderNudgeModal } from './components/DailyReminderNudgeModal'
 import { StreakModal } from './components/StreakModal'
 import { StreakCelebration } from './components/StreakCelebration'
 import { BadgeCelebration } from './components/BadgeCelebration'
@@ -163,10 +164,13 @@ function App() {
     goToInsightsSummary,
   } = shell
 
-  const { handleEntrySavedForToday, shouldSuppressPostSaveToast } = useDailyReminderPostSave(
-    navigateToPage,
-    goToInsightsSummary,
-  )
+  const {
+    handleEntrySavedForToday,
+    isDailyReminderNudgeOpen,
+    tryOpenDailyReminderNudge,
+    handleAllowDailyReminder,
+    handleDismissDailyReminderNudge,
+  } = useDailyReminderPostSave(goToInsightsSummary)
 
   const openPaywall = useCallback(() => {
     navigate(getPathForPage(AppPage.Pro), { state: { paywallFrom: pathname } })
@@ -292,7 +296,8 @@ function App() {
       }
     }
     goToInsightsSummary()
-  }, [goToInsightsSummary])
+    tryOpenDailyReminderNudge()
+  }, [goToInsightsSummary, tryOpenDailyReminderNudge])
   const closeReviewPrompt = useCallback(() => {
     setIsReviewPromptOpen(false)
   }, [])
@@ -349,7 +354,6 @@ function App() {
       setBadgeCelebration(badge)
       setIsBadgeCelebrationOpen(true)
     },
-    shouldSuppressPostSaveToast,
     onEntrySavedForToday: handleEntrySavedForToday,
     onEntrySaveSuccess: ({ previousEntryCount, nextEntryCount }) => {
       if (previousEntryCount === 10 && nextEntryCount === 11) {
@@ -361,6 +365,7 @@ function App() {
         }
         else {
           goToInsightsSummary()
+          tryOpenDailyReminderNudge()
         }
       }
     },
@@ -826,6 +831,11 @@ function App() {
         onConfirmYes={() => { void handleReviewPromptYes() }}
         onLater={closeReviewPrompt}
         onNotReally={handleReviewPromptNotReally}
+      />
+      <DailyReminderNudgeModal
+        isOpen={isDailyReminderNudgeOpen}
+        onAllow={handleAllowDailyReminder}
+        onDismiss={handleDismissDailyReminderNudge}
       />
 
       {authInitialized && session && !passwordRecoveryPending && !sessionBlocksForUnverifiedEmail && activePage === AppPage.Pro

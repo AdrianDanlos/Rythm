@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FocusEvent } from 'react'
+import { useEffect, useState, type FocusEvent } from 'react'
 import classNames from 'classnames'
 import { Capacitor } from '@capacitor/core'
 import { ChevronRight, Crown } from 'lucide-react'
@@ -19,8 +19,6 @@ import type {
 import appleLogo from '../assets/apple.png'
 import fitbitLogo from '../assets/fitbit.png'
 import googleLogo from '../assets/google-logo.png'
-import { useScrollToSettingsReminderOnMount } from '../hooks/useScrollToSettingsReminderOnMount'
-
 type SettingsPageProps = {
   isPro: boolean
   onOpenPaywall: () => void
@@ -70,14 +68,12 @@ export function SettingsPage({
   )
   const [isDateFormatOpen, setIsDateFormatOpen] = useState(false)
   const [isLanguageOpen, setIsLanguageOpen] = useState(false)
-  const reminderFieldRef = useRef<HTMLDivElement | null>(null)
   const [sleepTargetInput, setSleepTargetInput] = useState(
     () => String(personalSleepTarget),
   )
   const [eventInsightsMinCountInput, setEventInsightsMinCountInput] = useState(
     () => String(eventInsightsMinCount),
   )
-  useScrollToSettingsReminderOnMount(reminderFieldRef)
 
   const reminderActive = remindersSupported && remindersEnabled
 
@@ -415,7 +411,7 @@ export function SettingsPage({
         <section className="settings-section">
           <p className="eyebrow">{t('settings.reminders')}</p>
           <div className="settings-grid">
-            <div className="field" ref={reminderFieldRef}>
+            <div className="field">
               <span>{t('settings.dailyLogReminder')}</span>
               <div className="settings-inline">
                 <label className="toggle-row">
