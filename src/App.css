@@ -5122,6 +5122,18 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   text-align: center;
 }
 
+.timeline-averages {
+  margin-top: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  font-size: 0.875rem;
+}
+
+.timeline-averages p {
+  margin: 0;
+}
+
 .timeline-total-count {
   margin: 2px 0 0;
 }

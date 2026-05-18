@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Moon } from 'lucide-react'
 import { motion, type Transition } from 'framer-motion'
 import type { Entry } from '../../lib/entries'
@@ -46,6 +47,7 @@ export type TimelineProps = {
   onClearAllDraft: () => void
   onApplyDraftFilters: () => void
   entriesLoading: boolean
+  isPro: boolean
   filteredTimelineEntries: Entry[]
   formatTimelineDate: (value: string) => { dateLabel: string, weekdayLabel: string }
 }
@@ -86,9 +88,41 @@ export const Timeline = ({
   onClearAllDraft,
   onApplyDraftFilters,
   entriesLoading,
+  isPro,
   filteredTimelineEntries,
   formatTimelineDate,
 }: TimelineProps) => {
+  const { avgMood, avgSleepHours } = useMemo(() => {
+    if (!isPro) {
+      return { avgMood: null, avgSleepHours: null }
+    }
+    let moodSum = 0
+    let moodCount = 0
+    let sleepSum = 0
+    let sleepCount = 0
+    for (const entry of filteredTimelineEntries) {
+      if (entry.mood != null) {
+        moodSum += entry.mood
+        moodCount += 1
+      }
+      if (entry.sleep_hours != null && Number.isFinite(entry.sleep_hours)) {
+        sleepSum += entry.sleep_hours
+        sleepCount += 1
+      }
+    }
+    return {
+      avgMood: moodCount > 0 ? moodSum / moodCount : null,
+      avgSleepHours: sleepCount > 0 ? sleepSum / sleepCount : null,
+    }
+  }, [filteredTimelineEntries, isPro])
+
+  const avgMoodLabel = avgMood == null
+    ? t('common.noDataDash')
+    : `${avgMood.toFixed(1)} / 5`
+  const avgSleepLabel = avgSleepHours == null
+    ? t('common.noDataDash')
+    : formatSleepHours(avgSleepHours)
+
   return (
     <motion.div
       className="insights-panel insights-panel--timeline"
@@ -100,6 +134,12 @@ export const Timeline = ({
         <div>
           <h2>{t('nav.timeline')}</h2>
           <p className="muted timeline-total-count">{t('insights.entriesCount', { count: displayedEntriesCount })}</p>
+          {isPro && !entriesLoading && displayedEntriesCount > 0 && (
+            <div className="timeline-averages">
+              <p className="muted">{t('insights.timelineAvgMoodLine', { value: avgMoodLabel })}</p>
+              <p className="muted">{t('insights.timelineAvgSleepLine', { value: avgSleepLabel })}</p>
+            </div>
+          )}
         </div>
       </div>
       <TimelineFilters

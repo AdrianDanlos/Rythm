@@ -455,8 +455,8 @@ export const TimelineFilters = ({
                         <EventTagSelector
                           searchValue={timelineTagSearch}
                           onSearchChange={onTimelineTagSearchChange}
-                          searchPlaceholder={t('insights.timelineFilters.searchEvents')}
-                          searchAriaLabel={t('insights.timelineFilters.searchEvents')}
+                          searchPlaceholder={t('insights.timelineFilters.findEvent')}
+                          searchAriaLabel={t('insights.timelineFilters.findEvent')}
                           options={visibleTimelineTagOptions}
                           selectedKeys={new Set(draftTimelineFilters.tags)}
                           onToggleOption={option => onToggleDraftTag(option.key)}

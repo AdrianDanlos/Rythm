@@ -61,7 +61,7 @@ export type LogFormProps = {
   onFirstEntryTipContinueToSummary: () => void
 }
 
-type SaveAction = 'sleepDone' | 'moodDone' | 'tagsDone' | 'journalDone' | 'journalFinish' | null
+type SaveAction = 'sleepDone' | 'moodDone' | 'tagsDone' | 'journalFinish' | null
 
 export const LogForm = ({
   selectedDate,
@@ -520,10 +520,8 @@ export const LogForm = ({
                 setNoteEditorRef={setNoteEditorRef}
                 onNoteInput={handleNoteInput}
                 onSave={() => submitWithAction('journalFinish')}
-                onSkip={() => submitWithAction('journalDone')}
                 isSaving={saving}
-                isDoneSaving={saving && activeSaveAction === 'journalDone'}
-                isFinishSaving={saving && activeSaveAction === 'journalFinish'}
+                isSubmitting={saving && activeSaveAction === 'journalFinish'}
                 t={t}
               />
             </motion.div>

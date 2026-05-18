@@ -681,6 +681,7 @@ export const Insights = ({
                 setIsFilterSheetOpen(false)
               }}
               entriesLoading={entriesLoading}
+              isPro={isPro}
               filteredTimelineEntries={filteredTimelineEntries}
               formatTimelineDate={formatTimelineDate}
             />
