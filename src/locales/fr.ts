@@ -374,6 +374,7 @@ const fr = {
     logMoreDays: 'Enregistrez plus de jours',
     unlockWeekdayPatterns: 'pour débloquer les tendances hebdomadaires.',
     earlySignal: 'Encore tôt : les tendances deviennent plus claires après ~{{count}} jours.',
+    weekdayPreviewBadge: 'Exemple de données',
     avgSleep: 'Sommeil moy.',
     avgMood: 'Humeur moy.',
     bestMoodDay: 'Meilleure humeur',

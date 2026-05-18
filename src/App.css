@@ -5165,6 +5165,27 @@ body.timeline-filter-sheet-open .insights-bottom-nav {
   gap: 8px;
 }
 
+.chart-card__header-primary {
+  min-width: 0;
+  flex: 1;
+}
+
+.chart-card__preview-badge {
+  flex-shrink: 0;
+  align-self: center;
+  max-width: min(11rem, 42%);
+  padding: 0.125rem 0.45rem;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  text-align: right;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--muted) 14%, transparent);
+  white-space: normal;
+}
+
 .timeline-empty-state {
   margin: 0;
 }

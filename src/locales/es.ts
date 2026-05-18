@@ -375,6 +375,7 @@ const es = {
     logMoreDays: 'Registra más días',
     unlockWeekdayPatterns: 'para desbloquear patrones semanales.',
     earlySignal: 'Todavía es pronto: los patrones se vuelven más claros después de ~{{count}} días.',
+    weekdayPreviewBadge: 'Datos de ejemplo',
     avgSleep: 'Sueño prom',
     avgMood: 'Ánimo prom',
     bestMoodDay: 'Mejor ánimo',

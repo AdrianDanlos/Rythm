@@ -1,6 +1,8 @@
 import { type ComponentProps } from 'react'
 import { motion, type Transition } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 import type { Entry } from '../../lib/entries'
+import { WEEKDAY_PREVIEW_AVERAGES } from '../../lib/sampleData/weekdayPreview'
 import type { RollingPoint, RollingSummary, TrendPoint, WeekdayAveragePoint } from '../../lib/types/stats'
 import { InsightsCalendarHeatmap } from './InsightsCalendarHeatmap'
 import { InsightsDailyHistory } from './InsightsDailyHistory'
@@ -62,6 +64,7 @@ export const Charts = ({
   trendSeries,
   onOpenPaywall,
 }: ChartsProps) => {
+  const { t } = useTranslation()
   return (
     <motion.div
       className="insights-panel"
@@ -69,6 +72,14 @@ export const Charts = ({
       animate={{ opacity: 1 }}
       transition={panelTransition}
     >
+      {!hasEnoughEntries && (
+        <InsightsWeekdayAverages
+          weekdayAverages={WEEKDAY_PREVIEW_AVERAGES}
+          isMobile={isMobile}
+          goToLog={goToLog}
+          previewLabel={t('insights.weekdayPreviewBadge')}
+        />
+      )}
       <InsightsMoodDistribution
         entries={entries}
         moodColors={moodColors}
@@ -79,11 +90,13 @@ export const Charts = ({
         moodColors={moodColors}
         isMobile={isMobile}
       />
-      <InsightsWeekdayAverages
-        weekdayAverages={weekdayAverages}
-        isMobile={isMobile}
-        goToLog={goToLog}
-      />
+      {hasEnoughEntries && (
+        <InsightsWeekdayAverages
+          weekdayAverages={weekdayAverages}
+          isMobile={isMobile}
+          goToLog={goToLog}
+        />
+      )}
       {hasEnoughEntries && (
         <InsightsScatter
           isLoading={isLoading}

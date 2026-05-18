@@ -372,6 +372,7 @@ const en = {
     logMoreDays: 'Log more days',
     unlockWeekdayPatterns: 'to unlock weekday patterns.',
     earlySignal: 'Early signal: patterns get more reliable after about {{count}} days.',
+    weekdayPreviewBadge: 'Example data',
     avgSleep: 'Avg sleep',
     avgMood: 'Avg mood',
     bestMoodDay: 'Best mood',

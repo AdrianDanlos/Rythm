@@ -374,6 +374,7 @@ const pt = {
     logMoreDays: 'Registre mais dias',
     unlockWeekdayPatterns: 'para desbloquear os padrões semanais.',
     earlySignal: 'Ainda cedo — os padrões ficam mais claros após ~{{count}} dias.',
+    weekdayPreviewBadge: 'Dados de exemplo',
     avgSleep: 'Sono méd.',
     avgMood: 'Humor méd.',
     bestMoodDay: 'Melhor humor',

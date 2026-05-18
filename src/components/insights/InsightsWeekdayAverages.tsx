@@ -19,6 +19,7 @@ type InsightsWeekdayAveragesProps = {
   weekdayAverages: WeekdayAveragePoint[]
   isMobile: boolean
   goToLog: () => void
+  previewLabel?: string
 }
 
 type WeekdayLegendProps = {
@@ -59,11 +60,13 @@ export const InsightsWeekdayAverages = ({
   weekdayAverages,
   isMobile,
   goToLog,
+  previewLabel,
 }: InsightsWeekdayAveragesProps) => {
   const { t } = useTranslation()
+  const isPreview = Boolean(previewLabel)
   const hasAnyData = weekdayAverages.some(point => point.observationCount > 0)
   const totalCompleteLogs = weekdayAverages.reduce((sum, point) => sum + point.observationCount, 0)
-  const showEarlySignalNote = hasAnyData && totalCompleteLogs < EARLY_SIGNAL_MIN_COMPLETE_LOGS
+  const showEarlySignalNote = !isPreview && hasAnyData && totalCompleteLogs < EARLY_SIGNAL_MIN_COMPLETE_LOGS
 
   const sleepValues = weekdayAverages
     .map(p => p.avgSleep)
@@ -127,7 +130,7 @@ export const InsightsWeekdayAverages = ({
   return (
     <section className="card chart-card--compact">
       <div className="card-header">
-        <div>
+        <div className="chart-card__header-primary">
           <h2>
             {t('insights.weekdayPattern')}
             <Tooltip label={t('insights.weekdaySleepTooltip')}>
@@ -139,6 +142,11 @@ export const InsightsWeekdayAverages = ({
             </Tooltip>
           </h2>
         </div>
+        {isPreview && (
+          <span className="chart-card__preview-badge" aria-label={previewLabel}>
+            {previewLabel}
+          </span>
+        )}
       </div>
       {!hasAnyData
         ? (

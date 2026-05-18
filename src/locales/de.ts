@@ -374,6 +374,7 @@ const de = {
     logMoreDays: 'Mehr Tage eintragen',
     unlockWeekdayPatterns: 'um Wochenmuster freizuschalten.',
     earlySignal: 'Noch zu früh – Muster werden nach ca. {{count}} Tagen klarer.',
+    weekdayPreviewBadge: 'Beispieldaten',
     avgSleep: 'Ø Schlaf',
     avgMood: 'Ø Stimmung',
     bestMoodDay: 'Beste Stimmung',
