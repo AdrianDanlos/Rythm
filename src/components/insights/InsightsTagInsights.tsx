@@ -1,4 +1,5 @@
 import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
+import { tagMoodDriverRelativeDelta } from '../../lib/utils/tagInsights'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
@@ -32,13 +33,13 @@ export const InsightsTagInsights = ({
   const allPositiveDrivers = useMemo(
     () => [...tagDrivers]
       .filter(driver => typeof driver.delta === 'number' && driver.delta > 0)
-      .sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0)),
+      .sort((a, b) => tagMoodDriverRelativeDelta(b) - tagMoodDriverRelativeDelta(a)),
     [tagDrivers],
   )
   const allNegativeDrivers = useMemo(
     () => [...tagDrivers]
       .filter(driver => typeof driver.delta === 'number' && driver.delta < 0)
-      .sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)),
+      .sort((a, b) => tagMoodDriverRelativeDelta(a) - tagMoodDriverRelativeDelta(b)),
     [tagDrivers],
   )
   const allPositiveSleepDrivers = useMemo(

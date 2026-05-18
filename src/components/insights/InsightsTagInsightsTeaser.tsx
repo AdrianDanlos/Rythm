@@ -1,4 +1,5 @@
 import { buildMockTagDrivers, buildMockTagSleepDrivers } from '../../lib/insightsMock'
+import { tagMoodDriverRelativeDelta } from '../../lib/utils/tagInsights'
 import { useTranslation } from 'react-i18next'
 import type { TagDriver } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
@@ -62,11 +63,11 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
   const mockTagSleepDrivers = buildMockTagSleepDrivers()
   const mockPositiveDrivers = [...mockTagDrivers]
     .filter(d => typeof d.delta === 'number' && d.delta > 0)
-    .sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0))
+    .sort((a, b) => tagMoodDriverRelativeDelta(b) - tagMoodDriverRelativeDelta(a))
     .slice(0, 2)
   const mockNegativeDrivers = [...mockTagDrivers]
     .filter(d => typeof d.delta === 'number' && d.delta < 0)
-    .sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0))
+    .sort((a, b) => tagMoodDriverRelativeDelta(a) - tagMoodDriverRelativeDelta(b))
     .slice(0, 2)
   const mockPositiveSleepDrivers = [...mockTagSleepDrivers]
     .filter(d => typeof d.delta === 'number' && d.delta > 0)

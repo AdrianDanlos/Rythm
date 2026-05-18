@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Entry } from '../../entries'
-import { buildTagDrivers, buildTagInsights, buildTagSleepDrivers } from '../tagInsights'
+import { buildTagDrivers, buildTagInsights, buildTagSleepDrivers, tagMoodDriverRelativeDelta } from '../tagInsights'
 
 const makeEntry = (overrides: Partial<Entry>): Entry => ({
   id: 'entry',
@@ -55,6 +55,18 @@ describe('buildTagInsights', () => {
   })
 })
 
+describe('tagMoodDriverRelativeDelta', () => {
+  it('matches impact % basis so higher raw delta can rank below higher %', () => {
+    const higherRawDeltaLowerPercent = { delta: 1.2, moodWithout: 8 }
+    const lowerRawDeltaHigherPercent = { delta: 0.8, moodWithout: 3.2 }
+    expect(tagMoodDriverRelativeDelta(higherRawDeltaLowerPercent)).toBeCloseTo(0.15)
+    expect(tagMoodDriverRelativeDelta(lowerRawDeltaHigherPercent)).toBeCloseTo(0.25)
+    expect(
+      tagMoodDriverRelativeDelta(lowerRawDeltaHigherPercent) - tagMoodDriverRelativeDelta(higherRawDeltaLowerPercent),
+    ).toBeGreaterThan(0)
+  })
+})
+
 describe('buildTagDrivers', () => {
   it('computes mood deltas per tag with minimum count', () => {
     const entries = [
@@ -81,6 +93,7 @@ describe('buildTagDrivers', () => {
         delta: -1,
       },
     ])
+    expect(tagMoodDriverRelativeDelta(drivers[0]!)).toBeGreaterThan(tagMoodDriverRelativeDelta(drivers[1]!))
   })
 
   it('filters out tags that do not meet the minimum count', () => {

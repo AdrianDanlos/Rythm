@@ -3,6 +3,15 @@ import type { TagDriver, TagInsight, TagSleepDriver } from '../types/stats'
 
 export const DEFAULT_TAG_DRIVER_MIN_COUNT = 3
 
+/**
+ * δ / baseline mood without the tag — matches the UI impact % (×100).
+ * Use for ordering so list order matches displayed percentages, not raw Δ mood.
+ */
+export const tagMoodDriverRelativeDelta = (driver: Pick<TagDriver, 'delta' | 'moodWithout'>): number => {
+  if (driver.delta === null || driver.moodWithout === null || driver.moodWithout === 0) return 0
+  return driver.delta / driver.moodWithout
+}
+
 /** Returns YYYY-MM-DD for the calendar day before entryDate. */
 function getPrevDateString(entryDate: string): string {
   const d = new Date(`${entryDate}T12:00:00`)
@@ -109,7 +118,7 @@ export const buildTagDrivers = (
       }
     })
     .filter(driver => driver.count >= minCount && driver.delta !== null)
-    .sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0))
+    .sort((a, b) => tagMoodDriverRelativeDelta(b) - tagMoodDriverRelativeDelta(a))
 
   return drivers
 }

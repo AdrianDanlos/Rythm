@@ -4,6 +4,7 @@ import type { Entry } from '../entries'
 import type { StatsResult } from '../stats'
 import { formatLongDate } from '../utils/dateFormatters'
 import { formatSleepHours } from '../utils/sleepHours'
+import { tagMoodDriverRelativeDelta } from '../utils/tagInsights'
 import type { ReportData } from './reportData'
 import {
   CONTENT_WIDTH,
@@ -338,8 +339,8 @@ export const renderAllTimeSection = ({
   })
   yRef.value += cardHeight * 2 + 10
 
-  const moodPos = allTimeTagDrivers.filter(d => (d.delta ?? 0) > 0).sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0)).slice(0, 4)
-  const moodNeg = allTimeTagDrivers.filter(d => (d.delta ?? 0) < 0).sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)).slice(0, 4)
+  const moodPos = allTimeTagDrivers.filter(d => (d.delta ?? 0) > 0).sort((a, b) => tagMoodDriverRelativeDelta(b) - tagMoodDriverRelativeDelta(a)).slice(0, 4)
+  const moodNeg = allTimeTagDrivers.filter(d => (d.delta ?? 0) < 0).sort((a, b) => tagMoodDriverRelativeDelta(a) - tagMoodDriverRelativeDelta(b)).slice(0, 4)
   const sleepPos = allTimeTagSleepDrivers.filter(d => (d.delta ?? 0) > 0).sort((a, b) => (b.delta ?? 0) - (a.delta ?? 0)).slice(0, 4)
   const sleepNeg = allTimeTagSleepDrivers.filter(d => (d.delta ?? 0) < 0).sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0)).slice(0, 4)
 
