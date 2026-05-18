@@ -11,6 +11,8 @@ export const STORAGE_KEYS = {
   EVENT_INSIGHTS_MIN_COUNT: 'eventInsightsMinCount',
   INTRO_COMPLETED: 'rythm_intro_completed',
   FIRST_ENTRY_TIP_DISMISSED: 'rythm_first_entry_tip_dismissed',
+  /** Set after the post-streak-3 review modal was shown (one-time prompt). */
+  REVIEW_PROMPT_AFTER_STREAK_3_OFFERED: 'rythm_review_prompt_streak_3_offered',
   RETURNING_USER: 'rythm_returning_user',
   RATED_GOOGLE_PLAY: 'rythm_rated_google_play',
   DAILY_REMINDER_ENABLED: 'dailyReminderEnabled',

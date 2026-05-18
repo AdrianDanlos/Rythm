@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Angry, Frown, Laugh, Meh, Smile } from 'lucide-react'
+import { Angry, Frown, Laugh, Lock, Meh, Smile } from 'lucide-react'
 import type { Entry } from '../../lib/entries'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { moodColors } from '../../lib/colors'
@@ -51,6 +51,7 @@ export const InsightsFirstFiveCard = ({ entries, goToLog }: InsightsFirstFiveCar
       {...(reduceMotion ? {} : cardEnter)}
       transition={reduceMotion ? { duration: 0 } : undefined}
     >
+      <Lock className="insights-first-five-card__lock-corner" size={20} aria-hidden />
       <div className="insights-first-five-card__header">
         <p className="eyebrow">{t('insights.firstSummary')}</p>
         <h2>{t('insights.buildingFirstWeek')}</h2>

@@ -128,6 +128,7 @@ function App() {
   const [isMenuPanelOpen, setIsMenuPanelOpen] = useState(false)
   const [isStreakCelebrationOpen, setIsStreakCelebrationOpen] = useState(false)
   const [streakCelebrationDays, setStreakCelebrationDays] = useState<number>(3)
+  const openReviewAfterStreakCelebrationClosesRef = useRef(false)
   const [isBadgeCelebrationOpen, setIsBadgeCelebrationOpen] = useState(false)
   const [badgeCelebration, setBadgeCelebration] = useState<Badge | null>(null)
   const [isReviewPromptOpen, setIsReviewPromptOpen] = useState(false)
@@ -319,6 +320,23 @@ function App() {
     openFeedback()
   }, [closeReviewPrompt, openFeedback])
 
+  const handleStreakCelebrationClosed = useCallback(() => {
+    setIsStreakCelebrationOpen(false)
+    if (!openReviewAfterStreakCelebrationClosesRef.current) {
+      return
+    }
+    openReviewAfterStreakCelebrationClosesRef.current = false
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem(STORAGE_KEYS.REVIEW_PROMPT_AFTER_STREAK_3_OFFERED, 'true')
+      }
+      catch {
+        // Ignore storage write failures.
+      }
+    }
+    setIsReviewPromptOpen(true)
+  }, [])
+
   const {
     setEntryDate,
     selectedDate,
@@ -348,6 +366,20 @@ function App() {
     onStreakReached: (streakDays) => {
       setStreakCelebrationDays(streakDays)
       setIsStreakCelebrationOpen(true)
+      if (streakDays === 3) {
+        let alreadyOffered = false
+        if (typeof window !== 'undefined') {
+          try {
+            alreadyOffered = window.localStorage.getItem(STORAGE_KEYS.REVIEW_PROMPT_AFTER_STREAK_3_OFFERED) === 'true'
+          }
+          catch {
+            alreadyOffered = false
+          }
+        }
+        if (!alreadyOffered) {
+          openReviewAfterStreakCelebrationClosesRef.current = true
+        }
+      }
     },
     onBadgeMilestoneReached: (badge) => {
       if (isStreakCelebrationOpen) return
@@ -355,10 +387,7 @@ function App() {
       setIsBadgeCelebrationOpen(true)
     },
     onEntrySavedForToday: handleEntrySavedForToday,
-    onEntrySaveSuccess: ({ previousEntryCount, nextEntryCount }) => {
-      if (previousEntryCount === 10 && nextEntryCount === 11) {
-        setIsReviewPromptOpen(true)
-      }
+    onEntrySaveSuccess: ({ nextEntryCount }) => {
       if (nextEntryCount === 1) {
         if (!isFirstEntryTipDismissed) {
           handleFirstEntryCreated()
@@ -811,8 +840,8 @@ function App() {
       <StreakCelebration
         isVisible={isStreakCelebrationOpen}
         streakDays={streakCelebrationDays}
-        onComplete={() => setIsStreakCelebrationOpen(false)}
-        onDismiss={() => setIsStreakCelebrationOpen(false)}
+        onComplete={handleStreakCelebrationClosed}
+        onDismiss={handleStreakCelebrationClosed}
       />
       <BadgeCelebration
         isVisible={isBadgeCelebrationOpen}

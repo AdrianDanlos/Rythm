@@ -1,9 +1,10 @@
+import classNames from 'classnames'
 import type { StatCounts } from '../../lib/stats'
 import { useTranslation } from 'react-i18next'
 import type { SleepMoodAverages, WindowStats } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { Tooltip } from '../Tooltip'
-import { Equal, Flame, Info, TrendingDown, TrendingUp } from 'lucide-react'
+import { Equal, Flame, Info, Lock, TrendingDown, TrendingUp } from 'lucide-react'
 
 const RHYTHM_NEED = 5
 const SLEEP_CONSISTENCY_NEED = 2
@@ -235,7 +236,15 @@ export const InsightsStats = ({
               <>
                 {renderWindowTile(t('insights.last7Days'), windowAverages.last7)}
                 {renderWindowTile(t('insights.last30Days'), windowAverages.last30)}
-                <div className="stat-tile">
+                <div
+                  className={classNames(
+                    'stat-tile',
+                    rhythmScore === null && 'stat-tile--needs-more-data',
+                  )}
+                >
+                  {rhythmScore === null && (
+                    <Lock className="stat-tile__needs-more-data-lock" size={18} aria-hidden />
+                  )}
                   <p className="label">{t('insights.rhythmScore')}</p>
                   <p className="value">{rhythmScore !== null ? `${rhythmScore} / 100` : '—'}</p>
                   <p className="helper">
@@ -244,7 +253,15 @@ export const InsightsStats = ({
                       : t('insights.needsMoreDays', { count: rhythmMore, unit: rhythmMore === 1 ? t('common.day') : t('common.days') })}
                   </p>
                 </div>
-                <div className="stat-tile">
+                <div
+                  className={classNames(
+                    'stat-tile',
+                    !sleepConsistencyLabel && 'stat-tile--needs-more-data',
+                  )}
+                >
+                  {!sleepConsistencyLabel && (
+                    <Lock className="stat-tile__needs-more-data-lock" size={18} aria-hidden />
+                  )}
                   <p className="label">{t('insights.consistency')}</p>
                   <p className="value">{sleepConsistencyLabel ? t(`insights.sleepConsistencyLevels.${sleepConsistencyLabel}`) : '—'}</p>
                   <p className="helper">
@@ -253,7 +270,15 @@ export const InsightsStats = ({
                       : t('insights.needsMoreDays', { count: sleepConsistencyMore, unit: sleepConsistencyMore === 1 ? t('common.day') : t('common.days') })}
                   </p>
                 </div>
-                <div className="stat-tile">
+                <div
+                  className={classNames(
+                    'stat-tile',
+                    !correlationLabel && correlationMore > 0 && 'stat-tile--needs-more-data',
+                  )}
+                >
+                  {!correlationLabel && correlationMore > 0 && (
+                    <Lock className="stat-tile__needs-more-data-lock" size={18} aria-hidden />
+                  )}
                   <p className="label label--pre-line">{t('insights.sleepMoodLink')}</p>
                   <p className="value">{correlationLabel ? t(`insights.correlationLevels.${correlationLabel}`) : '—'}</p>
                   {correlationDirection
@@ -272,7 +297,15 @@ export const InsightsStats = ({
                           )
                         : null}
                 </div>
-                <div className="stat-tile">
+                <div
+                  className={classNames(
+                    'stat-tile',
+                    moodBySleepDeltaPercent === null && 'stat-tile--needs-more-data',
+                  )}
+                >
+                  {moodBySleepDeltaPercent === null && (
+                    <Lock className="stat-tile__needs-more-data-lock" size={18} aria-hidden />
+                  )}
                   <p className="label label--with-tooltip">
                     <span className="label-nowrap">{t('insights.moodBySleepTitle', { threshold: formatSleepHours(sleepThreshold) })}</span>
                     {shouldShowIdealSleepTooltip && (
