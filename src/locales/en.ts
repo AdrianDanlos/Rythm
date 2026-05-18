@@ -208,6 +208,7 @@ const en = {
     sleepTooltip: 'You can always log your sleep now and come back later to log your mood and activities.',
     sleepSubtitle: 'Track your rest',
     firstEntryPrivacyNote: 'What you log is private and encrypted',
+    tagsFirstEntryHint: 'Tag your day. Most people pick two to five.',
     pickTime: 'Pick time',
     sleepTimePickerOk: 'OK',
     sleepTimePickerCancel: 'Cancel',

@@ -211,6 +211,7 @@ const es = {
     sleepTooltip: 'Puedes guardar tu sueño ahora y volver luego para registrar tu ánimo y tus actividades.',
     sleepSubtitle: 'Anota tu descanso',
     firstEntryPrivacyNote: 'Lo que registras es privado y cifrado.',
+    tagsFirstEntryHint: 'Etiqueta tu día. La mayoría elige entre dos y cinco.',
     pickTime: 'Elegir hora',
     sleepTimePickerOk: 'OK',
     sleepTimePickerCancel: 'Cancelar',

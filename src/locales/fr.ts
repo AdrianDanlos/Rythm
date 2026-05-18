@@ -211,6 +211,7 @@ const fr = {
     sleepTooltip: 'Vous pouvez enregistrer votre sommeil maintenant et revenir plus tard pour noter votre humeur et vos événements.',
     sleepSubtitle: 'Notez votre nuit',
     firstEntryPrivacyNote: 'Ce que tu enregistres est privé et chiffré.',
+    tagsFirstEntryHint: 'Associe des tags à ta journée. La plupart des gens en choisissent deux à cinq.',
     pickTime: 'Choisir l\'heure',
     sleepTimePickerOk: 'OK',
     sleepTimePickerCancel: 'Annuler',

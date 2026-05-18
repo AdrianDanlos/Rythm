@@ -211,6 +211,7 @@ const pt = {
     sleepTooltip: 'Você pode salvar seu sono agora e voltar depois para registrar seu humor e os eventos do dia.',
     sleepSubtitle: 'Anote sua noite',
     firstEntryPrivacyNote: 'O que você registra é privado e criptografado.',
+    tagsFirstEntryHint: 'Marca o teu dia com tags. A maioria escolhe entre duas e cinco.',
     pickTime: 'Escolher hora',
     sleepTimePickerOk: 'OK',
     sleepTimePickerCancel: 'Cancelar',

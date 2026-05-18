@@ -211,6 +211,7 @@ const de = {
     sleepTooltip: 'Du kannst deinen Schlaf jetzt speichern und später deine Stimmung und Ereignisse nachtragen.',
     sleepSubtitle: 'Deine Nacht festhalten',
     firstEntryPrivacyNote: 'Was du aufzeichnest, ist privat und verschlüsselt.',
+    tagsFirstEntryHint: 'Gib deinem Tag ein paar Tags. Die meisten wählen zwei bis fünf.',
     pickTime: 'Zeit wählen',
     sleepTimePickerOk: 'OK',
     sleepTimePickerCancel: 'Abbrechen',

@@ -299,6 +299,8 @@ export const useLogForm = ({
         || nextStats.streak === 21
         || nextStats.streak === 30
         || (nextStats.streak >= 40 && nextStats.streak % 10 === 0)
+      const willOpenStreakCelebration
+        = Boolean(onStreakReached) && isStreakMilestone && stats.streak < nextStats.streak
       if (isStreakMilestone && stats.streak < nextStats.streak) {
         onStreakReached?.(nextStats.streak)
       }
@@ -311,13 +313,16 @@ export const useLogForm = ({
           ? [{ badge: nextBadge, tierDelta: nextTier - prevTier }]
           : []
       })
+      const willOpenBadgeCelebration
+        = Boolean(onBadgeMilestoneReached) && tierUps.length > 0
       if (tierUps.length > 0) {
         tierUps.sort((a, b) => b.tierDelta - a.tierDelta || a.badge.id.localeCompare(b.badge.id))
         onBadgeMilestoneReached?.(tierUps[0]!.badge)
       }
       const isFirstEntrySave = entries.length === 0 && nextEntries.length === 1
       const suppressPostSaveToast = shouldSuppressPostSaveToast?.(nextEntries.length) ?? false
-      if (!suppressPostSaveToast && !isFirstEntrySave) {
+      const suppressToastForCelebration = willOpenStreakCelebration || willOpenBadgeCelebration
+      if (!suppressPostSaveToast && !isFirstEntrySave && !suppressToastForCelebration) {
         if (tagList.length === 0) {
           if (mood === null) {
             toast.info(t('log.postSaveNeedMood'))

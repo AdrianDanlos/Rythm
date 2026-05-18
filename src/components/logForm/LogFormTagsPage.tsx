@@ -78,6 +78,9 @@ export function LogFormTagsPage({
                 </Tooltip>
               </h2>
             </div>
+            {isFirstEntry ? (
+              <p className="log-reflection-subtitle">{t('log.tagsFirstEntryHint')}</p>
+            ) : null}
           </header>
 
           <div className="field log-reflection-tags">
