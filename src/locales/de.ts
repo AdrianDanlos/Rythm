@@ -21,6 +21,7 @@ const de = {
     notAvailable: 'k. A.',
     notes: 'Notizen',
     googleLogoAlt: 'Google-Logo',
+    goToSlide: 'Zu Folie {{current}} von {{total}}',
   },
   nav: {
     insights: 'Einblicke',
@@ -98,6 +99,7 @@ const de = {
     skip: 'Überspringen',
     next: 'Weiter',
     getStarted: 'Loslegen',
+    carouselDotsNav: 'Einführungsfolien',
   },
   settings: {
     title: 'Einstellungen',
@@ -199,6 +201,7 @@ const de = {
   },
   log: {
     carouselAria: 'Schritte im Tagebuch',
+    carouselDotsNav: 'Navigation für Tagebuch-Schritte',
     carouselNext: 'Weiter',
     carouselDone: 'Fertig',
     firstEntryComplete: 'Das ist alles! Komm morgen wieder und trag einen neuen Eintrag ein. Je mehr Tage du trackst, desto mehr wirst du über dich selbst herausfinden.',

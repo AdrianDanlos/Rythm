@@ -21,6 +21,7 @@ const en = {
     notAvailable: 'N/A',
     notes: 'Notes',
     googleLogoAlt: 'Google logo',
+    goToSlide: 'Go to slide {{current}} of {{total}}',
   },
   nav: {
     insights: 'Insights',
@@ -96,6 +97,7 @@ const en = {
     skip: 'Skip',
     next: 'Next',
     getStarted: 'Get started',
+    carouselDotsNav: 'Introduction slides',
   },
   settings: {
     title: 'Settings',
@@ -196,6 +198,7 @@ const en = {
   },
   log: {
     carouselAria: 'Daily log steps',
+    carouselDotsNav: 'Log steps navigation',
     carouselNext: 'Next',
     carouselDone: 'Done',
     firstEntryComplete: 'That\'s all there is to it. Come back tomorrow and log another entry. The more days you track, the more you\'ll start to see about yourself.',

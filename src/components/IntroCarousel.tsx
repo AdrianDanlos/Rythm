@@ -63,14 +63,23 @@ export const IntroCarousel = ({ onComplete }: IntroCarouselProps) => {
         </motion.div>
       </AnimatePresence>
 
-      <div className="intro-carousel__pagination" aria-hidden="true">
+      <nav className="intro-carousel__pagination" aria-label={t('intro.carouselDotsNav')}>
         {slides.map((_, index) => (
-          <span
+          <button
             key={index}
+            type="button"
             className={classNames('intro-carousel__dot', { 'is-active': index === activeIndex })}
-          />
+            aria-label={t('common.goToSlide', {
+              current: index + 1,
+              total: slides.length,
+            })}
+            aria-current={index === activeIndex ? 'step' : undefined}
+            onClick={() => setActiveIndex(index)}
+          >
+            <span className="intro-carousel__dot-indicator" aria-hidden="true" />
+          </button>
         ))}
-      </div>
+      </nav>
 
       <div className="intro-carousel__actions">
         <button

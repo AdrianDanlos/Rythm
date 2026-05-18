@@ -554,13 +554,38 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .intro-carousel__dot {
   flex-shrink: 0;
-  width: 8px;
-  height: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+}
+
+.intro-carousel__dot:focus {
+  outline: none;
+}
+
+.intro-carousel__dot:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--button-bg) 85%, transparent);
+  outline-offset: 3px;
+}
+
+.intro-carousel__dot-indicator {
+  display: block;
+  width: 10px;
+  height: 10px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--muted) 40%, transparent);
   opacity: 0.55;
@@ -570,14 +595,14 @@
     opacity 0.35s ease;
 }
 
-.intro-carousel__dot.is-active {
-  width: 24px;
+.intro-carousel__dot.is-active .intro-carousel__dot-indicator {
+  width: 28px;
   background: var(--button-bg);
   opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .intro-carousel__dot {
+  .intro-carousel__dot-indicator {
     transition-duration: 0.01ms;
   }
 }
@@ -2162,7 +2187,6 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
   bottom: calc(90px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   z-index: 8;
-  pointer-events: none;
   margin: 0;
 }
 

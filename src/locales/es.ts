@@ -21,6 +21,7 @@ const es = {
     notAvailable: 'N/D',
     notes: 'Notas',
     googleLogoAlt: 'Logo de Google',
+    goToSlide: 'Ir a la diapositiva {{current}} de {{total}}',
   },
   nav: {
     insights: 'Insights',
@@ -98,6 +99,7 @@ const es = {
     skip: 'Omitir',
     next: 'Siguiente',
     getStarted: 'Empezar',
+    carouselDotsNav: 'Diapositivas de introducción',
   },
   settings: {
     title: 'Configuración',
@@ -199,6 +201,7 @@ const es = {
   },
   log: {
     carouselAria: 'Pasos del registro diario',
+    carouselDotsNav: 'Navegación de pasos del registro',
     carouselNext: 'Siguiente',
     carouselDone: 'Listo',
     firstEntryComplete: '¡Eso es todo! Vuelve mañana y registra otra entrada. Cuantos más días registres, más empezarás a descubrir sobre ti mismo.',

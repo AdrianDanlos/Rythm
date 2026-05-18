@@ -21,6 +21,7 @@ const fr = {
     notAvailable: 'N/D',
     notes: 'Notes',
     googleLogoAlt: 'Logo Google',
+    goToSlide: 'Aller à la diapositive {{current}} sur {{total}}',
   },
   nav: {
     insights: 'Insights',
@@ -98,6 +99,7 @@ const fr = {
     skip: 'Passer',
     next: 'Suivant',
     getStarted: 'Commencer',
+    carouselDotsNav: 'Diapositives d’introduction',
   },
   settings: {
     title: 'Paramètres',
@@ -199,6 +201,7 @@ const fr = {
   },
   log: {
     carouselAria: 'Étapes du journal quotidien',
+    carouselDotsNav: 'Navigation des étapes du journal',
     carouselNext: 'Suivant',
     carouselDone: 'Terminé',
     firstEntryComplete: 'C\'est tout ! Reviens demain et ajoute une nouvelle entrée. Plus tu enregistres de jours, plus tu commenceras à en apprendre sur toi-même.',

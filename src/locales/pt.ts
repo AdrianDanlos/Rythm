@@ -21,6 +21,7 @@ const pt = {
     notAvailable: 'N/D',
     notes: 'Notas',
     googleLogoAlt: 'Logo do Google',
+    goToSlide: 'Ir para o slide {{current}} de {{total}}',
   },
   nav: {
     insights: 'Insights',
@@ -98,6 +99,7 @@ const pt = {
     skip: 'Pular',
     next: 'Próximo',
     getStarted: 'Começar',
+    carouselDotsNav: 'Slides de introdução',
   },
   settings: {
     title: 'Configurações',
@@ -199,6 +201,7 @@ const pt = {
   },
   log: {
     carouselAria: 'Etapas do registro diário',
+    carouselDotsNav: 'Navegação dos passos do registro',
     carouselNext: 'Próximo',
     carouselDone: 'Concluído',
     firstEntryComplete: 'É só isso! Volte amanhã e registre mais uma entrada. Quanto mais dias você acompanhar, mais vai começar a entender sobre si mesmo.',

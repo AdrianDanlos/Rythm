@@ -550,17 +550,29 @@ export const LogForm = ({
               </p>
             )
           : null}
-        <div className="intro-carousel__pagination log-form-carousel__pagination" aria-hidden="true">
+        <nav
+          className="intro-carousel__pagination log-form-carousel__pagination"
+          aria-label={t('log.carouselDotsNav')}
+        >
           {Array.from(
             { length: totalCarouselPages },
             (_, page) => page,
           ).map(page => (
-            <span
+            <button
               key={page}
+              type="button"
               className={classNames('intro-carousel__dot', { 'is-active': page === carouselPage })}
-            />
+              aria-label={t('common.goToSlide', {
+                current: page + 1,
+                total: totalCarouselPages,
+              })}
+              aria-current={page === carouselPage ? 'step' : undefined}
+              onClick={() => advanceCarousel(page as LogCarouselPage)}
+            >
+              <span className="intro-carousel__dot-indicator" aria-hidden="true" />
+            </button>
           ))}
-        </div>
+        </nav>
       </div>
     </form>
   )
