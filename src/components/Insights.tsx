@@ -547,6 +547,7 @@ export const Insights = ({
               isMobile={isMobile}
               weekdayAverages={weekdayAverages}
               hasEnoughEntries={hasEnoughEntries}
+              eventInsightsMinCount={eventInsightsMinCount}
               isLoading={isLoading}
               isPro={isPro}
               isEmpty={isEmpty}
@@ -587,7 +588,7 @@ export const Insights = ({
                 onGoToTimeline()
               }}
               onOpenEditEvents={onOpenEditEvents}
-              hasEnoughEntries={hasEnoughEntries}
+              entryCount={entries.length}
               eventInsightsMinCount={eventInsightsMinCount}
               isPro={isPro}
               tagDrivers={tagDrivers}

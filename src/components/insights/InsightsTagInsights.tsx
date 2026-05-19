@@ -1,8 +1,9 @@
 import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
 import { tagMoodDriverRelativeDelta } from '../../lib/utils/tagInsights'
 import { useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
+import { requestScrollToLogDailyEventsInput } from '../../hooks/useScrollToLogDailyEventsOnMount'
 import { Tooltip } from '../Tooltip'
 import { ChevronRight, Info, Moon, Smile, TrendingDown, TrendingUp } from 'lucide-react'
 
@@ -14,6 +15,8 @@ type InsightsTagInsightsProps = {
   goToLog: () => void
   onOpenTagInTimeline: (tag: string) => void
   eventInsightsMinCount: number
+  /** When set, shows an "Example data" badge and renders tag rows as non-interactive. */
+  previewLabel?: string
 }
 const FREE_VISIBLE_PER_SECTION = 2
 
@@ -25,8 +28,10 @@ export const InsightsTagInsights = ({
   goToLog,
   onOpenTagInTimeline,
   eventInsightsMinCount,
+  previewLabel,
 }: InsightsTagInsightsProps) => {
   const { t } = useTranslation()
+  const isPreview = Boolean(previewLabel)
   const [showAllTags, setShowAllTags] = useState(false)
   const shouldShowAll = isPro && showAllTags
 
@@ -150,52 +155,134 @@ export const InsightsTagInsights = ({
     return Math.min(100, Math.max(0, (Math.abs(delta) / maxAbsSleepDelta) * 100))
   }
 
+  const renderMoodRowInner = (tag: TagDriver) => (
+    <>
+      <div className="tag-bar-header">
+        <p className="tag-title">{tag.tag}</p>
+        <span className="tag-bar-header-meta">
+          <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
+        </span>
+      </div>
+      <div className="tag-bar-delta-and-track">
+        <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
+        <div className="tag-bar-track" aria-hidden="true">
+          <span
+            className="tag-bar-fill"
+            style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
+          />
+        </div>
+      </div>
+      <p className="helper">
+        {tag.moodWith != null && (
+          <>
+            {tag.moodWith.toFixed(1)}/5
+            {' — '}
+          </>
+        )}
+        {t('insights.entriesSuffix', { count: tag.count })}
+      </p>
+    </>
+  )
+
+  const renderMoodRow = (tag: TagDriver, variant: 'positive' | 'negative') => {
+    if (isPreview) {
+      return (
+        <div className={`tag-bar-item tag-bar-item--preview ${variant}`} key={tag.tag}>
+          {renderMoodRowInner(tag)}
+        </div>
+      )
+    }
+    return (
+      <button
+        type="button"
+        className={`tag-bar-item tag-bar-item--interactive ${variant}`}
+        key={tag.tag}
+        onClick={() => onOpenTagInTimeline(tag.tag)}
+        aria-label={t('insights.openTagTimelineAria', { tag: tag.tag })}
+      >
+        <ChevronRight className="tag-bar-open-icon" size={22} aria-hidden />
+        {renderMoodRowInner(tag)}
+      </button>
+    )
+  }
+
+  const renderSleepRowInner = (d: TagSleepDriver) => (
+    <>
+      <div className="tag-bar-header">
+        <p className="tag-title">{d.tag}</p>
+        <span className="tag-bar-header-meta">
+          <p className="tag-delta tag-delta--pc">{renderSleepDelta(d.delta)}</p>
+        </span>
+      </div>
+      <div className="tag-bar-delta-and-track">
+        <p className="tag-delta tag-delta--mobile">{renderSleepDelta(d.delta)}</p>
+        <div className="tag-bar-track" aria-hidden="true">
+          <span
+            className="tag-bar-fill"
+            style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
+          />
+        </div>
+      </div>
+      <p className="helper">
+        {d.sleepWith != null && (
+          <>
+            {formatSleepHours(d.sleepWith)}
+            {' — '}
+          </>
+        )}
+        {t('insights.daysSuffix', { count: d.count })}
+      </p>
+    </>
+  )
+
+  const renderSleepRow = (d: TagSleepDriver, variant: 'positive' | 'negative') => {
+    if (isPreview) {
+      return (
+        <div className={`tag-bar-item tag-bar-item--preview ${variant}`} key={d.tag}>
+          {renderSleepRowInner(d)}
+        </div>
+      )
+    }
+    return (
+      <button
+        type="button"
+        className={`tag-bar-item tag-bar-item--interactive ${variant}`}
+        key={d.tag}
+        onClick={() => onOpenTagInTimeline(d.tag)}
+        aria-label={t('insights.openTagTimelineAria', { tag: d.tag })}
+      >
+        <ChevronRight className="tag-bar-open-icon" size={22} aria-hidden />
+        {renderSleepRowInner(d)}
+      </button>
+    )
+  }
+
+  const renderSectionLabelRow = (label: string, showPreviewBadge = false) => (
+    <div className="tag-driver-section__label-row">
+      <p className="label">{label}</p>
+      {showPreviewBadge && previewLabel
+        ? (
+            <span className="chart-card__preview-badge" aria-label={previewLabel}>
+              {previewLabel}
+            </span>
+          )
+        : null}
+    </div>
+  )
+
   const renderSleepDriverSection = (
     label: string,
     variant: 'positive' | 'negative',
     drivers: TagSleepDriver[],
     lockedCount = 0,
+    showPreviewBadge = false,
   ) => {
     if (drivers.length === 0 && lockedCount === 0) return null
     return (
       <div className="tag-driver-section">
-        <p className="label">{label}</p>
+        {renderSectionLabelRow(label, showPreviewBadge)}
         <div className="tag-bar-list">
-          {drivers.map(d => (
-            <button
-              type="button"
-              className={`tag-bar-item tag-bar-item--interactive ${variant}`}
-              key={d.tag}
-              onClick={() => onOpenTagInTimeline(d.tag)}
-              aria-label={t('insights.openTagTimelineAria', { tag: d.tag })}
-            >
-              <ChevronRight className="tag-bar-open-icon" size={22} aria-hidden />
-              <div className="tag-bar-header">
-                <p className="tag-title">{d.tag}</p>
-                <span className="tag-bar-header-meta">
-                  <p className="tag-delta tag-delta--pc">{renderSleepDelta(d.delta)}</p>
-                </span>
-              </div>
-              <div className="tag-bar-delta-and-track">
-                <p className="tag-delta tag-delta--mobile">{renderSleepDelta(d.delta)}</p>
-                <div className="tag-bar-track" aria-hidden="true">
-                  <span
-                    className="tag-bar-fill"
-                    style={{ width: `${buildSleepDeltaWidth(d.delta)}%` }}
-                  />
-                </div>
-              </div>
-              <p className="helper">
-                {d.sleepWith != null && (
-                  <>
-                    {formatSleepHours(d.sleepWith)}
-                    {' — '}
-                  </>
-                )}
-                {t('insights.daysSuffix', { count: d.count })}
-              </p>
-            </button>
-          ))}
+          {drivers.map(d => renderSleepRow(d, variant))}
           {lockedCount > 0 && (
             <button
               type="button"
@@ -218,8 +305,32 @@ export const InsightsTagInsights = ({
   return (
     <>
       <div className="tag-insights-page-intro">
-        <h2 id="tag-insights-daily-events-heading">{t('insights.dailyEventsInsights')}</h2>
+        <div className="tag-insights-page-intro-header">
+          <div className="tag-insights-page-intro-heading">
+            <h2 id="tag-insights-daily-events-heading">{t('insights.dailyEventsInsights')}</h2>
+          </div>
+        </div>
         <p className="muted">{t('insights.eventsInfluence')}</p>
+        {isPreview && (
+          <p className="tag-insights-preview-banner" role="note">
+            <Trans
+              i18nKey="insights.eventsPreviewBanner"
+              values={{ count: eventInsightsMinCount }}
+              components={{
+                logLink: (
+                  <button
+                    type="button"
+                    className="link-button link-button--text tag-insights-preview-banner__cta"
+                    onClick={() => {
+                      requestScrollToLogDailyEventsInput()
+                      goToLog()
+                    }}
+                  />
+                ),
+              }}
+            />
+          </p>
+        )}
       </div>
       {(hasDrivers || hasSleepDrivers)
         ? (
@@ -244,45 +355,9 @@ export const InsightsTagInsights = ({
                       <>
                         {(positiveDrivers.length > 0 || lockedPositiveMoodCount > 0) && (
                           <div className="tag-driver-section">
-                            <p className="label">{t('insights.positive')}</p>
+                            {renderSectionLabelRow(t('insights.positive'), true)}
                             <div className="tag-bar-list">
-                              {positiveDrivers.map(tag => (
-                                <button
-                                  type="button"
-                                  className="tag-bar-item tag-bar-item--interactive positive"
-                                  key={tag.tag}
-                                  onClick={() => onOpenTagInTimeline(tag.tag)}
-                                  aria-label={t('insights.openTagTimelineAria', { tag: tag.tag })}
-                                >
-                                  <ChevronRight className="tag-bar-open-icon" size={22} aria-hidden />
-                                  <div className="tag-bar-header">
-                                    <p className="tag-title">
-                                      {tag.tag}
-                                    </p>
-                                    <span className="tag-bar-header-meta">
-                                      <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
-                                    </span>
-                                  </div>
-                                  <div className="tag-bar-delta-and-track">
-                                    <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
-                                    <div className="tag-bar-track" aria-hidden="true">
-                                      <span
-                                        className="tag-bar-fill"
-                                        style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
-                                      />
-                                    </div>
-                                  </div>
-                                  <p className="helper">
-                                    {tag.moodWith != null && (
-                                      <>
-                                        {tag.moodWith.toFixed(1)}/5
-                                        {' — '}
-                                      </>
-                                    )}
-                                    {t('insights.entriesSuffix', { count: tag.count })}
-                                  </p>
-                                </button>
-                              ))}
+                              {positiveDrivers.map(tag => renderMoodRow(tag, 'positive'))}
                               {lockedPositiveMoodCount > 0 && (
                                 <button
                                   type="button"
@@ -304,43 +379,7 @@ export const InsightsTagInsights = ({
                           <div className="tag-driver-section">
                             <p className="label">{t('insights.negative')}</p>
                             <div className="tag-bar-list">
-                              {negativeDrivers.map(tag => (
-                                <button
-                                  type="button"
-                                  className="tag-bar-item tag-bar-item--interactive negative"
-                                  key={tag.tag}
-                                  onClick={() => onOpenTagInTimeline(tag.tag)}
-                                  aria-label={t('insights.openTagTimelineAria', { tag: tag.tag })}
-                                >
-                                  <ChevronRight className="tag-bar-open-icon" size={22} aria-hidden />
-                                  <div className="tag-bar-header">
-                                    <p className="tag-title">
-                                      {tag.tag}
-                                    </p>
-                                    <span className="tag-bar-header-meta">
-                                      <p className="tag-delta tag-delta--pc">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
-                                    </span>
-                                  </div>
-                                  <div className="tag-bar-delta-and-track">
-                                    <p className="tag-delta tag-delta--mobile">{renderDeltaPercent(moodDeltaPercent(tag))} {t('insights.moodSuffix')}</p>
-                                    <div className="tag-bar-track" aria-hidden="true">
-                                      <span
-                                        className="tag-bar-fill"
-                                        style={{ width: `${buildDeltaWidth(tag.delta)}%` }}
-                                      />
-                                    </div>
-                                  </div>
-                                  <p className="helper">
-                                    {tag.moodWith != null && (
-                                      <>
-                                        {tag.moodWith.toFixed(1)}/5
-                                        {' — '}
-                                      </>
-                                    )}
-                                    {t('insights.entriesSuffix', { count: tag.count })}
-                                  </p>
-                                </button>
-                              ))}
+                              {negativeDrivers.map(tag => renderMoodRow(tag, 'negative'))}
                               {lockedNegativeMoodCount > 0 && (
                                 <button
                                   type="button"
@@ -398,6 +437,7 @@ export const InsightsTagInsights = ({
                           'positive',
                           positiveSleepDrivers,
                           lockedPositiveSleepCount,
+                          true,
                         )}
                         {renderSleepDriverSection(
                           t('insights.lessSleepAfter'),

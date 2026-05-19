@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { Info, Moon, Smile, Frown } from 'lucide-react'
 import type { WeekdayAveragePoint, WeekdayKey } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
@@ -20,6 +20,8 @@ type InsightsWeekdayAveragesProps = {
   isMobile: boolean
   goToLog: () => void
   previewLabel?: string
+  /** Min entries needed for a real weekday pattern; used with previewLabel for the banner. */
+  previewMinEntryCount?: number
 }
 
 type WeekdayLegendProps = {
@@ -38,6 +40,33 @@ const WEEKDAY_LABEL_KEYS: Record<WeekdayKey, string> = {
   fri: 'insights.weekdayFriFull',
   sat: 'insights.weekdaySatFull',
   sun: 'insights.weekdaySunFull',
+}
+
+const WEEKDAY_SHORT_KEYS: Record<WeekdayKey, string> = {
+  mon: 'insights.weekdayMonShort',
+  tue: 'insights.weekdayTueShort',
+  wed: 'insights.weekdayWedShort',
+  thu: 'insights.weekdayThuShort',
+  fri: 'insights.weekdayFriShort',
+  sat: 'insights.weekdaySatShort',
+  sun: 'insights.weekdaySunShort',
+}
+
+/** Legacy stats rows used English `label` (Mon…Sun) on the X axis; tooltips may still receive that. */
+const LEGACY_EN_SHORT_TO_DAYKEY: Record<string, WeekdayKey> = {
+  Mon: 'mon',
+  Tue: 'tue',
+  Wed: 'wed',
+  Thu: 'thu',
+  Fri: 'fri',
+  Sat: 'sat',
+  Sun: 'sun',
+}
+
+const resolveTooltipDayKey = (label: unknown): WeekdayKey | null => {
+  if (typeof label !== 'string') return null
+  if (label in WEEKDAY_LABEL_KEYS) return label as WeekdayKey
+  return LEGACY_EN_SHORT_TO_DAYKEY[label] ?? null
 }
 
 const WeekdayLegend = ({ avgSleepLabel, avgMoodLabel, wrapperStyle }: WeekdayLegendProps) => (
@@ -61,6 +90,7 @@ export const InsightsWeekdayAverages = ({
   isMobile,
   goToLog,
   previewLabel,
+  previewMinEntryCount,
 }: InsightsWeekdayAveragesProps) => {
   const { t } = useTranslation()
   const isPreview = Boolean(previewLabel)
@@ -148,6 +178,23 @@ export const InsightsWeekdayAverages = ({
           </span>
         )}
       </div>
+      {isPreview && typeof previewMinEntryCount === 'number' && (
+        <p className="tag-insights-preview-banner" role="note">
+          <Trans
+            i18nKey="insights.weekdayPreviewBanner"
+            values={{ count: previewMinEntryCount }}
+            components={{
+              logLink: (
+                <button
+                  type="button"
+                  className="link-button link-button--text tag-insights-preview-banner__cta"
+                  onClick={goToLog}
+                />
+              ),
+            }}
+          />
+        </p>
+      )}
       {!hasAnyData
         ? (
             <div className="chart-empty chart-empty--compact">
@@ -166,121 +213,129 @@ export const InsightsWeekdayAverages = ({
                   {t('insights.earlySignal', { count: EARLY_SIGNAL_MIN_COMPLETE_LOGS })}
                 </p>
               )}
-              <div className="chart-wrapper chart-wrapper--compact" style={{ marginTop: 16 }}>
-                <ResponsiveContainer width="100%" height={190}>
-                  <ComposedChart data={weekdayAverages} margin={chartMargin}>
-                    <XAxis
-                      dataKey="label"
-                      tick={baseTickProps}
-                      height={28}
-                      tickMargin={4}
-                    />
-                    <YAxis
-                      yAxisId="left"
-                      domain={sleepDomain}
-                      ticks={sleepTicks}
-                      tickFormatter={value => formatSleepHours(Number(value))}
-                      tick={baseTickProps}
-                      width={isMobile ? 50 : 56}
-                    />
-                    <YAxis
-                      yAxisId="right"
-                      orientation="right"
-                      domain={[1, 5]}
-                      ticks={[1, 2, 3, 4, 5]}
-                      tick={baseTickProps}
-                      width={isMobile ? 24 : 28}
-                    />
-                    <RechartsTooltip
-                      formatter={(value, name, item) => {
-                        const numeric = typeof value === 'number' ? value : Number(value)
-                        if (!Number.isFinite(numeric)) return ['—', name]
-                        if (name === t('insights.avgSleep')) return [formatSleepHours(numeric), name]
-                        const observations = item?.payload?.observationCount
-                        return [`${numeric.toFixed(1)} / 5 (${t('insights.logsCount', { count: observations ?? 0 })})`, name]
-                      }}
-                      itemSorter={item => (item.name === t('insights.avgSleep') ? -1 : 1)}
-                      labelFormatter={label => t(`insights.weekday${String(label)}Full`)}
-                    />
-                    <Legend
-                      content={(
-                        <WeekdayLegend
-                          avgSleepLabel={t('insights.avgSleep')}
-                          avgMoodLabel={t('insights.avgMood')}
-                          wrapperStyle={legendWrapperStyle}
-                        />
-                      )}
-                    />
-                    <Bar
-                      yAxisId="left"
-                      dataKey="avgSleep"
-                      name={t('insights.avgSleep')}
-                      fill="var(--chart-sleep-bar, var(--chart-sleep))"
-                      radius={[4, 4, 0, 0]}
-                      maxBarSize={isMobile ? 16 : 18}
-                    />
-                    <Line
-                      yAxisId="right"
-                      dataKey="avgMood"
-                      name={t('insights.avgMood')}
-                      type="monotone"
-                      stroke="var(--chart-mood)"
-                      strokeWidth={3}
-                      dot={{ r: 3.5, fill: 'var(--bg)', stroke: 'var(--chart-mood)', strokeWidth: 2 }}
-                      activeDot={{ r: 5, fill: 'var(--bg)', stroke: 'var(--chart-mood)', strokeWidth: 2 }}
-                    />
-                  </ComposedChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="weekday-pattern-highlights" style={{ marginTop: 10 }}>
-                {bestMoodDay && (
-                  <article className="weekday-pattern-highlight weekday-pattern-highlight--mood-best">
-                    <div className="weekday-pattern-highlight__title">
-                      <Smile size={16} aria-hidden />
-                      <span>{t('insights.bestMoodDay')}</span>
-                    </div>
-                    <p className="weekday-pattern-highlight__summary">
-                      <span className="weekday-pattern-highlight__day">{getWeekdayLabel(bestMoodDay.dayKey)}</span>
-                      <span className="weekday-pattern-highlight__metric">{bestMoodDay.avgMood?.toFixed(1)} / 5</span>
-                    </p>
-                  </article>
-                )}
-                {worstMoodDay && (
-                  <article className="weekday-pattern-highlight weekday-pattern-highlight--mood-worst">
-                    <div className="weekday-pattern-highlight__title">
-                      <Frown size={16} aria-hidden />
-                      <span>{t('insights.worstMoodDay')}</span>
-                    </div>
-                    <p className="weekday-pattern-highlight__summary">
-                      <span className="weekday-pattern-highlight__day">{getWeekdayLabel(worstMoodDay.dayKey)}</span>
-                      <span className="weekday-pattern-highlight__metric">{worstMoodDay.avgMood?.toFixed(1)} / 5</span>
-                    </p>
-                  </article>
-                )}
-                {mostSleepDay && (
-                  <article className="weekday-pattern-highlight weekday-pattern-highlight--sleep-most">
-                    <div className="weekday-pattern-highlight__title">
-                      <Moon size={16} aria-hidden />
-                      <span>{t('insights.mostSleepDay')}</span>
-                    </div>
-                    <p className="weekday-pattern-highlight__summary">
-                      <span className="weekday-pattern-highlight__day">{getWeekdayLabel(mostSleepDay.dayKey)}</span>
-                      <span className="weekday-pattern-highlight__metric">{formatSleepHours(mostSleepDay.avgSleep)}</span>
-                    </p>
-                  </article>
-                )}
-                {leastSleepDay && (
-                  <article className="weekday-pattern-highlight weekday-pattern-highlight--sleep-least">
-                    <div className="weekday-pattern-highlight__title">
-                      <Moon size={16} aria-hidden />
-                      <span>{t('insights.leastSleepDay')}</span>
-                    </div>
-                    <p className="weekday-pattern-highlight__summary">
-                      <span className="weekday-pattern-highlight__day">{getWeekdayLabel(leastSleepDay.dayKey)}</span>
-                      <span className="weekday-pattern-highlight__metric">{formatSleepHours(leastSleepDay.avgSleep)}</span>
-                    </p>
-                  </article>
-                )}
+              <div className={isPreview ? 'weekday-chart-preview-wrap' : undefined}>
+                <div className="chart-wrapper chart-wrapper--compact" style={{ marginTop: 16 }}>
+                  <ResponsiveContainer width="100%" height={190}>
+                    <ComposedChart data={weekdayAverages} margin={chartMargin}>
+                      <XAxis
+                        dataKey="dayKey"
+                        tickFormatter={v => t(WEEKDAY_SHORT_KEYS[v as WeekdayKey])}
+                        tick={baseTickProps}
+                        height={28}
+                        tickMargin={4}
+                      />
+                      <YAxis
+                        yAxisId="left"
+                        domain={sleepDomain}
+                        ticks={sleepTicks}
+                        tickFormatter={value => formatSleepHours(Number(value))}
+                        tick={baseTickProps}
+                        width={isMobile ? 50 : 56}
+                      />
+                      <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        domain={[1, 5]}
+                        ticks={[1, 2, 3, 4, 5]}
+                        tick={baseTickProps}
+                        width={isMobile ? 24 : 28}
+                      />
+                      <RechartsTooltip
+                        formatter={(value, name, item) => {
+                          const numeric = typeof value === 'number' ? value : Number(value)
+                          if (!Number.isFinite(numeric)) return ['—', name]
+                          if (name === t('insights.avgSleep')) return [formatSleepHours(numeric), name]
+                          const observations = item?.payload?.observationCount
+                          return [`${numeric.toFixed(1)} / 5 (${t('insights.logsCount', { count: observations ?? 0 })})`, name]
+                        }}
+                        itemSorter={item => (item.name === t('insights.avgSleep') ? -1 : 1)}
+                        labelFormatter={(label) => {
+                          const dk = resolveTooltipDayKey(label)
+                          const fullDay = dk ? t(WEEKDAY_LABEL_KEYS[dk]) : String(label)
+                          if (isPreview && previewLabel) return `${previewLabel} — ${fullDay}`
+                          return fullDay
+                        }}
+                      />
+                      <Legend
+                        content={(
+                          <WeekdayLegend
+                            avgSleepLabel={t('insights.avgSleep')}
+                            avgMoodLabel={t('insights.avgMood')}
+                            wrapperStyle={legendWrapperStyle}
+                          />
+                        )}
+                      />
+                      <Bar
+                        yAxisId="left"
+                        dataKey="avgSleep"
+                        name={t('insights.avgSleep')}
+                        fill="var(--chart-sleep-bar, var(--chart-sleep))"
+                        radius={[4, 4, 0, 0]}
+                        maxBarSize={isMobile ? 16 : 18}
+                      />
+                      <Line
+                        yAxisId="right"
+                        dataKey="avgMood"
+                        name={t('insights.avgMood')}
+                        type="monotone"
+                        stroke="var(--chart-mood)"
+                        strokeWidth={3}
+                        dot={{ r: 3.5, fill: 'var(--bg)', stroke: 'var(--chart-mood)', strokeWidth: 2 }}
+                        activeDot={{ r: 5, fill: 'var(--bg)', stroke: 'var(--chart-mood)', strokeWidth: 2 }}
+                      />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="weekday-pattern-highlights" style={{ marginTop: 10 }}>
+                  {bestMoodDay && (
+                    <article className="weekday-pattern-highlight weekday-pattern-highlight--mood-best">
+                      <div className="weekday-pattern-highlight__title">
+                        <Smile size={16} aria-hidden />
+                        <span>{t('insights.bestMoodDay')}</span>
+                      </div>
+                      <p className="weekday-pattern-highlight__summary">
+                        <span className="weekday-pattern-highlight__day">{getWeekdayLabel(bestMoodDay.dayKey)}</span>
+                        <span className="weekday-pattern-highlight__metric">{bestMoodDay.avgMood?.toFixed(1)} / 5</span>
+                      </p>
+                    </article>
+                  )}
+                  {worstMoodDay && (
+                    <article className="weekday-pattern-highlight weekday-pattern-highlight--mood-worst">
+                      <div className="weekday-pattern-highlight__title">
+                        <Frown size={16} aria-hidden />
+                        <span>{t('insights.worstMoodDay')}</span>
+                      </div>
+                      <p className="weekday-pattern-highlight__summary">
+                        <span className="weekday-pattern-highlight__day">{getWeekdayLabel(worstMoodDay.dayKey)}</span>
+                        <span className="weekday-pattern-highlight__metric">{worstMoodDay.avgMood?.toFixed(1)} / 5</span>
+                      </p>
+                    </article>
+                  )}
+                  {mostSleepDay && (
+                    <article className="weekday-pattern-highlight weekday-pattern-highlight--sleep-most">
+                      <div className="weekday-pattern-highlight__title">
+                        <Moon size={16} aria-hidden />
+                        <span>{t('insights.mostSleepDay')}</span>
+                      </div>
+                      <p className="weekday-pattern-highlight__summary">
+                        <span className="weekday-pattern-highlight__day">{getWeekdayLabel(mostSleepDay.dayKey)}</span>
+                        <span className="weekday-pattern-highlight__metric">{formatSleepHours(mostSleepDay.avgSleep)}</span>
+                      </p>
+                    </article>
+                  )}
+                  {leastSleepDay && (
+                    <article className="weekday-pattern-highlight weekday-pattern-highlight--sleep-least">
+                      <div className="weekday-pattern-highlight__title">
+                        <Moon size={16} aria-hidden />
+                        <span>{t('insights.leastSleepDay')}</span>
+                      </div>
+                      <p className="weekday-pattern-highlight__summary">
+                        <span className="weekday-pattern-highlight__day">{getWeekdayLabel(leastSleepDay.dayKey)}</span>
+                        <span className="weekday-pattern-highlight__metric">{formatSleepHours(leastSleepDay.avgSleep)}</span>
+                      </p>
+                    </article>
+                  )}
+                </div>
               </div>
             </>
           )}

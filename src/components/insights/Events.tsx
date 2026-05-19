@@ -1,5 +1,7 @@
 import { motion, type Transition } from 'framer-motion'
+import { useMemo } from 'react'
 import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
+import { getTagInsightsPreviewData } from '../../lib/sampleData/tagInsightsPreview'
 import { InsightsTagInsights } from './InsightsTagInsights'
 
 export type EventsProps = {
@@ -7,7 +9,7 @@ export type EventsProps = {
   panelTransition: Transition
   goToLog: () => void
   onOpenTagInTimeline: (tag: string) => void
-  hasEnoughEntries: boolean
+  entryCount: number
   eventInsightsMinCount: number
   isPro: boolean
   tagDrivers: TagDriver[]
@@ -22,7 +24,7 @@ export const Events = ({
   panelTransition,
   goToLog,
   onOpenTagInTimeline,
-  hasEnoughEntries,
+  entryCount,
   eventInsightsMinCount,
   isPro,
   tagDrivers,
@@ -31,6 +33,15 @@ export const Events = ({
   onOpenEditEvents,
   t,
 }: EventsProps) => {
+  const previewData = useMemo(() => getTagInsightsPreviewData(t), [t])
+  // Preview only on cold start. Once the user has crossed the min-entries
+  // threshold but has no event correlations yet, the real empty-state copy
+  // ("add events to see mood/sleep impact") is more honest than fake tags.
+  const usePreview = entryCount < eventInsightsMinCount
+  const displayMoodDrivers = usePreview ? previewData.tagDrivers : tagDrivers
+  const displaySleepDrivers = usePreview ? previewData.tagSleepDrivers : tagSleepDrivers
+  const previewLabel = usePreview ? t('insights.weekdayPreviewBadge') : undefined
+
   return (
     <motion.div
       className="insights-panel"
@@ -38,17 +49,16 @@ export const Events = ({
       animate={{ opacity: 1 }}
       transition={panelTransition}
     >
-      {hasEnoughEntries && (
-        <InsightsTagInsights
-          isPro={isPro}
-          tagDrivers={tagDrivers}
-          tagSleepDrivers={tagSleepDrivers}
-          onOpenPaywall={onOpenPaywall}
-          goToLog={goToLog}
-          onOpenTagInTimeline={onOpenTagInTimeline}
-          eventInsightsMinCount={eventInsightsMinCount}
-        />
-      )}
+      <InsightsTagInsights
+        isPro={isPro}
+        tagDrivers={displayMoodDrivers}
+        tagSleepDrivers={displaySleepDrivers}
+        onOpenPaywall={onOpenPaywall}
+        goToLog={goToLog}
+        onOpenTagInTimeline={onOpenTagInTimeline}
+        eventInsightsMinCount={eventInsightsMinCount}
+        previewLabel={previewLabel}
+      />
       <div className="events-page-footer">
         <button
           type="button"

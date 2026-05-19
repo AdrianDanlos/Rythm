@@ -22,6 +22,7 @@ export type ChartsProps = {
   isMobile: boolean
   weekdayAverages: WeekdayAveragePoint[]
   hasEnoughEntries: boolean
+  eventInsightsMinCount: number
   isLoading: boolean
   isPro: boolean
   isEmpty: boolean
@@ -48,6 +49,7 @@ export const Charts = ({
   isMobile,
   weekdayAverages,
   hasEnoughEntries,
+  eventInsightsMinCount,
   isLoading,
   isPro,
   isEmpty,
@@ -78,6 +80,7 @@ export const Charts = ({
           isMobile={isMobile}
           goToLog={goToLog}
           previewLabel={t('insights.weekdayPreviewBadge')}
+          previewMinEntryCount={eventInsightsMinCount}
         />
       )}
       <InsightsMoodDistribution
