@@ -3,8 +3,7 @@ import { tagMoodDriverRelativeDelta } from '../../lib/utils/tagInsights'
 import { useTranslation } from 'react-i18next'
 import type { TagDriver } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
-import { Tooltip } from '../Tooltip'
-import { Info, TrendingDown, TrendingUp } from 'lucide-react'
+import { TrendingDown, TrendingUp } from 'lucide-react'
 
 type InsightsTagInsightsTeaserProps = {
   onOpenPaywall: () => void
@@ -102,13 +101,6 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
         <div className="tag-insights-block">
           <div className="tag-insights-block-header">
             <h3 className="tag-insights-block-title">{t('insights.eventsPredictMood')}</h3>
-            <Tooltip label={t('insights.compareMoodWithWithout')}>
-              <span className="tooltip-trigger">
-                <span className="tooltip-icon" aria-hidden="true">
-                  <Info size={14} />
-                </span>
-              </span>
-            </Tooltip>
           </div>
           {mockPositiveDrivers.length > 0 && (
             <div className="tag-driver-section">
@@ -180,13 +172,6 @@ export const InsightsTagInsightsTeaser = ({ onOpenPaywall }: InsightsTagInsights
         <div className="tag-insights-block">
           <div className="tag-insights-block-header">
             <h3 className="tag-insights-block-title">{t('insights.eventsPredictSleep')}</h3>
-            <Tooltip label={t('insights.compareSleepWithWithout')}>
-              <span className="tooltip-trigger">
-                <span className="tooltip-icon" aria-hidden="true">
-                  <Info size={14} />
-                </span>
-              </span>
-            </Tooltip>
           </div>
           {mockPositiveSleepDrivers.length > 0 && (
             <div className="tag-driver-section">

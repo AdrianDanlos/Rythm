@@ -4,8 +4,7 @@ import { useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { requestScrollToLogDailyEventsInput } from '../../hooks/useScrollToLogDailyEventsOnMount'
-import { Tooltip } from '../Tooltip'
-import { ChevronRight, Info, Moon, Smile, TrendingDown, TrendingUp } from 'lucide-react'
+import { ChevronRight, Moon, Smile, TrendingDown, TrendingUp } from 'lucide-react'
 
 type InsightsTagInsightsProps = {
   isPro: boolean
@@ -342,13 +341,6 @@ export const InsightsTagInsights = ({
                 <div className="tag-insights-block-header">
                   <Smile className="tag-insights-block-icon tag-insights-block-icon--mood" size={18} aria-hidden />
                   <h3 className="tag-insights-block-title" id="tag-insights-mood-heading">{t('insights.eventsPredictMood')}</h3>
-                  <Tooltip label={t('insights.compareMoodWithWithout')}>
-                    <span className="tooltip-trigger">
-                      <span className="tooltip-icon" aria-hidden="true">
-                        <Info size={14} />
-                      </span>
-                    </span>
-                  </Tooltip>
                 </div>
                 {(positiveDrivers.length > 0 || negativeDrivers.length > 0 || lockedPositiveMoodCount > 0 || lockedNegativeMoodCount > 0)
                   ? (
@@ -421,13 +413,6 @@ export const InsightsTagInsights = ({
                 <div className="tag-insights-block-header">
                   <Moon className="tag-insights-block-icon tag-insights-block-icon--sleep" size={18} aria-hidden />
                   <h3 className="tag-insights-block-title" id="tag-insights-sleep-heading">{t('insights.eventsPredictSleep')}</h3>
-                  <Tooltip label={t('insights.compareSleepWithWithout')}>
-                    <span className="tooltip-trigger">
-                      <span className="tooltip-icon" aria-hidden="true">
-                        <Info size={14} />
-                      </span>
-                    </span>
-                  </Tooltip>
                 </div>
                 {(positiveSleepDrivers.length > 0 || negativeSleepDrivers.length > 0 || lockedPositiveSleepCount > 0 || lockedNegativeSleepCount > 0)
                   ? (
