@@ -21,6 +21,7 @@ type LogFormTagsPageProps = {
   addTag: (tag: string) => void
   hasAtLeastOneEvent: boolean
   isFirstEntry: boolean
+  showTagsFirstEntryHint: boolean
   onNext: () => void
   onSkip: () => void
   isSaving: boolean
@@ -42,6 +43,7 @@ export function LogFormTagsPage({
   addTag,
   hasAtLeastOneEvent,
   isFirstEntry,
+  showTagsFirstEntryHint,
   onNext,
   onSkip,
   isSaving,
@@ -78,7 +80,7 @@ export function LogFormTagsPage({
                 </Tooltip>
               </h2>
             </div>
-            {isFirstEntry ? (
+            {showTagsFirstEntryHint ? (
               <p className="log-reflection-subtitle">{t('log.tagsFirstEntryHint')}</p>
             ) : null}
           </header>

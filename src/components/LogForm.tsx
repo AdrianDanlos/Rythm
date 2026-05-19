@@ -57,6 +57,7 @@ export type LogFormProps = {
   firstEntrySaveSignal: number
   isFirstEntryFlow: boolean
   isFirstEntryTipActive: boolean
+  isFirstEntryTipDismissed: boolean
   onFirstEntryTipSignalConsumed: () => void
   onFirstEntryTipContinueToSummary: () => void
 }
@@ -88,6 +89,7 @@ export const LogForm = ({
   firstEntrySaveSignal,
   isFirstEntryFlow,
   isFirstEntryTipActive,
+  isFirstEntryTipDismissed,
   onFirstEntryTipSignalConsumed,
   onFirstEntryTipContinueToSummary,
 }: LogFormProps) => {
@@ -315,6 +317,9 @@ export const LogForm = ({
   }, [saving])
 
   const isFirstEntry = isFirstEntryFlow
+  const showTagsFirstEntryHint = !isFirstEntryTipDismissed
+    && (isFirstEntryFlow || isFirstEntryTipActive
+      || (saving && activeSaveAction === 'tagsDone'))
   const advanceCarousel = useCallback(
     (next: LogCarouselPage) => {
       setCarouselPage(next)
@@ -498,6 +503,7 @@ export const LogForm = ({
                 addTag={addTag}
                 hasAtLeastOneEvent={hasAtLeastOneEvent}
                 isFirstEntry={isFirstEntry}
+                showTagsFirstEntryHint={showTagsFirstEntryHint}
                 onNext={() => advanceCarousel(3)}
                 onSkip={() => submitWithAction('tagsDone')}
                 isSaving={saving}
@@ -527,19 +533,15 @@ export const LogForm = ({
             </motion.div>
           )}
           {carouselPage === 4 && (
-            <motion.div
+            <div
               key={4}
               className="log-form-carousel__slide log-form-carousel__slide--reflection"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={slideTransition}
             >
               <LogFormFirstEntryDonePage
                 t={t}
                 onContinue={onFirstEntryTipContinueToSummary}
               />
-            </motion.div>
+            </div>
           )}
         </AnimatePresence>
         {isFirstEntryFlow && carouselPage < 4 && carouselPage !== 3

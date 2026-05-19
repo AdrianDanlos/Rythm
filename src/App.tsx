@@ -931,6 +931,7 @@ function App() {
               onSave={handleSave}
               firstEntrySaveSignal={firstEntrySaveSignal}
               isFirstEntryTipActive={isFirstEntryTipActive}
+              isFirstEntryTipDismissed={isFirstEntryTipDismissed}
               onFirstEntryTipSignalConsumed={handleFirstEntryTipSignalConsumed}
               onFirstEntryTipContinueToSummary={handleFirstEntryTipContinueToSummary}
               entriesLoading={entriesLoading}

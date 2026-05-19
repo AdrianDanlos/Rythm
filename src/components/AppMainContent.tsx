@@ -106,6 +106,7 @@ type AppMainContentProps = {
   onSave: (event: React.FormEvent<HTMLFormElement>) => void
   firstEntrySaveSignal: number
   isFirstEntryTipActive: boolean
+  isFirstEntryTipDismissed: boolean
   onFirstEntryTipSignalConsumed: () => void
   onFirstEntryTipContinueToSummary: () => void
   // Insights
@@ -217,6 +218,7 @@ export function AppMainContent({
   onSave,
   firstEntrySaveSignal,
   isFirstEntryTipActive,
+  isFirstEntryTipDismissed,
   onFirstEntryTipSignalConsumed,
   onFirstEntryTipContinueToSummary,
   entriesLoading,
@@ -558,6 +560,7 @@ export function AppMainContent({
                               firstEntrySaveSignal={firstEntrySaveSignal}
                               isFirstEntryFlow={entries.length === 0}
                               isFirstEntryTipActive={isFirstEntryTipActive}
+                              isFirstEntryTipDismissed={isFirstEntryTipDismissed}
                               onFirstEntryTipSignalConsumed={onFirstEntryTipSignalConsumed}
                               onFirstEntryTipContinueToSummary={onFirstEntryTipContinueToSummary}
                             />

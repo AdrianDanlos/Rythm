@@ -555,6 +555,7 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
+  margin-top: 12px;
 }
 
 .intro-carousel__dot {
@@ -2184,7 +2185,7 @@ form.log-form-stack--step-fullbleed .tag-suggestions {
 .log-form-carousel__pagination {
   position: fixed;
   left: 50%;
-  bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   z-index: 8;
   margin: 0;
