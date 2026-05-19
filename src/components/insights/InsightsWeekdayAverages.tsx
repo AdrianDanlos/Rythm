@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { Info, Moon, Smile, Frown } from 'lucide-react'
 import type { WeekdayAveragePoint, WeekdayKey } from '../../lib/types/stats'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
@@ -20,8 +20,8 @@ type InsightsWeekdayAveragesProps = {
   isMobile: boolean
   goToLog: () => void
   previewLabel?: string
-  /** Min entries needed for a real weekday pattern; used with previewLabel for the banner. */
-  previewMinEntryCount?: number
+  /** Days left to unlock a real weekday pattern; used with previewLabel for the banner. */
+  previewDaysRemaining?: number
 }
 
 type WeekdayLegendProps = {
@@ -90,7 +90,7 @@ export const InsightsWeekdayAverages = ({
   isMobile,
   goToLog,
   previewLabel,
-  previewMinEntryCount,
+  previewDaysRemaining,
 }: InsightsWeekdayAveragesProps) => {
   const { t } = useTranslation()
   const isPreview = Boolean(previewLabel)
@@ -178,21 +178,21 @@ export const InsightsWeekdayAverages = ({
           </span>
         )}
       </div>
-      {isPreview && typeof previewMinEntryCount === 'number' && (
+      {isPreview && typeof previewDaysRemaining === 'number' && (
         <p className="tag-insights-preview-banner" role="note">
-          <Trans
-            i18nKey="insights.weekdayPreviewBanner"
-            values={{ count: previewMinEntryCount }}
-            components={{
-              logLink: (
-                <button
-                  type="button"
-                  className="link-button link-button--text tag-insights-preview-banner__cta"
-                  onClick={goToLog}
-                />
-              ),
-            }}
-          />
+          {t('insights.weekdayPreviewBannerIntro')}
+          {' '}
+          <button
+            type="button"
+            className="link-button link-button--text tag-insights-preview-banner__cta"
+            onClick={goToLog}
+          >
+            {previewDaysRemaining === 1
+              ? t('insights.logOneMoreDay')
+              : t('insights.logMoreDaysToUnlockButton', { count: previewDaysRemaining })}
+          </button>
+          {' '}
+          {t('insights.weekdayPreviewBannerOutro')}
         </p>
       )}
       {!hasAnyData

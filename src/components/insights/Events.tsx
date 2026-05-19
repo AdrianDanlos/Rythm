@@ -57,6 +57,7 @@ export const Events = ({
         goToLog={goToLog}
         onOpenTagInTimeline={onOpenTagInTimeline}
         eventInsightsMinCount={eventInsightsMinCount}
+        previewDaysRemaining={eventInsightsMinCount - entryCount}
         previewLabel={previewLabel}
       />
       <div className="events-page-footer">

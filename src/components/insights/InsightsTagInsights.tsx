@@ -1,7 +1,7 @@
 import type { TagDriver, TagSleepDriver } from '../../lib/types/stats'
 import { tagMoodDriverRelativeDelta } from '../../lib/utils/tagInsights'
 import { useMemo, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { formatSleepHours } from '../../lib/utils/sleepHours'
 import { requestScrollToLogDailyEventsInput } from '../../hooks/useScrollToLogDailyEventsOnMount'
 import { ChevronRight, Moon, Smile, TrendingDown, TrendingUp } from 'lucide-react'
@@ -14,6 +14,8 @@ type InsightsTagInsightsProps = {
   goToLog: () => void
   onOpenTagInTimeline: (tag: string) => void
   eventInsightsMinCount: number
+  /** Days left to unlock real event insights; shown in preview banner when previewLabel is set. */
+  previewDaysRemaining?: number
   /** When set, shows an "Example data" badge and renders tag rows as non-interactive. */
   previewLabel?: string
 }
@@ -27,6 +29,7 @@ export const InsightsTagInsights = ({
   goToLog,
   onOpenTagInTimeline,
   eventInsightsMinCount,
+  previewDaysRemaining,
   previewLabel,
 }: InsightsTagInsightsProps) => {
   const { t } = useTranslation()
@@ -310,24 +313,24 @@ export const InsightsTagInsights = ({
           </div>
         </div>
         <p className="muted">{t('insights.eventsInfluence')}</p>
-        {isPreview && (
+        {isPreview && typeof previewDaysRemaining === 'number' && (
           <p className="tag-insights-preview-banner" role="note">
-            <Trans
-              i18nKey="insights.eventsPreviewBanner"
-              values={{ count: eventInsightsMinCount }}
-              components={{
-                logLink: (
-                  <button
-                    type="button"
-                    className="link-button link-button--text tag-insights-preview-banner__cta"
-                    onClick={() => {
-                      requestScrollToLogDailyEventsInput()
-                      goToLog()
-                    }}
-                  />
-                ),
+            {t('insights.eventsPreviewBannerIntro')}
+            {' '}
+            <button
+              type="button"
+              className="link-button link-button--text tag-insights-preview-banner__cta"
+              onClick={() => {
+                requestScrollToLogDailyEventsInput()
+                goToLog()
               }}
-            />
+            >
+              {previewDaysRemaining === 1
+                ? t('insights.logOneMoreDayWithEvents')
+                : t('insights.logMoreDaysWithEvents', { count: previewDaysRemaining })}
+            </button>
+            {' '}
+            {t('insights.eventsPreviewBannerOutro')}
           </p>
         )}
       </div>

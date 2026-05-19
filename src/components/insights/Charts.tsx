@@ -80,7 +80,7 @@ export const Charts = ({
           isMobile={isMobile}
           goToLog={goToLog}
           previewLabel={t('insights.weekdayPreviewBadge')}
-          previewMinEntryCount={eventInsightsMinCount}
+          previewDaysRemaining={eventInsightsMinCount - entries.length}
         />
       )}
       <InsightsMoodDistribution
