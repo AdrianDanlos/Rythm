@@ -101,7 +101,6 @@ Same-day tags correlate with mood; previous-day tags correlate with sleep.
 
 ## Android (Capacitor)
 
-- **Before a release build** (new Play upload): run `npm run release:bump-version` so store version, `versionCode`, and update manifests stay aligned.
 - **One-command release flow**: run `npm run release-to-prod` to execute the full sequence: `npm run release:bump-version`, `npm run build`, `npx cap sync android`, `npx cap open android`, then commit and push bump-version file changes only if all previous steps succeed.
 - **Build web assets for native**:
   - `npm run build`
