@@ -231,7 +231,7 @@ const pt = {
     journalPageTitle: 'O que fizeste hoje?',
     journalPageSubtitle: 'Há dias em que escreves. Há dias em que não. Ambos são válidos.',
     journalNotesTitle: 'Meu diário',
-    eventsTooltip: 'Adiciona o que acontece no teu dia. Usa os eventos predefinidos ou cria os teus. O Rythm vai encontrar padrões e mostrar-te como se relacionam entre si.',
+    eventsTooltip: 'Adiciona o que acontece no teu dia. Usa os eventos predefinidos ou cria os teus. O Rythm vai encontrar padrões e mostrar-te como impactam o teu humor e o teu sono.',
     recommended: 'Recomendado',
     maxReached: 'Máximo de {{count}} atingido',
     eventsPlaceholder: 'ex.: estresse, exercício...',

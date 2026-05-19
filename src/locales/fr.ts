@@ -231,7 +231,7 @@ const fr = {
     journalPageTitle: 'Qu\'est-ce que tu as fait aujourd\'hui ?',
     journalPageSubtitle: 'Certains jours tu écris. D\'autres non. Les deux sont bien.',
     journalNotesTitle: 'Mon journal',
-    eventsTooltip: 'Ajoute ce qui se passe dans ta journée. Utilise les événements prédéfinis ou crée les tiens. Rythm trouvera des modèles et te montrera comment ils sont liés entre eux.',
+    eventsTooltip: 'Ajoute ce qui se passe dans ta journée. Utilise les événements prédéfinis ou crée les tiens. Rythm trouvera des modèles et te montrera comment ils influencent ton humeur et ton sommeil.',
     recommended: 'Recommandé',
     maxReached: 'Maximum de {{count}} atteint',
     eventsPlaceholder: 'ex. stress, sport...',

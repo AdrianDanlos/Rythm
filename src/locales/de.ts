@@ -231,7 +231,7 @@ const de = {
     journalPageTitle: 'Was hast du heute gemacht?',
     journalPageSubtitle: 'Manche Tage schreibst du. Manche Tage nicht. Beides ist in Ordnung.',
     journalNotesTitle: 'Mein Tagebuch',
-    eventsTooltip: 'Füge hinzu, was in deinem Tag passiert. Nutze die vordefinierten Events oder erstelle deine eigenen. Rythm wird Muster erkennen und dir zeigen, wie sie zusammenhängen.',
+    eventsTooltip: 'Füge hinzu, was in deinem Tag passiert. Nutze die vordefinierten Events oder erstelle deine eigenen. Rythm wird Muster erkennen und dir zeigen, wie sie deine Stimmung und deinen Schlaf beeinflussen.',
     recommended: 'Empfohlen',
     maxReached: 'Maximum von {{count}} erreicht',
     eventsPlaceholder: 'z. B. Stress, Sport...',

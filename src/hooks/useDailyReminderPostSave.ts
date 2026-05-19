@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react'
-import { Capacitor } from '@capacitor/core'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import {
@@ -19,7 +18,6 @@ export function useDailyReminderPostSave(goToInsightsSummary: () => void) {
   const [isDailyReminderNudgeOpen, setIsDailyReminderNudgeOpen] = useState(false)
 
   const tryOpenDailyReminderNudge = useCallback(() => {
-    if (!Capacitor.isNativePlatform()) return
     if (!shouldShowDailyReminderNudge()) return
     setIsDailyReminderNudgeOpen(true)
   }, [])
