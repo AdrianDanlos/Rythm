@@ -395,7 +395,7 @@ const en = {
     notEnoughDataRange: 'Not enough data in this range.',
     seeDailyHistory: 'to see daily history.',
     smoothedTrends: 'Smoothed trends',
-    smoothedTrendsTooltip: 'These lines are the average of the last N days (7, 30, 90). Line going up = trend improving; going down = declining. The 7-day line reacts quickly to recent changes; the 90-day line shows the longer-term direction.',
+    smoothedTrendsTooltip: 'These are rolling averages of the last N days (7, 30, 90). The 7-day line reacts quickly to recent changes; the 90-day line shows the longer-term direction.',
     smoothedTrendsSubtitle: 'See how your week, month, or 3-month trend is moving',
     notEnoughRolling: 'Not enough data for rolling trends.',
     seeSmoothedDirection: 'to see smoothed direction.',

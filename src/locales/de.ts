@@ -397,7 +397,7 @@ const de = {
     notEnoughDataRange: 'Nicht genug Daten für diesen Zeitraum.',
     seeDailyHistory: 'um den Tagesverlauf zu sehen.',
     smoothedTrends: 'Trends',
-    smoothedTrendsTooltip: 'Dieses Diagramm zeigt gleitende Durchschnitte über N Tage (7, 30, 90). Die 7-Tage-Linie reagiert schnell auf tägliche Änderungen, die 90-Tage-Linie zeigt die langfristige Richtung.',
+    smoothedTrendsTooltip: 'Dies sind gleitende Durchschnitte der letzten N Tage (7, 30, 90). Die 7-Tage-Linie reagiert schnell auf jüngste Änderungen; die 90-Tage-Linie zeigt die langfristige Richtung.',
     smoothedTrendsSubtitle: 'Sieh, wie sich dein Trend wöchentlich, monatlich oder quartalsweise entwickelt',
     notEnoughRolling: 'Nicht genug Daten, um Trends anzuzeigen.',
     seeSmoothedDirection: 'um den geglätteten Verlauf zu sehen.',

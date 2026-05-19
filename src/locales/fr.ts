@@ -397,7 +397,7 @@ const fr = {
     notEnoughDataRange: 'Pas assez de données sur cette période.',
     seeDailyHistory: 'pour voir l\'historique quotidien.',
     smoothedTrends: 'Tendances',
-    smoothedTrendsTooltip: 'Ce graphique affiche les moyennes glissantes sur N jours (7, 30, 90). La ligne à 7 jours réagit vite aux variations quotidiennes, tandis que celle à 90 jours montre la direction à long terme.',
+    smoothedTrendsTooltip: 'Ce sont des moyennes glissantes des N derniers jours (7, 30, 90). La ligne à 7 jours réagit vite aux changements récents ; celle à 90 jours montre la direction à long terme.',
     smoothedTrendsSubtitle: 'Observez l\'évolution de votre tendance hebdomadaire, mensuelle ou trimestrielle',
     notEnoughRolling: 'Pas assez de données pour afficher les tendances.',
     seeSmoothedDirection: 'pour voir la tendance lissée.',

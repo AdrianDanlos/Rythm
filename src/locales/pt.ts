@@ -397,7 +397,7 @@ const pt = {
     notEnoughDataRange: 'Dados insuficientes para este período.',
     seeDailyHistory: 'para ver o histórico diário.',
     smoothedTrends: 'Tendências',
-    smoothedTrendsTooltip: 'Este gráfico mostra médias móveis de N dias (7, 30, 90). A linha de 7 dias reage rápido às variações diárias, enquanto a de 90 dias mostra a direção de longo prazo.',
+    smoothedTrendsTooltip: 'São médias móveis dos últimos N dias (7, 30, 90). A linha de 7 dias reage rapidamente a mudanças recentes; a de 90 dias mostra a direção de longo prazo.',
     smoothedTrendsSubtitle: 'Veja como sua tendência evolui semana a semana, mês a mês ou trimestre a trimestre',
     notEnoughRolling: 'Dados insuficientes para exibir tendências.',
     seeSmoothedDirection: 'para ver a tendência suavizada.',
